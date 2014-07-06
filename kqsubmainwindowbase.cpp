@@ -28,7 +28,7 @@ void KQSubMainWindowBase::hideEvent(QHideEvent *event)
 
 void KQSubMainWindowBase::moveEvent(QMoveEvent *event)
 {
-    if (pos().y() == 0)
+    if (y() == 0)
     {
         if (!m_bDockingOnTop)
         {
@@ -39,7 +39,7 @@ void KQSubMainWindowBase::moveEvent(QMoveEvent *event)
 
         }
     }
-    else if (pos().y() > 20)
+    else if (y() > 20)
     {
         if (m_bDockingOnTop)
         {
@@ -53,20 +53,30 @@ void KQSubMainWindowBase::moveEvent(QMoveEvent *event)
 
 void KQSubMainWindowBase::mouseReleaseEvent(QMouseEvent *event)
 {
-    if (pos().y() < 20 && pos().y()!=0)
+    if (y() < 20 && y()!=0)
     {
-        move(pos().x(), 0);
+        move(x(), 0);
     }
+
+    KQMainWindow * pMain = KQMainWindow::mainWindow();
+    if (x()+width() <= pMain->x()+pMain->width()
+            && x()>= pMain->x()
+            && y()>=pMain->y()+pMain->height()-20
+            && y()<=pMain->y()+pMain->height()+20)
+    {
+        move(x(), pMain->y()+pMain->height());
+    }
+
     KQMainWindowBase::mouseReleaseEvent(event);
 }
 
 void KQSubMainWindowBase::slotDockingTimerCallback()
 {
     QPoint pt = QCursor::pos();
-    QRect rc(pos().x(), 0, size().width(), 20);
-    QRect rcwhole(pos().x()-10, pos().y()-10, size().width()+20, size().height()+20);
+    QRect rc(x(), 0, size().width(), 20);
+    QRect rcwhole(x()-10, y()-10, size().width()+20, size().height()+20);
 
-    if (pos().y() == 0)
+    if (y() == 0)
     {
         if (rcwhole.contains(pt))
         {
@@ -76,12 +86,12 @@ void KQSubMainWindowBase::slotDockingTimerCallback()
         else
         {
             // to collapse
-            move(pos().x(), -size().height()+5);
+            move(x(), -size().height()+5);
         }
     }
     else if (rc.contains(pt))
     {
         // to expand
-        move(pos().x(), 0);
+        move(x(), 0);
     }
 }

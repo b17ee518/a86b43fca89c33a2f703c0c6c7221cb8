@@ -54,17 +54,18 @@ void KQUI_MainTitleFrame::on_pbClose_clicked()
 void KQUI_MainTitleFrame::on_pbMinimize_clicked()
 {
     m_pMainWindow->setWindowState(Qt::WindowMinimized);
-
-    if (m_pInfoWindow->isVisible())
+/*
+    if (m_pInfoWindow->isVisible() && !m_pInfoWindow->isDockingOnTop())
     {
         m_pInfoWindow->hide();
 //        m_pInfoWindow->setWindowState(Qt::WindowMinimized);
     }
-    if (m_pTimerWindow->isVisible())
+    if (m_pTimerWindow->isVisible() && !m_pTimerWindow->isDockingOnTop())
     {
         m_pTimerWindow->hide();
 //        m_pTimerWindow->setWindowState(Qt::WindowMinimized);
     }
+    */
 }
 
 void KQUI_MainTitleFrame::on_pbMinimizeSelf_clicked()

@@ -30,9 +30,10 @@ public:
     void onSubMainWindowShowHide(bool bShow, KQMainWindowBase * pWindow);
 
 protected:
-    virtual bool eventFilter(QObject *obj, QEvent *event);
     virtual void changeEvent(QEvent * e);
     virtual void closeEvent(QCloseEvent * e);
+    virtual void moveEvent(QMoveEvent *e);
+    virtual void mouseReleaseEvent(QMouseEvent * event);
 
 
 private:
@@ -42,6 +43,10 @@ private:
     KQTimerSubMainWindow * m_pTimerWindow;
 
     static KQMainWindow * s_pMainWindow;
+
+public slots:
+    virtual void slotActivate(QWidget* w , bool bActivate);
+    virtual void slotToggleRestoreMinimize(bool bRestore);
 };
 
 

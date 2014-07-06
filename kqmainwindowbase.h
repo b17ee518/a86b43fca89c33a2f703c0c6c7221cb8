@@ -11,14 +11,20 @@ class KQMainWindowBase : public QMainWindow, public KQWidgetInterface
 public:
     explicit KQMainWindowBase(QWidget *parent = 0);
 
+protected:
     virtual void mwbInit();
     virtual void mwbPostInit();
 
     virtual void closeEvent(QCloseEvent *event);
-
-signals:
+    virtual void changeEvent(QEvent *event);
 
 public slots:
+    virtual void slotActivate(QWidget* w , bool bActivate);
+    virtual void slotToggleRestoreMinimize(bool bRestore);
+
+signals:
+    void sigActivated( QWidget* w, bool bActivate );
+    void sigRestoreMinimizeToggled(bool bRestore);
 
 };
 

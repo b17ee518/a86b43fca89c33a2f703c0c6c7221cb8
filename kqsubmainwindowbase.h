@@ -12,6 +12,9 @@ class KQSubMainWindowBase : public KQMainWindowBase
 public:
     explicit KQSubMainWindowBase(QWidget *parent = 0);
 
+    bool isDockingOnTop(){return m_bDockingOnTop;}
+
+protected:
     virtual void mwiInit();
 
     virtual void showEvent(QShowEvent *event);

@@ -1,5 +1,6 @@
 #include "kqmainwindow.h"
 #include "ui_kqmainwindow.h"
+#include <QDesktopWidget>
 
 KQMainWindow * KQMainWindow::s_pMainWindow = 0;
 
@@ -25,6 +26,18 @@ void KQMainWindow::postInit(KQInfoSubMainWindow *pInfo, KQTimerSubMainWindow *pT
     m_pTimerWindow = pTimer;
 
     ui->titleFrame->postInit();
+
+    QObject::connect( this, SIGNAL( sigActivated( QWidget*, bool ) ), m_pInfoWindow, SLOT( slotActivate( QWidget*, bool ) ) );
+    QObject::connect( this, SIGNAL( sigActivated( QWidget*, bool ) ), m_pTimerWindow, SLOT( slotActivate( QWidget*, bool ) ) );
+
+    QObject::connect( m_pInfoWindow, SIGNAL( sigActivated( QWidget*, bool ) ), this, SLOT( slotActivate( QWidget*, bool ) ) );
+    QObject::connect( m_pInfoWindow, SIGNAL( sigActivated( QWidget*, bool ) ), m_pTimerWindow, SLOT( slotActivate( QWidget*, bool ) ) );
+
+    QObject::connect( m_pTimerWindow, SIGNAL( sigActivated( QWidget*, bool ) ), m_pInfoWindow, SLOT( slotActivate( QWidget*, bool ) ) );
+    QObject::connect( m_pTimerWindow, SIGNAL( sigActivated( QWidget*, bool ) ), this, SLOT( slotActivate( QWidget*, bool ) ) );
+
+    connect(m_pInfoWindow, SIGNAL(sigRestoreMinimizeToggled(bool)), this, SLOT(slotToggleRestoreMinimize(bool)));
+    connect(m_pTimerWindow, SIGNAL(sigRestoreMinimizeToggled(bool)), this, SLOT(slotToggleRestoreMinimize(bool)));
 }
 
 void KQMainWindow::onSubMainWindowShowHide(bool bShow, KQMainWindowBase *pWindow)
@@ -32,21 +45,10 @@ void KQMainWindow::onSubMainWindowShowHide(bool bShow, KQMainWindowBase *pWindow
     ui->titleFrame->onSubMainWindowShowHide(bShow, pWindow);
 }
 
-bool KQMainWindow::eventFilter(QObject *obj, QEvent *event)
-{
-    if (event->type() == QEvent::Move)
-    {
-        QMoveEvent *moveEvent = static_cast<QMoveEvent*>(event);
-        QPoint diffPos = moveEvent->pos()-moveEvent->oldPos();
-
-        m_pInfoWindow->move(m_pInfoWindow->pos()+diffPos);
-        m_pTimerWindow->move(m_pTimerWindow->pos()+diffPos);
-    }
-    return QWidget::eventFilter(obj, event);
-}
-
 void KQMainWindow::changeEvent(QEvent *e)
 {
+    KQMainWindowBase::changeEvent(e);
+
     if (e->type() == QEvent::WindowStateChange)
     {
         QWindowStateChangeEvent* event = static_cast<QWindowStateChangeEvent*>(e);
@@ -57,8 +59,24 @@ void KQMainWindow::changeEvent(QEvent *e)
 
             m_pInfoWindow->show();
             m_pTimerWindow->show();
+            m_pInfoWindow->stackUnder(this);
+            m_pTimerWindow->stackUnder(m_pInfoWindow);
+            this->raise();
+            this->activateWindow();
+        }
+        else if (isMinimized())
+        {
+            if (!m_pInfoWindow->isDockingOnTop())
+            {
+                m_pInfoWindow->hide();
+            }
+            if (!m_pTimerWindow->isDockingOnTop())
+            {
+                m_pTimerWindow->hide();
+            }
         }
     }
+
 }
 
 void KQMainWindow::closeEvent(QCloseEvent *e)
@@ -68,4 +86,62 @@ void KQMainWindow::closeEvent(QCloseEvent *e)
 
     m_pInfoWindow->close();
     m_pTimerWindow->close();
+}
+
+void KQMainWindow::moveEvent(QMoveEvent *e)
+{
+    KQMainWindowBase::moveEvent(e);
+
+    QPoint diffPos = e->pos()-e->oldPos();
+
+    if (!m_pInfoWindow->isDockingOnTop())
+    {
+        m_pInfoWindow->move(m_pInfoWindow->pos()+diffPos);
+    }
+    if (!m_pTimerWindow->isDockingOnTop())
+    {
+        m_pTimerWindow->move(m_pTimerWindow->pos()+diffPos);
+    }
+}
+
+void KQMainWindow::mouseReleaseEvent(QMouseEvent *event)
+{
+    QRect rc = QApplication::desktop()->availableGeometry(QApplication::desktop()->primaryScreen());
+    if (x() < 20 && x() > -20 && x()!=0)
+    {
+        move(0, y());
+    }
+    else if (x()+width() > rc.width()-20 && x()+width() < rc.width()+20 && x()!=rc.width()-width())
+    {
+        move(rc.width()-width(), y());
+    }
+    if (y() < 20 && y()!=0)
+    {
+        move(x(), 0);
+    }
+    KQMainWindowBase::mouseReleaseEvent(event);
+}
+
+void KQMainWindow::slotActivate(QWidget *w, bool bActivate)
+{
+    this->raise();
+    w->stackUnder(this);
+}
+
+void KQMainWindow::slotToggleRestoreMinimize(bool bRestore)
+{
+    if (bRestore)
+    {
+        if (isMinimized())
+        {
+            this->setWindowState(Qt::WindowNoState);
+        }
+    }
+    if (!bRestore)
+    {
+        if (!isMinimized())
+        {
+            this->setWindowState(Qt::WindowMinimized);
+        }
+    }
 }

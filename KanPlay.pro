@@ -62,3 +62,5 @@ FORMS    += kqmainwindow.ui \
     kqtimersubmainwindow.ui \
     kqui_maintitleframe.ui \
     kqui_subtitleframe.ui
+
+RESOURCES +=

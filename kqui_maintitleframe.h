@@ -30,13 +30,13 @@ private slots:
 
     void on_pbMinimizeSelf_clicked();
 
-    void on_pbTrasparent_clicked();
-
     void on_comboBoxZoom_currentIndexChanged(const QString &arg1);
 
     void on_pbCheckTimer_toggled(bool checked);
 
     void on_pbCheckInfo_toggled(bool checked);
+
+    void on_pbTrasparent_toggled(bool checked);
 
 private:
     Ui::KQUI_MainTitleFrame *ui;

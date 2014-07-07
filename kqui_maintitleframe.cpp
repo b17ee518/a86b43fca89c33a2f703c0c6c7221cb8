@@ -73,11 +73,6 @@ void KQUI_MainTitleFrame::on_pbMinimizeSelf_clicked()
     m_pMainWindow->setWindowState(Qt::WindowMinimized);
 }
 
-void KQUI_MainTitleFrame::on_pbTrasparent_clicked()
-{
-
-}
-
 void KQUI_MainTitleFrame::on_comboBoxZoom_currentIndexChanged(const QString &arg1)
 {
 
@@ -109,4 +104,63 @@ void KQUI_MainTitleFrame::on_pbCheckInfo_toggled(bool checked)
         m_pInfoWindow->hide();
     }
     */
+}
+
+void KQUI_MainTitleFrame::on_pbTrasparent_toggled(bool checked)
+{
+    static QList<QPair<QString, QWidget*>> s_listpair;
+    if (checked)
+    {
+        s_listpair.clear();
+
+        QList<QWidget *> lstWidget = m_pMainWindow->findChildren<QWidget *>();
+        QWidget * w;
+        foreach(w, lstWidget)
+        {
+            QPair<QString, QWidget*> pair;
+            pair.first = w->styleSheet();
+            pair.second = w;
+            s_listpair.append(pair);
+        }
+
+        lstWidget = m_pInfoWindow->findChildren<QWidget *>();
+        foreach(w, lstWidget)
+        {
+            QPair<QString, QWidget*> pair;
+            pair.first = w->styleSheet();
+            pair.second = w;
+            s_listpair.append(pair);
+        }
+        lstWidget = m_pTimerWindow->findChildren<QWidget *>();
+        foreach(w, lstWidget)
+        {
+            QPair<QString, QWidget*> pair;
+            pair.first = w->styleSheet();
+            pair.second = w;
+            s_listpair.append(pair);
+        }
+
+        QPair<QString, QWidget*> p;
+        foreach(p, s_listpair)
+        {
+            w = p.second;
+            QString stylestr = w->styleSheet();
+            stylestr += "background-color: rgba(45, 45, 48, 30%);";
+            w->setStyleSheet(stylestr);
+        }
+
+    }
+    else
+    {
+        QPair<QString, QWidget*> p;
+        foreach(p, s_listpair)
+        {
+            if (m_pMainWindow->isAncestorOf(p.second) || m_pInfoWindow->isAncestorOf(p.second) || m_pTimerWindow->isAncestorOf(p.second))
+            {
+                p.second->setStyleSheet(p.first);
+            }
+        }
+        s_listpair.clear();
+    }
+
 }

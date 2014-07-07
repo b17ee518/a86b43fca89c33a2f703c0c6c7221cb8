@@ -95,3 +95,9 @@ void KQSubMainWindowBase::slotDockingTimerCallback()
         move(x(), 0);
     }
 }
+
+void KQSubMainWindowBase::slotHandleContentFrameSizeChange(KQContentFrameBase *pFrame)
+{
+    resize(pFrame->width(), pFrame->height()+20);
+}
+

@@ -10,6 +10,7 @@ KQTimerSubMainWindow::KQTimerSubMainWindow(QWidget *parent) :
     ui->titleFrame->setHandlingWidget(this);
 
     mwbPostInit();
+    connect(ui->contentFrame, SIGNAL(sigContentFrameSizeChanged(KQContentFrameBase*)), this, SLOT(slotHandleContentFrameSizeChange(KQContentFrameBase*)));
 }
 
 KQTimerSubMainWindow::~KQTimerSubMainWindow()

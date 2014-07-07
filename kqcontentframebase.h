@@ -9,7 +9,11 @@ class KQContentFrameBase : public KQFrameBase
 public:
     explicit KQContentFrameBase(QWidget *parent = 0);
 
+protected:
+    virtual void resizeEvent(QResizeEvent * event);
+
 signals:
+    void sigContentFrameSizeChanged(KQContentFrameBase * p);
 
 public slots:
 

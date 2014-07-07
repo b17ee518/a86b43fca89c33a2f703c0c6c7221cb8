@@ -5,6 +5,7 @@
 #include <QShowEvent>
 #include <QHideEvent>
 #include <QTimer>
+#include "kqcontentframebase.h"
 
 class KQSubMainWindowBase : public KQMainWindowBase
 {
@@ -32,6 +33,7 @@ private:
     QTimer * m_pDockingCallbackTimer;
 private slots:
     void slotDockingTimerCallback();
+    void slotHandleContentFrameSizeChange(KQContentFrameBase *pFrame);
 
 };
 

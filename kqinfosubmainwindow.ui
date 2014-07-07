@@ -7,13 +7,25 @@
     <x>0</x>
     <y>0</y>
     <width>180</width>
-    <height>300</height>
+    <height>440</height>
    </rect>
+  </property>
+  <property name="sizePolicy">
+   <sizepolicy hsizetype="MinimumExpanding" vsizetype="MinimumExpanding">
+    <horstretch>0</horstretch>
+    <verstretch>0</verstretch>
+   </sizepolicy>
   </property>
   <property name="windowTitle">
    <string>MainWindow</string>
   </property>
   <widget class="QWidget" name="centralwidget">
+   <property name="sizePolicy">
+    <sizepolicy hsizetype="MinimumExpanding" vsizetype="MinimumExpanding">
+     <horstretch>0</horstretch>
+     <verstretch>0</verstretch>
+    </sizepolicy>
+   </property>
    <widget class="KQUI_SubTitleFrame" name="titleFrame">
     <property name="geometry">
      <rect>
@@ -30,6 +42,98 @@
      <enum>QFrame::Raised</enum>
     </property>
    </widget>
+   <widget class="KQInfoContentFrame" name="contentFrame">
+    <property name="geometry">
+     <rect>
+      <x>0</x>
+      <y>20</y>
+      <width>180</width>
+      <height>420</height>
+     </rect>
+    </property>
+    <property name="sizePolicy">
+     <sizepolicy hsizetype="MinimumExpanding" vsizetype="MinimumExpanding">
+      <horstretch>0</horstretch>
+      <verstretch>0</verstretch>
+     </sizepolicy>
+    </property>
+    <property name="frameShape">
+     <enum>QFrame::StyledPanel</enum>
+    </property>
+    <property name="frameShadow">
+     <enum>QFrame::Raised</enum>
+    </property>
+    <widget class="KQTableWidget" name="overviewTable">
+     <property name="geometry">
+      <rect>
+       <x>0</x>
+       <y>0</y>
+       <width>180</width>
+       <height>60</height>
+      </rect>
+     </property>
+    </widget>
+    <widget class="KQCollapsibleTableWidget" name="missionTable">
+     <property name="geometry">
+      <rect>
+       <x>0</x>
+       <y>60</y>
+       <width>180</width>
+       <height>60</height>
+      </rect>
+     </property>
+    </widget>
+    <widget class="KQCollapsibleTableWidget" name="fleetTable_1">
+     <property name="geometry">
+      <rect>
+       <x>0</x>
+       <y>120</y>
+       <width>180</width>
+       <height>60</height>
+      </rect>
+     </property>
+    </widget>
+    <widget class="KQCollapsibleTableWidget" name="fleetTable_2">
+     <property name="geometry">
+      <rect>
+       <x>0</x>
+       <y>180</y>
+       <width>180</width>
+       <height>60</height>
+      </rect>
+     </property>
+    </widget>
+    <widget class="KQCollapsibleTableWidget" name="fleetTable_3">
+     <property name="geometry">
+      <rect>
+       <x>0</x>
+       <y>240</y>
+       <width>180</width>
+       <height>60</height>
+      </rect>
+     </property>
+    </widget>
+    <widget class="KQCollapsibleTableWidget" name="fleetTable_4">
+     <property name="geometry">
+      <rect>
+       <x>0</x>
+       <y>300</y>
+       <width>180</width>
+       <height>60</height>
+      </rect>
+     </property>
+    </widget>
+    <widget class="KQCollapsibleTableWidget" name="repairTable">
+     <property name="geometry">
+      <rect>
+       <x>0</x>
+       <y>360</y>
+       <width>180</width>
+       <height>60</height>
+      </rect>
+     </property>
+    </widget>
+   </widget>
   </widget>
  </widget>
  <customwidgets>
@@ -38,6 +142,22 @@
    <extends>QFrame</extends>
    <header>kqui_subtitleframe.h</header>
    <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>KQInfoContentFrame</class>
+   <extends>QFrame</extends>
+   <header>kqinfocontentframe.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>KQTableWidget</class>
+   <extends>QTableWidget</extends>
+   <header>kqtablewidget.h</header>
+  </customwidget>
+  <customwidget>
+   <class>KQCollapsibleTableWidget</class>
+   <extends>QTableWidget</extends>
+   <header>kqcollapsibletablewidget.h</header>
   </customwidget>
  </customwidgets>
  <resources/>

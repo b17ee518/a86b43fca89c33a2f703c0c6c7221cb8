@@ -19,7 +19,6 @@ int main(int argc, char *argv[])
     a.setFont(newFont);
 
     KQMainWindow w;
-    w.setWindowTitle("KanPlay");
 
     KQInfoSubMainWindow wInfo;
     KQTimerSubMainWindow wTimer;
@@ -29,6 +28,9 @@ int main(int argc, char *argv[])
     w.postInit(&wInfo, &wTimer);
     KQMainWindow::setMainWindow(&w);
 
+    w.setAttribute(Qt::WA_TranslucentBackground, true);
+    wInfo.setAttribute(Qt::WA_TranslucentBackground, true);
+    wTimer.setAttribute(Qt::WA_TranslucentBackground, true);
 
     w.show();
     wInfo.show();

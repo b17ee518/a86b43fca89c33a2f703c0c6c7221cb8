@@ -45,7 +45,9 @@ void KQSubMainWindowBase::moveEvent(QMoveEvent *event)
         {
             m_bDockingOnTop = false;
             m_pDockingCallbackTimer->stop();
-            setWindowFlags(windowFlags() & ~Qt::WindowStaysOnTopHint);
+            setWindowFlags((windowFlags() & ~Qt::WindowStaysOnTopHint) | Qt::WindowStaysOnBottomHint);
+            show();
+            setWindowFlags(windowFlags() & ~Qt::WindowStaysOnBottomHint);
             show();
         }
     }

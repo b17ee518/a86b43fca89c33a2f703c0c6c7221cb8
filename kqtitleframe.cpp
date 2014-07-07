@@ -1,4 +1,5 @@
 #include "kqtitleframe.h"
+#include <QApplication>
 
 KQTitleFrame::KQTitleFrame(QWidget *parent) :
     KQFrameBase(parent)
@@ -45,6 +46,10 @@ void KQTitleFrame::mouseReleaseEvent(QMouseEvent *event)
 
 void KQTitleFrame::slotUpdateTimer()
 {
+    if (!QApplication::mouseButtons().testFlag(Qt::LeftButton))
+    {
+        m_bMoving = false;
+    }
     if (!m_bMoving)
     {
         m_pUpdateTimer->stop();

@@ -18,6 +18,13 @@ public:
 
 private:
     Ui::KQInfoSubMainWindow *ui;
+
+public slots:
+
+protected slots:
+    virtual void slotHandleSubContentFrameSizeChange(KQContentFrameBase * pFrame);
+
+    void slotDebugAfterInit();
 };
 
 #endif // KQINFOSUBMAINWINDOW_H

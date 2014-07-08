@@ -31,9 +31,9 @@ public slots:
 private:
     bool m_bDockingOnTop;
     QTimer * m_pDockingCallbackTimer;
-private slots:
-    void slotDockingTimerCallback();
-    void slotHandleContentFrameSizeChange(KQContentFrameBase *pFrame);
+protected slots:
+    virtual void slotDockingTimerCallback();
+    virtual void slotHandleContentFrameSizeChange(KQContentFrameBase *pFrame);
 
 };
 

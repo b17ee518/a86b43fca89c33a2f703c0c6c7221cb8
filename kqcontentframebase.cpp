@@ -10,3 +10,8 @@ void KQContentFrameBase::resizeEvent(QResizeEvent *event)
     KQFrameBase::resizeEvent(event);
     emit this->sigContentFrameSizeChanged(this);
 }
+
+void KQContentFrameBase::slotHandleContentFrameSizeChange(KQContentFrameBase *p)
+{
+
+}

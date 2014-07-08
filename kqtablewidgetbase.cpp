@@ -13,4 +13,13 @@ KQTableWidgetBase::KQTableWidgetBase(QWidget *parent) :
     this->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
 
     this->setEditTriggers(QAbstractItemView::NoEditTriggers);
+
+    this->setShowGrid(false);
+    this->setFocusPolicy(Qt::NoFocus);
+
+    this->setStyleSheet(
+                "   \
+                QTableWidget {selection-background-color: transparent; color:white;} \
+                "
+                );
 }

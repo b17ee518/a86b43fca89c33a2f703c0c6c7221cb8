@@ -18,6 +18,12 @@ void KQUI_SubTitleFrame::postInit(QWidget *pHandling)
     setHandlingWidget(pHandling);
 }
 
+void KQUI_SubTitleFrame::resizeEvent(QResizeEvent *event)
+{
+    KQTitleFrame::resizeEvent(event);
+    ui->buttonContainer->move(this->width()-ui->buttonContainer->width(), ui->buttonContainer->y());
+}
+
 void KQUI_SubTitleFrame::on_pbClose_clicked()
 {
     handlingWidget()->close();

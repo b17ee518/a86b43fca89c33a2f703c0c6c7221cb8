@@ -13,31 +13,47 @@
   <property name="windowTitle">
    <string>Form</string>
   </property>
-  <widget class="KQPushButton" name="pbClose">
-   <property name="geometry">
-    <rect>
-     <x>160</x>
-     <y>0</y>
-     <width>20</width>
-     <height>20</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>X</string>
-   </property>
-  </widget>
-  <widget class="KQPushButton" name="pbMinimize">
+  <widget class="QFrame" name="buttonContainer">
    <property name="geometry">
     <rect>
      <x>140</x>
      <y>0</y>
-     <width>20</width>
+     <width>40</width>
      <height>20</height>
     </rect>
    </property>
-   <property name="text">
-    <string>-</string>
+   <property name="frameShape">
+    <enum>QFrame::StyledPanel</enum>
    </property>
+   <property name="frameShadow">
+    <enum>QFrame::Raised</enum>
+   </property>
+   <widget class="KQPushButton" name="pbMinimize">
+    <property name="geometry">
+     <rect>
+      <x>0</x>
+      <y>0</y>
+      <width>20</width>
+      <height>20</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>-</string>
+    </property>
+   </widget>
+   <widget class="KQPushButton" name="pbClose">
+    <property name="geometry">
+     <rect>
+      <x>20</x>
+      <y>0</y>
+      <width>20</width>
+      <height>20</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>X</string>
+    </property>
+   </widget>
   </widget>
  </widget>
  <customwidgets>

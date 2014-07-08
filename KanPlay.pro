@@ -33,7 +33,10 @@ SOURCES += main.cpp\
     kqui_maintitleframe.cpp \
     kqcomboboxbase.cpp \
     kqcombobox.cpp \
-    kqui_subtitleframe.cpp
+    kqui_subtitleframe.cpp \
+    kqcollapsiblecontentframe.cpp \
+    kqcollapsiblepushbutton.cpp \
+    kqrowdata.cpp
 
 HEADERS  += kqmainwindow.h \
     kqwidgetinterface.h \
@@ -55,7 +58,10 @@ HEADERS  += kqmainwindow.h \
     kqui_maintitleframe.h \
     kqcomboboxbase.h \
     kqcombobox.h \
-    kqui_subtitleframe.h
+    kqui_subtitleframe.h \
+    kqcollapsiblecontentframe.h \
+    kqcollapsiblepushbutton.h \
+    kqrowdata.h
 
 FORMS    += kqmainwindow.ui \
     kqinfosubmainwindow.ui \

@@ -18,6 +18,8 @@ public:
 
     void postInit(QWidget * pHandling);
 
+    virtual void resizeEvent(QResizeEvent * event);
+
 private slots:
     void on_pbClose_clicked();
 

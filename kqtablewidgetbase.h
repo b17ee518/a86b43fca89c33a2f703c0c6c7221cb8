@@ -9,6 +9,10 @@ class KQTableWidgetBase : public QTableWidget, public KQWidgetInterface
     Q_OBJECT
 public:
     explicit KQTableWidgetBase(QWidget *parent = 0);
+    QSize sizeHint() const {
+        return QSize(0, 0);
+      }
+
 
 signals:
 

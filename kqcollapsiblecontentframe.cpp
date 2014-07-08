@@ -1,24 +1,24 @@
 #include "kqcollapsiblecontentframe.h"
-#include <qheaderview.h>
+#include "ui_kqcollapsiblecontentframe.h"
+
 
 KQCollapsibleContentFrame::KQCollapsibleContentFrame(QWidget *parent) :
-    KQContentFrameBase(parent)
+    KQContentFrameBase(parent),
+    ui(new Ui::KQCollapsibleContentFrame)
 {
-    m_pCollapseButton = new KQCollapsiblePushButton(this);
-    m_pCollapseButton->resize(this->width(), 25);
-    m_pCollapseButton->move(0, 0);
+    ui->setupUi(this);
+    m_pCollapseButton = ui->pushButton;
+    m_pTableWidget = ui->tableWidget;
+}
 
-    m_pTableWidget = new KQCollapsibleTableWidget(this);
-    m_pTableWidget->resize(this->width(), 0);
-    m_pTableWidget->move(0, 25);
-
-    this->setStyleSheet("QWidget {border-top:1px solid grey;}");
-
-    connect(m_pCollapseButton, SIGNAL(toggled(bool)), this, SLOT(slotToggleCollapse(bool)));
+KQCollapsibleContentFrame::~KQCollapsibleContentFrame()
+{
+    delete ui;
 }
 
 void KQCollapsibleContentFrame::updateRow(QList<KQRowData> rows)
 {
+
     int orowcount = m_pTableWidget->rowCount();
 
 //    m_pTableWidget->setRowCount(0);
@@ -44,35 +44,6 @@ void KQCollapsibleContentFrame::updateRow(QList<KQRowData> rows)
 
     if (rows.count() != orowcount)
     {
-        slotRowCountChanged();
+//        slotRowCountChanged();
     }
-}
-
-void KQCollapsibleContentFrame::resizeEvent(QResizeEvent *event)
-{
-    KQContentFrameBase::resizeEvent(event);
-    m_pCollapseButton->resize(this->width(), m_pCollapseButton->height());
-    m_pTableWidget->resize(this->width(), m_pTableWidget->height());
-}
-
-void KQCollapsibleContentFrame::slotToggleCollapse(bool bCollapse)
-{
-    if (bCollapse)
-    {
-        this->resize(width(), m_pTableWidget->height()+m_pCollapseButton->height());
-        // emitted
-    }
-    else
-    {
-        this->resize(width(), m_pCollapseButton->height());
-        // emitted
-    }
-}
-
-void KQCollapsibleContentFrame::slotRowCountChanged()
-{
-    int n = m_pTableWidget->rowCount();
-    int height = n*m_pTableWidget->horizontalHeader()->defaultSectionSize();
-    m_pTableWidget->resize(m_pTableWidget->width(), height);
-    this->resize(this->width(), m_pTableWidget->height()+m_pCollapseButton->height());
 }

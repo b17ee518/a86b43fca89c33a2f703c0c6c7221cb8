@@ -32,6 +32,7 @@ int main(int argc, char *argv[])
     wInfo.setAttribute(Qt::WA_TranslucentBackground, true);
     wTimer.setAttribute(Qt::WA_TranslucentBackground, true);
 
+//    wInfo.setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Minimum);
     w.show();
     wInfo.show();
     wTimer.show();

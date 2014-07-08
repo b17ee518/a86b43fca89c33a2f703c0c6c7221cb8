@@ -1,5 +1,6 @@
 #include "kqinfosubmainwindow.h"
 #include "ui_kqinfosubmainwindow.h"
+#include "kqrowdata.h"
 
 KQInfoSubMainWindow::KQInfoSubMainWindow(QWidget *parent) :
     KQSubMainWindowBase(parent),
@@ -17,7 +18,7 @@ KQInfoSubMainWindow::KQInfoSubMainWindow(QWidget *parent) :
     ui->overviewTable->setColumnCount(2);
     ui->overviewTable->setColumnWidth(0, this->width()/2);
     ui->overviewTable->setColumnWidth(1, this->width()/2);
-    ui->overviewTable->resize(this->width(), 48);
+//    ui->overviewTable->resize(this->width(), 48);
     ui->overviewTable->updateGeometry();
 /*
     QTableWidgetItem * pwi = new QTableWidgetItem("AAAA");
@@ -47,7 +48,7 @@ void KQInfoSubMainWindow::slotHandleSubContentFrameSizeChange(KQContentFrameBase
             + ui->fleetFrame_4->height()
             + ui->repairFrame->height()
             );
-    ui->contentFrame->resize(size);
+//    ui->contentFrame->resize(size);
 }
 
 void KQInfoSubMainWindow::slotDebugAfterInit()
@@ -65,6 +66,19 @@ void KQInfoSubMainWindow::slotDebugAfterInit()
     rd.appendCell(KQRowCellData("CCC"));
     rows.append(rd);
     ui->missionFrame->tableWidget()->setColumnCount(3);
+    ui->missionFrame->tableWidget()->setColumnWidth(0, this->width()/3);
+    ui->missionFrame->tableWidget()->setColumnWidth(1, this->width()/3);
+    ui->missionFrame->tableWidget()->setColumnWidth(2, this->width()/3);
+    ui->missionFrame->tableWidget()->setFocusPolicy(Qt::NoFocus);
     ui->missionFrame->updateRow(rows);
 
+    ui->missionFrame->resize(0, 0);
+    qDebug("%d", ui->missionFrame->height());
+    qDebug("%d", ui->missionFrame->tableWidget()->height());
+    ui->missionFrame->updateGeometry();
+    ui->missionFrame->adjustSize();
+    qDebug("%d", ui->missionFrame->height());
+
+//    ui->missionFrame->resize(0, 0);
+//    this->adjustSize();
 }

@@ -101,7 +101,8 @@ void KQSubMainWindowBase::slotDockingTimerCallback()
 void KQSubMainWindowBase::slotHandleContentFrameSizeChange(KQContentFrameBase *pFrame)
 {
     int height = pFrame->height()+20;
-    resize(pFrame->width(), height);
+//    resize(pFrame->width(), height);
     updateGeometry();
+    adjustSize();
 }
 

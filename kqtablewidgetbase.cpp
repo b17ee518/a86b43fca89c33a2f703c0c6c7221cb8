@@ -16,6 +16,7 @@ KQTableWidgetBase::KQTableWidgetBase(QWidget *parent) :
 
     this->setShowGrid(false);
     this->setFocusPolicy(Qt::NoFocus);
+    this->setSelectionMode(QAbstractItemView::NoSelection);
 
     this->setStyleSheet(
                 "   \

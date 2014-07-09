@@ -3,6 +3,7 @@
 
 #include <QMainWindow>
 #include "kqsubmainwindowbase.h"
+#include "kqtablewidget.h"
 
 namespace Ui {
 class KQInfoSubMainWindow;
@@ -18,6 +19,12 @@ public:
 
 private:
     Ui::KQInfoSubMainWindow *ui;
+
+    void setOverviewColumnFormat();
+    void setMissionColumnFormat();
+    void setFleetColumnFormat();
+    void setFleetColumnFormat(KQTableWidget * pTableWidget);
+    void setRepairColumnFormat();
 
 public slots:
 

@@ -20,11 +20,12 @@ KQComboBoxBase::KQComboBoxBase(QWidget *parent) :
                 );
 
 
+
     QAbstractItemView *abVw = view();
     QListView *listVw = qobject_cast<QListView*>(abVw);
 
     if (listVw) {
-        listVw->setSpacing(2);
+//        listVw->setSpacing(2);
         listVw->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
 
         listVw->setSizeAdjustPolicy(QListView::AdjustToContents);

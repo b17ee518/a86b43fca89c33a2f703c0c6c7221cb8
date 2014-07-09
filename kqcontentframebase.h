@@ -10,13 +10,10 @@ public:
     explicit KQContentFrameBase(QWidget *parent = 0);
 
 protected:
-    virtual void resizeEvent(QResizeEvent * event);
 
 signals:
-    void sigContentFrameSizeChanged(KQContentFrameBase * p);
 
 public slots:
-    virtual void slotHandleContentFrameSizeChange(KQContentFrameBase * p);
 };
 
 #endif // KQCONTENTFRAMEBASE_H

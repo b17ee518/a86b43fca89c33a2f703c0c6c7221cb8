@@ -3,7 +3,6 @@
 #include "kqinfosubmainwindow.h"
 #include "kqtimersubmainwindow.h"
 #include <QDesktopWidget>
-#include "kqtestmainwindow.h"
 
 int main(int argc, char *argv[])
 {
@@ -11,11 +10,6 @@ int main(int argc, char *argv[])
 
     a.setApplicationName("KanPlay");
     a.setWindowIcon(QIcon(QApplication::applicationDirPath()+"/icon.ico"));
-
-    /*
-    QRect rc = a.desktop()->availableGeometry(a.desktop()->primaryScreen());
-    qDebug("%d,%d,%d,%d", rc.x(), rc.y(), rc.width(), rc.height());
-    */
 
     QFont newFont("Meiryo UI", 9);
     a.setFont(newFont);
@@ -33,11 +27,6 @@ int main(int argc, char *argv[])
     w.setAttribute(Qt::WA_TranslucentBackground, true);
     wInfo.setAttribute(Qt::WA_TranslucentBackground, true);
     wTimer.setAttribute(Qt::WA_TranslucentBackground, true);
-
-//    wInfo.setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Minimum);
-
-    KQTestMainWindow wtest;
-    wtest.show();
 
     w.show();
     wInfo.show();

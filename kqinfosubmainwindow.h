@@ -22,9 +22,9 @@ private:
 public slots:
 
 protected slots:
-    virtual void slotHandleSubContentFrameSizeChange(KQContentFrameBase * pFrame);
 
     void slotDebugAfterInit();
+    void slotDebugAfterInit2();
 };
 
 #endif // KQINFOSUBMAINWINDOW_H

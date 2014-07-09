@@ -9,6 +9,7 @@ KQCollapsibleContentFrame::KQCollapsibleContentFrame(QWidget *parent) :
     ui->setupUi(this);
     m_pCollapseButton = ui->pushButton;
     m_pTableWidget = ui->tableWidget;
+    m_pTableWidget->hide();
 }
 
 KQCollapsibleContentFrame::~KQCollapsibleContentFrame()
@@ -31,7 +32,7 @@ void KQCollapsibleContentFrame::updateRow(QList<KQRowData> rows)
             KQRowData * prd = &(rows[i]);
 
             QList<KQRowCellData> * pRow = prd->cells();
-            for (int j=0; j<pRow->count(); j++)
+            for (int j=0; j<m_pTableWidget->columnCount(); j++)
             {
                 KQRowCellData * pCell = &((*pRow)[j]);
 
@@ -40,13 +41,27 @@ void KQCollapsibleContentFrame::updateRow(QList<KQRowData> rows)
                 m_pTableWidget->item(i, j)->setTextColor(pCell->cellCol());
             }
         }
+        m_pTableWidget->setMinimumSize(m_pTableWidget->sizeHint());
+        m_pTableWidget->setMaximumSize(m_pTableWidget->sizeHint());
+        m_pTableWidget->show();
     }
-
-    m_pTableWidget->setMinimumSize(m_pTableWidget->sizeHint());
-    m_pTableWidget->setMaximumSize(m_pTableWidget->sizeHint());
+    else
+    {
+        m_pTableWidget->hide();
+    }
 
     if (rows.count() != orowcount)
     {
 //        slotRowCountChanged();
+    }
+}
+
+void KQCollapsibleContentFrame::updateCell(int row, int column, KQRowCellData cell)
+{
+    if (m_pTableWidget->rowCount() > row && m_pTableWidget->columnCount() > column)
+    {
+        QTableWidgetItem * pItem = m_pTableWidget->item(row, column);
+        pItem->setText(cell.cellStr());
+        pItem->setTextColor(cell.cellCol());
     }
 }

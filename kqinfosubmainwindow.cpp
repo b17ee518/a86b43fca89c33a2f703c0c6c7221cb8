@@ -36,34 +36,13 @@ KQInfoSubMainWindow::~KQInfoSubMainWindow()
     delete ui;
 }
 
-void KQInfoSubMainWindow::slotHandleSubContentFrameSizeChange(KQContentFrameBase *pFrame)
-{
-    QSize size;
-    size.setWidth(this->width());
-    size.setHeight(
-            ui->missionFrame->height()
-            + ui->fleetFrame_1->height()
-            + ui->fleetFrame_2->height()
-            + ui->fleetFrame_3->height()
-            + ui->fleetFrame_4->height()
-            + ui->repairFrame->height()
-            );
-//    ui->contentFrame->resize(size);
-}
-
 void KQInfoSubMainWindow::slotDebugAfterInit()
 {
-/*
-    QTableWidgetItem * pwi = new QTableWidgetItem("AAAA");
-    ui->overviewTable->setItem(0, 0, pwi);
-    ui->overviewTable->item(0, 0)->setTextColor(QColor(255, 255, 255));
-*/
-
     QList<KQRowData> rows;
     KQRowData rd;
-    rd.appendCell(KQRowCellData("AAA"));
+    rd.appendCell(KQRowCellData("AAAAAAAAAAAAAAAAAAAAA"));
     rd.appendCell(KQRowCellData("BBB"));
-    rd.appendCell(KQRowCellData("CCC"));
+    rd.appendCell(KQRowCellData("CCC", QColor(255, 255, 0)));
     rows.append(rd);
     ui->missionFrame->tableWidget()->setColumnCount(3);
     ui->missionFrame->tableWidget()->setColumnWidth(0, this->width()/3);
@@ -71,10 +50,12 @@ void KQInfoSubMainWindow::slotDebugAfterInit()
     ui->missionFrame->tableWidget()->setColumnWidth(2, this->width()/3);
     ui->missionFrame->tableWidget()->setFocusPolicy(Qt::NoFocus);
     ui->missionFrame->updateRow(rows);
+//    QTimer::singleShot(2000, this, SLOT(slotDebugAfterInit2()));
+}
 
-//    ui->missionFrame->resize(0, 0);
-//    this->resize(0, 0);
+void KQInfoSubMainWindow::slotDebugAfterInit2()
+{
+    QList<KQRowData> rows;
+    ui->missionFrame->updateRow(rows);
 
-//    ui->missionFrame->resize(0, 0);
-//    this->adjustSize();
 }

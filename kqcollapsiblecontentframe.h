@@ -21,6 +21,7 @@ public:
     ~KQCollapsibleContentFrame();
 
     void updateRow(QList<KQRowData> rows);
+    void updateCell(int row, int column, KQRowCellData cell);
 
 private:
     Ui::KQCollapsibleContentFrame *ui;

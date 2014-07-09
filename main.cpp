@@ -3,6 +3,8 @@
 #include "kqinfosubmainwindow.h"
 #include "kqtimersubmainwindow.h"
 #include <QDesktopWidget>
+#include "kqtestmainwindow.h"
+
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
@@ -33,6 +35,10 @@ int main(int argc, char *argv[])
     wTimer.setAttribute(Qt::WA_TranslucentBackground, true);
 
 //    wInfo.setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Minimum);
+
+    KQTestMainWindow wtest;
+    wtest.show();
+
     w.show();
     wInfo.show();
     wTimer.show();

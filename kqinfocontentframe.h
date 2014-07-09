@@ -9,6 +9,8 @@ class KQInfoContentFrame : public KQContentFrameBase
 public:
     explicit KQInfoContentFrame(QWidget *parent = 0);
 
+
+
 signals:
 
 public slots:

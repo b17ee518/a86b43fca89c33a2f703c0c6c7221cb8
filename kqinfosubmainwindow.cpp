@@ -72,12 +72,8 @@ void KQInfoSubMainWindow::slotDebugAfterInit()
     ui->missionFrame->tableWidget()->setFocusPolicy(Qt::NoFocus);
     ui->missionFrame->updateRow(rows);
 
-    ui->missionFrame->resize(0, 0);
-    qDebug("%d", ui->missionFrame->height());
-    qDebug("%d", ui->missionFrame->tableWidget()->height());
-    ui->missionFrame->updateGeometry();
-    ui->missionFrame->adjustSize();
-    qDebug("%d", ui->missionFrame->height());
+//    ui->missionFrame->resize(0, 0);
+//    this->resize(0, 0);
 
 //    ui->missionFrame->resize(0, 0);
 //    this->adjustSize();

@@ -42,6 +42,9 @@ void KQCollapsibleContentFrame::updateRow(QList<KQRowData> rows)
         }
     }
 
+    m_pTableWidget->setMinimumSize(m_pTableWidget->sizeHint());
+    m_pTableWidget->setMaximumSize(m_pTableWidget->sizeHint());
+
     if (rows.count() != orowcount)
     {
 //        slotRowCountChanged();

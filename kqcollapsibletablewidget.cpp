@@ -9,8 +9,5 @@ KQCollapsibleTableWidget::KQCollapsibleTableWidget(QWidget *parent) :
 void KQCollapsibleTableWidget::resizeEvent(QResizeEvent *event)
 {
     KQTableWidget::resizeEvent(event);
-    if (event->oldSize().width() != width())
-    {
-        emit this->sigWidthChanged(width());
-    }
+    emit this->sigWidthChanged(width());
 }

@@ -25,11 +25,15 @@ public:
 
 private:
     Ui::KQCollapsibleContentFrame *ui;
+
+    KQCollapsiblePushButton * m_pCollapseButton;
+    KQCollapsibleTableWidget * m_pTableWidget;
+
+    QList<int> m_lstColMinimumWidth;
+
 public:
     KQCollapsiblePushButton * collapseButton(){return m_pCollapseButton;}
     KQCollapsibleTableWidget * tableWidget(){return m_pTableWidget;}
-    KQCollapsiblePushButton * m_pCollapseButton;
-    KQCollapsibleTableWidget * m_pTableWidget;
 };
 
 #endif // KQCOLLAPSIBLECONTENTFRAME_H

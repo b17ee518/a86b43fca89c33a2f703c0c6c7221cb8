@@ -33,9 +33,19 @@ public:
         return minimumSizeHint();
     }
 
+public:
+    void setSeparatorColumn(int col);
+    int separatorColumn(){return m_separatorColumn;}
+    int calculateColumnsWidth();
+
+private:
+    int m_separatorColumn;
+
 signals:
+    void sigExpandOnSeparator(int totalWidth);
 
 public slots:
+    void slotExpandOnSeparator(int toTotalWidth);
 
 };
 

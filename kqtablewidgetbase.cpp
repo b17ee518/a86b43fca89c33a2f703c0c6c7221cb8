@@ -4,6 +4,8 @@
 KQTableWidgetBase::KQTableWidgetBase(QWidget *parent) :
     QTableWidget(parent)
 {
+    m_separatorColumn = -1;
+
     this->verticalHeader()->setDefaultSectionSize(16);
 
     this->verticalHeader()->hide();
@@ -23,4 +25,52 @@ KQTableWidgetBase::KQTableWidgetBase(QWidget *parent) :
                 QTableWidget {selection-background-color: transparent; color:white;} \
                 "
                 );
+}
+
+void KQTableWidgetBase::setSeparatorColumn(int col)
+{
+    m_separatorColumn = col;
+}
+
+int KQTableWidgetBase::calculateColumnsWidth()
+{
+    int totalwidth = 0;
+    for (int i=0; i<this->columnCount(); i++)
+    {
+        totalwidth += this->columnWidth(i)+1;
+    }
+    return totalwidth;
+}
+
+void KQTableWidgetBase::slotExpandOnSeparator(int toTotalWidth)
+{
+    int nowtotalwidth = calculateColumnsWidth();
+    if (nowtotalwidth < toTotalWidth)
+    {
+        if (m_separatorColumn >= 0)
+        {
+            this->setColumnWidth(m_separatorColumn, this->columnWidth(m_separatorColumn)+toTotalWidth-nowtotalwidth);
+        }
+    }
+    else if (nowtotalwidth > toTotalWidth)
+    {
+        this->resizeColumnsToContents();
+        int newtotalwidth = calculateColumnsWidth();
+
+        if (newtotalwidth > toTotalWidth)
+        {
+            slotExpandOnSeparator(newtotalwidth);
+            emit this->sigExpandOnSeparator(newtotalwidth);
+        }
+        else
+        {
+            slotExpandOnSeparator(toTotalWidth);
+        }
+    }
+    setMaximumSize(sizeHint());
+    setMinimumSize(sizeHint());
+    resize(0, 0);
+
+//    qDebug("m%d",this->maximumWidth());
+//    qDebug("t%d",this->width());
 }

@@ -3,6 +3,7 @@
 
 #include "kqtablewidget.h"
 #include "kqpushbutton.h"
+#include <QResizeEvent>
 
 class KQCollapsibleTableWidget : public KQTableWidget
 {
@@ -10,10 +11,14 @@ class KQCollapsibleTableWidget : public KQTableWidget
 public:
     explicit KQCollapsibleTableWidget(QWidget *parent = 0);
 
+protected:
+    virtual void resizeEvent(QResizeEvent * event);
+
 private:
     KQPushButton * m_pCollapseButton;
 
 signals:
+    void sigWidthChanged(int w);
 
 public slots:
 

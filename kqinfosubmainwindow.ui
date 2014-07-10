@@ -18,6 +18,9 @@
     <property name="spacing">
      <number>0</number>
     </property>
+    <property name="sizeConstraint">
+     <enum>QLayout::SetMinimumSize</enum>
+    </property>
     <property name="leftMargin">
      <number>0</number>
     </property>
@@ -33,7 +36,7 @@
     <item>
      <widget class="KQUI_SubTitleFrame" name="titleFrame">
       <property name="sizePolicy">
-       <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+       <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
         <horstretch>0</horstretch>
         <verstretch>0</verstretch>
        </sizepolicy>
@@ -67,6 +70,9 @@
        <property name="spacing">
         <number>0</number>
        </property>
+       <property name="sizeConstraint">
+        <enum>QLayout::SetMinimumSize</enum>
+       </property>
        <property name="leftMargin">
         <number>0</number>
        </property>
@@ -82,7 +88,7 @@
        <item>
         <widget class="KQTableWidget" name="overviewTable">
          <property name="sizePolicy">
-          <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+          <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
            <horstretch>0</horstretch>
            <verstretch>0</verstretch>
           </sizepolicy>

@@ -10,6 +10,8 @@ KQCollapsibleContentFrame::KQCollapsibleContentFrame(QWidget *parent) :
     m_pCollapseButton = ui->pushButton;
     m_pTableWidget = ui->tableWidget;
     m_pTableWidget->hide();
+
+    connect(m_pTableWidget, SIGNAL(sigWidthChanged(int)), m_pCollapseButton, SLOT(slotOtherSizeChanged(int)));
 }
 
 KQCollapsibleContentFrame::~KQCollapsibleContentFrame()
@@ -22,7 +24,7 @@ void KQCollapsibleContentFrame::updateRow(QList<KQRowData> rows)
 
     int orowcount = m_pTableWidget->rowCount();
 
-//    m_pTableWidget->setRowCount(0);
+    int towidth = 280;
 
     m_pTableWidget->setRowCount(rows.count());
     if (rows.count())
@@ -43,12 +45,31 @@ void KQCollapsibleContentFrame::updateRow(QList<KQRowData> rows)
         }
         m_pTableWidget->setMinimumSize(m_pTableWidget->sizeHint());
         m_pTableWidget->setMaximumSize(m_pTableWidget->sizeHint());
+        m_pTableWidget->resizeColumnsToContents();
+        if (m_pTableWidget->calculateColumnsWidth() > towidth)
+        {
+            towidth = m_pTableWidget->calculateColumnsWidth();
+            emit m_pTableWidget->sigExpandOnSeparator(towidth);
+        }
+        m_pTableWidget->slotExpandOnSeparator(towidth);
         m_pTableWidget->show();
     }
     else
     {
         m_pTableWidget->hide();
+//        m_pTableWidget->resizeColumnsToContents();
+
+        for (int i=0; i<m_pTableWidget->columnCount(); i++)
+        {
+            m_pTableWidget->setColumnWidth(i, 1);
+        }
+
+        m_pTableWidget->slotExpandOnSeparator(towidth);
+
+//        qDebug("%d", m_pTableWidget->calculateColumnsWidth());
+        emit m_pTableWidget->sigExpandOnSeparator(towidth);
     }
+
 
     if (rows.count() != orowcount)
     {

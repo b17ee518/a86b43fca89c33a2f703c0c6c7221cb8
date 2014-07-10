@@ -12,7 +12,7 @@ public:
 signals:
 
 public slots:
-
+    void slotOtherSizeChanged(int width);
 };
 
 #endif // KQCOLLAPSIBLEBUTTON_H

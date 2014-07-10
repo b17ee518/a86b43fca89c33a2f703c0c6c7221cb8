@@ -1,4 +1,4 @@
-#include "kqcollapsiblecontentframe.h"
+﻿#include "kqcollapsiblecontentframe.h"
 #include "ui_kqcollapsiblecontentframe.h"
 
 
@@ -25,6 +25,7 @@ void KQCollapsibleContentFrame::updateRow(QList<KQRowData> rows)
     int orowcount = m_pTableWidget->rowCount();
 
     int towidth = 280;
+    int oldwidth = m_pTableWidget->width();
 
     m_pTableWidget->setRowCount(rows.count());
     if (rows.count())
@@ -44,19 +45,24 @@ void KQCollapsibleContentFrame::updateRow(QList<KQRowData> rows)
             }
         }
         m_pTableWidget->setMinimumSize(m_pTableWidget->sizeHint());
-        m_pTableWidget->setMaximumSize(m_pTableWidget->sizeHint());
+//        m_pTableWidget->setMaximumSize(m_pTableWidget->sizeHint());
         m_pTableWidget->resizeColumnsToContents();
         if (m_pTableWidget->calculateColumnsWidth() > towidth)
         {
             towidth = m_pTableWidget->calculateColumnsWidth();
-            emit m_pTableWidget->sigExpandOnSeparator(towidth);
         }
+        if (towidth < oldwidth)
+        {
+            towidth = oldwidth;
+        }
+        emit m_pTableWidget->sigExpandOnSeparator(towidth);
         m_pTableWidget->slotExpandOnSeparator(towidth);
         m_pTableWidget->show();
     }
     else
     {
         m_pTableWidget->hide();
+/*
 //        m_pTableWidget->resizeColumnsToContents();
 
         for (int i=0; i<m_pTableWidget->columnCount(); i++)
@@ -68,9 +74,9 @@ void KQCollapsibleContentFrame::updateRow(QList<KQRowData> rows)
 
 //        qDebug("%d", m_pTableWidget->calculateColumnsWidth());
         emit m_pTableWidget->sigExpandOnSeparator(towidth);
+*/
     }
-
-
+    this->window()->adjustSize();
     if (rows.count() != orowcount)
     {
 //        slotRowCountChanged();

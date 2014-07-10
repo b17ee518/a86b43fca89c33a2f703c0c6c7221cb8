@@ -1,4 +1,4 @@
-#include "kqtablewidgetbase.h"
+﻿#include "kqtablewidgetbase.h"
 #include <QHeaderView>
 
 KQTableWidgetBase::KQTableWidgetBase(QWidget *parent) :
@@ -44,6 +44,8 @@ int KQTableWidgetBase::calculateColumnsWidth()
 
 void KQTableWidgetBase::slotExpandOnSeparator(int toTotalWidth)
 {
+    bool bVisible = isVisible();
+    show();
     int nowtotalwidth = calculateColumnsWidth();
     if (nowtotalwidth < toTotalWidth)
     {
@@ -52,6 +54,7 @@ void KQTableWidgetBase::slotExpandOnSeparator(int toTotalWidth)
             this->setColumnWidth(m_separatorColumn, this->columnWidth(m_separatorColumn)+toTotalWidth-nowtotalwidth);
         }
     }
+/*
     else if (nowtotalwidth > toTotalWidth)
     {
         this->resizeColumnsToContents();
@@ -67,9 +70,14 @@ void KQTableWidgetBase::slotExpandOnSeparator(int toTotalWidth)
             slotExpandOnSeparator(toTotalWidth);
         }
     }
+*/
     setMaximumSize(sizeHint());
     setMinimumSize(sizeHint());
     resize(0, 0);
+    if (!bVisible)
+    {
+        hide();
+    }
 
 //    qDebug("m%d",this->maximumWidth());
 //    qDebug("t%d",this->width());

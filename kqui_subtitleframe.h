@@ -1,4 +1,4 @@
-#ifndef KQUI_SUBTITLEFRAME_H
+﻿#ifndef KQUI_SUBTITLEFRAME_H
 #define KQUI_SUBTITLEFRAME_H
 
 #include <QWidget>
@@ -17,8 +17,6 @@ public:
     ~KQUI_SubTitleFrame();
 
     void postInit(QWidget * pHandling);
-
-    virtual void resizeEvent(QResizeEvent * event);
 
 private slots:
     void on_pbClose_clicked();

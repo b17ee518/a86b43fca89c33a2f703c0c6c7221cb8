@@ -13,8 +13,6 @@ KQInfoSubMainWindow::KQInfoSubMainWindow(QWidget *parent) :
 
     mwbPostInit();
 
-    connect(ui->contentFrame, SIGNAL(sigContentFrameSizeChanged(KQContentFrameBase*)), this, SLOT(slotHandleContentFrameSizeChange(KQContentFrameBase*)));
-
     ui->titleFrame->resize(this->width(), ui->titleFrame->height());
 
     setMissionColumnFormat();
@@ -145,6 +143,7 @@ void KQInfoSubMainWindow::slotDebugAfterInit()
     rd.appendCell(KQRowCellData("(50%)"));
     rows.clear();
     rows.append(rd);
+
     ui->missionFrame->updateRow(rows);
 
     rd.clearCells();
@@ -159,7 +158,20 @@ void KQInfoSubMainWindow::slotDebugAfterInit()
     rd.appendCell(KQRowCellData(QString::fromLocal8Bit("大")));
     rows.clear();
     rows.append(rd);
+
+    rd.appendCell(KQRowCellData("1"));
+    rd.appendCell(KQRowCellData(QString::fromLocal8Bit("浦風")));
+    rd.appendCell(KQRowCellData("Lv"));
+    rd.appendCell(KQRowCellData(" "));
+    rd.appendCell(KQRowCellData(QString::fromLocal8Bit("")));
+    rd.appendCell(KQRowCellData(QString::fromLocal8Bit("")));
+    rd.appendCell(KQRowCellData(QString::fromLocal8Bit("")));
+    rd.appendCell(KQRowCellData("()"));
+    rd.appendCell(KQRowCellData(QString::fromLocal8Bit("大")));
+    rows.append(rd);
+
     ui->fleetFrame_1->updateRow(rows);
+//    this->adjustSize();
 
     QTimer::singleShot(2000, this, SLOT(slotDebugAfterInit2()));
 }
@@ -168,6 +180,19 @@ void KQInfoSubMainWindow::slotDebugAfterInit2()
 {
 
     QList<KQRowData> rows;
+    KQRowData rd;
+    rd.clearCells();
+    rd.appendCell(KQRowCellData("1"));
+    rd.appendCell(KQRowCellData(QString::fromLocal8Bit("浦風")));
+    rd.appendCell(KQRowCellData("Lv"));
+    rd.appendCell(KQRowCellData(" "));
+    rd.appendCell(KQRowCellData(QString::fromLocal8Bit("")));
+    rd.appendCell(KQRowCellData(QString::fromLocal8Bit("")));
+    rd.appendCell(KQRowCellData(QString::fromLocal8Bit("")));
+    rd.appendCell(KQRowCellData("()"));
+    rd.appendCell(KQRowCellData(QString::fromLocal8Bit("大")));
+    rows.clear();
+    rows.append(rd);
     ui->fleetFrame_1->updateRow(rows);
     /*
     qDebug("%d", ui->missionFrame->tableWidget()->calculateColumnsWidth());
@@ -190,6 +215,17 @@ void KQInfoSubMainWindow::slotDebugAfterInit2()
     ui->contentFrame->resize(0, 0);
     qDebug("%d", ui->contentFrame->width());
     */
+/*
+    ui->repairFrame->setMaximumWidth(280);
+    ui->fleetFrame_1->setMaximumWidth(280);
+    ui->fleetFrame_2->setMaximumWidth(280);
+    ui->fleetFrame_3->setMaximumWidth(280);
+    ui->fleetFrame_4->setMaximumWidth(280);
+    ui->missionFrame->setMaximumWidth(280);
+*/
 
+
+
+    this->adjustSize();
 
 }

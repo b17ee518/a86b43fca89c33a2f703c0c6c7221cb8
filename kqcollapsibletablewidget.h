@@ -1,4 +1,4 @@
-#ifndef KQCOLLAPSIBLETABLEWIDGET_H
+﻿#ifndef KQCOLLAPSIBLETABLEWIDGET_H
 #define KQCOLLAPSIBLETABLEWIDGET_H
 
 #include "kqtablewidget.h"
@@ -12,7 +12,6 @@ public:
     explicit KQCollapsibleTableWidget(QWidget *parent = 0);
 
 protected:
-    virtual void resizeEvent(QResizeEvent * event);
 
 private:
     KQPushButton * m_pCollapseButton;

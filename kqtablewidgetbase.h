@@ -1,4 +1,4 @@
-#ifndef KQTABLEWIDGETBASE_H
+﻿#ifndef KQTABLEWIDGETBASE_H
 #define KQTABLEWIDGETBASE_H
 
 #include <QTableWidget>

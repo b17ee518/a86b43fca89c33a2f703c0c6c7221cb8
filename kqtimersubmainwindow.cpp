@@ -1,4 +1,4 @@
-#include "kqtimersubmainwindow.h"
+﻿#include "kqtimersubmainwindow.h"
 #include "ui_kqtimersubmainwindow.h"
 
 KQTimerSubMainWindow::KQTimerSubMainWindow(QWidget *parent) :
@@ -10,7 +10,6 @@ KQTimerSubMainWindow::KQTimerSubMainWindow(QWidget *parent) :
     ui->titleFrame->setHandlingWidget(this);
 
     mwbPostInit();
-    connect(ui->contentFrame, SIGNAL(sigContentFrameSizeChanged(KQContentFrameBase*)), this, SLOT(slotHandleContentFrameSizeChange(KQContentFrameBase*)));
 }
 
 KQTimerSubMainWindow::~KQTimerSubMainWindow()

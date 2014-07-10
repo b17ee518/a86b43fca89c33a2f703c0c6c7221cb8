@@ -1,4 +1,4 @@
-#include "kqui_subtitleframe.h"
+﻿#include "kqui_subtitleframe.h"
 #include "ui_kqui_subtitleframe.h"
 
 KQUI_SubTitleFrame::KQUI_SubTitleFrame(QWidget *parent) :
@@ -16,12 +16,6 @@ KQUI_SubTitleFrame::~KQUI_SubTitleFrame()
 void KQUI_SubTitleFrame::postInit(QWidget *pHandling)
 {
     setHandlingWidget(pHandling);
-}
-
-void KQUI_SubTitleFrame::resizeEvent(QResizeEvent *event)
-{
-    KQTitleFrame::resizeEvent(event);
-    ui->buttonContainer->move(this->width()-ui->buttonContainer->width(), ui->buttonContainer->y());
 }
 
 void KQUI_SubTitleFrame::on_pbClose_clicked()

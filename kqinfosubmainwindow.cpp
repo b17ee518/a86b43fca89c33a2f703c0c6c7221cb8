@@ -169,9 +169,14 @@ void KQInfoSubMainWindow::slotDebugAfterInit()
     rd.appendCell(KQRowCellData("()"));
     rd.appendCell(KQRowCellData(QString::fromLocal8Bit("大")));
     rows.append(rd);
+    rows.append(rd);
+    rows.append(rd);
+    rows.append(rd);
+    rows.append(rd);
+    rows.append(rd);
+    rows.append(rd);
 
     ui->fleetFrame_1->updateRow(rows);
-//    this->adjustSize();
 
     QTimer::singleShot(2000, this, SLOT(slotDebugAfterInit2()));
 }
@@ -223,9 +228,5 @@ void KQInfoSubMainWindow::slotDebugAfterInit2()
     ui->fleetFrame_4->setMaximumWidth(280);
     ui->missionFrame->setMaximumWidth(280);
 */
-
-
-
-    this->adjustSize();
 
 }

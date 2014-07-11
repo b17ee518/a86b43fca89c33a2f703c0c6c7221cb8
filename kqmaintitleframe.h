@@ -1,7 +1,8 @@
-#ifndef KQMAINTITLEFRAME_H
+﻿#ifndef KQMAINTITLEFRAME_H
 #define KQMAINTITLEFRAME_H
 
 #include "kqtitleframe.h"
+#include "mainwindowbase.h"
 
 class KQMainTitleFrame : public KQTitleFrame
 {

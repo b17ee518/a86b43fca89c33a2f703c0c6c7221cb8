@@ -1,8 +1,8 @@
-#include "kqtitleframe.h"
+﻿#include "kqtitleframe.h"
 #include <QApplication>
 
 KQTitleFrame::KQTitleFrame(QWidget *parent) :
-    KQFrameBase(parent)
+    QFrame(parent)
 {
     m_bMoving = false;
     m_pHandlingWidget = 0;
@@ -10,7 +10,7 @@ KQTitleFrame::KQTitleFrame(QWidget *parent) :
     m_pUpdateTimer = new QTimer(this);
     connect(m_pUpdateTimer, SIGNAL(timeout()), this, SLOT(slotUpdateTimer()));
 
-    this->setStyleSheet("background-color: rgb(45, 45, 48);");
+//    this->setStyleSheet("background-color: rgb(45, 45, 48);");
 }
 
 void KQTitleFrame::setHandlingWidget(QWidget *pw)
@@ -31,7 +31,7 @@ void KQTitleFrame::mousePressEvent(QMouseEvent *event)
         m_lastMovingPos = QCursor::pos();
         m_pUpdateTimer->start(16);
     }
-    KQFrameBase::mousePressEvent(event);
+    QFrame::mousePressEvent(event);
 
 }
 
@@ -41,7 +41,7 @@ void KQTitleFrame::mouseReleaseEvent(QMouseEvent *event)
     {
         m_bMoving = false;
     }
-    KQFrameBase::mouseReleaseEvent(event);
+    QFrame::mouseReleaseEvent(event);
 }
 
 void KQTitleFrame::slotUpdateTimer()

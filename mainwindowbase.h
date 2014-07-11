@@ -1,20 +1,19 @@
-#ifndef KQMAINWINDOWBASE_H
-#define KQMAINWINDOWBASE_H
+﻿#ifndef MAINWINDOWBASE_H
+#define MAINWINDOWBASE_H
 
 #include <QMainWindow>
-#include "kqwidgetinterface.h"
+#include <QEvent>
 #include <QCloseEvent>
 
-class KQMainWindowBase : public QMainWindow, public KQWidgetInterface
+class MainWindowBase : public QMainWindow
 {
     Q_OBJECT
 public:
-    explicit KQMainWindowBase(QWidget *parent = 0);
+    explicit MainWindowBase(QWidget *parent = 0);
+
+    void mwbPostInit();
 
 protected:
-    virtual void mwbInit();
-    virtual void mwbPostInit();
-
     virtual void closeEvent(QCloseEvent *event);
     virtual void changeEvent(QEvent *event);
 
@@ -28,4 +27,4 @@ signals:
 
 };
 
-#endif // KQMAINWINDOWBASE_H
+#endif // MAINWINDOWBASE_H

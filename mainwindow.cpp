@@ -1,31 +1,33 @@
-#include "kqmainwindow.h"
-#include "ui_kqmainwindow.h"
+﻿#include "mainwindow.h"
+#include "ui_mainwindow.h"
 #include <QDesktopWidget>
 
-KQMainWindow * KQMainWindow::s_pMainWindow = 0;
+MainWindow * MainWindow::s_pMainWindow = 0;
 
-KQMainWindow::KQMainWindow(QWidget *parent) :
-    KQMainWindowBase(parent),
-    ui(new Ui::KQMainWindow)
+MainWindow::MainWindow(QWidget *parent) :
+    MainWindowBase(parent),
+    ui(new Ui::MainWindow)
 {
     setMainWindow(this);
-
     ui->setupUi(this);
+    ui->retranslateUi(this);
+
+    ui->comboBoxZoom->insertSeparator(1);
 
     mwbPostInit();
+
+    ui->titleFrame->setHandlingWidget(this);
 }
 
-KQMainWindow::~KQMainWindow()
+MainWindow::~MainWindow()
 {
     delete ui;
 }
 
-void KQMainWindow::postInit(KQInfoSubMainWindow *pInfo, KQTimerSubMainWindow *pTimer)
+void MainWindow::postInit(InfoMainWindow *pInfo, TimerMainWindow *pTimer)
 {
     m_pInfoWindow = pInfo;
     m_pTimerWindow = pTimer;
-
-    ui->titleFrame->postInit();
 
     QObject::connect( this, SIGNAL( sigActivated( QWidget*, bool ) ), m_pInfoWindow, SLOT( slotActivate( QWidget*, bool ) ) );
     QObject::connect( this, SIGNAL( sigActivated( QWidget*, bool ) ), m_pTimerWindow, SLOT( slotActivate( QWidget*, bool ) ) );
@@ -38,16 +40,35 @@ void KQMainWindow::postInit(KQInfoSubMainWindow *pInfo, KQTimerSubMainWindow *pT
 
     connect(m_pInfoWindow, SIGNAL(sigRestoreMinimizeToggled(bool)), this, SLOT(slotToggleRestoreMinimize(bool)));
     connect(m_pTimerWindow, SIGNAL(sigRestoreMinimizeToggled(bool)), this, SLOT(slotToggleRestoreMinimize(bool)));
+
+
+    connect(ui->pbCheckInfo, SIGNAL(toggled(bool)), m_pInfoWindow, SLOT(setVisible(bool)));
+    connect(ui->pbCheckTimer, SIGNAL(toggled(bool)), m_pTimerWindow, SLOT(setVisible(bool)));
 }
 
-void KQMainWindow::onSubMainWindowShowHide(bool bShow, KQMainWindowBase *pWindow)
+void MainWindow::onSubMainWindowShowHide(bool bShow, MainWindowBase *pWindow)
 {
-    ui->titleFrame->onSubMainWindowShowHide(bShow, pWindow);
+    QPushButton * pButton = 0;
+    if (pWindow == m_pInfoWindow)
+    {
+        pButton = ui->pbCheckInfo;
+    }
+    else if (pWindow == m_pTimerWindow)
+    {
+        pButton = ui->pbCheckTimer;
+    }
+    if (!pButton)
+    {
+        return;
+    }
+
+    pButton->setChecked(bShow);
 }
 
-void KQMainWindow::changeEvent(QEvent *e)
+
+void MainWindow::changeEvent(QEvent *e)
 {
-    KQMainWindowBase::changeEvent(e);
+    MainWindowBase::changeEvent(e);
 
     if (e->type() == QEvent::WindowStateChange)
     {
@@ -79,18 +100,18 @@ void KQMainWindow::changeEvent(QEvent *e)
 
 }
 
-void KQMainWindow::closeEvent(QCloseEvent *e)
+void MainWindow::closeEvent(QCloseEvent *e)
 {
 //    m_pFiddler->Shutdown();
-    KQMainWindowBase::closeEvent(e);
+    MainWindowBase::closeEvent(e);
 
     m_pInfoWindow->close();
     m_pTimerWindow->close();
 }
 
-void KQMainWindow::moveEvent(QMoveEvent *e)
+void MainWindow::moveEvent(QMoveEvent *e)
 {
-    KQMainWindowBase::moveEvent(e);
+    MainWindowBase::moveEvent(e);
 
     QPoint diffPos = e->pos()-e->oldPos();
 
@@ -104,7 +125,7 @@ void KQMainWindow::moveEvent(QMoveEvent *e)
     }
 }
 
-void KQMainWindow::mouseReleaseEvent(QMouseEvent *event)
+void MainWindow::mouseReleaseEvent(QMouseEvent *event)
 {
     QRect rc = QApplication::desktop()->availableGeometry(QApplication::desktop()->primaryScreen());
     if (x() < 20 && x() > -20 && x()!=0)
@@ -119,16 +140,16 @@ void KQMainWindow::mouseReleaseEvent(QMouseEvent *event)
     {
         move(x(), 0);
     }
-    KQMainWindowBase::mouseReleaseEvent(event);
+    MainWindowBase::mouseReleaseEvent(event);
 }
 
-void KQMainWindow::slotActivate(QWidget *w, bool bActivate)
+void MainWindow::slotActivate(QWidget *w, bool bActivate)
 {
     this->raise();
     w->stackUnder(this);
 }
 
-void KQMainWindow::slotToggleRestoreMinimize(bool bRestore)
+void MainWindow::slotToggleRestoreMinimize(bool bRestore)
 {
     if (bRestore)
     {
@@ -144,4 +165,73 @@ void KQMainWindow::slotToggleRestoreMinimize(bool bRestore)
             this->setWindowState(Qt::WindowMinimized);
         }
     }
+}
+
+void MainWindow::on_pbClose_clicked()
+{
+    close();
+}
+
+void MainWindow::on_pbMinimize_clicked()
+{
+    setWindowState(Qt::WindowMinimized);
+}
+
+void MainWindow::on_pbCheckTrasparent_toggled(bool checked)
+{
+    static QList<QPair<QString, QWidget*>> s_listpair;
+    if (checked)
+    {
+        s_listpair.clear();
+
+        QList<QWidget *> lstWidget = findChildren<QWidget *>();
+        QWidget * w;
+        foreach(w, lstWidget)
+        {
+            QPair<QString, QWidget*> pair;
+            pair.first = w->styleSheet();
+            pair.second = w;
+            s_listpair.append(pair);
+        }
+
+        lstWidget = m_pInfoWindow->findChildren<QWidget *>();
+        foreach(w, lstWidget)
+        {
+            QPair<QString, QWidget*> pair;
+            pair.first = w->styleSheet();
+            pair.second = w;
+            s_listpair.append(pair);
+        }
+        lstWidget = m_pTimerWindow->findChildren<QWidget *>();
+        foreach(w, lstWidget)
+        {
+            QPair<QString, QWidget*> pair;
+            pair.first = w->styleSheet();
+            pair.second = w;
+            s_listpair.append(pair);
+        }
+
+        QPair<QString, QWidget*> p;
+        foreach(p, s_listpair)
+        {
+            w = p.second;
+            QString stylestr = w->styleSheet();
+            stylestr += "background-color: rgba(45, 45, 48, 30%);";
+            w->setStyleSheet(stylestr);
+        }
+
+    }
+    else
+    {
+        QPair<QString, QWidget*> p;
+        foreach(p, s_listpair)
+        {
+            if (isAncestorOf(p.second) || m_pInfoWindow->isAncestorOf(p.second) || m_pTimerWindow->isAncestorOf(p.second))
+            {
+                p.second->setStyleSheet(p.first);
+            }
+        }
+        s_listpair.clear();
+    }
+
 }

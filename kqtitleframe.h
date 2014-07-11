@@ -1,12 +1,11 @@
-#ifndef KQTITLEFRAME_H
+﻿#ifndef KQTITLEFRAME_H
 #define KQTITLEFRAME_H
 
-#include "kqframebase.h"
-#include "kqpushbutton.h"
-#include <QMouseEvent>
+#include <QFrame>
 #include <QTimer>
+#include <QMouseEvent>
 
-class KQTitleFrame : public KQFrameBase
+class KQTitleFrame : public QFrame
 {
     Q_OBJECT
 public:

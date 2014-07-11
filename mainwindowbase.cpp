@@ -1,20 +1,14 @@
-#include "kqmainwindowbase.h"
+﻿#include "mainwindowbase.h"
 #include <QSettings>
 
-KQMainWindowBase::KQMainWindowBase(QWidget *parent) :
-    QMainWindow(parent),
-    KQWidgetInterface(this)
+MainWindowBase::MainWindowBase(QWidget *parent) :
+    QMainWindow(parent)
 {
-    mwbInit();
+    setAttribute(Qt::WA_TranslucentBackground, true);
+    setWindowFlags(Qt::FramelessWindowHint | Qt::WindowMinimizeButtonHint);
 }
 
-void KQMainWindowBase::mwbInit()
-{
-    wiSetCommonStyleSheet();
-    this->setWindowFlags(Qt::FramelessWindowHint | Qt::WindowMinimizeButtonHint);
-
-}
-void KQMainWindowBase::changeEvent( QEvent* e )
+void MainWindowBase::changeEvent( QEvent* e )
 {
     QMainWindow::changeEvent(e);
 
@@ -41,28 +35,27 @@ void KQMainWindowBase::changeEvent( QEvent* e )
             emit this->sigActivated( this, false);
         }
     }
-    QMainWindow::changeEvent( e );
 }
 
-void KQMainWindowBase::slotActivate( QWidget* w, bool bActivate )
+void MainWindowBase::slotActivate( QWidget* w, bool bActivate )
 {
     this->raise();
     this->stackUnder( w );
 }
 
-void KQMainWindowBase::slotToggleRestoreMinimize(bool bRestore)
+void MainWindowBase::slotToggleRestoreMinimize(bool bRestore)
 {
 
 }
 
-void KQMainWindowBase::mwbPostInit()
+void MainWindowBase::mwbPostInit()
 {
     QSettings settings("h5nc", "KanPlay");
     restoreGeometry(settings.value(objectName()+"/geometry").toByteArray());
     restoreState(settings.value(objectName()+"/windowstate").toByteArray());
 }
 
-void KQMainWindowBase::closeEvent(QCloseEvent *event)
+void MainWindowBase::closeEvent(QCloseEvent *event)
 {
     QSettings settings("h5nc", "KanPlay");
     settings.setValue(objectName()+"/geometry", saveGeometry());

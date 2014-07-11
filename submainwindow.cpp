@@ -1,9 +1,9 @@
-#include "kqsubmainwindowbase.h"
-#include "kqmainwindow.h"
+﻿#include "submainwindow.h"
+#include "mainwindow.h"
 #include <QApplication>
 
-KQSubMainWindowBase::KQSubMainWindowBase(QWidget *parent) :
-    KQMainWindowBase(parent)
+SubMainWindow::SubMainWindow(QWidget *parent) :
+    MainWindowBase(parent)
 {
     m_bDockingOnTop = false;
 
@@ -11,22 +11,17 @@ KQSubMainWindowBase::KQSubMainWindowBase(QWidget *parent) :
     connect(m_pDockingCallbackTimer, SIGNAL(timeout()), this, SLOT(slotDockingTimerCallback()));
 }
 
-void KQSubMainWindowBase::mwiInit()
+void SubMainWindow::showEvent(QShowEvent *event)
 {
-    KQMainWindowBase::mwbInit();
+    MainWindow::mainWindow()->onSubMainWindowShowHide(true, this);
 }
 
-void KQSubMainWindowBase::showEvent(QShowEvent *event)
+void SubMainWindow::hideEvent(QHideEvent *event)
 {
-    KQMainWindow::mainWindow()->onSubMainWindowShowHide(true, this);
+    MainWindow::mainWindow()->onSubMainWindowShowHide(false, this);
 }
 
-void KQSubMainWindowBase::hideEvent(QHideEvent *event)
-{
-    KQMainWindow::mainWindow()->onSubMainWindowShowHide(false, this);
-}
-
-void KQSubMainWindowBase::moveEvent(QMoveEvent *event)
+void SubMainWindow::moveEvent(QMoveEvent *event)
 {
     if (y() == 0)
     {
@@ -53,14 +48,14 @@ void KQSubMainWindowBase::moveEvent(QMoveEvent *event)
     }
 }
 
-void KQSubMainWindowBase::mouseReleaseEvent(QMouseEvent *event)
+void SubMainWindow::mouseReleaseEvent(QMouseEvent *event)
 {
     if (y() < 20 && y()!=0)
     {
         move(x(), 0);
     }
 
-    KQMainWindow * pMain = KQMainWindow::mainWindow();
+    MainWindow * pMain = MainWindow::mainWindow();
     if (x()+width() <= pMain->x()+pMain->width()
             && x()>= pMain->x()
             && y()>=pMain->y()+pMain->height()-20
@@ -69,10 +64,10 @@ void KQSubMainWindowBase::mouseReleaseEvent(QMouseEvent *event)
         move(x(), pMain->y()+pMain->height());
     }
 
-    KQMainWindowBase::mouseReleaseEvent(event);
+    MainWindowBase::mouseReleaseEvent(event);
 }
 
-void KQSubMainWindowBase::slotDockingTimerCallback()
+void SubMainWindow::slotDockingTimerCallback()
 {
     QPoint pt = QCursor::pos();
     QRect rc(x(), 0, size().width(), 20);
@@ -97,12 +92,3 @@ void KQSubMainWindowBase::slotDockingTimerCallback()
         move(x(), 0);
     }
 }
-
-void KQSubMainWindowBase::slotHandleContentFrameSizeChange(KQContentFrameBase *pFrame)
-{
-    int height = pFrame->height()+20;
-//    resize(pFrame->width(), height);
-    updateGeometry();
-    adjustSize();
-}
-

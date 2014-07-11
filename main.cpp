@@ -1,8 +1,8 @@
-#include "kqmainwindow.h"
+﻿#include "mainwindow.h"
 #include <QApplication>
-#include "kqinfosubmainwindow.h"
-#include "kqtimersubmainwindow.h"
-#include <QDesktopWidget>
+
+#include "infomainwindow.h"
+#include "timermainwindow.h"
 
 int main(int argc, char *argv[])
 {
@@ -14,26 +14,48 @@ int main(int argc, char *argv[])
     QFont newFont("Meiryo UI", 9);
     a.setFont(newFont);
 
-    KQMainWindow w;
+    QString style = "   \
+            QWidget{background-color:rgb(68, 68, 68);}\
+            QFrame{border-top:1px solid grey;}\
+            QPushButton {   \
+                color:white;    \
+            }   \
+            QPushButton:checked{ background-color: rgb(80, 80, 80); }\
+            QPushButton:hover{  \
+                background-color: grey; \
+                border-style: outset;  \
+            }  \
+            QTableWidget {selection-background-color: transparent; color:white;}\
+            QComboBox{ \
+                color: white;   \
+                selection-background-color: rgb(68, 68, 68);    \
+            }   \
+            QComboBox:hover{  \
+                background-color: grey; \
+                border-style: outset;  \
+            }  \
+            KQTitleFrame{background-color: rgb(45, 45, 48);}\
+            QComboBox QAbstractItemView {   \
+                color: white;   \
+                selection-background-color: gray;   \
+            }\
+            ";
+    a.setStyleSheet(style);
 
-    KQInfoSubMainWindow wInfo;
-    KQTimerSubMainWindow wTimer;
-    wInfo.setWindowTitle("KanPlay - Info");
-    wTimer.setWindowTitle("KanPlay - Timer");
+    MainWindow * w = new MainWindow();
 
-    w.postInit(&wInfo, &wTimer);
-    KQMainWindow::setMainWindow(&w);
+    InfoMainWindow * wInfo = new InfoMainWindow();
+    wInfo->setWindowTitle("KanPlay - Info");
 
-    w.setAttribute(Qt::WA_TranslucentBackground, true);
-    wInfo.setAttribute(Qt::WA_TranslucentBackground, true);
-    wTimer.setAttribute(Qt::WA_TranslucentBackground, true);
+    TimerMainWindow * wTimer = new TimerMainWindow();
+    wTimer->setWindowTitle("KanPlay - Timer");
 
-    w.show();
-    wInfo.show();
-    wTimer.show();
+    w->postInit(wInfo, wTimer);
+    MainWindow::setMainWindow(w);
 
-    w.raise();
-    w.activateWindow();
+    w->show();
+    wInfo->show();
+    wTimer->show();
 
     return a.exec();
 }

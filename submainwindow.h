@@ -1,22 +1,20 @@
-#ifndef KQSUBMAINWINDOWBASE_H
-#define KQSUBMAINWINDOWBASE_H
+﻿#ifndef SUBMAINWINDOW_H
+#define SUBMAINWINDOW_H
 
-#include "kqmainwindowbase.h"
+#include "mainwindowbase.h"
 #include <QShowEvent>
 #include <QHideEvent>
 #include <QTimer>
-#include "kqcontentframebase.h"
 
-class KQSubMainWindowBase : public KQMainWindowBase
+class SubMainWindow : public MainWindowBase
 {
     Q_OBJECT
 public:
-    explicit KQSubMainWindowBase(QWidget *parent = 0);
+    explicit SubMainWindow(QWidget *parent = 0);
 
     bool isDockingOnTop(){return m_bDockingOnTop;}
 
 protected:
-    virtual void mwiInit();
 
     virtual void showEvent(QShowEvent *event);
     virtual void hideEvent(QHideEvent *event);
@@ -33,8 +31,7 @@ private:
     QTimer * m_pDockingCallbackTimer;
 protected slots:
     virtual void slotDockingTimerCallback();
-    virtual void slotHandleContentFrameSizeChange(KQContentFrameBase *pFrame);
 
 };
 
-#endif // KQSUBMAINWINDOWBASE_H
+#endif // SUBMAINWINDOW_H

@@ -16,13 +16,13 @@ protected:
     QJsonArray jarray;
 };
 
-class KAdmiralData : public KAPIBaseData
+class KBasicData : public KAPIBaseData
 {
 
 public:
-    KAdmiralData(){}
+    KBasicData(){}
 
-    virtual bool ReadFromeJObj(const QJsonObject &jobj);
+    virtual bool ReadFromJObj(const QJsonObject &jobj);
 
     QString api_member_id;
     QString api_nickname;

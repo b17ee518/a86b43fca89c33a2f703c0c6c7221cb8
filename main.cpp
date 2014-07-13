@@ -4,6 +4,9 @@
 #include "infomainwindow.h"
 #include "timermainwindow.h"
 
+#include <QJsonDocument>
+#include "kandata.h"
+
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
@@ -68,6 +71,15 @@ int main(int argc, char *argv[])
 
     w->postInit(wInfo, wTimer);
     MainWindow::setMainWindow(w);
+
+    //
+    /*
+    QString str = "";
+    QJsonDocument doc = QJsonDocument::fromJson(str.toLocal8Bit());
+    KBasicData d;
+    d.ReadFromJObj(doc.object()["api_data"].toObject());
+    */
+    //
 
     w->show();
     wInfo->show();

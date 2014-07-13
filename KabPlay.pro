@@ -23,7 +23,8 @@ SOURCES += main.cpp\
     kqtitleframe.cpp \
     submainwindow.cpp \
     kqtime.cpp \
-    customtabledelegate.cpp
+    customtabledelegate.cpp \
+    kandata.cpp
 
 HEADERS  += mainwindow.h \
     infomainwindow.h \
@@ -35,7 +36,8 @@ HEADERS  += mainwindow.h \
     kqtitleframe.h \
     submainwindow.h \
     kqtime.h \
-    customtabledelegate.h
+    customtabledelegate.h \
+    kandata.h
 
 FORMS    += mainwindow.ui \
     infomainwindow.ui \

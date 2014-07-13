@@ -101,12 +101,22 @@ void InfoMainWindow::updateFleetTable(int n, QString buttonTitle, int colindex, 
         " \
         QPushButton:checked{\
             background-color: rgb(80, 80, 80);\
+            border: none; \
         }\
+        QPushButton:hover{  \
+            background-color: grey; \
+            border-style: outset;  \
+        }  \
         ",
         " \
         QPushButton:checked{\
-            background-color: rgb(255, 0, 0);\
+            background-color: rgb(153, 0, 0);\
+            border: none; \
         }\
+        QPushButton:hover{  \
+            background-color: rgb(128, 0, 0);; \
+            border-style: outset;  \
+        }  \
         "
     };
     pFleetFrames[n]->pushButton()->setText(buttonTitle);

@@ -22,6 +22,7 @@ int main(int argc, char *argv[])
             }   \
             QPushButton:checked{\
                 background-color: rgb(80, 80, 80);\
+                border: none; \
             }\
             QPushButton:hover{  \
                 background-color: grey; \

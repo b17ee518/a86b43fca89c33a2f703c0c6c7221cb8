@@ -20,12 +20,18 @@ int main(int argc, char *argv[])
             QPushButton {   \
                 color:white;    \
             }   \
-            QPushButton:checked{ background-color: rgb(80, 80, 80); }\
+            QPushButton:checked{\
+                background-color: rgb(80, 80, 80);\
+            }\
             QPushButton:hover{  \
                 background-color: grey; \
                 border-style: outset;  \
             }  \
-            QTableWidget {selection-background-color: transparent; color:white;}\
+            QTableWidget {\
+                selection-background-color: transparent;\
+                color:white;\
+                gridline-color: rgb(255, 0, 0);\
+            }\
             QComboBox{ \
                 color: white;   \
                 selection-background-color: rgb(68, 68, 68);    \
@@ -38,6 +44,15 @@ int main(int argc, char *argv[])
             QComboBox QAbstractItemView {   \
                 color: white;   \
                 selection-background-color: gray;   \
+            }\
+            QProgressBar {  \
+                background-color: grey;  \
+                border: 0px; \
+                border-left: 1px solid black;\
+                border-radius: 0px; \
+            }\
+            QProgressBar::chunk {   \
+                background-color: grey;  \
             }\
             ";
     a.setStyleSheet(style);

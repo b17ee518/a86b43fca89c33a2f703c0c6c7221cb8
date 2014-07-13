@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 
-QT       += core gui
+QT       += core gui multimedia
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -21,7 +21,9 @@ SOURCES += main.cpp\
     timermainwindow.cpp \
     mainwindowbase.cpp \
     kqtitleframe.cpp \
-    submainwindow.cpp
+    submainwindow.cpp \
+    kqtime.cpp \
+    customtabledelegate.cpp
 
 HEADERS  += mainwindow.h \
     infomainwindow.h \
@@ -31,7 +33,9 @@ HEADERS  += mainwindow.h \
     timermainwindow.h \
     mainwindowbase.h \
     kqtitleframe.h \
-    submainwindow.h
+    submainwindow.h \
+    kqtime.h \
+    customtabledelegate.h
 
 FORMS    += mainwindow.ui \
     infomainwindow.ui \

@@ -4,6 +4,7 @@
 #include "submainwindow.h"
 #include <QTimer>
 #include "kqui_collapsibleframe.h"
+#include "kqrowdata.h"
 
 namespace Ui {
 class InfoMainWindow;
@@ -17,6 +18,11 @@ public:
     explicit InfoMainWindow(QWidget *parent = 0);
     ~InfoMainWindow();
 
+    void updateOverviewTable(QList<QString> lst, QList<QColor> cols);
+    void updateMissionTable(QString buttonTitle, QList<KQRowData> rows);
+    void updateFleetTable(int n, QString buttonTitle, int colindex, bool bRed, QList<KQRowData> rows);
+    void updateRepairTable(QString buttonTitle, QList<KQRowData> rows);
+
 private:
 
     void setOverviewColumnFormat();
@@ -28,6 +34,8 @@ private:
     Ui::InfoMainWindow *ui;
 
     QTimer * pUpdateTimer;
+
+    KQUI_CollapsibleFrame * pFleetFrames[4];
 
     QList<KQUI_CollapsibleFrame*> lstCollapsibleFrames;
 

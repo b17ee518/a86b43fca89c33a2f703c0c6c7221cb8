@@ -24,7 +24,7 @@ KanData::KanData()
     d.ReadFromJObj(doc.object()["api_data"].toObject());
 */
 
-bool KBasicData::ReadFromJObj(const QJsonObject &jobj)
+bool kcsapi_basic::ReadFromJObj(const QJsonObject &jobj)
 {
     /*
     jarray = jobj["api_furniture"].toArray();
@@ -72,4 +72,13 @@ bool KBasicData::ReadFromJObj(const QJsonObject &jobj)
 //    qDebug(api_comment.toUtf8());
 
     return true;
+}
+
+
+bool kcsapi_battleresult_enemyinfo::ReadFromJObj(const QJsonObject &jobj)
+{
+
+    QString api_level;
+    QString api_rank;
+    QString api_deck_name;
 }

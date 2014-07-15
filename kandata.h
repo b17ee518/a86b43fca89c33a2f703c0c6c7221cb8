@@ -547,9 +547,7 @@ public:
 
     virtual bool ReadFromJObj(const QJsonObject &jobj);
     int api_powerup_flag;
-
     kcsapi_ship2 api_ship;
-
     QList<kcsapi_deck> api_deck;
 };
 

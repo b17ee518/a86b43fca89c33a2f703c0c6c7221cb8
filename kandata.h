@@ -14,6 +14,7 @@ public:
 
 protected:
     QJsonArray jarray;
+    bool bParseRet;
 };
 
 class kcsapi_basic : public KAPIBaseData

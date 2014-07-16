@@ -1,0 +1,17 @@
+start2 => mst_ship[] mst_slotitem[] mst_useitem[] mst_type[] mst_slotitem_equiptype
+	| slot_data?
+
+slot_item = list of slotitem
+	| createitem | destroyitem2
+
+kdock kenzou
+ndock nyuku
+
+material
+
+port=>material[] deck[] ndock[] ship2[] basic
+	| powerup | ship3 | +ship | createship | destroyship | charge | battleresult
+
+questlist=>quest[]
+
+useitem

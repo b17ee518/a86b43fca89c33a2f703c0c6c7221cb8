@@ -1,0 +1,276 @@
+﻿【艦これ】戦闘APIの解析
+
+On 2014年3月17日 by shobotch
+今回は、1-1を周回した時のAPIについてデータを収集しました。
+2-3の周回のデータも近いうちに集めます。
+
+フォーマットは
+
+URL
+
+POST(api_token,api_vernoは省略)
+
+返ってきたJSON
+の順で載せます。
+
+オリョール(2-3)のマップデータを取得
+1-1ですと内容が単純のため、2-3の取得データを載せますが、今回は1-1に出撃します。
+
+
+http://125.6.189.247/kcsapi/api_get_member/mapcell
+
+api_maparea_id=2
+api_mapinfo_no=3
+
+{ api_result: 1,
+  api_result_msg: '成功',
+  api_data:
+   [ { api_id: 50, api_passed: 0 },
+     { api_id: 51, api_passed: 1 },
+     { api_id: 52, api_passed: 1 },
+     { api_id: 53, api_passed: 1 },
+     { api_id: 54, api_passed: 1 },
+     { api_id: 55, api_passed: 1 },
+     { api_id: 56, api_passed: 1 },
+     { api_id: 57, api_passed: 1 },
+     { api_id: 58, api_passed: 0 },
+     { api_id: 59, api_passed: 1 },
+     { api_id: 60, api_passed: 1 },
+     { api_id: 61, api_passed: 1 },
+     { api_id: 62, api_passed: 1 } ] }
+1-1-1戦闘開始
+
+
+http://125.6.189.247/kcsapi/api_req_map/start
+
+api_formation_id=1
+api_deck_id=3  ←第三艦隊で出撃した
+api_mapinfo_no=1
+api_maparea_id=1
+
+{ api_result: 1,
+  api_result_msg: '成功',
+  api_data:
+   { api_rashin_flg: 0,
+     api_rashin_id: 0,
+     api_maparea_id: 1,
+     api_mapinfo_no: 1,
+     api_no: 1,
+     api_color_no: 4,
+     api_event_id: 4,
+     api_next: 2,
+     api_bosscell_no: 3,
+     api_bosscomp: 1,
+     api_enemy: { api_enemy_id: 1, api_result: 1, api_result_str: 'start war' } } }
+api_rashin_flgが0の場合、羅針盤の画面は表示されずapi_noのマスまで進みます。
+api_nextの値は要調査
+api_bosscell_noでボスの場所が入っているが、正直要らない。
+api_bosscompはボスを倒しているのか、遭遇しているのか分からないが、これも要らない
+
+赤字で戦闘開始　表示
+
+
+http://125.6.189.247/kcsapi/api_req_sortie/battle
+
+api_formation=1
+
+戦闘JSON省略
+戦闘終了、戦果画面に移行
+
+
+http://125.6.189.247/kcsapi/api_req_sortie/battleresult
+
+none param
+
+
+{
+  "api_result": 1,
+  "api_result_msg": "成功",
+  "api_data": {
+    "api_ship_id": [
+      -1,
+      503,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1
+    ],
+    "api_win_rank": "S",
+    "api_get_exp": 10,
+    "api_mvp": 1,
+    "api_member_lv": 26,
+    "api_member_exp": 32879,
+    "api_get_base_exp": 30,
+    "api_get_ship_exp": [
+      -1,
+      108,
+      36,
+      -1,
+      -1,
+      -1,
+      -1
+    ],
+    "api_get_exp_lvup": [
+      [
+        2732,
+        2800,
+        3600
+      ],
+      [
+        0,
+        100
+      ]
+    ],
+    "api_dests": 1,
+    "api_destsf": 1,
+    "api_lost_flag": [
+      -1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "api_quest_name": "鎮守府正面海域",
+    "api_quest_level": 1,
+    "api_enemy_info": {
+      "api_level": "",
+      "api_rank": "",
+      "api_deck_name": "敵偵察艦"
+    },
+    "api_first_clear": 0,
+    "api_get_flag": [
+      0,
+      1,
+      0
+    ],
+    "api_get_ship": {
+      "api_ship_id": 35,
+      "api_ship_type": "駆逐艦",
+      "api_ship_name": "響",
+      "api_ship_getmes": "響だよ。<br>その活躍ぶりから不死鳥の通り名もあるよ。"
+    },
+    "api_get_eventflag": 0,
+    "api_get_exmap_rate": 0,
+    "api_get_exmap_useitem_id": 0
+  }
+}
+進撃・撤退選択画面表示
+
+http://125.6.189.247/kcsapi/api_get_member/ship2
+http://125.6.189.247/kcsapi/api_get_member/slotitem
+http://125.6.189.247/kcsapi/api_get_member/deck
+↑ドロップ関係なく、常に呼ばれてる
+
+→進撃
+
+
+http://125.6.189.247/kcsapi/api_req_map/next
+
+none param
+
+
+{
+  "api_result": 1,
+  "api_result_msg": "成功",
+  "api_data": {
+    "api_rashin_flg": 1,
+    "api_rashin_id": 4,
+    "api_maparea_id": 1,
+    "api_mapinfo_no": 1,
+    "api_no": 3,
+    "api_color_no": 5,
+    "api_event_id": 5,
+    "api_next": 0,
+    "api_bosscell_no": 3,
+    "api_bosscomp": 1,
+    "api_enemy": {
+      "api_enemy_id": 9,
+      "api_result": 1,
+      "api_result_str": "start war"
+    }
+  }
+}
+ボス突入
+
+http://125.6.189.247/kcsapi/api_req_sortie/battle
+api_formation=1
+
+敗北しました。
+
+
+http://125.6.189.247/kcsapi/api_req_sortie/battleresult
+
+{
+  "api_result": 1,
+  "api_result_msg": "成功",
+  "api_data": {
+    "api_ship_id": [
+      -1,
+      505,
+      501,
+      501,
+      -1,
+      -1,
+      -1
+    ],
+    "api_win_rank": "D",
+    "api_get_exp": 10,
+    "api_mvp": 1,
+    "api_member_lv": 26,
+    "api_member_exp": 32889,
+    "api_get_base_exp": 30,
+    "api_get_ship_exp": [
+      -1,
+      63,
+      21,
+      -1,
+      -1,
+      -1,
+      -1
+    ],
+    "api_get_exp_lvup": [
+      [
+        2840,
+        3600
+      ],
+      [
+        36,
+        100
+      ]
+    ],
+    "api_dests": 1,
+    "api_destsf": 0,
+    "api_lost_flag": [
+      -1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "api_quest_name": "鎮守府正面海域",
+    "api_quest_level": 1,
+    "api_enemy_info": {
+      "api_level": "",
+      "api_rank": "",
+      "api_deck_name": "敵主力艦隊"
+    },
+    "api_first_clear": 0,
+    "api_get_flag": [
+      0,
+      0,
+      0
+    ],
+    "api_get_eventflag": 0,
+    "api_get_exmap_rate": 0,
+    "api_get_exmap_useitem_id": 0
+  }
+}
+帰ってくるときは、logincheckを叩けば良いみたいです。
+感想としては、配列の使い方をまともに知らない人が実装している印象を持った。
+何故か配列が1から始まっている要素が多く、0の所に-1を常に入れておくくらいだったら、0から初めてほしいものだ。
+しかも、0から始まっているものと、今の戦闘APIのように1から始まるように実装されているものがあって、とても厄介。

@@ -6,7 +6,7 @@
 
 QT       += core gui multimedia
 
-greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
+greaterThan(QT_MAJOR_VERSION, 4): QT += widgets axcontainer webkitwidgets
 
 TARGET = KabPlay
 TEMPLATE = app
@@ -18,27 +18,31 @@ SOURCES += main.cpp\
     infomainwindow.cpp \
     kqui_collapsibleframe.cpp \
     kqtablewidget.cpp \
-    kqrowdata.cpp \
     timermainwindow.cpp \
     mainwindowbase.cpp \
     kqtitleframe.cpp \
     submainwindow.cpp \
     kqtime.cpp \
     customtabledelegate.cpp \
-    kandata.cpp
+    kandata.cpp \
+    kansavedata.cpp \
+    kanreqdata.cpp \
+    kqrowdata.cpp
 
 HEADERS  += mainwindow.h \
     infomainwindow.h \
     kqui_collapsibleframe.h \
     kqtablewidget.h \
-    kqrowdata.h \
     timermainwindow.h \
     mainwindowbase.h \
     kqtitleframe.h \
     submainwindow.h \
     kqtime.h \
     customtabledelegate.h \
-    kandata.h
+    kandata.h \
+    kansavedata.h \
+    kanreqdata.h \
+    kqrowdata.h
 
 FORMS    += mainwindow.ui \
     infomainwindow.ui \

@@ -6,6 +6,7 @@
 
 #include <QJsonDocument>
 #include "kandata.h"
+#include "kanreqdata.h"
 
 int main(int argc, char *argv[])
 {
@@ -28,7 +29,7 @@ int main(int argc, char *argv[])
                 border: none; \
             }\
             QPushButton:hover{  \
-                background-color: grey; \
+                background-color: rgb(128, 128, 128); \
                 border-style: outset;  \
             }  \
             QTableWidget {\
@@ -73,12 +74,15 @@ int main(int argc, char *argv[])
     MainWindow::setMainWindow(w);
 
     //
-    /*
+
+    KanReqData req;
+    req.ReadFromString("abc", "api%5ftoken=123&api_ver=132");
+
     QString str = "";
     QJsonDocument doc = QJsonDocument::fromJson(str.toLocal8Bit());
-    KBasicData d;
+    kcsapi_basic d;
     d.ReadFromJObj(doc.object()["api_data"].toObject());
-    */
+
     //
 
     w->show();

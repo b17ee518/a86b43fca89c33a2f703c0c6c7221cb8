@@ -4,6 +4,7 @@
 #include <QMainWindow>
 #include <QEvent>
 #include <QCloseEvent>
+#include <QResizeEvent>
 
 class MainWindowBase : public QMainWindow
 {

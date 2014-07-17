@@ -1,4 +1,5 @@
 ﻿#include "kandata.h"
+#include "kansavedata.h"
 
 #define _SREAD(name)    name=jobj[#name].toString();
 #define _IREAD(name)    name=jobj[#name].toInt();
@@ -128,6 +129,7 @@ bool kcsapi_basic::ReadFromJObj(const QJsonObject &jobj)
     _AIREAD(api_pvp);
 
 //    qDebug(api_comment.toUtf8());
+    UpdateSaveData(typeid(this).name(), this);
 
     return true;
 }
@@ -690,4 +692,10 @@ bool kcsapi_useitem::ReadFromJObj(const QJsonObject &jobj)
 
     return bParseRet;
 
+}
+
+
+void KAPIBaseData::UpdateSaveData(QString name, KAPIBaseData *pdata)
+{
+    KanSaveData::getInstance().UpdateDataFromResponse(name, pdata);
 }

@@ -50,6 +50,7 @@ void MainWindowBase::slotToggleRestoreMinimize(bool bRestore)
 
 void MainWindowBase::mwbPostInit()
 {
+
     QSettings settings("h5nc", "KanPlay");
     restoreGeometry(settings.value(objectName()+"/geometry").toByteArray());
     restoreState(settings.value(objectName()+"/windowstate").toByteArray());

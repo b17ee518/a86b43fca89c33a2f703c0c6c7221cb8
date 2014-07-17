@@ -2,6 +2,8 @@
 #include "ui_mainwindow.h"
 #include <QDesktopWidget>
 
+#include <Windows.h>
+
 MainWindow * MainWindow::s_pMainWindow = 0;
 
 MainWindow::MainWindow(QWidget *parent) :
@@ -17,6 +19,8 @@ MainWindow::MainWindow(QWidget *parent) :
     mwbPostInit();
 
     ui->titleFrame->setHandlingWidget(this);
+
+    this->repaint();
 }
 
 MainWindow::~MainWindow()

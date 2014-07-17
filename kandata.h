@@ -5,12 +5,94 @@
 #include <QJsonObject>
 #include <QJsonArray>
 #include <QList>
+#include <QPair>
+
+/*
+ * End points
+    "/kcsapi/api_start2",
+    "/kcsapi/api_port/port",
+    "/kcsapi/api_get_member/basic",
+    "/kcsapi/api_get_member/ship",
+    "/kcsapi/api_get_member/ship2",
+    "/kcsapi/api_get_member/ship3",
+    "/kcsapi/api_get_member/slot_item",
+    "/kcsapi/api_get_member/useitem",
+    "/kcsapi/api_get_member/deck",
+    "/kcsapi/api_get_member/deck_port",
+    "/kcsapi/api_get_member/ndock",
+    "/kcsapi/api_get_member/kdock",
+    "/kcsapi/api_get_member/material",
+    "/kcsapi/api_get_member/questlist",
+    "/kcsapi/api_req_hensei/change",
+    "/kcsapi/api_req_kousyou/getship",
+    "/kcsapi/api_req_kousyou/createitem",
+    "/kcsapi/api_req_kousyou/createship",
+    "/kcsapi/api_req_kousyou/createship_speedchange",
+    "/kcsapi/api_req_kousyou/destroyship",
+    "/kcsapi/api_req_kousyou/destroyitem2",
+    "/kcsapi/api_req_nyukyo/start",
+    "/kcsapi/api_req_nyukyo/speedchange",
+    "/kcsapi/api_req_hokyu/charge",
+    "/kcsapi/api_req_kaisou/powerup",
+    "/kcsapi/api_req_member/updatedeckname",
+    "/kcsapi/api_req_member/updatecomment",
+    "/kcsapi/api_req_sortie/battle",
+    "/kcsapi/api_req_sortie/battleresult",
+*/
+
+/*
+ * Full List
+kcsapi_basic
+kcsapi_battleresult
+kcsapi_battleresult_enemyinfo
+kcsapi_battleresult_getship
+kcsapi_charge
+kcsapi_charge_ship
+kcsapi_createitem
+kcsapi_createship
+kcsapi_deck
+kcsapi_destroyitem2
+kcsapi_destroyship
+kcsapi_kdock
+kcsapi_kdock_getship
+kcsapi_material
+kcsapi_mst_ship
+kcsapi_mst_slotitem
+kcsapi_mst_slotitem_equiptype
+kcsapi_mst_stype
+kcsapi_mst_useitem
+kcsapi_ndock
+kcsapi_port
+kcsapi_powerup
+kcsapi_quest
+kcsapi_questlist
+kcsapi_ship
+kcsapi_ship2
+kcsapi_ship3
+kcsapi_slot_data
+kcsapi_slotitem
+kcsapi_start2
+kcsapi_useitem
+*/
+
+
+
+
+
+
+
+
+
+
+
+
 
 class KAPIBaseData
 {
 public:
     KAPIBaseData(){}
     virtual bool ReadFromJObj(const QJsonObject &jobj) = 0;
+    virtual void UpdateSaveData(QString name, KAPIBaseData * pdata);
 
 protected:
     QJsonArray jarray;

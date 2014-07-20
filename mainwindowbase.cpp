@@ -5,6 +5,7 @@ MainWindowBase::MainWindowBase(QWidget *parent) :
     QMainWindow(parent)
 {
     setAttribute(Qt::WA_TranslucentBackground, true);
+    setAttribute (Qt::WA_AlwaysShowToolTips, true);
     setWindowFlags(Qt::FramelessWindowHint | Qt::WindowMinimizeButtonHint);
 }
 

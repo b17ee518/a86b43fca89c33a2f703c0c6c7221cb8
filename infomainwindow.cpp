@@ -8,6 +8,7 @@ InfoMainWindow::InfoMainWindow(QWidget *parent) :
     ui->setupUi(this);
     mwbPostInit();
     ui->titleFrame->setHandlingWidget(this);
+    ui->overviewTable->setFont(QApplication::font());
 
     ui->overviewTable->horizontalHeader()->hide();
     ui->overviewTable->verticalHeader()->hide();
@@ -55,13 +56,13 @@ void InfoMainWindow::updateOverviewTable(QList<QString> lst, QList<QColor> cols)
 {
     if (lst.count() == 6 && cols.count() == 6)
     {
-        for (int i=0; i<3; i++)
+        for (int i=0; i<2; i++)
         {
-            for (int j=0; j<2; j++)
+            for (int j=0; j<3; j++)
             {
-                QTableWidgetItem * pItem = ui->overviewTable->item(i, j);
-                pItem->setText(lst[j*3+i]);
-                pItem->setTextColor(cols[j*3+i]);
+                QTableWidgetItem * pItem = ui->overviewTable->item(j, i);
+                pItem->setText(lst[j*2+i]);
+                pItem->setTextColor(cols[j*2+i]);
             }
         }
     }
@@ -135,8 +136,8 @@ void InfoMainWindow::setOverviewColumnFormat()
 {
     ui->overviewTable->setRowCount(3);
     ui->overviewTable->setColumnCount(2);
-    ui->overviewTable->setColumnWidth(0, 150);
-    ui->overviewTable->setColumnWidth(1, 130);
+    ui->overviewTable->setColumnWidth(0, 175);
+    ui->overviewTable->setColumnWidth(1, 145);
     for (int i=0; i<3; i++)
     {
         for (int j=0; j<2; j++)
@@ -231,6 +232,7 @@ void InfoMainWindow::slotUpdateTimer()
     {
         QList<KQRowData> rows;
         KQRowData rd;
+        /*
         rd.appendCell(KQRowCellData(" - "));
         rd.appendCell(KQRowCellData(QString::fromLocal8Bit("敵潜水艦を制圧せよ！")));
         rd.appendCell(KQRowCellData("(50%)"));
@@ -239,6 +241,7 @@ void InfoMainWindow::slotUpdateTimer()
 
         updateMissionTable(QString::fromLocal8Bit("遂行中任務(1)"), rows);
 //        ui->missionFrame->tableWidget()->updateFullTable(rows);
+        */
 
         rd.clearCells();
         rd.appendCell(KQRowCellData("1"));
@@ -271,7 +274,7 @@ void InfoMainWindow::slotUpdateTimer()
         rows.append(rd);
 
         updateFleetTable(0, QString::fromLocal8Bit("第一艦隊"), 0, false, rows);
-
+/*
         QList<QString> lst;
         lst.append(QString::fromLocal8Bit("艦娘"));
         lst.append(QString::fromLocal8Bit("艦娘"));
@@ -287,6 +290,7 @@ void InfoMainWindow::slotUpdateTimer()
         cols.append(QColor(255, 255, 255));
         cols.append(QColor(255, 255, 255));
         updateOverviewTable(lst, cols);
+        */
 //        ui->fleetFrame_1->tableWidget()->updateFullTable(rows);
     }
     else if (count == 80)

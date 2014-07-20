@@ -1,21 +1,13 @@
-#include "kansavedata.h"
+﻿#include "kansavedata.h"
 
-#define _CASTBEGIN(cname)\
-    if (name.contains(#cname))\
-    {\
-        cname *kandata = static_cast<cname*>(_kandata)
-#define _CASTEND()\
-    }
-
-void KanSaveData::UpdateDataFromResponse(QString name, KAPIBaseData *_kandata)
+KanSaveData::KanSaveData()
 {
-    _CASTBEGIN(kcsapi_basic);
-        this->portdata.api_basic = *kandata;
-    _CASTEND();
+    kcsapi_material tm;
+    materialdata.append(tm);
+    materialdata.append(tm);
+    materialdata.append(tm);
+    materialdata.append(tm);
+    materialdata.append(tm);
+    materialdata.append(tm);
+    materialdata.append(tm);
 }
-
-void KanSaveData::UpdateDataFromApprovedRequest(KanReqData *preq)
-{
-
-}
-

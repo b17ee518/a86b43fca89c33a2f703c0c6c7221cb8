@@ -5,6 +5,7 @@
 #include "mainwindowbase.h"
 #include "infomainwindow.h"
 #include "timermainwindow.h"
+#include "FiddlerCOM.h"
 
 namespace Ui {
 class MainWindow;
@@ -21,6 +22,8 @@ public:
     static MainWindow * mainWindow(){return s_pMainWindow;}
     static void setMainWindow(MainWindow * pWindow){s_pMainWindow = pWindow;}
     void postInit(InfoMainWindow * pInfo, TimerMainWindow * pTimer);
+    static InfoMainWindow * infoWindow(){return s_pMainWindow->m_pInfoWindow;}
+    static TimerMainWindow * timerWindow(){return s_pMainWindow->m_pTimerWindow;}
 
     void onSubMainWindowShowHide(bool bShow, MainWindowBase * pWindow);
 
@@ -41,8 +44,17 @@ private slots:
 
     void on_pbCheckTrasparent_toggled(bool checked);
 
+    void slotWebViewException(int code, const QString & source, const QString & desc, const QString & help);
+
 private:
     Ui::MainWindow *ui;
+
+    int useport;
+    FiddlerCOM::FiddlerCOMClass * pFiddler;
+    static QFile * pLogFile;
+    static void __stdcall BeforeRequestFunc(int sessionID, char * fullURL, char * requestBody);
+    static void __stdcall AfterSessionCompleteFunc(int sessionID, char * mimeType, int responseCode, char * PathAndQuery, char * requestBody, char * responseBody);
+    void SetWebSettings();
 
     InfoMainWindow * m_pInfoWindow;
     TimerMainWindow * m_pTimerWindow;

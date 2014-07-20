@@ -1,11 +1,14 @@
 ﻿#include "kqtablewidget.h"
 
 #include <QHeaderView>
+#include <QApplication>
 
 KQTableWidget::KQTableWidget(QWidget *parent) :
     QTableWidget(parent)
 {
     separatorColumn = 0;
+    setFocusPolicy(Qt::NoFocus);
+    setFont(QApplication::font());
 }
 
 QSize KQTableWidget::sizeHint() const
@@ -79,6 +82,7 @@ void KQTableWidget::updateFullTable(QList<KQRowData> rows)
                 setItem(i, j, pItem);
             }
             pItem->setText(pCell->cellStr());
+            pItem->setToolTip(pCell->cellToolTip());
             pItem->setTextColor(pCell->cellCol());
         }
     }

@@ -91,8 +91,8 @@ class KAPIBaseData
 {
 public:
     KAPIBaseData(){}
+    virtual ~KAPIBaseData(){}
     virtual bool ReadFromJObj(const QJsonObject &jobj) = 0;
-    virtual void UpdateSaveData(QString name, KAPIBaseData * pdata);
 
 protected:
     QJsonArray jarray;
@@ -601,23 +601,6 @@ public:
     int api_item4;
 };
 
-/**
- * @brief The kcsapi_port class
- */
-class kcsapi_port: public KAPIBaseData
-{
-
-public:
-    kcsapi_port(){}
-
-    virtual bool ReadFromJObj(const QJsonObject &jobj);
-    QList<kcsapi_material> api_material;
-    QList<kcsapi_deck> api_deck_port;
-    QList<kcsapi_ndock> api_ndock;
-    QList<kcsapi_ship2> api_ship;
-    kcsapi_basic api_basic;
-    //public Api_Log[] api_log;
-};
 
 /**
  * @brief The kcsapi_powerup class
@@ -791,6 +774,386 @@ public:
     QList<int> api_slottype23;
 };
 
+class Api_Mst_Item_Shop: public KAPIBaseData
+{
+
+public:
+    Api_Mst_Item_Shop(){}
+
+virtual bool ReadFromJObj(const QJsonObject &jobj);
+    QList<int> api_cabinet_1;
+    QList<int> api_cabinet_2;
+};
+
+class Api_Boko_Max_Ships: public KAPIBaseData
+{
+
+public:
+    Api_Boko_Max_Ships(){}
+
+virtual bool ReadFromJObj(const QJsonObject &jobj);
+    QString api_string_value;
+    int api_int_value;
+};
+
+class Api_Mst_Const: public KAPIBaseData
+{
+
+public:
+    Api_Mst_Const(){}
+
+virtual bool ReadFromJObj(const QJsonObject &jobj);
+    Api_Boko_Max_Ships api_boko_max_ships;
+};
+
+
+class Api_Mst_Ship: public KAPIBaseData
+{
+
+public:
+    Api_Mst_Ship(){}
+
+virtual bool ReadFromJObj(const QJsonObject &jobj);
+    int api_id;
+    int api_sortno;
+    QString api_name;
+    QString api_yomi;
+    int api_stype;
+    int api_ctype;
+    int api_cnum;
+    QString api_enqflg;
+    int api_afterlv;
+    QString api_aftershipid;
+    QList<int> api_taik;
+    QList<int> api_souk;
+    QList<int> api_tous;
+    QList<int> api_houg;
+    QList<int> api_raig;
+    QList<int> api_baku;
+    QList<int> api_tyku;
+    QList<int> api_atap;
+    QList<int> api_tais;
+    QList<int> api_houm;
+    QList<int> api_raim;
+    QList<int> api_kaih;
+    QList<int> api_houk;
+    QList<int> api_raik;
+    QList<int> api_bakk;
+    QList<int> api_saku;
+    QList<int> api_sakb;
+    QList<int> api_luck;
+    int api_sokuh;
+    int api_soku;
+    int api_leng;
+    QList<int> api_grow;
+    int api_slot_num;
+    QList<int> api_maxeq;
+    QList<int> api_defeq;
+    int api_buildtime;
+    QList<int> api_broken;
+    QList<int> api_powup;
+    QList<int> api_gumax;
+    int api_backs;
+    QString api_getmes;
+    QString api_homemes; //o
+    QString api_gomes; //o
+    QString api_gomes2; //o
+    QString api_sinfo;
+    int api_afterfuel;
+    int api_afterbull;
+    QList<QString> api_touchs; //o[]
+    QString api_missions; //o
+    QString api_systems; //o
+    int api_fuel_max;
+    int api_bull_max;
+    int api_voicef;
+};
+
+class Api_Mst_Shipgraph: public KAPIBaseData
+{
+
+public:
+    Api_Mst_Shipgraph(){}
+
+virtual bool ReadFromJObj(const QJsonObject &jobj);
+    int api_id;
+    int api_sortno;
+    QString api_filename;
+    QString api_version;
+    QList<int> api_boko_n;
+    QList<int> api_boko_d;
+    QList<int> api_kaisyu_n;
+    QList<int> api_kaisyu_d;
+    QList<int> api_kaizo_n;
+    QList<int> api_kaizo_d;
+    QList<int> api_map_n;
+    QList<int> api_map_d;
+    QList<int> api_ensyuf_n;
+    QList<int> api_ensyuf_d;
+    QList<int> api_ensyue_n;
+    QList<int> api_battle_n;
+    QList<int> api_battle_d;
+    QList<int> api_weda;
+    QList<int> api_wedb;
+};
+
+class Api_Equip_Type: public KAPIBaseData
+{
+
+public:
+    Api_Equip_Type(){}
+
+virtual bool ReadFromJObj(const QJsonObject &jobj);
+    int _1;
+    int _2;
+    int _3;
+    int _4;
+    int _5;
+    int _6;
+    int _7;
+    int _8;
+    int _9;
+    int _10;
+    int _11;
+    int _12;
+    int _13;
+    int _14;
+    int _15;
+    int _16;
+    int _17;
+    int _18;
+    int _19;
+    int _20;
+    int _21;
+    int _22;
+    int _23;
+    int _24;
+    int _25;
+    int _26;
+    int _27;
+    int _28;
+    int _29;
+    int _30;
+    int _31;
+};
+
+class Api_Mst_Stype: public KAPIBaseData
+{
+
+public:
+    Api_Mst_Stype(){}
+
+virtual bool ReadFromJObj(const QJsonObject &jobj);
+    int api_id;
+    int api_sortno;
+    QString api_name;
+    int api_scnt;
+    int api_kcnt;
+    Api_Equip_Type api_equip_type;
+};
+
+class Api_Mst_Slotitem: public KAPIBaseData
+{
+
+public:
+    Api_Mst_Slotitem(){}
+
+virtual bool ReadFromJObj(const QJsonObject &jobj);
+    int api_id;
+    int api_sortno;
+    QString api_name;
+    QList<int> api_type;
+    int api_taik;
+    int api_souk;
+    int api_houg;
+    int api_raig;
+    int api_soku;
+    int api_baku;
+    int api_tyku;
+    int api_tais;
+    int api_atap;
+    int api_houm;
+    int api_raim;
+    int api_houk;
+    int api_raik;
+    int api_bakk;
+    int api_saku;
+    int api_sakb;
+    int api_luck;
+    int api_leng;
+    int api_rare;
+    QList<int> api_broken;
+    QString api_info;
+    QString api_usebull;
+};
+
+class Api_Mst_Slotitemgraph: public KAPIBaseData
+{
+
+public:
+    Api_Mst_Slotitemgraph(){}
+
+virtual bool ReadFromJObj(const QJsonObject &jobj);
+    int api_id;
+    int api_sortno;
+    QString api_filename;
+    QString api_version;
+};
+
+class Api_Mst_Furniture: public KAPIBaseData
+{
+
+public:
+    Api_Mst_Furniture(){}
+
+virtual bool ReadFromJObj(const QJsonObject &jobj);
+    int api_id;
+    int api_type;
+    int api_no;
+    QString api_title;
+    QString api_description;
+    int api_rarity;
+    int api_price;
+    int api_saleflg;
+};
+
+class Api_Mst_Furnituregraph: public KAPIBaseData
+{
+
+public:
+    Api_Mst_Furnituregraph(){}
+
+virtual bool ReadFromJObj(const QJsonObject &jobj);
+    int api_id;
+    int api_type;
+    int api_no;
+    QString api_filename;
+    QString api_version;
+};
+
+class Api_Mst_Useitem: public KAPIBaseData
+{
+
+public:
+    Api_Mst_Useitem(){}
+
+virtual bool ReadFromJObj(const QJsonObject &jobj);
+    int api_id;
+    int api_usetype;
+    int api_category;
+    QString api_name;
+    QList<QString> api_description;
+    int api_price;
+};
+
+class Api_Mst_Payitem: public KAPIBaseData
+{
+
+public:
+    Api_Mst_Payitem(){}
+
+virtual bool ReadFromJObj(const QJsonObject &jobj);
+    int api_id;
+    int api_type;
+    QString api_name;
+    QString api_description;
+    QList<int> api_item;
+    int api_price;
+};
+
+class Api_Mst_Maparea: public KAPIBaseData
+{
+
+public:
+    Api_Mst_Maparea(){}
+
+virtual bool ReadFromJObj(const QJsonObject &jobj);
+    int api_id;
+    QString api_name;
+    int api_type;
+};
+
+class Api_Mst_Mapinfo: public KAPIBaseData
+{
+
+public:
+    Api_Mst_Mapinfo(){}
+
+virtual bool ReadFromJObj(const QJsonObject &jobj);
+    int api_id;
+    int api_maparea_id;
+    int api_no;
+    QString api_name;
+    int api_level;
+    QString api_opetext;
+    QString api_infotext;
+    QList<int> api_item;
+    QList<int> api_max_maphp; //int?
+    QList<int> api_required_defeat_count; //int?
+};
+
+class Api_Mst_Mapbgm: public KAPIBaseData
+{
+
+public:
+    Api_Mst_Mapbgm(){}
+
+virtual bool ReadFromJObj(const QJsonObject &jobj);
+    int api_id;
+    int api_maparea_id;
+    int api_no;
+    QList<int> api_map_bgm;
+    QList<int> api_boss_bgm;
+};
+
+class Api_Mst_Mapcell: public KAPIBaseData
+{
+
+public:
+    Api_Mst_Mapcell(){}
+
+virtual bool ReadFromJObj(const QJsonObject &jobj);
+    int api_map_no;
+    int api_maparea_id;
+    int api_mapinfo_no;
+    int api_id;
+    int api_no;
+    int api_color_no;
+};
+
+class Api_Mst_Mission: public KAPIBaseData
+{
+
+public:
+    Api_Mst_Mission(){}
+
+virtual bool ReadFromJObj(const QJsonObject &jobj);
+    int api_id;
+    int api_maparea_id;
+    QString api_name;
+    QString api_details;
+    int api_time;
+    int api_difficulty;
+    float api_use_fuel;
+    float api_use_bull;
+    QList<int> api_win_item1;
+    QList<int> api_win_item2;
+};
+
+class Api_Mst_Shipupgrade: public KAPIBaseData
+{
+
+public:
+    Api_Mst_Shipupgrade(){}
+
+virtual bool ReadFromJObj(const QJsonObject &jobj);
+    int api_id;
+    int api_original_ship_id;
+    int api_upgrade_type;
+    int api_upgrade_level;
+    int api_drawing_count;
+    int api_sortno;
+};
 /**
  * @brief The kcsapi_start2 class
  */
@@ -809,21 +1172,39 @@ public:
     QList<kcsapi_mst_slotitem_equiptype> api_mst_slotitem_equiptype;
 
     // Keep
-/*
-    public Api_Mst_Shipgraph[] api_mst_shipgraph;
-    public Api_Mst_Slotitemgraph[] api_mst_slotitemgraph;
-    public Api_Mst_Furniture[] api_mst_furniture;
-    public Api_Mst_Furnituregraph[] api_mst_furnituregraph;
-    public Api_Mst_Payitem[] api_mst_payitem;
-    public Api_Mst_Item_Shop api_mst_item_shop;
-    public Api_Mst_Maparea[] api_mst_maparea;
-    public Api_Mst_Mapinfo[] api_mst_mapinfo;
-    public Api_Mst_Mapbgm[] api_mst_mapbgm;
-    public Api_Mst_Mapcell[] api_mst_mapcell;
-    public Api_Mst_Mission[] api_mst_mission;
-    public Api_Mst_Const api_mst_const;
-    public Api_Mst_Shipupgrade[] api_mst_shipupgrade;
-*/
+
+    QList<Api_Mst_Shipgraph> api_mst_shipgraph;
+    QList<Api_Mst_Slotitemgraph> api_mst_slotitemgraph;
+    QList<Api_Mst_Furniture> api_mst_furniture;
+    QList<Api_Mst_Furnituregraph> api_mst_furnituregraph;
+    QList<Api_Mst_Payitem> api_mst_payitem;
+    Api_Mst_Item_Shop api_mst_item_shop;
+    QList<Api_Mst_Maparea> api_mst_maparea;
+    QList<Api_Mst_Mapinfo> api_mst_mapinfo;
+    QList<Api_Mst_Mapbgm> api_mst_mapbgm;
+    QList<Api_Mst_Mapcell> api_mst_mapcell;
+    QList<Api_Mst_Mission> api_mst_mission;
+    Api_Mst_Const api_mst_const;
+    QList<Api_Mst_Shipupgrade> api_mst_shipupgrade;
+
+};
+
+/**
+ * @brief The kcsapi_port class
+ */
+class kcsapi_port: public KAPIBaseData
+{
+
+public:
+    kcsapi_port(){}
+
+    virtual bool ReadFromJObj(const QJsonObject &jobj);
+    QList<kcsapi_material> api_material;
+    QList<kcsapi_deck> api_deck_port;
+    QList<kcsapi_ndock> api_ndock;
+    QList<kcsapi_ship2> api_ship;
+    kcsapi_basic api_basic;
+    //public Api_Log[] api_log;
 };
 
 /**

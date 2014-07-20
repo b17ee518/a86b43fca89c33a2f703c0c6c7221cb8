@@ -45,7 +45,7 @@ TimerMainWindow::TimerMainWindow(QWidget *parent) :
     connect(pUpdateTimer, SIGNAL(timeout()), this, SLOT(slotUpdateTimer()));
     pUpdateTimer->start(250);
 
-//    this->adjustSize();
+    this->adjustSize();
 
 
 }
@@ -134,6 +134,7 @@ void TimerMainWindow::slotUpdateTimer()
                           , ui->expeditionTable->item(i*2, 1)
                           , ui->expeditionTable->item(i*2, 2)
                           , progressExpUs[i]
+                          , true
                           );
 
 
@@ -166,6 +167,7 @@ void TimerMainWindow::slotUpdateTimer()
                           , ui->repairTable->item(i*2, 1)
                           , ui->repairTable->item(i*2, 2)
                           , progressRepairUs[i]
+                          , true
                           );
 
 
@@ -362,7 +364,7 @@ void TimerMainWindow::setProgressColor(QProgressBar *pBar, qint64 tdiff, bool bY
     }
 }
 
-bool TimerMainWindow::updateDisplay(qint64 ct, qint64 dt, qint64 tt, QTableWidgetItem *pRemainItem, QTableWidgetItem *pExpectedItem, QProgressBar *pProgress)
+bool TimerMainWindow::updateDisplay(qint64 ct, qint64 dt, qint64 tt, QTableWidgetItem *pRemainItem, QTableWidgetItem *pExpectedItem, QProgressBar *pProgress, bool bMinusOne)
 {
     QString strRemain = getRemainTimeStr(ct, dt);
     pRemainItem->setText(strRemain);
@@ -373,6 +375,10 @@ bool TimerMainWindow::updateDisplay(qint64 ct, qint64 dt, qint64 tt, QTableWidge
         pExpectedItem->setText(strExpected);
     }
 
+    if (bMinusOne)
+    {
+        dt -= 60000;
+    }
     qint64 tdiff = dt-ct;
     int percentage = getPercentage(tdiff, tt);
     bool bYellow = isYellow(tdiff);
@@ -416,6 +422,7 @@ void TimerMainWindow::initTableItem()
     QTableWidget * pTable;
     foreach(pTable, lstTables)
     {
+        pTable->setFont(QApplication::font());
         pTable->horizontalHeader()->hide();
         pTable->horizontalHeader()->setDefaultSectionSize(20);
         pTable->verticalHeader()->hide();

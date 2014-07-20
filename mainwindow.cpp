@@ -1,8 +1,15 @@
 ﻿#include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include <QDesktopWidget>
+#include <QNetworkProxy>
+#include "cookiejar.h"
+#include <QNetworkDiskCache>
+#include <QStandardPaths>
+#include "qnetworkproxyfactoryset.h"
+#include "kqwebpage.h"
+#include <QWinTaskbarProgress>
 
-#include <Windows.h>
+QFile * MainWindow::pLogFile = 0;
 
 MainWindow * MainWindow::s_pMainWindow = 0;
 
@@ -14,13 +21,57 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->setupUi(this);
     ui->retranslateUi(this);
 
+    pLogFile = new QFile(QApplication::applicationDirPath()+"/log.txt");
+    pLogFile->open(QIODevice::ReadWrite|QIODevice::Text);
+
     ui->comboBoxZoom->insertSeparator(1);
+
+    QWinTaskbarProgress * pTaskbarProgress = new QWinTaskbarProgress(this);
+    pTaskbarProgress->setMinimum(0);
+    pTaskbarProgress->setMaximum(100);
+    pTaskbarProgress->setValue(50);
+    pTaskbarProgress->show();
 
     mwbPostInit();
 
     ui->titleFrame->setHandlingWidget(this);
 
-    this->repaint();
+    pFiddler = new FiddlerCOM::FiddlerCOMClass(this);
+
+    connect(
+            pFiddler,
+            SIGNAL(exception(int, const QString &, const QString &, const QString &)),
+            this,
+            SLOT(slotWebViewException(int, const QString &, const QString &, const QString &)));
+
+    pFiddler->SetBeforeRequest((int)&MainWindow::BeforeRequestFunc);
+    pFiddler->SetAfterSessionComplete((int)&MainWindow::AfterSessionCompleteFunc);
+
+    useport = 13347;
+    pFiddler->Startup(useport, false, true);
+
+    SetWebSettings();
+    /*
+     *
+body {
+    margin:0;
+    overflow:hidden
+}
+
+#game_frame {
+    position:fixed;
+    left:0%;
+    top:-16px;
+    left:-50px;
+    z-index:1
+}
+    */
+    QUrl css("data:text/css;charset=utf-8;base64,Ym9keSB7DQogICAgbWFyZ2luOjA7DQogICAgb3ZlcmZsb3c6aGlkZGVuDQp9DQoNCiNnYW1lX2ZyYW1lIHsNCiAgICBwb3NpdGlvbjpmaXhlZDsNCiAgICBsZWZ0OjAlOw0KICAgIHRvcDotMTZweDsNCiAgICBsZWZ0Oi01MHB4Ow0KICAgIHotaW5kZXg6MQ0KfQ==");
+
+    ui->webView->page()->settings()->setUserStyleSheetUrl(css);
+
+    ui->webView->load(QUrl("http://www.google.com"));
+//    ui->webView->load(QUrl("http://www.dmm.com/netgame/social/application/-/detail/=/app_id=854854/"));
 }
 
 MainWindow::~MainWindow()
@@ -238,4 +289,90 @@ void MainWindow::on_pbCheckTrasparent_toggled(bool checked)
         s_listpair.clear();
     }
 
+}
+
+void MainWindow::slotWebViewException(int code, const QString &source, const QString &desc, const QString &help)
+{
+    qDebug("Exception: %d", code);
+    qDebug(source.toUtf8());
+    qDebug(desc.toUtf8());
+    qDebug(help.toUtf8());
+    qDebug("Put FiddlerCore.dll to exe folder.");
+}
+
+void MainWindow::BeforeRequestFunc(int sessionID, char *fullURL, char *requestBody)
+{
+
+}
+
+void MainWindow::AfterSessionCompleteFunc(int sessionID, char *mimeType, int responseCode, char *PathAndQuery, char *requestBody, char *responseBody)
+{
+    QString strPathAndQuery = PathAndQuery;
+
+    if (strPathAndQuery.startsWith("/kcsapi"))
+    {
+        if (0 == QString::compare(mimeType, "text/plain"))
+        {
+            QString str = QDateTime::currentDateTime().toString("[yyyy/MM/dd HH:mm:ss]\t");
+            str += PathAndQuery;
+            str += "\t";
+            str += QUrl::fromPercentEncoding(requestBody);
+            str += "\t";
+            str += responseBody;
+            str += "\n";
+
+            pLogFile->write(str.toLocal8Bit());
+        }
+    }
+}
+
+void MainWindow::SetWebSettings()
+{
+    KQWebPage * page = new KQWebPage();
+    ui->webView->setPage(page);
+    QNetworkProxyFactorySet * proxies = new QNetworkProxyFactorySet();
+    proxies->init(useport);
+
+    QNetworkProxyFactory::setApplicationProxyFactory(proxies);
+
+    CookieJar* jar = new CookieJar(this);
+    ui->webView->page()->networkAccessManager()->setCookieJar(jar);
+
+    //WebView
+    QNetworkDiskCache *cache = new QNetworkDiskCache(this);
+    cache->setCacheDirectory(QStandardPaths::writableLocation(QStandardPaths::CacheLocation)+"2");
+    cache->setMaximumCacheSize(1073741824); //about 1024MB
+    ui->webView->page()->networkAccessManager()->setCache(cache);
+    /*
+    QDir dir(QStandardPaths::writableLocation(QStandardPaths::CacheLocation));
+    if(dir.exists()){
+        dir.removeRecursively();
+    }
+    */
+
+    QWebSettings *websetting = QWebSettings::globalSettings();
+    //JavaScript関連設定
+    websetting->setAttribute(QWebSettings::JavascriptCanOpenWindows, true);
+    websetting->setAttribute(QWebSettings::JavascriptCanCloseWindows, true);
+    websetting->setAttribute(QWebSettings::PluginsEnabled, true);
+    websetting->setAttribute(QWebSettings::JavascriptEnabled, true);
+    //フォント設定
+#if defined(Q_OS_WIN32)
+//    websetting->setFontFamily(QWebSettings::StandardFont, "ＭＳ Ｐゴシック");
+//    websetting->setFontFamily(QWebSettings::StandardFont, "MS PGothic");
+    websetting->setFontFamily(QWebSettings::StandardFont, "Meiryo UI");
+    websetting->setFontFamily(QWebSettings::SerifFont, "MS PMincho");
+    websetting->setFontFamily(QWebSettings::SansSerifFont, "MS PGothic");
+    websetting->setFontFamily(QWebSettings::FixedFont, "MS Gothic");
+#elif defined(Q_OS_LINUX)
+#elif defined(Q_OS_MAC)
+    websetting->setFontFamily(QWebSettings::StandardFont, "ヒラギノ角ゴPro");
+    websetting->setFontFamily(QWebSettings::SerifFont, "ヒラギノ明朝Pro");
+    websetting->setFontFamily(QWebSettings::SansSerifFont, "ヒラギノ角ゴPro");
+    websetting->setFontFamily(QWebSettings::FixedFont, "Osaka");
+#else
+#endif
+
+//    QNetworkProxyFactory::setUseSystemConfiguration(false);
+    //    updateProxyConfiguration();
 }

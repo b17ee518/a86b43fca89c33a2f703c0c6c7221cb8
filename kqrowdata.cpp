@@ -1,4 +1,4 @@
-#include "kqrowdata.h"
+﻿#include "kqrowdata.h"
 
 KQRowData::KQRowData()
 {
@@ -22,16 +22,22 @@ KQRowCellData::KQRowCellData()
 
 KQRowCellData::KQRowCellData(QString str)
 {
-    setValue(str, QColor(255, 255, 255));
+    setValue(str, "", QColor(255, 255, 255));
 }
 
 KQRowCellData::KQRowCellData(QString str, QColor col)
 {
-    setValue(str, col);
+    setValue(str, "", col);
 }
 
-void KQRowCellData::setValue(QString str, QColor col)
+KQRowCellData::KQRowCellData(QString str, QString tooltip, QColor col)
+{
+    setValue(str, tooltip, col);
+}
+
+void KQRowCellData::setValue(QString str, QString tooltip, QColor col)
 {
     m_str = str;
+    m_tooltip = tooltip;
     m_col = col;
 }

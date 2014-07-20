@@ -7,6 +7,8 @@
 #include <QJsonDocument>
 #include "kandata.h"
 #include "kanreqdata.h"
+#include "kandataconnector.h"
+#include <QWinTaskbarProgress>
 
 int main(int argc, char *argv[])
 {
@@ -15,11 +17,12 @@ int main(int argc, char *argv[])
     a.setApplicationName("KanPlay");
     a.setWindowIcon(QIcon(QApplication::applicationDirPath()+"/icon.ico"));
 
-    QFont newFont("Meiryo UI", 9);
+    QFont newFont("Meiryo UI", 9.5f);
     a.setFont(newFont);
 
     QString style = "   \
             QWidget{background-color:rgb(68, 68, 68);}\
+            QToolTip { color: white; background-color: rgb(80, 80, 80); border: 1px solid black; }\
             QFrame{border-top:1px solid grey;}\
             QPushButton {   \
                 color:white;    \
@@ -75,6 +78,20 @@ int main(int argc, char *argv[])
 
     //
 
+    QFile inputfile(QApplication::applicationDirPath()+"/input.txt");
+    inputfile.open(QIODevice::ReadOnly);
+    QTextStream in(&inputfile);
+    QList<QString> lstargs;
+    QString line;
+    while (true){
+        line = in.readLine();
+        if (line.isNull())
+        {
+            break;
+        }
+        lstargs.append(line);
+    }
+/*
     KanReqData req;
     req.ReadFromString("abc", "api%5ftoken=123&api_ver=132");
 
@@ -82,6 +99,11 @@ int main(int argc, char *argv[])
     QJsonDocument doc = QJsonDocument::fromJson(str.toLocal8Bit());
     kcsapi_basic d;
     d.ReadFromJObj(doc.object()["api_data"].toObject());
+*/
+    for (int i=0; i<lstargs.count()/3; i++)
+    {
+        KanDataConnector::getInstance().Parse(lstargs[i*3], lstargs[i*3+1], lstargs[i*3+2]);
+    }
 
     //
 

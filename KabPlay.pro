@@ -6,7 +6,7 @@
 
 QT       += core gui multimedia
 
-greaterThan(QT_MAJOR_VERSION, 4): QT += widgets axcontainer webkitwidgets
+greaterThan(QT_MAJOR_VERSION, 4): QT += widgets axcontainer webkitwidgets winextras
 
 TARGET = KabPlay
 TEMPLATE = app
@@ -27,7 +27,12 @@ SOURCES += main.cpp\
     kandata.cpp \
     kansavedata.cpp \
     kanreqdata.cpp \
-    kqrowdata.cpp
+    kqrowdata.cpp \
+    cookiejar.cpp \
+    qnetworkproxyfactoryset.cpp \
+    kandataconnector.cpp \
+    kandatacalc.cpp \
+    kqwebpage.cpp
 
 HEADERS  += mainwindow.h \
     infomainwindow.h \
@@ -42,7 +47,12 @@ HEADERS  += mainwindow.h \
     kandata.h \
     kansavedata.h \
     kanreqdata.h \
-    kqrowdata.h
+    kqrowdata.h \
+    cookiejar.h \
+    qnetworkproxyfactoryset.h \
+    kandataconnector.h \
+    kandatacalc.h \
+    kqwebpage.h
 
 FORMS    += mainwindow.ui \
     infomainwindow.ui \

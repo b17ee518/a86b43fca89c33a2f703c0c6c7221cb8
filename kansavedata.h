@@ -7,7 +7,7 @@
 enum
 {
     MATERIALDATAINDEX_FUEL = 0,
-    MATERIALDATAINDEX_AMMUNITION,
+    MATERIALDATAINDEX_BULLET,
     MATERIALDATAINDEX_STEEL,
     MATERIALDATAINDEX_BAUXITE,
     MATERIALDATAINDEX_INSTANTBUILD,
@@ -20,13 +20,16 @@ class KanSaveData
 public:
 
     kcsapi_port portdata;
-    QList<kcsapi_ship> shipdata;
+//    QList<kcsapi_ship> shipdata;
     kcsapi_start2 start2data;
     QList<kcsapi_slotitem> slotitemdata;
-    kcsapi_kdock kenzoudata;
-    kcsapi_ndock nyukudata;
+    QList<kcsapi_kdock> kdockdata;
     QList<kcsapi_material> materialdata;
     QList<kcsapi_quest> questdata;
+    kcsapi_next nextdata;
+
+    int shipcountoffset;
+    int slotitemcountoffset;
 
 private:
     KanSaveData(void);

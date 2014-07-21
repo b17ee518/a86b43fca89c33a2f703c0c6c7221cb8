@@ -26,10 +26,13 @@ public:
     static TimerMainWindow * timerWindow(){return s_pMainWindow->m_pTimerWindow;}
 
     void onSubMainWindowShowHide(bool bShow, MainWindowBase * pWindow);
+signals:
+    void sigParse(const QString &PathAndQuery, const QString &requestBody, const QString &responseBody);
 
 public slots:
     virtual void slotActivate(QWidget* w , bool bActivate);
     virtual void slotToggleRestoreMinimize(bool bRestore);
+    void slotParse(const QString &PathAndQuery, const QString &requestBody, const QString &responseBody);
 
 protected:
     virtual void changeEvent(QEvent * e);

@@ -1,20 +1,127 @@
-ï»¿ã€è‰¦ã“ã‚Œã€‘æˆ¦é—˜APIã®è§£æž
+‘éêL½Y¹û¤ò¥í¥°³öÁ¦¤·¤¿¤¤¡£¤è¤½ÒŠ¤·¤Æ¤¤¤Æ‘éêL½Y¹û»­Ãæ¤ò¤¹¤Ãïw¤Ð¤·¤Æ¤·¤Þ¤¤¡¢Ò¹‘éÍ»Èë¤¹¤Ù¤­¤«·ñ¤«¡¢ßMÜŠ¤·¤Æ¤¤¤¤¤â¤Î¤«¤É¤¦¤«¤ò¤·¤ç¤Ã¤Á¤å¤¦ÒŠÂä¤È¤¹¤Î¤Ç¡¢¤½¤ì¤ò»Ø±Ü¤¹¤ë¤¿¤á¡£
+‘éêL½Y¹û¤Ïflash¤ÇÑÝ³ö¤¹¤ë¤¿¤á¤Ë±ØÒª¤ÊÇéˆó¤ÏÈ«¤Æ¥µ©`¥Ð¤«¤é¶É¤µ¤ì¤Æ¤¤¤ë¤Î¤Ç¡¢¤³¤ì¤ò·eËã¤¹¤ì¤Ð‘éêL½Y¹û¤Ë¤Ê¤ë¡¢¤Ï¤º¡£
 
-On 2014å¹´3æœˆ17æ—¥ by shobotch
-ä»Šå›žã¯ã€1-1ã‚’å‘¨å›žã—ãŸæ™‚ã®APIã«ã¤ã„ã¦ãƒ‡ãƒ¼ã‚¿ã‚’åŽé›†ã—ã¾ã—ãŸã€‚
-2-3ã®å‘¨å›žã®ãƒ‡ãƒ¼ã‚¿ã‚‚è¿‘ã„ã†ã¡ã«é›†ã‚ã¾ã™ã€‚
+ÒÔÏÂê´ð¥Ç©`¥¿¤òÕi¤ß½â¤¤¤¿¥á¥â¡£
 
-ãƒ•ã‚©ãƒ¼ãƒžãƒƒãƒˆã¯
+ê´ð¥Ç©`¥¿¤Îapi_dataÒÔÏÂ¤Ë‘éêLÔ”¼š¥í¥°¤¬’÷Ýd¤µ¤ì¤ë¡£
+ÒÔÏÂ¤ÎÏ¯´Î¤È¤Ï[0]Ç··¬[1-6]×ÔÜŠÅžê Ï¯´Î¡¢[7-12]”³ÜŠÅžê Ï¯´Î¤ò±í¤¹¡£
+
+api_dock_id:‘éêL²Î¼Ó‘éê ·¬ºÅ
+api_ship_ke:”³Åžê ÅžÍ§ID¥ê¥¹¥È[0¡«6]¤¿¤À¤·0¤ÏÇ··¬¡¢ÒÔÏÂÍ¬¤¸
+api_nowhps:‘éêL²Î¼ÓÅžÍ§¬FÔÚHP¥ê¥¹¥È¡£0¤ÏÇ··¬¡¢[1¡«6]¤Ï×ÔÜŠÅžê Ï¯´Î¡¢[7¡«12]¤Ï”³ÜŠÅžê Ï¯´Î
+api_maxhps:‘éêL²Î¼ÓÅžÍ§×î´óHP¥ê¥¹¥È
+api_midnight_flag:Ò¹‘é°kÉúÓÐŸo¥Õ¥é¥°£¿¡¢1¤ÇÒ¹‘éÍ»Èë·Öáª¤¢¤ê¡¢0¤Ç¤Ê¤·
+api_eSlot:”³Åžê ¤Î¥¹¥í¥Ã¥È×°‚ä¥ê¥¹¥ÈÅäÁÐ
+api_eKyouka:”³Åžê ¤ÎŠ»¯×´›r¥ê¥¹¥ÈÅäÁÐ
+api_fParam:×ÔÅžê ¤Î‘éêL¥Ñ¥é¥á©`¥¿¥ê¥¹¥ÈÅäÁÐ
+api_eParam:”³Åžê ¤Î‘éêL¥Ñ¥é¥á©`¥¿¥ê¥¹¥ÈÅäÁÐ
+api_search:Ë÷”³½Y¹ûÅäÁÐ¡¢ÄÚÈÝÎ´·ÖÎö
+api_formation:Åžê ê ÁÐÅäÁÐ¡¢ÄÚÈÝÎ´·ÖÎö
+api_state_flag:é_Ä»º½¿Õ‘é¤Î¥·©`¥±¥ó¥¹Çéˆó¡¢×ÓÅäÁÐ˜‹Ôì
+api_plane_from:×ÔÜŠ¡¢”³ÜŠ¤ÎÅžÝd™C°kÅžÅžÍ§Ï¯´ÎÅäÁÐ[[n],[n]]¤Î¶þ´ÎÔªÅäÁÐ¤Ë¤Ê¤ë¡£
+api_stage1:º½¿Õ‘é¤Î¥¹¥Æ©`¥¸£±¡¢¿Ö¤é¤¯ÖÆ¿Õ˜ØévßB¤Î²Î¼ÓÅžÝd™C¤È“Ä‰‹×´›r
+api_stage2:º½¿Õ‘é¤Î¥¹¥Æ©`¥¸£²¡¢¿Ö¤é¤¯º½¿ÕÀ×“Ä¤Èº½¿Õ±¬“Ä¤Î²Î¼ÓÅžÝd™C¤È“Ä‰‹×´›r
+api_stage3:º½¿Õ‘é¤Î¥¹¥Æ©`¥¸£³¡¢¿Ö¤é¤¯¥À¥á©`¥¸¥Õ¥§©`¥º
+api_fdam:×ÔÅžê ¤Îº½¿Õ‘é±»¥À¥á©`¥¸
+api_edam:”³Åžê ¤Îº½¿Õ‘é±»¥À¥á©`¥¸
+api_support_flag:Ö§Ô®Åžê ¤Î¹¥“ÄÓÐŸo¥Õ¥é¥°¡¢£±¤ÇÖ§Ô®¤¢¤ê¡¢£°¤ÇÖ§Ô®¤Ê¤·
+api_support_info:Ö§Ô®Åžê ¤Î¹¥“Ä¥·©`¥±¥ó¥¹¥Ç©`¥¿¡£ÄÚÈÝ²»Ã÷¤À¤¬³h“Ä‘é¥Õ¥§©`¥º¡¢º½¿Õ‘é¥Õ¥§©`¥º¡¢À×“Ä‘é¥Õ¥§©`¥º¤¬¤¢¤ë¿ÉÄÜÐÔ¤¬¤¢¤ë¡£Ö§Ô®Åžê ¾Ž³É¤ËÒÀ´æ¡£
+api_opening_flag:é_Ä»¹¥“ÄÓÐŸo¥Õ¥é¥°¡¢£±¤Çé_Ä»¹¥“Ä¤¢¤ê¡¢£°¤Çé_Ä»¹¥“Ä¤Ê¤·
+api_opening_atack:é_Ä»À×“Ä¤Î¥·©`¥±¥ó¥¹Çéˆó¡¢×ÓÅäÁÐ˜‹Ôì
+api_frai:×ÔÜŠÀ×“ÄÇéˆó¡¢Ï¯´Î¤ÎÅäÁÐ¤Ë”³ÜŠ¤ÎÏ¯´Î¤¬1-6¤Ë…§¼{¤µ¤ì¤ë¡£0¤ÏÀ×“Ä¤Ê¤·£¿
+api_erai:”³ÜŠÀ×“ÄÇéˆó¡¢Ï¯´Î¤ÎÅäÁÐ¤Ë×ÔÜŠ¤ÎÏ¯´Î¤¬1-6¤Ë…§¼{¤µ¤ì¤ë¡£0¤ÏÀ×“Ä¤Ê¤·£¿
+api_fdam:×ÔÜŠ¤Î±»¥À¥á©`¥¸Çéˆó¡¢ÅäÁÐ˜‹Ôì
+api_edam:”³ÜŠ¤Î±»¥À¥á©`¥¸Çéˆó¡¢ÅäÁÐ˜‹Ôì
+api_fydam:×ÔÜŠ¤ÎÓè¥À¥á©`¥¸Çéˆó¡¢ÅäÁÐ˜‹Ôì
+api_eydam:”³ÜŠ¤ÎÓè¥À¥á©`¥¸Çéˆó¡¢ÅäÁÐ˜‹Ôì
+api_fcl:×ÔÜŠ¹¥“Ä¤Î¥¯¥ê¥Æ¥£¥«¥ë°kÉúÓÐŸoÇéˆó£¿¡¢ÅäÁÐ˜‹Ôì¡¢£±¤Ç¥¯¥ê¥Æ¥£¥«¥ë¡¢£°¤ÇÍ¨³£or¹¥“Ä¤Ê¤·
+api_ecl:”³ÜŠ¹¥“Ä¤Î¥¯¥ê¥Æ¥£¥«¥ë°kÉúÓÐŸoÇéˆó£¿¡¢ÅäÁÐ˜‹Ôì¡¢£±¤Ç¥¯¥ê¥Æ¥£¥«¥ë¡¢£°¤ÇÍ¨³£or¹¥“Ä¤Ê¤·
+api_hourai_flag:³hÀ×“Ä‘é¤Î¥·©`¥±¥ó¥¹Çéˆó¡¢[0-3]¤Î˜‹Ôì¤Ç[0]Ò»Ñ²Ä¿³h“Ä[1]¶þí˜Ä¿³h“Ä[2]Èýí˜Ä¿³h“Ä£¨¤ª¤½¤é¤¯Î´Œg×°£©[3]À×“Ä¤Î°kÉúÓÐŸo¤ò±í¤¹¡¢£±¤Ç¹¥“Ä¤¢¤ê¡¢£°¤Ç¹¥“Ä¤Ê¤·
+api_hougeki1:Ò»Ñ²Ä¿¤Î³h“Ä¥·©`¥±¥ó¥¹
+api_at_list:¹¥“Äí˜Ðò¥ê¥¹¥È¡¢[0]¤ÏÎ´Ê¹ÓÃ¤Ç[1-12]¤Ë”³Î¶·½¤Î¹¥“Äí˜Ðò¤¬Åžê ÐòÁÐ·¬ºÅ¤ÇÅäÁÐÔO¶¨¤¹¤ë¡¢×Ô”³»ìÔÚ¤ÎÏ¯´Î
+api_df_list:±»¹¥“Äí˜Ðò¥ê¥¹¥È¡¢[0]¤ÏÎ´Ê¹ÓÃ¤Ç[1-12]¤Ë”³Î¶·½¤Î±»¹¥“Äí˜Ðò¤¬Åžê ÐòÁÐ·¬ºÅ¤ÇÅäÁÐÔO¶¨¤¹¤ë¡¢×Ô”³»ìÔÚ¤ÎÏ¯´Î
+api_si_list:¹¥“Ä‚ÈÅžÍ§¤ÎÊ¹ÓÃÎäÆ÷¥ê¥¹¥È¡¢Ô“µ±¹¥“Äí˜Ðò¤ÎÅžÍ§¤¬¹¥“Ä¤ËÊ¹ÓÃ¤¹¤ëÎäÆ÷·¬ºÅ¤òÅäÁÐÔO¶¨¤¹¤ë¡£-1¤ÏÎ´Ê¹ÓÃ¤â¤·¤¯¤Ïº½¿Õ¹¥“Ä¡£
+api_cl_list:¹¥“Äí˜Ðò¤Ë¤ª¤±¤ë¥¯¥ê¥Æ¥£¥«¥ë¤Î°kÉúÓÐŸo¤òÅäÁÐÔO¶¨¤¹¤ë£¿¤É¤ì¤¬¥¯¥ê¥Æ¥£¥«¥ë¤«·ñ¤«¤Ï×R„e¤Ç¤­¤Æ¤¤¤Ê¤¤¡£
+api_damage:¹¥“Äí˜Ðò¤Ë¤ª¤¤¤Æ°kÉú¤·¤¿¥À¥á©`¥¸Êý¤òÅäÁÐÔO¶¨¤¹¤ë
+api_hougeki2:¶þÑ²Ä¿¤Î³h“Ä¥·©`¥±¥ó¥¹¡£ÄÚÈÝ¤Ï¿Ö¤é¤¯Ò»Ñ²Ä¿¤ÈÍ¬¤¸
+api_hougeki3:ÈýÑ²Ä¿¤Î³h“Ä¥·©`¥±¥ó¥¹¡£¤ª¤½¤é¤¯Î´Ê¹ÓÃ
+api_raigeki:À×“Ä¥·©`¥±¥ó¥¹
+api_frai:×ÔÜŠ¤ÎÀ×“ÄÏàÊÖÏ¯´ÎÅäÁÐ¡¢”³ÜŠ¤Î¤ß¤ÎÏ¯´Î
+api_erai:”³ÜŠ¤ÎÀ×“ÄÏàÊÖÏ¯´ÎÅäÁÐ¡¢×ÔÜŠ¤Î¤ß¤ÎÏ¯´Î
+api_fdam:×ÔÜŠ¤Î±»¥À¥áÅäÁÐ
+api_edam:”³ÜŠ¤Î±»¥À¥áÅäÁÐ
+api_fydam:×ÔÜŠ¤ÎÓë¥À¥áÅäÁÐ
+api_eydam:”³ÜŠ¤ÎÓë¥À¥áÅäÁÐ
+api_fcl:×ÔÜŠ¤Î¥¯¥ê¥Æ¥£¥«¥ë°kÉúÓÐŸoÅäÁÐ£¿
+api_ecl:”³ÜŠ¤Î¥¯¥ê¥Æ¥£¥«¥ë°kÉúÓÐŸoÅäÁÐ£¿
+
+¡ö‘éêL½Y¹û·ÖÎö·½·¨
+api_nowhps¤«¤é×ÔÜŠ¤È”³ÜŠ¤ÎHP¤òÈ¡µÃ¤¹¤ë
+api_stage_flag[2]¤¬1¤ÎˆöºÏ¡¢º½¿Õ‘é¤Î¥À¥á©`¥¸„IÀí¤ò¤¹¤ë
+api_support_flag¤¬1¤ÎˆöºÏ¡¢Ö§Ô®Åžê ¤Î¥À¥á©`¥¸„IÀí¤ò¤¹¤ë
+api_opening_flag¤¬1¤ÎˆöºÏ¡¢é_Ä»À×“Ä¤Î¥À¥á©`¥¸„IÀí¤ò¤¹¤ë
+api_hourai_flag[0-2]¤¬¤½¤ì¤¾¤ì1¤ÎˆöºÏ¡¢³h“Ä‘é¤Î¥À¥á©`¥¸„IÀí¤ò¤¹¤ë
+api_hourai_flag[3]¤¬1¤ÎˆöºÏ¡¢À×“Ä‘é¤Î¥À¥á©`¥¸„IÀí¤ò¤¹¤ë
+
+¡ùº½¿Õ‘é¡¢é_Ä»À×“Ä¡¢À×“Ä‘é¤Î¥À¥á©`¥¸„IÀí¤ÏÍ¬¤¸¤ä¤ê·½¤Ç¤¤¤±¤ë
+¡ù±»º¦×´›r¤µ¤¨¤ï¤«¤ì¤Ð¤¤¤¤¤Î¤ÇÓë¥À¥á©`¥¸¤Ïµ±Ãæ·eËã¤·¤Ê¤¤¤Ç¤â¤è¤¤
+
+¡öHPÈ¡µÃ„IÀí
+api_nowhps¤«¤é[1-12]¤ÎÅäÁÐ¤òÈ¡µÃ¤¹¤ë
+È«¿ì¤«¤é¤Î±»º¦×´›r¤òÕÕ»á¤¹¤ëˆöºÏ¤Ë¤Ïapi_maxhps¤â²ÎÕÕ¤¹¤ë
+
+¡öº½¿Õ‘é
+api_stage_flag[2]¤¬1¤ÎˆöºÏÒÔÏÂ¤Î¥À¥á©`¥¸„IÀí¤òÐÐ¤¦
+api_kouku.api_stage3.¤ò¥ë©`¥È¤È¤·¤Æ
+api_fdam¤«¤é×ÔÜŠ¤Î±»¥À¥á©`¥¸¤òÈ¡µÃ¤¹¤ë
+api_edam¤«¤é”³ÜŠ¤Î±»¥À¥á©`¥¸¤òÈ¡µÃ¤¹¤ë
+
+¡öÖ§Ô®¹¥“Ä
+Ò»¶ÈÖ§Ô®¥í¥°¤ò³ö¤·¤Æ´_ÕJ¤¹¤ë±ØÒª¤¢¤ê¡£º½¿Õ¹¥“Ä¤È³h“Ä¤ÈÀ×“Ä¤Çß`¤¤¤¬¤¢¤ë¤«¤â¤ß¤ë¡£
+
+¡öé_Ä»À×“Ä
+api_opening_flag¤¬1¤ÎˆöºÏÒÔÏÂ¤Î¥À¥á©`¥¸„IÀí¤òÐÐ¤¦
+api_kouku.api_opening_atack.¤ò¥ë©`¥È¤È¤·¤Æ
+api_fdam¤«¤é×ÔÜŠ¤Î±»¥À¥á©`¥¸¤òÈ¡µÃ¤¹¤ë
+api_edam¤«¤é”³ÜŠ¤Î±»¥À¥á©`¥¸¤òÈ¡µÃ¤¹¤ë
+
+¡ö³h“Ä‘é
+api_hourai_flag[0-2]¤¬1¤ÎˆöºÏÒÔÏÂ¤Î¥À¥á©`¥¸„IÀí¤òÐÐ¤¦
+api_hougeki(n+1)¤ò¥ë©`¥È¤È¤·¤Æ
+api_df_list[n]¤«¤é±»¥À¥áÅžÍ§Ï¯´Î¤òÈ¡µÃ¤·¡¢api_damage[n]¤«¤é±»¥À¥áÊý‚Ž¤òÈ¡µÃ¤¹¤ë
+
+¡öÀ×“Ä‘é
+api_hourai_flag[3]¤¬1¤ÎˆöºÏÒÔÏÂ¤Î¥À¥á©`¥¸„IÀí¤òÐÐ¤¦
+api_raigeki.¤ò¥ë©`¥È¤È¤·¤Æ
+api_fdam¤«¤é×ÔÜŠ¤Î±»¥À¥á©`¥¸¤òÈ¡µÃ¤¹¤ë
+api_edam¤«¤é”³ÜŠ¤Î±»¥À¥á©`¥¸¤òÈ¡µÃ¤¹¤ë
+
+
+¡ö‘éêL½Y¹û¥ì¥Ý©`¥È
+°¸£±
+×ÔÜŠ¤È”³ÜŠ¤Î¡¸‘éêLááHP/é_‘é•rHP¡¹¤Î¥ê¥¹¥È¤ò³öÁ¦¤¹¤ë
+°¸£²
+×ÔÜŠ¤È”³ÜŠ¤Î¡¸‘éêLááHP/×î´óHP¡¹¤Î¥ê¥¹¥È¤ò³öÁ¦¤¹¤ë
+°¸£³Åžê È«Ìå¤Î±»º¦ÂÊ¤ò¥Ñ©`¥»¥ó¥Æ©`¥¸¤Ç×·¼Ó±íÊ¾¤¹¤ë¡££¨é_‘é•rHP¤ÎºÏÓ‹¤ò·ÖÄ¸¤È¤·¡¢‘éêLáá¤Î²Ð¤êHP¤ò·Ö×Ó¤È¤¹¤ë¥Ñ©`¥»¥ó¥È±íÊ¾¤¹¤ë¡£
+
+
+¡¾Åž¤³¤ì¡¿‘éêLAPI¤Î½âÎö
+
+On 2014Äê3ÔÂ17ÈÕ by shobotch
+½ñ»Ø¤Ï¡¢1-1¤òÖÜ»Ø¤·¤¿•r¤ÎAPI¤Ë¤Ä¤¤¤Æ¥Ç©`¥¿¤ò…§¼¯¤·¤Þ¤·¤¿¡£
+2-3¤ÎÖÜ»Ø¤Î¥Ç©`¥¿¤â½ü¤¤¤¦¤Á¤Ë¼¯¤á¤Þ¤¹¡£
+
+¥Õ¥©©`¥Þ¥Ã¥È¤Ï
 
 URL
 
-POST(api_token,api_vernoã¯çœç•¥)
+POST(api_token,api_verno¤ÏÊ¡ÂÔ)
 
-è¿”ã£ã¦ããŸJSON
-ã®é †ã§è¼‰ã›ã¾ã™ã€‚
+·µ¤Ã¤Æ¤­¤¿JSON
+¤Îí˜¤ÇÝd¤»¤Þ¤¹¡£
 
-ã‚ªãƒªãƒ§ãƒ¼ãƒ«(2-3)ã®ãƒžãƒƒãƒ—ãƒ‡ãƒ¼ã‚¿ã‚’å–å¾—
-1-1ã§ã™ã¨å†…å®¹ãŒå˜ç´”ã®ãŸã‚ã€2-3ã®å–å¾—ãƒ‡ãƒ¼ã‚¿ã‚’è¼‰ã›ã¾ã™ãŒã€ä»Šå›žã¯1-1ã«å‡ºæ’ƒã—ã¾ã™ã€‚
+¥ª¥ê¥ç©`¥ë(2-3)¤Î¥Þ¥Ã¥×¥Ç©`¥¿¤òÈ¡µÃ
+1-1¤Ç¤¹¤ÈÄÚÈÝ¤¬…g¼ƒ¤Î¤¿¤á¡¢2-3¤ÎÈ¡µÃ¥Ç©`¥¿¤òÝd¤»¤Þ¤¹¤¬¡¢½ñ»Ø¤Ï1-1¤Ë³ö“Ä¤·¤Þ¤¹¡£
 
 
 http://125.6.189.247/kcsapi/api_get_member/mapcell
@@ -23,7 +130,7 @@ api_maparea_id=2
 api_mapinfo_no=3
 
 { api_result: 1,
-  api_result_msg: 'æˆåŠŸ',
+  api_result_msg: '³É¹¦',
   api_data:
    [ { api_id: 50, api_passed: 0 },
      { api_id: 51, api_passed: 1 },
@@ -38,18 +145,18 @@ api_mapinfo_no=3
      { api_id: 60, api_passed: 1 },
      { api_id: 61, api_passed: 1 },
      { api_id: 62, api_passed: 1 } ] }
-1-1-1æˆ¦é—˜é–‹å§‹
+1-1-1‘éêLé_Ê¼
 
 
 http://125.6.189.247/kcsapi/api_req_map/start
 
 api_formation_id=1
-api_deck_id=3  â†ç¬¬ä¸‰è‰¦éšŠã§å‡ºæ’ƒã—ãŸ
+api_deck_id=3  ¡ûµÚÈýÅžê ¤Ç³ö“Ä¤·¤¿
 api_mapinfo_no=1
 api_maparea_id=1
 
 { api_result: 1,
-  api_result_msg: 'æˆåŠŸ',
+  api_result_msg: '³É¹¦',
   api_data:
    { api_rashin_flg: 0,
      api_rashin_id: 0,
@@ -62,20 +169,20 @@ api_maparea_id=1
      api_bosscell_no: 3,
      api_bosscomp: 1,
      api_enemy: { api_enemy_id: 1, api_result: 1, api_result_str: 'start war' } } }
-api_rashin_flgãŒ0ã®å ´åˆã€ç¾…é‡ç›¤ã®ç”»é¢ã¯è¡¨ç¤ºã•ã‚Œãšapi_noã®ãƒžã‚¹ã¾ã§é€²ã¿ã¾ã™ã€‚
-api_nextã®å€¤ã¯è¦èª¿æŸ»
-api_bosscell_noã§ãƒœã‚¹ã®å ´æ‰€ãŒå…¥ã£ã¦ã„ã‚‹ãŒã€æ­£ç›´è¦ã‚‰ãªã„ã€‚
-api_bosscompã¯ãƒœã‚¹ã‚’å€’ã—ã¦ã„ã‚‹ã®ã‹ã€é­é‡ã—ã¦ã„ã‚‹ã®ã‹åˆ†ã‹ã‚‰ãªã„ãŒã€ã“ã‚Œã‚‚è¦ã‚‰ãªã„
+api_rashin_flg¤¬0¤ÎˆöºÏ¡¢Á_á˜±P¤Î»­Ãæ¤Ï±íÊ¾¤µ¤ì¤ºapi_no¤Î¥Þ¥¹¤Þ¤ÇßM¤ß¤Þ¤¹¡£
+api_next¤Î‚Ž¤ÏÒªÕ{–Ë
+api_bosscell_no¤Ç¥Ü¥¹¤ÎˆöËù¤¬Èë¤Ã¤Æ¤¤¤ë¤¬¡¢ÕýÖ±Òª¤é¤Ê¤¤¡£
+api_bosscomp¤Ï¥Ü¥¹¤òµ¹¤·¤Æ¤¤¤ë¤Î¤«¡¢ÔâÓö¤·¤Æ¤¤¤ë¤Î¤«·Ö¤«¤é¤Ê¤¤¤¬¡¢¤³¤ì¤âÒª¤é¤Ê¤¤
 
-èµ¤å­—ã§æˆ¦é—˜é–‹å§‹ã€€è¡¨ç¤º
+³à×Ö¤Ç‘éêLé_Ê¼¡¡±íÊ¾
 
 
 http://125.6.189.247/kcsapi/api_req_sortie/battle
 
 api_formation=1
 
-æˆ¦é—˜JSONçœç•¥
-æˆ¦é—˜çµ‚äº†ã€æˆ¦æžœç”»é¢ã«ç§»è¡Œ
+‘éêLJSONÊ¡ÂÔ
+‘éêL½KÁË¡¢‘é¹û»­Ãæ¤ËÒÆÐÐ
 
 
 http://125.6.189.247/kcsapi/api_req_sortie/battleresult
@@ -85,7 +192,7 @@ none param
 
 {
   "api_result": 1,
-  "api_result_msg": "æˆåŠŸ",
+  "api_result_msg": "³É¹¦",
   "api_data": {
     "api_ship_id": [
       -1,
@@ -133,12 +240,12 @@ none param
       0,
       0
     ],
-    "api_quest_name": "éŽ®å®ˆåºœæ­£é¢æµ·åŸŸ",
+    "api_quest_name": "æ‚ÊØ¸®ÕýÃæº£Óò",
     "api_quest_level": 1,
     "api_enemy_info": {
       "api_level": "",
       "api_rank": "",
-      "api_deck_name": "æ•µåµå¯Ÿè‰¦"
+      "api_deck_name": "”³‚É²ìÅž"
     },
     "api_first_clear": 0,
     "api_get_flag": [
@@ -148,23 +255,23 @@ none param
     ],
     "api_get_ship": {
       "api_ship_id": 35,
-      "api_ship_type": "é§†é€è‰¦",
-      "api_ship_name": "éŸ¿",
-      "api_ship_getmes": "éŸ¿ã ã‚ˆã€‚<br>ãã®æ´»èºã¶ã‚Šã‹ã‚‰ä¸æ­»é³¥ã®é€šã‚Šåã‚‚ã‚ã‚‹ã‚ˆã€‚"
+      "api_ship_type": "ñlÖðÅž",
+      "api_ship_name": "í‘",
+      "api_ship_getmes": "í‘¤À¤è¡£<br>¤½¤Î»îÜS¤Ö¤ê¤«¤é²»ËÀøB¤ÎÍ¨¤êÃû¤â¤¢¤ë¤è¡£"
     },
     "api_get_eventflag": 0,
     "api_get_exmap_rate": 0,
     "api_get_exmap_useitem_id": 0
   }
 }
-é€²æ’ƒãƒ»æ’¤é€€é¸æŠžç”»é¢è¡¨ç¤º
+ßM“Ä?³·ÍËßx’k»­Ãæ±íÊ¾
 
 http://125.6.189.247/kcsapi/api_get_member/ship2
 http://125.6.189.247/kcsapi/api_get_member/slotitem
 http://125.6.189.247/kcsapi/api_get_member/deck
-â†‘ãƒ‰ãƒ­ãƒƒãƒ—é–¢ä¿‚ãªãã€å¸¸ã«å‘¼ã°ã‚Œã¦ã‚‹
+¡ü¥É¥í¥Ã¥×év‚S¤Ê¤¯¡¢³£¤Ëºô¤Ð¤ì¤Æ¤ë
 
-â†’é€²æ’ƒ
+¡úßM“Ä
 
 
 http://125.6.189.247/kcsapi/api_req_map/next
@@ -174,7 +281,7 @@ none param
 
 {
   "api_result": 1,
-  "api_result_msg": "æˆåŠŸ",
+  "api_result_msg": "³É¹¦",
   "api_data": {
     "api_rashin_flg": 1,
     "api_rashin_id": 4,
@@ -193,19 +300,19 @@ none param
     }
   }
 }
-ãƒœã‚¹çªå…¥
+¥Ü¥¹Í»Èë
 
 http://125.6.189.247/kcsapi/api_req_sortie/battle
 api_formation=1
 
-æ•—åŒ—ã—ã¾ã—ãŸã€‚
+”¡±±¤·¤Þ¤·¤¿¡£
 
 
 http://125.6.189.247/kcsapi/api_req_sortie/battleresult
 
 {
   "api_result": 1,
-  "api_result_msg": "æˆåŠŸ",
+  "api_result_msg": "³É¹¦",
   "api_data": {
     "api_ship_id": [
       -1,
@@ -252,12 +359,12 @@ http://125.6.189.247/kcsapi/api_req_sortie/battleresult
       0,
       0
     ],
-    "api_quest_name": "éŽ®å®ˆåºœæ­£é¢æµ·åŸŸ",
+    "api_quest_name": "æ‚ÊØ¸®ÕýÃæº£Óò",
     "api_quest_level": 1,
     "api_enemy_info": {
       "api_level": "",
       "api_rank": "",
-      "api_deck_name": "æ•µä¸»åŠ›è‰¦éšŠ"
+      "api_deck_name": "”³Ö÷Á¦Åžê "
     },
     "api_first_clear": 0,
     "api_get_flag": [
@@ -270,7 +377,7 @@ http://125.6.189.247/kcsapi/api_req_sortie/battleresult
     "api_get_exmap_useitem_id": 0
   }
 }
-å¸°ã£ã¦ãã‚‹ã¨ãã¯ã€logincheckã‚’å©ã‘ã°è‰¯ã„ã¿ãŸã„ã§ã™ã€‚
-æ„Ÿæƒ³ã¨ã—ã¦ã¯ã€é…åˆ—ã®ä½¿ã„æ–¹ã‚’ã¾ã¨ã‚‚ã«çŸ¥ã‚‰ãªã„äººãŒå®Ÿè£…ã—ã¦ã„ã‚‹å°è±¡ã‚’æŒã£ãŸã€‚
-ä½•æ•…ã‹é…åˆ—ãŒ1ã‹ã‚‰å§‹ã¾ã£ã¦ã„ã‚‹è¦ç´ ãŒå¤šãã€0ã®æ‰€ã«-1ã‚’å¸¸ã«å…¥ã‚Œã¦ãŠããã‚‰ã„ã ã£ãŸã‚‰ã€0ã‹ã‚‰åˆã‚ã¦ã»ã—ã„ã‚‚ã®ã ã€‚
-ã—ã‹ã‚‚ã€0ã‹ã‚‰å§‹ã¾ã£ã¦ã„ã‚‹ã‚‚ã®ã¨ã€ä»Šã®æˆ¦é—˜APIã®ã‚ˆã†ã«1ã‹ã‚‰å§‹ã¾ã‚‹ã‚ˆã†ã«å®Ÿè£…ã•ã‚Œã¦ã„ã‚‹ã‚‚ã®ãŒã‚ã£ã¦ã€ã¨ã¦ã‚‚åŽ„ä»‹ã€‚
+Ž¢¤Ã¤Æ¤¯¤ë¤È¤­¤Ï¡¢logincheck¤òßµ¤±¤ÐÁ¼¤¤¤ß¤¿¤¤¤Ç¤¹¡£
+¸ÐÏë¤È¤·¤Æ¤Ï¡¢ÅäÁÐ¤ÎÊ¹¤¤·½¤ò¤Þ¤È¤â¤ËÖª¤é¤Ê¤¤ÈË¤¬Œg×°¤·¤Æ¤¤¤ëÓ¡Ïó¤ò³Ö¤Ã¤¿¡£
+ºÎ¹Ê¤«ÅäÁÐ¤¬1¤«¤éÊ¼¤Þ¤Ã¤Æ¤¤¤ëÒªËØ¤¬¶à¤¯¡¢0¤ÎËù¤Ë-1¤ò³£¤ËÈë¤ì¤Æ¤ª¤¯¤¯¤é¤¤¤À¤Ã¤¿¤é¡¢0¤«¤é³õ¤á¤Æ¤Û¤·¤¤¤â¤Î¤À¡£
+¤·¤«¤â¡¢0¤«¤éÊ¼¤Þ¤Ã¤Æ¤¤¤ë¤â¤Î¤È¡¢½ñ¤Î‘éêLAPI¤Î¤è¤¦¤Ë1¤«¤éÊ¼¤Þ¤ë¤è¤¦¤ËŒg×°¤µ¤ì¤Æ¤¤¤ë¤â¤Î¤¬¤¢¤Ã¤Æ¡¢¤È¤Æ¤â¶ò½é¡£

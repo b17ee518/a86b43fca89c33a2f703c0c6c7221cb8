@@ -10,4 +10,7 @@ KanSaveData::KanSaveData()
     materialdata.append(tm);
     materialdata.append(tm);
     materialdata.append(tm);
+
+    shipcountoffset = 0;
+    slotitemcountoffset = 0;
 }

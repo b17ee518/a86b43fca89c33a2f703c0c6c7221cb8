@@ -111,7 +111,7 @@ public:
     QString api_nickname;
     QString api_nickname_id;
     int api_active_flag;
-    long api_starttime;
+    qint64 api_starttime;
     int api_level;
     int api_rank;
     int api_experience;
@@ -299,7 +299,7 @@ public:
     int api_id;
     QString api_name;
     QString api_name_id;
-    QList<long> api_mission;
+    QList<qint64> api_mission;
     QString api_flagship;
     QList<int> api_ship;
 };
@@ -345,7 +345,7 @@ public:
     int api_id;
     int api_state;
     int api_created_ship_id;
-    long api_complete_time;
+    qint64 api_complete_time;
     QString api_complete_time_str;
     int api_item1;
     int api_item2;
@@ -379,7 +379,7 @@ public:
     int api_fuel;
     int api_bull;
     int api_slotnum;
-    long api_ndock_time;
+    qint64 api_ndock_time;
     QList<int> api_ndock_item;
     int api_srate;
     int api_cond;
@@ -593,7 +593,7 @@ public:
     int api_id;
     int api_state;
     int api_ship_id;
-    long api_complete_time;
+    qint64 api_complete_time;
     QString api_complete_time_str;
     int api_item1;
     int api_item2;
@@ -1227,6 +1227,58 @@ public:
     QList<QString> api_description;
     int api_price;
     int api_count;
+};
+
+class kcsapi_next_enemy : public KAPIBaseData
+{
+public:
+    kcsapi_next_enemy(){}
+
+    virtual bool ReadFromJObj(const QJsonObject &jobj);
+
+    int api_enemy_id;
+    int api_result;
+    QString api_result_str;
+};
+
+/**
+ * @brief The kcsapi_next class
+ */
+class kcsapi_next: public KAPIBaseData
+{
+public:
+    kcsapi_next(){}
+
+    virtual bool ReadFromJObj(const QJsonObject &jobj);
+    int api_rashin_flg;
+    int api_rashin_id;
+    int api_maparea_id;
+    int api_mapinfo_no;
+    int api_no;
+    int api_color_no;
+    int api_event_id;
+    int api_event_kind;
+    int api_next;
+    int api_bosscell_no;
+    int api_bosscomp;
+//    int api_comment_kind;
+//    int api_production_kind;
+    kcsapi_next_enemy api_enemy;
+};
+
+/**
+ * @brief The kcsapi_mission_start class
+ */
+class kcsapi_mission_start: public KAPIBaseData
+{
+public:
+    kcsapi_mission_start(){}
+
+    virtual bool ReadFromJObj(const QJsonObject &jobj);
+
+    qint64 api_complatetime;
+    QString api_complatetime_str;
+
 };
 
 class KanData

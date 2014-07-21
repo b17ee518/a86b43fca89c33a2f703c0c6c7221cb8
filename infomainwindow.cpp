@@ -76,30 +76,40 @@ void InfoMainWindow::updateMissionTable(QString buttonTitle, QList<KQRowData> ro
 
 void InfoMainWindow::updateFleetTable(int n, QString buttonTitle, int colindex, bool bRed, QList<KQRowData> rows)
 {
-    static QString stylesheet_a[3] =
+    static QString stylesheet_a[] =
     {
         "\
         QPushButton {   \
             color:white;    \
             text-align: left;\
         }   \
-        ",
+        ",  // normal
         "\
         QPushButton {   \
             color:rgb(255, 153, 0);    \
             text-align: left;\
         }   \
-        ",
+        ",  // have kira
         "\
         QPushButton {   \
             color:rgb(255, 255, 0);    \
             text-align: left;\
         }   \
-        "
+        ",   // kira full
+        "\
+        QPushButton {   \
+            color:rgb(153, 255, 255);    \
+            text-align: left;\
+        }   \
+        "   // need hokyu
     };
-    static QString stylesheet_b[2] =
+    static QString stylesheet_b[] =
     {
         " \
+        QPushButton{\
+            background-color: rgb(80, 80, 80);\
+            border: none; \
+        }\
         QPushButton:checked{\
             background-color: rgb(80, 80, 80);\
             border: none; \
@@ -111,6 +121,10 @@ void InfoMainWindow::updateFleetTable(int n, QString buttonTitle, int colindex, 
         ",
         " \
         QPushButton:checked{\
+            background-color: rgb(153, 0, 0);\
+            border: none; \
+        }\
+        QPushButton:{\
             background-color: rgb(153, 0, 0);\
             border: none; \
         }\
@@ -130,6 +144,27 @@ void InfoMainWindow::updateRepairTable(QString buttonTitle, QList<KQRowData> row
 {
     ui->repairFrame->pushButton()->setText(buttonTitle);
     ui->repairFrame->tableWidget()->updateFullTable(rows);
+}
+
+void InfoMainWindow::updateTitle(QString title, int colindex)
+{
+    static QString stylesheet[] =
+    {
+        " \
+        QLineEdit{\
+            color: rgb(255, 255, 255);\
+            border: none;\
+        }\
+        ",
+        " \
+        QLineEdit{\
+            color: rgb(255, 255, 0);\
+            border: none;\
+        }\
+        "
+    };
+    ui->lineEditTitle->setText(title);
+    ui->lineEditTitle->setStyleSheet(stylesheet[colindex]);
 }
 
 void InfoMainWindow::setOverviewColumnFormat()
@@ -242,7 +277,7 @@ void InfoMainWindow::slotUpdateTimer()
         updateMissionTable(QString::fromLocal8Bit("遂行中任務(1)"), rows);
 //        ui->missionFrame->tableWidget()->updateFullTable(rows);
         */
-
+/*
         rd.clearCells();
         rd.appendCell(KQRowCellData("1"));
         rd.appendCell(KQRowCellData(QString::fromLocal8Bit("浦風AAAAAAAAAAAAAAAAAAAAA")));
@@ -274,6 +309,7 @@ void InfoMainWindow::slotUpdateTimer()
         rows.append(rd);
 
         updateFleetTable(0, QString::fromLocal8Bit("第一艦隊"), 0, false, rows);
+        */
 /*
         QList<QString> lst;
         lst.append(QString::fromLocal8Bit("艦娘"));
@@ -295,7 +331,7 @@ void InfoMainWindow::slotUpdateTimer()
     }
     else if (count == 80)
     {
-
+/*
         QList<KQRowData> rows;
         KQRowData rd;
         rd.clearCells();
@@ -313,6 +349,7 @@ void InfoMainWindow::slotUpdateTimer()
 
         updateFleetTable(0, QString::fromLocal8Bit("第一艦隊"), 1, true, rows);
 //        ui->fleetFrame_1->tableWidget()->updateFullTable(rows);
+*/
 
     }
     this->adjustSize();

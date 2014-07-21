@@ -22,6 +22,7 @@ public:
     void updateMissionTable(QString buttonTitle, QList<KQRowData> rows);
     void updateFleetTable(int n, QString buttonTitle, int colindex, bool bRed, QList<KQRowData> rows);
     void updateRepairTable(QString buttonTitle, QList<KQRowData> rows);
+    void updateTitle(QString title, int colindex);
 
 private:
 

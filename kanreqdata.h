@@ -1,4 +1,4 @@
-#ifndef KANREQDATA_H
+﻿#ifndef KANREQDATA_H
 #define KANREQDATA_H
 
 #include <QString>
@@ -12,6 +12,7 @@ public:
     KanReqData(){}
 
     void ReadFromString(QString strfunc, QString reqstr);
+    QString GetItemAsString(QString item);
 
     QString reqfunc;
     QUrlQuery query;

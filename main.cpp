@@ -23,6 +23,10 @@ int main(int argc, char *argv[])
     QString style = "   \
             QWidget{background-color:rgb(68, 68, 68);}\
             QToolTip { color: white; background-color: rgb(80, 80, 80); border: 1px solid black; }\
+            QLineEdit{\
+                color: rgb(255, 255, 255);\
+                border: none;\
+            }\
             QFrame{border-top:1px solid grey;}\
             QPushButton {   \
                 color:white;    \
@@ -100,9 +104,10 @@ int main(int argc, char *argv[])
     kcsapi_basic d;
     d.ReadFromJObj(doc.object()["api_data"].toObject());
 */
+
     for (int i=0; i<lstargs.count()/3; i++)
     {
-        KanDataConnector::getInstance().Parse(lstargs[i*3], lstargs[i*3+1], lstargs[i*3+2]);
+//        KanDataConnector::getInstance().Parse(lstargs[i*3], lstargs[i*3+1], lstargs[i*3+2]);
     }
 
     //

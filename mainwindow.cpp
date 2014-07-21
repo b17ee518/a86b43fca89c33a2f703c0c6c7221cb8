@@ -8,6 +8,8 @@
 #include "qnetworkproxyfactoryset.h"
 #include "kqwebpage.h"
 #include <QWinTaskbarProgress>
+#include "kandataconnector.h"
+#include <QWinTaskbarButton>
 
 QFile * MainWindow::pLogFile = 0;
 
@@ -26,7 +28,11 @@ MainWindow::MainWindow(QWidget *parent) :
 
     ui->comboBoxZoom->insertSeparator(1);
 
-    QWinTaskbarProgress * pTaskbarProgress = new QWinTaskbarProgress(this);
+//    QWinTaskbarProgress * pTaskbarProgress = new QWinTaskbarProgress(this);
+	QWinTaskbarButton * pTaskbarButton = new QWinTaskbarButton(this);
+	pTaskbarButton->setWindow(windowHandle());
+	QWinTaskbarProgress * pTaskbarProgress = pTaskbarButton->progress();
+
     pTaskbarProgress->setMinimum(0);
     pTaskbarProgress->setMaximum(100);
     pTaskbarProgress->setValue(50);
@@ -43,6 +49,11 @@ MainWindow::MainWindow(QWidget *parent) :
             SIGNAL(exception(int, const QString &, const QString &, const QString &)),
             this,
             SLOT(slotWebViewException(int, const QString &, const QString &, const QString &)));
+
+    connect(this,
+            SIGNAL(sigParse(const QString &, const QString &, const QString &)),
+            this,
+            SLOT(slotParse(const QString &, const QString &, const QString &)));
 
     pFiddler->SetBeforeRequest((int)&MainWindow::BeforeRequestFunc);
     pFiddler->SetAfterSessionComplete((int)&MainWindow::AfterSessionCompleteFunc);
@@ -70,8 +81,8 @@ body {
 
     ui->webView->page()->settings()->setUserStyleSheetUrl(css);
 
-    ui->webView->load(QUrl("http://www.google.com"));
-//    ui->webView->load(QUrl("http://www.dmm.com/netgame/social/application/-/detail/=/app_id=854854/"));
+//    ui->webView->load(QUrl("http://www.google.com"));
+    ui->webView->load(QUrl("http://www.dmm.com/netgame/social/application/-/detail/=/app_id=854854/"));
 }
 
 MainWindow::~MainWindow()
@@ -222,6 +233,11 @@ void MainWindow::slotToggleRestoreMinimize(bool bRestore)
     }
 }
 
+void MainWindow::slotParse(const QString &PathAndQuery, const QString &requestBody, const QString &responseBody)
+{
+    KanDataConnector::getInstance().Parse(PathAndQuery, requestBody, responseBody);
+}
+
 void MainWindow::on_pbClose_clicked()
 {
     close();
@@ -313,6 +329,9 @@ void MainWindow::AfterSessionCompleteFunc(int sessionID, char *mimeType, int res
     {
         if (0 == QString::compare(mimeType, "text/plain"))
         {
+            emit MainWindow::mainWindow()->sigParse(PathAndQuery, requestBody, responseBody);
+//            KanDataConnector::getInstance().Parse(PathAndQuery, requestBody, responseBody);
+            /*
             QString str = QDateTime::currentDateTime().toString("[yyyy/MM/dd HH:mm:ss]\t");
             str += PathAndQuery;
             str += "\t";
@@ -322,6 +341,7 @@ void MainWindow::AfterSessionCompleteFunc(int sessionID, char *mimeType, int res
             str += "\n";
 
             pLogFile->write(str.toLocal8Bit());
+            */
         }
     }
 }

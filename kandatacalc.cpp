@@ -116,12 +116,17 @@ int AdmiralExperienceTable[][3] =
     {112, 800000, 7400000},
     {113, 900000, 8200000},
     {114, 900000, 9100000},
-    {115, 0, 10000000},
+    {115, 1000000, 11000000},
+    {116, 1000000, 12000000},
+    {117, 1000000, 13000000},
+    {118, 1000000, 14000000},
+    {119, 1000000, 15000000},
+    {120, 0, 16000000},
 };
 
 int KanDataCalc::GetAdmiralNextLevelExp(int curExp, int curLevel)
 {
-    if (curLevel < 115)
+    if (curLevel < 120)
     {
         int nextexp = AdmiralExperienceTable[curLevel][2] - curExp;
         return nextexp;
@@ -138,7 +143,7 @@ int KanDataCalc::GetWoundState(int curHP, int maxHP)
     }
     else if (val <= 0.25)
     {
-        return WOUNDSTATE_SMALL;
+        return WOUNDSTATE_BIG;
     }
     else if (val <= 0.5)
     {
@@ -146,7 +151,55 @@ int KanDataCalc::GetWoundState(int curHP, int maxHP)
     }
     else if (val <= 0.75)
     {
-        return WOUNDSTATE_BIG;
+        return WOUNDSTATE_SMALL;
     }
-    return WOUNDSTATE_NORMAL;
+    else if (val < 1.0)
+    {
+        return WOUNDSTATE_LITTLE;
+    }
+    return WOUNDSTATE_FULL;
+}
+
+int KanDataCalc::GetChargeState(int curVal, int maxVal)
+{
+    double val = (double)curVal / (double)maxVal;
+    if (val <= 0.0)
+    {
+        return CHARGESTATE_EMPTY;
+    }
+    else if (val <= 0.25)
+    {
+        return CHARGESTATE_BIG;
+    }
+    else if (val <= 0.5)
+    {
+        return CHARGESTATE_MIDDLE;
+    }
+    else if (val < 1.0)
+    {
+        return WOUNDSTATE_SMALL;
+    }
+    return CHARGESTATE_FULL;
+
+}
+
+int KanDataCalc::GetCondState(int cond)
+{
+    if (cond < 20)
+    {
+        return CONDSTATE_BIG;
+    }
+    else if (cond < 30)
+    {
+        return CONDSTATE_MIDDLE;
+    }
+    else if (cond < 40)
+    {
+        return CONDSTATE_SMALL;
+    }
+    else if (cond < 50)
+    {
+        return CONDSTATE_NORMAL;
+    }
+    return CONDSTATE_KIRA;
 }

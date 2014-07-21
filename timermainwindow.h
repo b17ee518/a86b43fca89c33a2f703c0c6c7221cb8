@@ -41,7 +41,7 @@ public:
 
     void setExpeditionTime(int n, qint64 destms=-1, qint64 totalms=-1, QString comment=QString(), QColor col=QColor(0xff, 0xff, 0xff));
     void setRepairTime(int n, qint64 destms=-1, qint64 totalms=-1, QString comment=QString(), QColor col=QColor(0xff, 0xff, 0xff));
-    void setbuildTime(int n, qint64 destms=-1, qint64 totalms=-1, QString comment=QString(), QColor col=QColor(0xff, 0xff, 0xff));
+    void setBuildTime(int n, qint64 destms=-1, qint64 totalms=-1, QString comment=QString(), QColor col=QColor(0xff, 0xff, 0xff));
 
 
 private slots:
@@ -72,13 +72,13 @@ private:
     Ui::TimerMainWindow *ui;
     QList<QTableWidget *> lstTables;
 
-    TimeRecord exptimerecord[4];
+    TimeRecord exptimerecord[3];
     TimeRecord repairtimerecord[4];
     TimeRecord buildtimerecord[2];
 
     QTimer * pUpdateTimer;
 
-    QProgressBar * progressExpUs[4];
+    QProgressBar * progressExpUs[3];
     QProgressBar * progressRepairUs[4];
 
     QMediaPlayer * pPlayer;

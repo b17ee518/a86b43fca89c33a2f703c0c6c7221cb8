@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>256</width>
-    <height>385</height>
+    <height>345</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -19,13 +19,13 @@
   <property name="minimumSize">
    <size>
     <width>256</width>
-    <height>385</height>
+    <height>345</height>
    </size>
   </property>
   <property name="maximumSize">
    <size>
     <width>256</width>
-    <height>425</height>
+    <height>345</height>
    </size>
   </property>
   <property name="windowTitle">
@@ -176,13 +176,13 @@
       <property name="minimumSize">
        <size>
         <width>0</width>
-        <height>160</height>
+        <height>120</height>
        </size>
       </property>
       <property name="maximumSize">
        <size>
         <width>16777215</width>
-        <height>160</height>
+        <height>120</height>
        </size>
       </property>
       <property name="frameShape">
@@ -267,16 +267,6 @@
       <row>
        <property name="text">
         <string>③N</string>
-       </property>
-      </row>
-      <row>
-       <property name="text">
-        <string>④T</string>
-       </property>
-      </row>
-      <row>
-       <property name="text">
-        <string>④N</string>
        </property>
       </row>
       <column>
@@ -635,28 +625,6 @@
        </item>
        <item>
         <widget class="QProgressBar" name="progressExp3u">
-         <property name="minimumSize">
-          <size>
-           <width>0</width>
-           <height>5</height>
-          </size>
-         </property>
-         <property name="maximumSize">
-          <size>
-           <width>16777215</width>
-           <height>5</height>
-          </size>
-         </property>
-         <property name="value">
-          <number>24</number>
-         </property>
-         <property name="textVisible">
-          <bool>false</bool>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QProgressBar" name="progressExp4u">
          <property name="minimumSize">
           <size>
            <width>0</width>

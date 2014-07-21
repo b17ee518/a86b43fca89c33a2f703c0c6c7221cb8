@@ -92,13 +92,23 @@
          <property name="orientation">
           <enum>Qt::Horizontal</enum>
          </property>
+         <property name="sizeType">
+          <enum>QSizePolicy::Fixed</enum>
+         </property>
          <property name="sizeHint" stdset="0">
           <size>
-           <width>237</width>
-           <height>17</height>
+           <width>40</width>
+           <height>20</height>
           </size>
          </property>
         </spacer>
+       </item>
+       <item>
+        <widget class="QLineEdit" name="lineEditTitle">
+         <property name="readOnly">
+          <bool>true</bool>
+         </property>
+        </widget>
        </item>
        <item>
         <widget class="QPushButton" name="pbMinimize">
@@ -411,15 +421,15 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>KQUI_CollapsibleFrame</class>
-   <extends>QFrame</extends>
-   <header>kqui_collapsibleframe.h</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
    <class>KQTitleFrame</class>
    <extends>QFrame</extends>
    <header>kqtitleframe.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>KQUI_CollapsibleFrame</class>
+   <extends>QFrame</extends>
+   <header>kqui_collapsibleframe.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

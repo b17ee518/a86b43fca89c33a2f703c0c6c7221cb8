@@ -28,7 +28,6 @@ TimerMainWindow::TimerMainWindow(QWidget *parent) :
     progressExpUs[0] = ui->progressExp1u;
     progressExpUs[1] = ui->progressExp2u;
     progressExpUs[2] = ui->progressExp3u;
-    progressExpUs[3] = ui->progressExp4u;
 
     progressRepairUs[0] = ui->progressRepair1u;
     progressRepairUs[1] = ui->progressRepair2u;
@@ -85,7 +84,7 @@ void TimerMainWindow::setRepairTime(int n, qint64 destms, qint64 totalms, QStrin
     }
 }
 
-void TimerMainWindow::setbuildTime(int n, qint64 destms, qint64 totalms, QString comment, QColor col)
+void TimerMainWindow::setBuildTime(int n, qint64 destms, qint64 totalms, QString comment, QColor col)
 {
     buildtimerecord[n].setValue(destms, totalms, comment, col);
     QTableWidgetItem * pNameItem = ui->buildTable->item(n, 2);
@@ -118,8 +117,9 @@ void TimerMainWindow::slotUpdateTimer()
     qint64 ct = currentMS();
 
     // exp
-    for (int i=0; i<4; i++)
+    for (int i=0; i<3; i++)
     {
+        bool bUpdated = false;
         if (exptimerecord[i].desttime >= 0)
         {
             qint64 dt = exptimerecord[i].desttime;
@@ -128,7 +128,7 @@ void TimerMainWindow::slotUpdateTimer()
                 playSound(0);
                 exptimerecord[i].alarmed = true;
             }
-            bool bUpdated = updateDisplay(ct
+            bUpdated = updateDisplay(ct
                           , dt
                           , exptimerecord[i].totaltime
                           , ui->expeditionTable->item(i*2, 1)
@@ -138,10 +138,23 @@ void TimerMainWindow::slotUpdateTimer()
                           );
 
 
-            if (!bRepaint && bUpdated)
-            {
-                bRepaint = true;
-            }
+        }
+        else if (exptimerecord[i].desttime == -1)
+        {
+            exptimerecord[i].desttime = -2;
+            bUpdated = true;
+            updateDisplay(-1
+                          , 0
+                          , 0
+                          , ui->expeditionTable->item(i*2, 1)
+                          , ui->expeditionTable->item(i*2, 2)
+                          , progressExpUs[i]
+                          , true
+                          );
+        }
+        if (!bRepaint && bUpdated)
+        {
+            bRepaint = true;
         }
     }
     if (bRepaint)
@@ -153,6 +166,7 @@ void TimerMainWindow::slotUpdateTimer()
     // repair
     for (int i=0; i<4; i++)
     {
+        bool bUpdated = false;
         if (repairtimerecord[i].desttime >= 0)
         {
             qint64 dt = repairtimerecord[i].desttime;
@@ -161,7 +175,7 @@ void TimerMainWindow::slotUpdateTimer()
                 playSound(1);
                 repairtimerecord[i].alarmed = true;
             }
-            bool bUpdated = updateDisplay(ct
+            bUpdated = updateDisplay(ct
                           , dt
                           , repairtimerecord[i].totaltime
                           , ui->repairTable->item(i*2, 1)
@@ -169,12 +183,23 @@ void TimerMainWindow::slotUpdateTimer()
                           , progressRepairUs[i]
                           , true
                           );
-
-
-            if (!bRepaint && bUpdated)
-            {
-                bRepaint = true;
-            }
+        }
+        else if (repairtimerecord[i].desttime == -1)
+        {
+            repairtimerecord[i].desttime = -2;
+            bUpdated = true;
+            updateDisplay(-1
+                          , 0
+                          , 0
+                          , ui->repairTable->item(i*2, 1)
+                          , ui->repairTable->item(i*2, 2)
+                          , progressRepairUs[i]
+                          , true
+                          );
+        }
+        if (!bRepaint && bUpdated)
+        {
+            bRepaint = true;
         }
     }
     if (bRepaint)
@@ -186,6 +211,7 @@ void TimerMainWindow::slotUpdateTimer()
     // build
     for (int i=0; i<2; i++)
     {
+        bool bUpdated = false;
         if (buildtimerecord[i].desttime >= 0)
         {
             qint64 dt = buildtimerecord[i].desttime;
@@ -194,17 +220,25 @@ void TimerMainWindow::slotUpdateTimer()
                 playSound(2);
                 buildtimerecord[i].alarmed = true;
             }
-            bool bUpdated = updateDisplay(ct
+            bUpdated = updateDisplay(ct
                           , dt
                           , buildtimerecord[i].totaltime
                           , ui->buildTable->item(i, 1)
                           );
-
-
-            if (!bRepaint && bUpdated)
-            {
-                bRepaint = true;
-            }
+        }
+        else if (buildtimerecord[i].desttime == -1)
+        {
+            buildtimerecord[i].desttime = -2;
+            bUpdated = true;
+            updateDisplay(-1
+                          , 0
+                          , 0
+                          , ui->buildTable->item(i, 1)
+                          );
+        }
+        if (!bRepaint && bUpdated)
+        {
+            bRepaint = true;
         }
     }
     if (bRepaint)
@@ -366,6 +400,21 @@ void TimerMainWindow::setProgressColor(QProgressBar *pBar, qint64 tdiff, bool bY
 
 bool TimerMainWindow::updateDisplay(qint64 ct, qint64 dt, qint64 tt, QTableWidgetItem *pRemainItem, QTableWidgetItem *pExpectedItem, QProgressBar *pProgress, bool bMinusOne)
 {
+    if (ct < 0)
+    {
+        pRemainItem->setText("-- : -- : --");
+        setPercentageFlag(pRemainItem, 0, false);
+        if (pExpectedItem)
+        {
+            pExpectedItem->setText("-- : -- : --");
+        }
+        if (pProgress)
+        {
+            pProgress->setValue(0);
+        }
+        return true;
+    }
+
     QString strRemain = getRemainTimeStr(ct, dt);
     pRemainItem->setText(strRemain);
 
@@ -444,11 +493,12 @@ void TimerMainWindow::initTableItem()
 
     }
 
-    for (int i=0; i<4; i++)
+    for (int i=0; i<3; i++)
     {
         progressExpUs[i]->setUserData(Qt::UserRole, (QObjectUserData*)-1);
         progressRepairUs[i]->setUserData(Qt::UserRole, (QObjectUserData*)-1);
     }
+    progressRepairUs[3]->setUserData(Qt::UserRole, (QObjectUserData*)-1);
 
 
     ui->expeditionTable->setSpan(0, 0, 2, 1);
@@ -457,9 +507,6 @@ void TimerMainWindow::initTableItem()
     ui->expeditionTable->setSpan(3, 1, 1, 2);
     ui->expeditionTable->setSpan(4, 0, 2, 1);
     ui->expeditionTable->setSpan(5, 1, 1, 2);
-    ui->expeditionTable->setSpan(6, 0, 2, 1);
-    ui->expeditionTable->setSpan(7, 1, 1, 2);
-    ui->expeditionTable->setSpan(0, 0, 2, 1);
 
     ui->repairTable->setSpan(0, 0, 2, 1);
     ui->repairTable->setSpan(1, 1, 1, 2);
@@ -472,8 +519,7 @@ void TimerMainWindow::initTableItem()
 
     ui->expeditionTable->item(0, 0)->setData(Qt::UserRole, CustomTableDelegate_Right|CustomTableDelegate_Bottom);
     ui->expeditionTable->item(2, 0)->setData(Qt::UserRole, CustomTableDelegate_Right|CustomTableDelegate_Bottom);
-    ui->expeditionTable->item(4, 0)->setData(Qt::UserRole, CustomTableDelegate_Right|CustomTableDelegate_Bottom);
-    ui->expeditionTable->item(6, 0)->setData(Qt::UserRole, CustomTableDelegate_Right);
+    ui->expeditionTable->item(4, 0)->setData(Qt::UserRole, CustomTableDelegate_Right);
 
     ui->expeditionTable->item(1, 1)->setData(Qt::UserRole, CustomTableDelegate_Bottom);
     ui->expeditionTable->item(3, 1)->setData(Qt::UserRole, CustomTableDelegate_Bottom);
@@ -497,10 +543,9 @@ void TimerMainWindow::initTableItem()
 
 
 
-    ui->expeditionTable->item(0, 0)->setText(QString::fromLocal8Bit("①"));
-    ui->expeditionTable->item(2, 0)->setText(QString::fromLocal8Bit("②"));
-    ui->expeditionTable->item(4, 0)->setText(QString::fromLocal8Bit("③"));
-    ui->expeditionTable->item(6, 0)->setText(QString::fromLocal8Bit("④"));
+    ui->expeditionTable->item(0, 0)->setText(QString::fromLocal8Bit("②"));
+    ui->expeditionTable->item(2, 0)->setText(QString::fromLocal8Bit("③"));
+    ui->expeditionTable->item(4, 0)->setText(QString::fromLocal8Bit("④"));
 
     ui->repairTable->item(0, 0)->setText(QString::fromLocal8Bit("①"));
     ui->repairTable->item(2, 0)->setText(QString::fromLocal8Bit("②"));
@@ -523,17 +568,19 @@ void TimerMainWindow::initTableItem()
     ui->expeditionTable->item(0, 2)->setText(zerotime.toString());
     ui->expeditionTable->item(1, 1)->setText(QString::fromLocal8Bit("鼠輸送作戦"));
     */
-
+/*
     setExpeditionTime(0, currentMS()+70000, 600000, QString::fromLocal8Bit("鼠輸送作戦"));
     setExpeditionTime(1, currentMS()+100005000, 120000000, QString::fromLocal8Bit("鼠輸送作戦"));
     setExpeditionTime(2, currentMS()+2005000, 6000000, QString::fromLocal8Bit("鼠輸送作戦"));
-    setExpeditionTime(3, currentMS()+305000, 6000000, QString::fromLocal8Bit("鼠輸送作戦"));
-
+*/
+    /*
     setRepairTime(0, currentMS()+48560485, 54086454, QString::fromLocal8Bit("AAA"));
     setRepairTime(1, currentMS()+45064, 79005560560, QString::fromLocal8Bit("BBB"));
     setRepairTime(2, currentMS()+809640530, 5048964, QString::fromLocal8Bit("CCC"));
     setRepairTime(3, currentMS()+548904156, 480645848, QString::fromLocal8Bit("DDD"));
-
-    setbuildTime(0, currentMS()+1894908, 408904650, QString::fromLocal8Bit("AAA"));
-    setbuildTime(1, currentMS()+4809848960, 40894560, QString::fromLocal8Bit("BBB"));
+*/
+    /*
+    setBuildTime(0, currentMS()+1894908, 408904650, QString::fromLocal8Bit("AAA"));
+    setBuildTime(1, currentMS()+4809848960, 40894560, QString::fromLocal8Bit("BBB"));
+    */
 }

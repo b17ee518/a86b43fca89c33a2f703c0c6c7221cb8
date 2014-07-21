@@ -3,7 +3,7 @@
 
 #define _SREAD(name)    name=jobj[#name].toString();
 #define _IREAD(name)    name=jobj[#name].toInt();
-#define _LREAD(name)    name=(long)jobj[#name].toDouble();
+#define _LREAD(name)    name=(qint64)jobj[#name].toDouble();
 #define _FREAD(name)    name=(float)jobj[#name].toDouble();
 
 #define _AIREAD(name)   \
@@ -41,7 +41,7 @@
     name.clear();\
     foreach(const QJsonValue &v, jarray)\
     {\
-        name.append((long)v.toDouble());\
+        name.append((qint64)v.toDouble());\
     }
 
 #define _ACREAD(name, c)   \
@@ -1048,5 +1048,43 @@ bool Api_Boko_Max_Ships::ReadFromJObj(const QJsonObject &jobj)
 
     _SREAD(api_string_value);
     _IREAD(api_int_value);
+    return bParseRet;
+}
+
+
+bool kcsapi_next_enemy::ReadFromJObj(const QJsonObject &jobj)
+{
+    _IREAD(api_enemy_id);
+    _IREAD(api_result);
+    _SREAD(api_result_str);
+    return bParseRet;
+}
+
+
+bool kcsapi_next::ReadFromJObj(const QJsonObject &jobj)
+{
+
+    _IREAD(api_rashin_flg);
+    _IREAD(api_rashin_id);
+    _IREAD(api_maparea_id);
+    _IREAD(api_mapinfo_no);
+    _IREAD(api_no);
+    _IREAD(api_color_no);
+    _IREAD(api_event_id);
+    _IREAD(api_event_kind);
+    _IREAD(api_next);
+    _IREAD(api_bosscell_no);
+    _IREAD(api_bosscomp);
+//    int api_comment_kind;
+//    int api_production_kind;
+    _CREAD(api_enemy, kcsapi_next_enemy);
+    return bParseRet;
+}
+
+
+bool kcsapi_mission_start::ReadFromJObj(const QJsonObject &jobj)
+{
+    _LREAD(api_complatetime);
+    _SREAD(api_complatetime_str);
     return bParseRet;
 }

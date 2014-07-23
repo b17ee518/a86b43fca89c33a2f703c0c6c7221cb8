@@ -11,7 +11,6 @@
 #include "kandataconnector.h"
 #include <QWinTaskbarButton>
 
-QFile * MainWindow::pLogFile = 0;
 
 MainWindow * MainWindow::s_pMainWindow = 0;
 
@@ -22,9 +21,6 @@ MainWindow::MainWindow(QWidget *parent) :
     setMainWindow(this);
     ui->setupUi(this);
     ui->retranslateUi(this);
-
-    pLogFile = new QFile(QApplication::applicationDirPath()+"/log.txt");
-    pLogFile->open(QIODevice::ReadWrite|QIODevice::Text);
 
     ui->comboBoxZoom->insertSeparator(1);
 

@@ -355,6 +355,73 @@ public:
 };
 
 /**
+ * @brief The kcsapi_ship class
+ */
+class kcsapi_ship: public KAPIBaseData
+{
+
+public:
+    kcsapi_ship(){}
+
+    virtual bool ReadFromJObj(const QJsonObject &jobj);
+
+    int api_member_id;
+    int api_id;
+    int api_sortno;
+    QString api_name;
+    QString api_yomi;
+    int api_stype;
+    int api_ship_id;
+    int api_lv;
+    int api_exp;
+    int api_afterlv;
+    int api_aftershipid;
+    int api_nowhp;
+    int api_maxhp;
+    QList<int> api_taik;
+    QList<int> api_souk;
+    QList<int> api_houg;
+    QList<int> api_raig;
+    QList<int> api_baku;
+    QList<int> api_tyku;
+    QList<int> api_houm;
+    QList<int> api_raim;
+    QList<int> api_saku;
+    QList<int> api_luck;
+    int api_soku;
+    int api_leng;
+    QList<int> api_slot;
+    QList<int> api_onslot;
+    QList<int> api_broken;
+    QList<int> api_powup;
+    QList<int> api_kyouka;
+    int api_backs;
+    int api_fuel;
+    int api_fuel_max;
+    int api_bull;
+    int api_bull_max;
+    QString api_gomes;    //o
+    QString api_gomes2;   //o
+    int api_slotnum;
+    int api_ndock_time;
+    QString api_ndock_time_str;
+    QList<int> api_ndock_item;
+    int api_star;
+    int api_srate;
+    int api_cond;
+    QList<int> api_karyoku;
+    QList<int> api_raisou;
+    QList<int> api_taiku;
+    QList<int> api_soukou;
+    QList<int> api_kaihi;
+    QList<int> api_taisen;
+    QList<int> api_sakuteki;
+    QList<int> api_lucky;
+    int api_use_fuel;
+    int api_use_bull;
+    int api_voicef;
+};
+/**
  * @brief The kcsapi_ship2 class
  */
 class kcsapi_ship2 : public KAPIBaseData
@@ -364,6 +431,9 @@ public:
     kcsapi_ship2(){}
 
     virtual bool ReadFromJObj(const QJsonObject &jobj);
+
+    bool ReadFromShip(const kcsapi_ship &ship);
+
     int api_id;
     int api_sortno;
     int api_ship_id;
@@ -657,73 +727,6 @@ public:
     int api_exec_count;
 };
 
-/**
- * @brief The kcsapi_ship class
- */
-class kcsapi_ship: public KAPIBaseData
-{
-
-public:
-    kcsapi_ship(){}
-
-    virtual bool ReadFromJObj(const QJsonObject &jobj);
-
-    int api_member_id;
-    int api_id;
-    int api_sortno;
-    QString api_name;
-    QString api_yomi;
-    int api_stype;
-    int api_ship_id;
-    int api_lv;
-    int api_exp;
-    int api_afterlv;
-    int api_aftershipid;
-    int api_nowhp;
-    int api_maxhp;
-    QList<int> api_taik;
-    QList<int> api_souk;
-    QList<int> api_houg;
-    QList<int> api_raig;
-    QList<int> api_baku;
-    QList<int> api_tyku;
-    QList<int> api_houm;
-    QList<int> api_raim;
-    QList<int> api_saku;
-    QList<int> api_luck;
-    int api_soku;
-    int api_leng;
-    QList<int> api_slot;
-    QList<int> api_onslot;
-    QList<int> api_broken;
-    QList<int> api_powup;
-    QList<int> api_kyouka;
-    int api_backs;
-    int api_fuel;
-    int api_fuel_max;
-    int api_bull;
-    int api_bull_max;
-    QString api_gomes;    //o
-    QString api_gomes2;   //o
-    int api_slotnum;
-    int api_ndock_time;
-    QString api_ndock_time_str;
-    QList<int> api_ndock_item;
-    int api_star;
-    int api_srate;
-    int api_cond;
-    QList<int> api_karyoku;
-    QList<int> api_raisou;
-    QList<int> api_taiku;
-    QList<int> api_soukou;
-    QList<int> api_kaihi;
-    QList<int> api_taisen;
-    QList<int> api_sakuteki;
-    QList<int> api_lucky;
-    int api_use_fuel;
-    int api_use_bull;
-    int api_voicef;
-};
 
 /**
  * @brief The kcsapi_ship3 class

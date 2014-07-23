@@ -32,7 +32,8 @@ SOURCES += main.cpp\
     qnetworkproxyfactoryset.cpp \
     kandataconnector.cpp \
     kandatacalc.cpp \
-    kqwebpage.cpp
+    kqwebpage.cpp \
+    klog.cpp
 
 HEADERS  += mainwindow.h \
     infomainwindow.h \
@@ -52,7 +53,8 @@ HEADERS  += mainwindow.h \
     qnetworkproxyfactoryset.h \
     kandataconnector.h \
     kandatacalc.h \
-    kqwebpage.h
+    kqwebpage.h \
+    klog.h
 
 FORMS    += mainwindow.ui \
     infomainwindow.ui \

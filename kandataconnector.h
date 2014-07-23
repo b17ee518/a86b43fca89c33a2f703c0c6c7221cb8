@@ -39,7 +39,9 @@ private:
     QString getShipWoundStateString(const kcsapi_ship2 *pship);
     bool isShipRepairing(const kcsapi_ship2 *pship);
 
-    const kcsapi_ship2 *findShipFromShipno(int shipno) const;
+    bool RemoveShip(int shipno);
+
+    kcsapi_ship2 *findShipFromShipno(int shipno);
     const kcsapi_mst_ship *findMstShipFromShipid(int shipid) const;
     const Api_Mst_Mission *findMstMissionFromMissionid(int missionid) const;
 

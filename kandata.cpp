@@ -330,6 +330,42 @@ bool kcsapi_ship2::ReadFromJObj(const QJsonObject &jobj)
 
 }
 
+bool kcsapi_ship2::ReadFromShip(const kcsapi_ship &ship)
+{
+    if (ship.api_id == api_id)
+    {
+        api_id = ship.api_id;
+        api_sortno = ship.api_sortno;
+        api_ship_id = ship.api_ship_id;
+        api_lv = ship.api_ship_id;
+//        api_exp = ship.api_exp;
+        api_nowhp = ship.api_nowhp;
+        api_maxhp = ship.api_maxhp;
+        api_leng = ship.api_leng;
+        api_slot = ship.api_slot;
+        api_onslot = ship.api_onslot;
+        api_kyouka = ship.api_kyouka;
+        api_backs = ship.api_backs;
+        api_fuel = ship.api_fuel;
+        api_bull = ship.api_bull;
+        api_slotnum = ship.api_slotnum;
+        api_ndock_time = ship.api_ndock_time;
+        api_ndock_item = ship.api_ndock_item;
+        api_srate = ship.api_srate;
+        api_cond = ship.api_cond;
+        api_karyoku = ship.api_karyoku;
+        api_raisou = ship.api_raisou;
+        api_taiku = ship.api_taiku;
+        api_soukou = ship.api_soukou;
+        api_kaihi = ship.api_kaihi;
+        api_taisen = ship.api_taisen;
+        api_sakuteki = ship.api_sakuteki;
+        api_lucky = ship.api_lucky;
+        return true;
+    }
+    return false;
+}
+
 
 bool kcsapi_kdock_getship::ReadFromJObj(const QJsonObject &jobj)
 {

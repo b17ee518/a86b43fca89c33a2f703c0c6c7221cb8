@@ -8,6 +8,7 @@
 #include "infomainwindow.h"
 #include "mainwindow.h"
 #include "kqtime.h"
+#include "klog.h"
 
 /*
  * End points
@@ -50,6 +51,7 @@ bool questDataSort(const kcsapi_quest &left, const kcsapi_quest &right)
 
 void KanDataConnector::Parse(QString pathAndQuery, QString requestBody, QString responseBody)
 {
+#define DAPILOG() APILOG(pathAndQuery, requestBody, responseBody)
     // svdata=
     responseBody = responseBody.right(responseBody.length()-7);
     QJsonDocument jdoc = QJsonDocument::fromJson(responseBody.toLocal8Bit());
@@ -86,6 +88,18 @@ void KanDataConnector::Parse(QString pathAndQuery, QString requestBody, QString 
         pksd->portdata.api_basic.ReadFromJObj(jobj);
         updateOverviewTable();
     }
+    else if (pathAndQuery == "/kcsapi/api_get_member/ship")
+    {
+        kcsapi_ship api_ship;
+        api_ship.ReadFromJObj(jobj);
+        kcsapi_ship2 * pship = findShipFromShipno(api_ship.api_id);
+        if (pship)
+        {
+            pship->ReadFromShip(api_ship);
+            updateFleetTable();
+            updateRepairTable();
+        }
+    }
     else if (pathAndQuery == "/kcsapi/api_get_member/ship2")
     {
         pksd->portdata.api_ship.clear();
@@ -102,7 +116,6 @@ void KanDataConnector::Parse(QString pathAndQuery, QString requestBody, QString 
         updateOverviewTable();
         updateFleetTable();
         updateRepairTable();
-        //TODO: move out from repair?
     }
     else if (pathAndQuery == "/kcsapi/api_get_member/ship3")
     {
@@ -129,7 +142,6 @@ void KanDataConnector::Parse(QString pathAndQuery, QString requestBody, QString 
         updateRepairTable();
 
         pksd->shipcountoffset = 0;
-        //TODO: move out from repair?
         updateExpeditionTable();
     }
     else if (pathAndQuery == "/kcsapi/api_get_member/slot_item")
@@ -150,7 +162,6 @@ void KanDataConnector::Parse(QString pathAndQuery, QString requestBody, QString 
     }
     else if (pathAndQuery == "/kcsapi/api_get_member/useitem")
     {
-        //TODO: ignore?
     }
     else if (pathAndQuery == "/kcsapi/api_get_member/deck" || pathAndQuery == "/kcsapi/api_get_member/deck_port")
     {
@@ -181,6 +192,7 @@ void KanDataConnector::Parse(QString pathAndQuery, QString requestBody, QString 
         updateFleetTable();
         updateRepairTable();
 
+        //TODO?? remove from repair list?
         updateRepairDockTable();
     }
     else if (pathAndQuery == "/kcsapi/api_get_member/kdock")
@@ -198,13 +210,13 @@ void KanDataConnector::Parse(QString pathAndQuery, QString requestBody, QString 
     }
     else if (pathAndQuery == "/kcsapi/api_get_member/material")
     {
-        pksd->materialdata.clear();
+        pksd->portdata.api_material.clear();
         QJsonArray jarray = jdoc.object()["api_data"].toArray();
         for (int i=0; i<jarray.count(); i++)
         {
             kcsapi_material api_material;
             api_material.ReadFromJObj(jarray[i].toObject());
-            pksd->materialdata.append(api_material);
+            pksd->portdata.api_material.append(api_material);
         }
 
         updateOverviewTable();
@@ -333,7 +345,7 @@ void KanDataConnector::Parse(QString pathAndQuery, QString requestBody, QString 
         }
         for (int i=0; i<api_createitem.api_material.count(); i++)
         {
-            pksd->materialdata[i].api_value = api_createitem.api_material[i];
+            pksd->portdata.api_material[i].api_value = api_createitem.api_material[i];
         }
 
         updateOverviewTable();
@@ -348,22 +360,25 @@ void KanDataConnector::Parse(QString pathAndQuery, QString requestBody, QString 
         int bLarge = req.GetItemAsString("api_large_flag").toInt();
         if (bLarge)
         {
-            qDebug("/kcsapi/api_req_kousyou/createship");
-            qDebug(requestBody.toUtf8());
-            qDebug(responseBody.toUtf8());
-            qDebug("");
+            DAPILOG();
         }
 
-        pksd->materialdata[MATERIALDATAINDEX_FUEL].api_value-=usef;
-        pksd->materialdata[MATERIALDATAINDEX_BULLET].api_value-=usebu;
-        pksd->materialdata[MATERIALDATAINDEX_STEEL].api_value-=uses;
-        pksd->materialdata[MATERIALDATAINDEX_BAUXITE].api_value-=useba;
-        pksd->materialdata[MATERIALDATAINDEX_DEVELOPMENT].api_value-=usedev;
+        pksd->portdata.api_material[MATERIALDATAINDEX_FUEL].api_value-=usef;
+        pksd->portdata.api_material[MATERIALDATAINDEX_BULLET].api_value-=usebu;
+        pksd->portdata.api_material[MATERIALDATAINDEX_STEEL].api_value-=uses;
+        pksd->portdata.api_material[MATERIALDATAINDEX_BAUXITE].api_value-=useba;
+        pksd->portdata.api_material[MATERIALDATAINDEX_DEVELOPMENT].api_value-=usedev;
 
     }
     else if (pathAndQuery == "/kcsapi/api_req_kousyou/createship_speedchange")
     {
-        //TODO: ignore?
+        int dockid = req.GetItemAsString("api_kdock_id").toInt()-1;
+        if (dockid >= 0)
+        {
+            pksd->kdockdata[dockid].api_complete_time = 0;
+            updateBuildDockTable();
+        }
+
     }
     else if (pathAndQuery == "/kcsapi/api_req_kousyou/destroyship")
     {
@@ -387,7 +402,6 @@ void KanDataConnector::Parse(QString pathAndQuery, QString requestBody, QString 
                 break;
             }
         }
-        pksd->shipcountoffset--;
 
         // slotitem
         const kcsapi_ship2 * pship = findShipFromShipno(shipno);
@@ -405,12 +419,16 @@ void KanDataConnector::Parse(QString pathAndQuery, QString requestBody, QString 
         QList<int> api_material = api_destroyship.api_material;
         for (int i=0; i<api_material.count(); i++)
         {
-            pksd->materialdata[i].api_value = api_material[i];
+            pksd->portdata.api_material[i].api_value = api_material[i];
         }
 
+        if (!RemoveShip(shipno))
+        {
+            pksd->shipcountoffset--;
+        }
         updateOverviewTable();
         updateFleetTable();
-        //TODO: remove from repair
+
         updateRepairTable();
     }
     else if (pathAndQuery == "/kcsapi/api_req_kousyou/destroyitem2")
@@ -425,18 +443,28 @@ void KanDataConnector::Parse(QString pathAndQuery, QString requestBody, QString 
         QList<int> api_get_material = api_destroyitem2.api_get_material;
         for (int i=0; i<api_get_material.count(); i++)
         {
-            pksd->materialdata[i].api_value+=api_get_material[i];
+            pksd->portdata.api_material[i].api_value+=api_get_material[i];
         }
         updateOverviewTable();
     }
     else if (pathAndQuery == "/kcsapi/api_req_nyukyo/start")
     {
-        //TODO: can ignore?
     }
     else if (pathAndQuery == "/kcsapi/api_req_nyukyo/speedchange")
     {
-        //TODO: ignore?
-//        req.GetItemAsString("api_ndock_id");
+        int dockid = req.GetItemAsString("api_ndock_id").toInt()-1;
+        if (dockid >= 0)
+        {
+            int shipno = pksd->portdata.api_ndock[dockid].api_ship_id;
+            pksd->portdata.api_ndock[dockid].api_ship_id = 0;
+            kcsapi_ship2 * pship = findShipFromShipno(shipno);
+            if (pship)
+            {
+                pship->api_ndock_time = 0;
+                updateRepairTable();
+            }
+            updateRepairDockTable();
+        }
     }
     else if (pathAndQuery == "/kcsapi/api_req_kousyou/createship_speedchange")
     {
@@ -486,7 +514,7 @@ void KanDataConnector::Parse(QString pathAndQuery, QString requestBody, QString 
 
         for(int i=0; i<api_charge.api_material.count(); i++)
         {
-            pksd->materialdata[i].api_value = api_charge.api_material[i];
+            pksd->portdata.api_material[i].api_value = api_charge.api_material[i];
         }
 
         updateFleetTable();
@@ -516,7 +544,8 @@ void KanDataConnector::Parse(QString pathAndQuery, QString requestBody, QString 
     }
     else if (pathAndQuery == "/kcsapi/api_req_sortie/battle")
     {
-        // ignore?
+        //TODO: hp
+        DAPILOG();
     }
     else if (pathAndQuery == "/kcsapi/api_req_sortie/battleresult")
     {
@@ -528,15 +557,7 @@ void KanDataConnector::Parse(QString pathAndQuery, QString requestBody, QString 
         {
             pksd->shipcountoffset++;
         }
-        //TODO: slotitem????
-//        kcsapi_mst_ship * pmstship = findMstShipFromShipid(shipid);
     }
-    /*
-        qDebug(pathAndQuery.toUtf8());
-        qDebug(requestBody.toUtf8());
-        qDebug(responseBody.toUtf8());
-        qDebug("");
-    */
     //
     else if (pathAndQuery == "/kcsapi/api_auth_member/logincheck")
     {
@@ -548,10 +569,7 @@ void KanDataConnector::Parse(QString pathAndQuery, QString requestBody, QString 
     }
     else if (pathAndQuery == "/kcsapi/api_get_member/record")
     {
-        qDebug(pathAndQuery.toUtf8());
-        qDebug(requestBody.toUtf8());
-        qDebug(responseBody.toUtf8());
-        qDebug("");
+        DAPILOG();
     }
     else if (pathAndQuery == "/kcsapi/api_get_member/book2")
     {
@@ -568,10 +586,7 @@ void KanDataConnector::Parse(QString pathAndQuery, QString requestBody, QString 
     else if (pathAndQuery == "/kcsapi/api_req_member/itemuse_cond")
     {
         //TODO: mamiya
-        qDebug(pathAndQuery.toUtf8());
-        qDebug(requestBody.toUtf8());
-        qDebug(responseBody.toUtf8());
-        qDebug("");
+        DAPILOG();
     }
     else if (pathAndQuery == "/kcsapi/api_req_kousyou/open_new_dock" || pathAndQuery == "/kcsapi/api_req_nyukyo/open_new_dock")
     {
@@ -580,10 +595,7 @@ void KanDataConnector::Parse(QString pathAndQuery, QString requestBody, QString 
     else if (pathAndQuery == "/kcsapi/api_req_kaisou/remodeling")
     {
         //TODO: can ignore?
-        qDebug(pathAndQuery.toUtf8());
-        qDebug(requestBody.toUtf8());
-        qDebug(responseBody.toUtf8());
-        qDebug("");
+        DAPILOG();
     }
     else if (pathAndQuery == "/kcsapi/api_get_member/practice")
     {
@@ -594,6 +606,7 @@ void KanDataConnector::Parse(QString pathAndQuery, QString requestBody, QString 
 
     else if (pathAndQuery == "/kcsapi/api_req_map/start")
     {
+        //TODO!!!: display maphp!!!!
         pksd->nextdata.ReadFromJObj(jobj);
         updateInfoTitle();
     }
@@ -604,6 +617,7 @@ void KanDataConnector::Parse(QString pathAndQuery, QString requestBody, QString 
     }
     else if (pathAndQuery == "/kcsapi/api_req_mission/start")
     {
+        // expedition
         kcsapi_mission_start api_mission_start;
         api_mission_start.ReadFromJObj(jobj);
 
@@ -611,44 +625,100 @@ void KanDataConnector::Parse(QString pathAndQuery, QString requestBody, QString 
         int deckid = req.GetItemAsString("api_deck_id").toInt();
         if (deckid > 0)
         {
-            pksd->portdata.api_deck_port[deckid-1].api_mission[0] = missionid;
+            pksd->portdata.api_deck_port[deckid-1].api_mission[0] = 1;
+            pksd->portdata.api_deck_port[deckid-1].api_mission[1] = missionid;
             pksd->portdata.api_deck_port[deckid-1].api_mission[2] = api_mission_start.api_complatetime;
         }
-        updateMissionTable();
+        updateExpeditionTable();
+
+    }
+    else if (pathAndQuery == "/kcsapi/api_req_member/get_incentive")
+    {
+
+    }
+    else if (pathAndQuery == "/kcsapi/api_get_member/furniture")
+    {
+
+    }
+    else if (pathAndQuery == "/kcsapi/api_get_member/unsetslot")
+    {
+        //TODO??
+    }
+    else if (pathAndQuery == "/kcsapi/api_get_member/mission")
+    {
+
+    }
+    else if (pathAndQuery == "/kcsapi/api_get_member/payitem")
+    {
+
+    }
+    else if (pathAndQuery == "/kcsapi/api_get_member/mapinfo")
+    {
+        //??
+    }
+    else if (pathAndQuery == "/kcsapi/api_get_member/mapcell")
+    {
+        //??
+    }
+    else if (pathAndQuery == "/kcsapi/api_get_member/record")
+    {
+        //??
+    }
+    else if (pathAndQuery == "/kcsapi/api_req_practice/battle")
+    {
+        //TODO??
+        DAPILOG();
+    }
+    else if (pathAndQuery == "/kcsapi/api_req_battle_midnight/sp_midnight")
+    {
+        //TODO:
+        DAPILOG();
+    }
+    else if (pathAndQuery == "/kcsapi/api_req_sortie/night_to_day")
+    {
+        //TODO:
+        DAPILOG();
+    }
+    else if (pathAndQuery == "/kcsapi/api_req_battle_midnight/battle")
+    {
+        //TODO:
+        DAPILOG();
+    }
+    else if (pathAndQuery == "/kcsapi/api_req_practice/midnight_battle")
+    {
+        //TODO??
+        DAPILOG();
+    }
+    else if (pathAndQuery == "/kcsapi/api_req_practice/battle_result")
+    {
+        //TODO??
+        DAPILOG();
+    }
+    else if (pathAndQuery == "/kcsapi/api_req_quest/start" || pathAndQuery == "/kcsapi/api_req_quest/stop")
+    {
+        //ignore
+    }
+    else if (pathAndQuery == "/kcsapi/api_req_member/itemuse")
+    {
 
     }
     else
     {
-        qDebug(pathAndQuery.toUtf8());
-        qDebug(requestBody.toUtf8());
-        qDebug(responseBody.toUtf8());
-        qDebug("");
+        DAPILOG();
     }
     /*
 /kcaspi/api_req_member/getothersdeck
 /kcsapi/api_req_ranking/getlist
 /kcsapi/api_req_member/itemuse
-/kcsapi/api_get_member/furniture
 /kcsapi/api_req_furniture/buy
 /kcsapi/api_req_furniture/change
 /kcsapi/api_get_member/actionlog
-/kcsapi/api_get_member/payitem
 /kcsapi/api_req_member/payitemuse
 /kcsapi/api_req_init/nickname
 /kcsapi/api_req_init/firstship
-/kcsapi/api_get_member/ship
 /kcsapi/api_world/get_worldinfo
 /kcsapi/api_world/register
-/kcsapi/api_req_member/get_incentive
 /kcsapi/api_start
-/kcsapi/api_req_practice/battle
-/kcsapi/api_req_battle_midnight/sp_midnight
-/kcsapi/api_req_sortie/night_to_day
-/kcsapi/api_req_battle_midnight/battle
-/kcsapi/api_req_practice/midnight_battle
-/kcsapi/api_req_practice/battle_result
-/kcsapi/api_req_quest/start
-/kcsapi/api_req_quest/stop
 /kcsapi/api_req_quest/clearitemget
     */
 
@@ -664,8 +734,8 @@ void KanDataConnector::updateOverviewTable()
     int kanmaxcount = pksd->portdata.api_basic.api_max_chara;
     int slotitemcount = pksd->slotitemdata.count()+pksd->slotitemcountoffset;
     int slotitemmaxcount = pksd->portdata.api_basic.api_max_slotitem;
-    int instantrepaircount = pksd->materialdata[MATERIALDATAINDEX_INSTANDREPAIR].api_value;
-    int instantbuildcount = pksd->materialdata[MATERIALDATAINDEX_INSTANTBUILD].api_value;
+    int instantrepaircount = pksd->portdata.api_material[MATERIALDATAINDEX_INSTANDREPAIR].api_value;
+    int instantbuildcount = pksd->portdata.api_material[MATERIALDATAINDEX_INSTANTBUILD].api_value;
     int lv = pksd->portdata.api_basic.api_level;
     int nextexp = KanDataCalc::GetAdmiralNextLevelExp(pksd->portdata.api_basic.api_experience, lv);
     int fcoin = pksd->portdata.api_basic.api_fcoin;
@@ -1174,14 +1244,32 @@ bool KanDataConnector::isShipRepairing(const kcsapi_ship2 *pship)
     return false;
 }
 
-const kcsapi_ship2 *KanDataConnector::findShipFromShipno(int shipno) const
+bool KanDataConnector::RemoveShip(int shipno)
 {
     KanSaveData * pksd = &KanSaveData::getInstance();
-    foreach(const kcsapi_ship2 &v, pksd->portdata.api_ship)
+
+    for (QList<kcsapi_ship2>::iterator it=pksd->portdata.api_ship.begin();
+         it!=pksd->portdata.api_ship.end(); ++it)
     {
-        if (v.api_id == shipno)
+        if (it->api_id == shipno)
         {
-            return &v;
+            pksd->portdata.api_ship.erase(it);
+            return true;
+        }
+    }
+    return false;
+}
+
+kcsapi_ship2 *KanDataConnector::findShipFromShipno(int shipno)
+{
+    KanSaveData * pksd = &KanSaveData::getInstance();
+
+    for (QList<kcsapi_ship2>::iterator it=pksd->portdata.api_ship.begin();
+         it!=pksd->portdata.api_ship.end(); ++it)
+    {
+        if (it->api_id == shipno)
+        {
+            return &(*it);
         }
     }
     qDebug("No ship data.");

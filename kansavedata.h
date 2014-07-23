@@ -24,7 +24,6 @@ public:
     kcsapi_start2 start2data;
     QList<kcsapi_slotitem> slotitemdata;
     QList<kcsapi_kdock> kdockdata;
-    QList<kcsapi_material> materialdata;
     QList<kcsapi_quest> questdata;
     kcsapi_next nextdata;
 

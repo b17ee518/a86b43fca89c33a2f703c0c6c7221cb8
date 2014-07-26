@@ -48,7 +48,7 @@ public:
 
         gridLayout->addWidget(pushButton, 0, 1, 1, 1);
 
-        horizontalSpacer = new QSpacerItem(40, 20, QSizePolicy::Fixed, QSizePolicy::Minimum);
+        horizontalSpacer = new QSpacerItem(20, 20, QSizePolicy::Fixed, QSizePolicy::Minimum);
 
         gridLayout->addItem(horizontalSpacer, 0, 0, 1, 1);
 

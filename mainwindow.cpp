@@ -7,10 +7,11 @@
 #include <QStandardPaths>
 #include "qnetworkproxyfactoryset.h"
 #include "kqwebpage.h"
-#include <QWinTaskbarProgress>
 #include "kandataconnector.h"
-#include <QWinTaskbarButton>
 
+#include <Audiopolicy.h>
+#include <Mmdeviceapi.h>
+#define SAFE_RELEASE(x) if(x) { x->Release(); x = NULL; } 
 
 MainWindow * MainWindow::s_pMainWindow = 0;
 
@@ -23,16 +24,6 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->retranslateUi(this);
 
     ui->comboBoxZoom->insertSeparator(1);
-
-//    QWinTaskbarProgress * pTaskbarProgress = new QWinTaskbarProgress(this);
-	QWinTaskbarButton * pTaskbarButton = new QWinTaskbarButton(this);
-	pTaskbarButton->setWindow(windowHandle());
-	QWinTaskbarProgress * pTaskbarProgress = pTaskbarButton->progress();
-
-    pTaskbarProgress->setMinimum(0);
-    pTaskbarProgress->setMaximum(100);
-    pTaskbarProgress->setValue(50);
-    pTaskbarProgress->show();
 
     mwbPostInit();
 
@@ -77,7 +68,7 @@ body {
 
     ui->webView->page()->settings()->setUserStyleSheetUrl(css);
 
-//    ui->webView->load(QUrl("http://www.google.com"));
+ //   ui->webView->load(QUrl("http://www.google.com"));
     ui->webView->load(QUrl("http://www.dmm.com/netgame/social/application/-/detail/=/app_id=854854/"));
 }
 
@@ -100,8 +91,9 @@ void MainWindow::postInit(InfoMainWindow *pInfo, TimerMainWindow *pTimer)
     QObject::connect( m_pTimerWindow, SIGNAL( sigActivated( QWidget*, bool ) ), m_pInfoWindow, SLOT( slotActivate( QWidget*, bool ) ) );
     QObject::connect( m_pTimerWindow, SIGNAL( sigActivated( QWidget*, bool ) ), this, SLOT( slotActivate( QWidget*, bool ) ) );
 
-    connect(m_pInfoWindow, SIGNAL(sigRestoreMinimizeToggled(bool)), this, SLOT(slotToggleRestoreMinimize(bool)));
-    connect(m_pTimerWindow, SIGNAL(sigRestoreMinimizeToggled(bool)), this, SLOT(slotToggleRestoreMinimize(bool)));
+	connect(m_pInfoWindow, SIGNAL(sigRestoreMinimizeToggled(bool)), this, SLOT(slotToggleRestoreMinimize(bool)));
+	connect(m_pTimerWindow, SIGNAL(sigRestoreMinimizeToggled(bool)), this, SLOT(slotToggleRestoreMinimize(bool)));
+	connect(this, SIGNAL(sigRestoreMinimizeToggled(bool)), this, SLOT(slotSelfToggleRestoreMinimize(bool)));
 
 
     connect(ui->pbCheckInfo, SIGNAL(toggled(bool)), m_pInfoWindow, SLOT(setVisible(bool)));
@@ -227,6 +219,18 @@ void MainWindow::slotToggleRestoreMinimize(bool bRestore)
             this->setWindowState(Qt::WindowMinimized);
         }
     }
+}
+
+void MainWindow::slotSelfToggleRestoreMinimize(bool bRestore)
+{
+	if (!bRestore)
+	{
+		this->AdjustVolume(0);
+	}
+	else
+	{
+		this->AdjustVolume(-1);
+	}
 }
 
 void MainWindow::slotParse(const QString &PathAndQuery, const QString &requestBody, const QString &responseBody)
@@ -391,4 +395,60 @@ void MainWindow::SetWebSettings()
 
 //    QNetworkProxyFactory::setUseSystemConfiguration(false);
     //    updateProxyConfiguration();
+}
+
+void MainWindow::AdjustVolume(int vol)
+{
+	HRESULT hr = S_OK;
+
+	IMMDevice* pDevice = NULL;
+	IMMDeviceEnumerator* pEnumerator = NULL;
+	IAudioSessionManager2* pSessionManager = NULL;
+
+
+	// Create the device enumerator.
+	(hr = CoCreateInstance(
+		__uuidof(MMDeviceEnumerator),
+		NULL, CLSCTX_ALL,
+		__uuidof(IMMDeviceEnumerator),
+		(void**)&pEnumerator));
+
+	// Get the default audio device.
+	(hr = pEnumerator->GetDefaultAudioEndpoint(
+		eRender, eConsole, &pDevice));
+
+	// Get the session manager.
+	(hr = pDevice->Activate(
+		__uuidof(IAudioSessionManager2), CLSCTX_ALL,
+		NULL, (void**)&pSessionManager));
+
+	IAudioSessionControl *pControl;
+	pSessionManager->GetAudioSessionControl(NULL, 0, &pControl);
+	ISimpleAudioVolume *pSimpleVolume;
+	pSessionManager->GetSimpleAudioVolume(NULL, 0, &pSimpleVolume);
+	GUID nid = GUID_NULL;
+
+	if (vol < 0)
+	{
+		vol = 12;
+	}
+
+	pSimpleVolume->SetMasterVolume(vol / 100.0f, &nid);
+
+	// Clean up.
+	SAFE_RELEASE(pSessionManager);
+	SAFE_RELEASE(pEnumerator);
+	SAFE_RELEASE(pDevice);
+}
+
+void MainWindow::slotSoundEnded()
+{
+	if (isMinimized())
+	{
+		AdjustVolume(0);
+	}
+	else
+	{
+		AdjustVolume(-1);
+	}
 }

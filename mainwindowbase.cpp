@@ -1,9 +1,11 @@
 ﻿#include "mainwindowbase.h"
 #include <QSettings>
+#include <QWinTaskbarProgress>
 
 MainWindowBase::MainWindowBase(QWidget *parent) :
     QMainWindow(parent)
 {
+	m_pTaskbarButton = NULL;
     setAttribute(Qt::WA_TranslucentBackground, true);
     setAttribute (Qt::WA_AlwaysShowToolTips, true);
     setWindowFlags(Qt::FramelessWindowHint | Qt::WindowMinimizeButtonHint);
@@ -63,4 +65,28 @@ void MainWindowBase::closeEvent(QCloseEvent *event)
     settings.setValue(objectName()+"/geometry", saveGeometry());
     settings.setValue(objectName()+"/windowState", saveState());
     QMainWindow::closeEvent(event);
+}
+
+void MainWindowBase::showEvent(QShowEvent *event)
+{
+	if (!m_pTaskbarButton)
+	{
+		m_pTaskbarButton = new QWinTaskbarButton(this);
+		m_pTaskbarButton->setWindow(windowHandle());
+		QWinTaskbarProgress * pTaskbarProgress = m_pTaskbarButton->progress();
+		pTaskbarProgress->setVisible(true);
+
+		pTaskbarProgress->setMinimum(0);
+		pTaskbarProgress->setMaximum(10000);
+		pTaskbarProgress->setValue(0);
+		pTaskbarProgress->show();
+	}
+}
+
+void MainWindowBase::SetProgressBarPos(int pos)
+{
+	if (m_pTaskbarButton)
+	{
+		m_pTaskbarButton->progress()->setValue(pos);
+	}
 }

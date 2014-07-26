@@ -63,7 +63,7 @@ private:
     bool isYellow(qint64 difftime);
     void setProgressColor(QProgressBar * pBar, qint64 tdiff, bool bYellow);
 
-    bool updateDisplay(qint64 ct, qint64 dt, qint64 tt, QTableWidgetItem * pRemainItem, QTableWidgetItem * pExpectedItem=0, QProgressBar * pProgress=0, bool bMinusOne=false);
+    bool updateDisplay(int &mintdiff, qint64 ct, qint64 dt, qint64 tt, QTableWidgetItem * pRemainItem, QTableWidgetItem * pExpectedItem=0, QProgressBar * pProgress=0, bool bMinusOne=false);
 
     void playSound(int i);
 

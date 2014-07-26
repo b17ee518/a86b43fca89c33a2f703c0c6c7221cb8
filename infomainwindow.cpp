@@ -2,365 +2,276 @@
 #include "ui_infomainwindow.h"
 
 InfoMainWindow::InfoMainWindow(QWidget *parent) :
-    SubMainWindow(parent),
-    ui(new Ui::InfoMainWindow)
+	SubMainWindow(parent),
+	ui(new Ui::InfoMainWindow)
 {
-    ui->setupUi(this);
-    mwbPostInit();
-    ui->titleFrame->setHandlingWidget(this);
-    ui->overviewTable->setFont(QApplication::font());
+	ui->setupUi(this);
+	mwbPostInit();
+	ui->titleFrame->setHandlingWidget(this);
+	ui->overviewTable->setFont(QApplication::font());
 
-    ui->overviewTable->horizontalHeader()->hide();
-    ui->overviewTable->verticalHeader()->hide();
+	ui->overviewTable->horizontalHeader()->hide();
+	ui->overviewTable->verticalHeader()->hide();
 
-    pFleetFrames[0] = ui->fleetFrame_1;
-    pFleetFrames[1] = ui->fleetFrame_2;
-    pFleetFrames[2] = ui->fleetFrame_3;
-    pFleetFrames[3] = ui->fleetFrame_4;
+	pFleetFrames[0] = ui->fleetFrame_1;
+	pFleetFrames[1] = ui->fleetFrame_2;
+	pFleetFrames[2] = ui->fleetFrame_3;
+	pFleetFrames[3] = ui->fleetFrame_4;
 
-    lstCollapsibleFrames.append(ui->missionFrame);
-    lstCollapsibleFrames.append(ui->fleetFrame_1);
-    lstCollapsibleFrames.append(ui->fleetFrame_2);
-    lstCollapsibleFrames.append(ui->fleetFrame_3);
-    lstCollapsibleFrames.append(ui->fleetFrame_4);
-    lstCollapsibleFrames.append(ui->repairFrame);
+	lstCollapsibleFrames.append(ui->missionFrame);
+	lstCollapsibleFrames.append(ui->fleetFrame_1);
+	lstCollapsibleFrames.append(ui->fleetFrame_2);
+	lstCollapsibleFrames.append(ui->fleetFrame_3);
+	lstCollapsibleFrames.append(ui->fleetFrame_4);
+	lstCollapsibleFrames.append(ui->repairFrame);
 
-    setOverviewColumnFormat();
-    setMissionColumnFormat();
-    setFleetColumnFormat();
-    setRepairColumnFormat();
+	setOverviewColumnFormat();
+	setMissionColumnFormat();
+	setFleetColumnFormat();
+	setRepairColumnFormat();
 
-    pUpdateTimer = new QTimer(this);
-    connect(pUpdateTimer, SIGNAL(timeout()), this, SLOT(slotUpdateTimer()));
-    pUpdateTimer->start(50);
+	pUpdateTimer = new QTimer(this);
+	connect(pUpdateTimer, SIGNAL(timeout()), this, SLOT(slotUpdateTimer()));
+	pUpdateTimer->start(50);
 
-    KQUI_CollapsibleFrame * pFrame;
-    foreach(pFrame, lstCollapsibleFrames)
-    {
-        pFrame->tableWidget()->hide();
-        pFrame->pushButton()->setStyleSheet("text-align: left;");
-        connect(pFrame->tableWidget(), SIGNAL(sigTableSizeChanged()), this, SLOT(slotOnTableSizeChanged()));
-        connect(pFrame->pushButton(), SIGNAL(toggled(bool)), pFrame->tableWidget(), SLOT(setVisible(bool)));
-    }
-    ui->missionFrame->pushButton()->setChecked(true);
-    ui->fleetFrame_1->pushButton()->setChecked(true);
-    ui->repairFrame->pushButton()->setChecked(true);
+	KQUI_CollapsibleFrame * pFrame;
+	foreach(pFrame, lstCollapsibleFrames)
+	{
+		pFrame->tableWidget()->hide();
+		pFrame->pushButton()->setStyleSheet("text-align: left;");
+		connect(pFrame->tableWidget(), SIGNAL(sigTableSizeChanged()), this, SLOT(slotOnTableSizeChanged()));
+		connect(pFrame->pushButton(), SIGNAL(toggled(bool)), pFrame->tableWidget(), SLOT(setVisible(bool)));
+	}
+	ui->missionFrame->pushButton()->setChecked(true);
+	ui->fleetFrame_1->pushButton()->setChecked(true);
+	ui->repairFrame->pushButton()->setChecked(true);
 }
 
 InfoMainWindow::~InfoMainWindow()
 {
-    delete ui;
+	delete ui;
 }
 
 void InfoMainWindow::updateOverviewTable(QList<QString> lst, QList<QColor> cols)
 {
-    if (lst.count() == 6 && cols.count() == 6)
-    {
-        for (int i=0; i<2; i++)
-        {
-            for (int j=0; j<3; j++)
-            {
-                QTableWidgetItem * pItem = ui->overviewTable->item(j, i);
-                pItem->setText(lst[j*2+i]);
-                pItem->setTextColor(cols[j*2+i]);
-            }
-        }
-    }
+	if (lst.count() == 6 && cols.count() == 6)
+	{
+		for (int i=0; i<2; i++)
+		{
+			for (int j=0; j<3; j++)
+			{
+				QTableWidgetItem * pItem = ui->overviewTable->item(j, i);
+				pItem->setText(lst[j*2+i]);
+				pItem->setTextColor(cols[j*2+i]);
+			}
+		}
+	}
 }
 
 void InfoMainWindow::updateMissionTable(QString buttonTitle, QList<KQRowData> rows)
 {
-    ui->missionFrame->pushButton()->setText(buttonTitle);
-    ui->missionFrame->tableWidget()->updateFullTable(rows);
+	ui->missionFrame->pushButton()->setText(buttonTitle);
+	ui->missionFrame->tableWidget()->updateFullTable(rows);
 }
 
 void InfoMainWindow::updateFleetTable(int n, QString buttonTitle, int colindex, bool bRed, QList<KQRowData> rows)
 {
-    static QString stylesheet_a[] =
-    {
-        "\
-        QPushButton {   \
-            color:white;    \
-            text-align: left;\
-        }   \
-        ",  // normal
-        "\
-        QPushButton {   \
-            color:rgb(255, 153, 0);    \
-            text-align: left;\
-        }   \
-        ",  // have kira
-        "\
-        QPushButton {   \
-            color:rgb(255, 255, 0);    \
-            text-align: left;\
-        }   \
-        ",   // kira full
-        "\
-        QPushButton {   \
-            color:rgb(153, 255, 255);    \
-            text-align: left;\
-        }   \
-        "   // need hokyu
-    };
-    static QString stylesheet_b[] =
-    {
-        " \
-        QPushButton{\
-            background-color: rgb(80, 80, 80);\
-            border: none; \
-        }\
-        QPushButton:checked{\
-            background-color: rgb(80, 80, 80);\
-            border: none; \
-        }\
-        QPushButton:hover{  \
-            background-color: grey; \
-            border-style: outset;  \
-        }  \
-        ",
-        " \
-        QPushButton:checked{\
-            background-color: rgb(153, 0, 0);\
-            border: none; \
-        }\
-        QPushButton:{\
-            background-color: rgb(153, 0, 0);\
-            border: none; \
-        }\
-        QPushButton:hover{  \
-            background-color: rgb(128, 0, 0);; \
-            border-style: outset;  \
-        }  \
-        "
-    };
-    pFleetFrames[n]->pushButton()->setText(buttonTitle);
-    pFleetFrames[n]->tableWidget()->updateFullTable(rows);
+	static QString stylesheet_a[] =
+	{
+		"\
+		QPushButton {   \
+			color:white;    \
+			text-align: left;\
+		}   \
+		",  // normal
+		"\
+			QPushButton {   \
+			color:rgb(153, 255, 255);    \
+			text-align: left;\
+		}   \
+		",  // have kira
+		"\
+		QPushButton {   \
+			color:rgb(255, 255, 0);    \
+			text-align: left;\
+		}   \
+		",   // kira full
+		"\
+			QPushButton {   \
+			color:rgb(255, 153, 0);    \
+			text-align: left;\
+		}   \
+		"   // need hokyu
+	};
+	static QString stylesheet_b[] =
+	{
+		" \
+		QPushButton{\
+			background-color: rgb(80, 80, 80);\
+			border: none; \
+		}\
+		QPushButton:checked{\
+			background-color: rgb(80, 80, 80);\
+			border: none; \
+		}\
+		QPushButton:hover{  \
+			background-color: grey; \
+			border-style: outset;  \
+		}  \
+		",
+		" \
+		QPushButton:checked{\
+			background-color: rgb(153, 0, 0);\
+			border: none; \
+		}\
+		QPushButton:{\
+			background-color: rgb(153, 0, 0);\
+			border: none; \
+		}\
+		QPushButton:hover{  \
+			background-color: rgb(128, 0, 0);; \
+			border-style: outset;  \
+		}  \
+		"
+	};
+	pFleetFrames[n]->pushButton()->setText(buttonTitle);
+	pFleetFrames[n]->tableWidget()->updateFullTable(rows);
 
-    pFleetFrames[n]->pushButton()->setStyleSheet(stylesheet_a[colindex]+stylesheet_b[bRed?1:0]);
+	pFleetFrames[n]->pushButton()->setStyleSheet(stylesheet_a[colindex]+stylesheet_b[bRed?1:0]);
 }
 
 void InfoMainWindow::updateRepairTable(QString buttonTitle, QList<KQRowData> rows)
 {
-    ui->repairFrame->pushButton()->setText(buttonTitle);
-    ui->repairFrame->tableWidget()->updateFullTable(rows);
+	ui->repairFrame->pushButton()->setText(buttonTitle);
+	ui->repairFrame->tableWidget()->updateFullTable(rows);
 }
 
 void InfoMainWindow::updateTitle(QString title, int colindex)
 {
-    static QString stylesheet[] =
-    {
-        " \
-        QLineEdit{\
-            color: rgb(255, 255, 255);\
-            border: none;\
-        }\
-        ",
-        " \
-        QLineEdit{\
-            color: rgb(255, 255, 0);\
-            border: none;\
-        }\
-        "
-    };
-    ui->lineEditTitle->setText(title);
-    ui->lineEditTitle->setStyleSheet(stylesheet[colindex]);
+	static QString stylesheet[] =
+	{
+		" \
+		QLineEdit{\
+			color: rgb(255, 255, 255);\
+			border: none;\
+		}\
+		",
+		" \
+		QLineEdit{\
+			color: rgb(255, 255, 0);\
+			border: none;\
+		}\
+		"
+	};
+	ui->lineEditTitle->setText(title);
+	ui->lineEditTitle->setStyleSheet(stylesheet[colindex]);
 }
 
 void InfoMainWindow::setOverviewColumnFormat()
 {
-    ui->overviewTable->setRowCount(3);
-    ui->overviewTable->setColumnCount(2);
-    ui->overviewTable->setColumnWidth(0, 175);
-    ui->overviewTable->setColumnWidth(1, 145);
-    for (int i=0; i<3; i++)
-    {
-        for (int j=0; j<2; j++)
-        {
-            QTableWidgetItem * pItem = new QTableWidgetItem();
-            ui->overviewTable->setItem(i, j, pItem);
-        }
-    }
+	ui->overviewTable->setRowCount(3);
+	ui->overviewTable->setColumnCount(2);
+	ui->overviewTable->setColumnWidth(0, 175);
+	ui->overviewTable->setColumnWidth(1, 145);
+	for (int i=0; i<3; i++)
+	{
+		for (int j=0; j<2; j++)
+		{
+			QTableWidgetItem * pItem = new QTableWidgetItem();
+			ui->overviewTable->setItem(i, j, pItem);
+		}
+	}
 }
 
 void InfoMainWindow::setMissionColumnFormat()
 {
-    KQTableWidget * pTableWidget = ui->missionFrame->tableWidget();
-    pTableWidget->setRowCount(0);
-    pTableWidget->setColumnCount(3);
-    pTableWidget->setSeparatorColumn(1);
-    pTableWidget->setColumnWidth(0, 24);
-    pTableWidget->setColumnWidth(1, 252);
-    pTableWidget->setColumnWidth(2, 64);
+	KQTableWidget * pTableWidget = ui->missionFrame->tableWidget();
+	pTableWidget->setRowCount(0);
+	pTableWidget->setColumnCount(3);
+	pTableWidget->setSeparatorColumn(1);
+	pTableWidget->setColumnWidth(0, 24);
+	pTableWidget->setColumnWidth(1, 252);
+	pTableWidget->setColumnWidth(2, 64);
 }
 
 void InfoMainWindow::setFleetColumnFormat()
 {
-    setFleetColumnFormat(ui->fleetFrame_1->tableWidget());
-    setFleetColumnFormat(ui->fleetFrame_2->tableWidget());
-    setFleetColumnFormat(ui->fleetFrame_3->tableWidget());
-    setFleetColumnFormat(ui->fleetFrame_4->tableWidget());
+	setFleetColumnFormat(ui->fleetFrame_1->tableWidget());
+	setFleetColumnFormat(ui->fleetFrame_2->tableWidget());
+	setFleetColumnFormat(ui->fleetFrame_3->tableWidget());
+	setFleetColumnFormat(ui->fleetFrame_4->tableWidget());
 }
 
 void InfoMainWindow::setFleetColumnFormat(KQTableWidget *pTableWidget)
 {
-    pTableWidget->setRowCount(0);
-    pTableWidget->setColumnCount(9);
-    pTableWidget->setSeparatorColumn(3);
-    /*
-    pTableWidget->setColumnWidth(0, 12);    // No.
-    pTableWidget->setColumnWidth(1, 80);    // Name
-    pTableWidget->setColumnWidth(2, 40);    // Lv
-    pTableWidget->setColumnWidth(3, 32);    // Cond
-    pTableWidget->setColumnWidth(4, 66);    // Exp
-    pTableWidget->setColumnWidth(5, 18);    // Fuel
-    pTableWidget->setColumnWidth(6, 18);    // Bullet
-    pTableWidget->setColumnWidth(7, 56);    // Hp
-    pTableWidget->setColumnWidth(8, 18);    // State
-    */
+	pTableWidget->setRowCount(0);
+	pTableWidget->setColumnCount(9);
+	pTableWidget->setSeparatorColumn(3);
+	/*
+	pTableWidget->setColumnWidth(0, 12);    // No.
+	pTableWidget->setColumnWidth(1, 80);    // Name
+	pTableWidget->setColumnWidth(2, 40);    // Lv
+	pTableWidget->setColumnWidth(3, 32);    // Cond
+	pTableWidget->setColumnWidth(4, 66);    // Exp
+	pTableWidget->setColumnWidth(5, 18);    // Fuel
+	pTableWidget->setColumnWidth(6, 18);    // Bullet
+	pTableWidget->setColumnWidth(7, 56);    // Hp
+	pTableWidget->setColumnWidth(8, 18);    // State
+	*/
 }
 
 void InfoMainWindow::setRepairColumnFormat()
 {
-    KQTableWidget * pTableWidget = ui->repairFrame->tableWidget();
+	KQTableWidget * pTableWidget = ui->repairFrame->tableWidget();
 
-    pTableWidget->setRowCount(0);
-    pTableWidget->setColumnCount(6);
-    pTableWidget->setSeparatorColumn(3);
-    /*
-    pTableWidget->setColumnWidth(0, 132);    // Name
-    pTableWidget->setColumnWidth(1, 40);    // Lv
-    pTableWidget->setColumnWidth(2, 32);    // Cond
-    pTableWidget->setColumnWidth(3, 64);    // Time
-    pTableWidget->setColumnWidth(4, 56);    // HP
-    pTableWidget->setColumnWidth(5, 16);    // State
-    */
+	pTableWidget->setRowCount(0);
+	pTableWidget->setColumnCount(6);
+	pTableWidget->setSeparatorColumn(3);
+	/*
+	pTableWidget->setColumnWidth(0, 132);    // Name
+	pTableWidget->setColumnWidth(1, 40);    // Lv
+	pTableWidget->setColumnWidth(2, 32);    // Cond
+	pTableWidget->setColumnWidth(3, 64);    // Time
+	pTableWidget->setColumnWidth(4, 56);    // HP
+	pTableWidget->setColumnWidth(5, 16);    // State
+	*/
 
 }
 
 void InfoMainWindow::slotOnTableSizeChanged()
 {
-    int minw=280;
-    KQUI_CollapsibleFrame * pFrame;
-    foreach (pFrame, lstCollapsibleFrames)
-    {
-        pFrame->tableWidget()->resizeColumnsToContents();
-        int w = pFrame->tableWidget()->minimumWidth();
-        if (w > minw)
-        {
-            minw = w;
-        }
-    }
-    foreach (pFrame, lstCollapsibleFrames)
-    {
-        pFrame->tableWidget()->adjustSizeToWidth(minw);
-    }
-    this->adjustSize();
+	int minw=280;
+	KQUI_CollapsibleFrame * pFrame;
+	foreach (pFrame, lstCollapsibleFrames)
+	{
+		pFrame->tableWidget()->resizeColumnsToContents();
+		int w = pFrame->tableWidget()->minimumWidth();
+		if (w > minw)
+		{
+			minw = w;
+		}
+	}
+	foreach (pFrame, lstCollapsibleFrames)
+	{
+		pFrame->tableWidget()->adjustSizeToWidth(minw);
+	}
+	this->adjustSize();
 
 }
 void InfoMainWindow::slotUpdateTimer()
 {
-    static int count = 0;
-    count++;
+	static int count = 0;
+	count++;
 
-    if (count == 40)
-    {
-        QList<KQRowData> rows;
-        KQRowData rd;
-        /*
-        rd.appendCell(KQRowCellData(" - "));
-        rd.appendCell(KQRowCellData(QString::fromLocal8Bit("敵潜水艦を制圧せよ！")));
-        rd.appendCell(KQRowCellData("(50%)"));
-        rows.clear();
-        rows.append(rd);
-
-        updateMissionTable(QString::fromLocal8Bit("遂行中任務(1)"), rows);
-//        ui->missionFrame->tableWidget()->updateFullTable(rows);
-        */
-/*
-        rd.clearCells();
-        rd.appendCell(KQRowCellData("1"));
-        rd.appendCell(KQRowCellData(QString::fromLocal8Bit("浦風AAAAAAAAAAAAAAAAAAAAA")));
-        rd.appendCell(KQRowCellData("Lv.27"));
-        rd.appendCell(KQRowCellData("(58)"));
-        rd.appendCell(KQRowCellData(QString::fromLocal8Bit("次:548")));
-        rd.appendCell(KQRowCellData(QString::fromLocal8Bit("燃料")));
-        rd.appendCell(KQRowCellData(QString::fromLocal8Bit("弾薬")));
-        rd.appendCell(KQRowCellData("(1/16)"));
-        rd.appendCell(KQRowCellData(QString::fromLocal8Bit("大")));
-        rows.clear();
-        rows.append(rd);
-
-        rd.appendCell(KQRowCellData("1"));
-        rd.appendCell(KQRowCellData(QString::fromLocal8Bit("浦風")));
-        rd.appendCell(KQRowCellData("Lv"));
-        rd.appendCell(KQRowCellData(" "));
-        rd.appendCell(KQRowCellData(QString::fromLocal8Bit("")));
-        rd.appendCell(KQRowCellData(QString::fromLocal8Bit("")));
-        rd.appendCell(KQRowCellData(QString::fromLocal8Bit("")));
-        rd.appendCell(KQRowCellData("()"));
-        rd.appendCell(KQRowCellData(QString::fromLocal8Bit("大")));
-        rows.append(rd);
-        rows.append(rd);
-        rows.append(rd);
-        rows.append(rd);
-        rows.append(rd);
-        rows.append(rd);
-        rows.append(rd);
-
-        updateFleetTable(0, QString::fromLocal8Bit("第一艦隊"), 0, false, rows);
-        */
-/*
-        QList<QString> lst;
-        lst.append(QString::fromLocal8Bit("艦娘"));
-        lst.append(QString::fromLocal8Bit("艦娘"));
-        lst.append(QString::fromLocal8Bit("艦娘"));
-        lst.append(QString::fromLocal8Bit("艦娘"));
-        lst.append(QString::fromLocal8Bit("艦娘"));
-        lst.append(QString::fromLocal8Bit("艦娘"));
-        QList<QColor> cols;
-        cols.append(QColor(255, 255, 255));
-        cols.append(QColor(255, 255, 0));
-        cols.append(QColor(255, 255, 255));
-        cols.append(QColor(255, 0, 255));
-        cols.append(QColor(255, 255, 255));
-        cols.append(QColor(255, 255, 255));
-        updateOverviewTable(lst, cols);
-        */
-//        ui->fleetFrame_1->tableWidget()->updateFullTable(rows);
-    }
-    else if (count == 80)
-    {
-/*
-        QList<KQRowData> rows;
-        KQRowData rd;
-        rd.clearCells();
-        rd.appendCell(KQRowCellData("1"));
-        rd.appendCell(KQRowCellData(QString::fromLocal8Bit("浦風")));
-        rd.appendCell(KQRowCellData("Lv"));
-        rd.appendCell(KQRowCellData(" "));
-        rd.appendCell(KQRowCellData(QString::fromLocal8Bit("")));
-        rd.appendCell(KQRowCellData(QString::fromLocal8Bit("")));
-        rd.appendCell(KQRowCellData(QString::fromLocal8Bit("")));
-        rd.appendCell(KQRowCellData("()"));
-        rd.appendCell(KQRowCellData(QString::fromLocal8Bit("大")));
-        rows.clear();
-        rows.append(rd);
-
-        updateFleetTable(0, QString::fromLocal8Bit("第一艦隊"), 1, true, rows);
-//        ui->fleetFrame_1->tableWidget()->updateFullTable(rows);
-*/
-
-    }
-    this->adjustSize();
+	this->adjustSize();
 }
 
 void InfoMainWindow::on_pbClose_clicked()
 {
-    close();
+	close();
 }
 
 void InfoMainWindow::on_pbMinimize_clicked()
 {
-    setWindowState(Qt::WindowMinimized);
+	setWindowState(Qt::WindowMinimized);
 }

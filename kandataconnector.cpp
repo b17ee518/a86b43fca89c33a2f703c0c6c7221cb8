@@ -589,7 +589,6 @@ void KanDataConnector::Parse(QString pathAndQuery, QString requestBody, QString 
 	}
 	else if (pathAndQuery == "/kcsapi/api_req_mission/result")
 	{
-		DAPILOG();
 	}
 	else if (pathAndQuery == "/kcsapi/api_get_member/record")
 	{

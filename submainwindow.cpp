@@ -13,12 +13,14 @@ SubMainWindow::SubMainWindow(QWidget *parent) :
 
 void SubMainWindow::showEvent(QShowEvent *event)
 {
-    MainWindow::mainWindow()->onSubMainWindowShowHide(true, this);
+	MainWindow::mainWindow()->onSubMainWindowShowHide(true, this);
+	MainWindowBase::showEvent(event);
 }
 
 void SubMainWindow::hideEvent(QHideEvent *event)
 {
     MainWindow::mainWindow()->onSubMainWindowShowHide(false, this);
+	MainWindowBase::hideEvent(event);
 }
 
 void SubMainWindow::moveEvent(QMoveEvent *event)
@@ -46,6 +48,7 @@ void SubMainWindow::moveEvent(QMoveEvent *event)
             show();
         }
     }
+	MainWindowBase::moveEvent(event);
 }
 
 void SubMainWindow::mouseReleaseEvent(QMouseEvent *event)

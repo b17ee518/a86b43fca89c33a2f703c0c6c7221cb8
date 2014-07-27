@@ -6,6 +6,8 @@
 #include "infomainwindow.h"
 #include "timermainwindow.h"
 #include "FiddlerCOM.h"
+#include <QShowEvent>
+#include <QWinTaskbarButton>
 
 namespace Ui {
 class MainWindow;
@@ -27,6 +29,7 @@ public:
 
 	void AdjustVolume(int vol);
 	void onSubMainWindowShowHide(bool bShow, MainWindowBase * pWindow);
+	void SetProgressBarPos(int pos);
 signals:
 	void sigParse(const QString &PathAndQuery, const QString &requestBody, const QString &responseBody);
 
@@ -42,6 +45,7 @@ protected:
 	virtual void closeEvent(QCloseEvent * e);
 	virtual void moveEvent(QMoveEvent *e);
 	virtual void mouseReleaseEvent(QMouseEvent * event);
+	virtual void showEvent(QShowEvent *event);
 
 private slots:
 	void on_pbClose_clicked();
@@ -65,6 +69,8 @@ private:
 	TimerMainWindow * m_pTimerWindow;
 	
 	static MainWindow * s_pMainWindow;
+
+	QWinTaskbarButton * m_pTaskbarButton;
 };
 
 #endif // MAINWINDOW_H

@@ -178,6 +178,9 @@
     <ClCompile Include="klog.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="FiddlerCOM.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="FiddlerCOM.h">
@@ -257,11 +260,6 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="FiddlerCOM.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
-  </ItemGroup>
-  <ItemGroup>
     <CustomBuild Include="infomainwindow.ui">
       <Filter>Form Files</Filter>
     </CustomBuild>
@@ -276,8 +274,8 @@
     </CustomBuild>
   </ItemGroup>
   <ItemGroup>
-    <CustomBuild Include="C:\Users\h5nc\Documents\Visual Studio 2013\Projects\FiddlerCOM\FiddlerCOM\bin\Release\FiddlerCOM.tlb">
+    <None Include="FiddlerCOM\FiddlerCOM\bin\Release\FiddlerCOM.tlb">
       <Filter>CPP</Filter>
-    </CustomBuild>
+    </None>
   </ItemGroup>
 </Project>

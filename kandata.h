@@ -349,6 +349,11 @@ public:
 	virtual bool ReadFromJObj(const QJsonObject &jobj);
 
 	int api_dock_id;
+	//midnight
+	//TODO: check practice
+	int api_deck_id;
+	QString api_deck_id_s;
+
 	QList<int> api_ship_ke; //enemy ship list from #1
 	QList<int> api_ship_lv; //enemy ship lv from #1
 	QList<int> api_nowhps; // both hps from #1 (13)
@@ -1405,8 +1410,8 @@ virtual bool ReadFromJObj(const QJsonObject &jobj);
 	QString api_opetext;
 	QString api_infotext;
 	QList<int> api_item;
-	QList<int> api_max_maphp; //int?
-	QList<int> api_required_defeat_count; //int?
+	int api_max_maphp;
+	int api_required_defeat_count;
 };
 
 class Api_Mst_Mapbgm: public KAPIBaseData

@@ -20,14 +20,13 @@ class TimeRecord
 public:
     TimeRecord(){desttime=-1; alarmed=false;}
 
-    void setValue(qint64 dtime, qint64 ttime, QString cmt, QColor c, bool bAlarm=false){desttime=dtime; totaltime=ttime; comment=cmt; col=c; alarmed=bAlarm;}
+    void setValue(qint64 dtime, qint64 ttime, QString cmt, bool bAlarm=false){desttime=dtime; totaltime=ttime; comment=cmt; alarmed=bAlarm;}
     void clear(){desttime=-1; alarmed=false;}
 
 
     qint64 desttime;
     qint64 totaltime;
     QString comment;
-    QColor col;
     bool alarmed;
 };
 

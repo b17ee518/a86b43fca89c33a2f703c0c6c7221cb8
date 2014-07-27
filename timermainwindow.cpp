@@ -57,7 +57,7 @@ TimerMainWindow::~TimerMainWindow()
 
 void TimerMainWindow::setExpeditionTime(int n, qint64 destms, qint64 totalms, QString comment, QColor col)
 {
-	exptimerecord[n].setValue(destms, totalms, comment, col, destms-currentMS()<60000);
+	exptimerecord[n].setValue(destms, totalms, comment, destms-currentMS()<60000);
 	QTableWidgetItem * pItem = ui->expeditionTable->item(n*2+1, 1);
 	if (destms < 0)
 	{
@@ -72,7 +72,7 @@ void TimerMainWindow::setExpeditionTime(int n, qint64 destms, qint64 totalms, QS
 
 void TimerMainWindow::setRepairTime(int n, qint64 destms, qint64 totalms, QString comment, QColor col)
 {
-	repairtimerecord[n].setValue(destms, totalms, comment, col, destms-currentMS()<60000);
+	repairtimerecord[n].setValue(destms, totalms, comment, destms-currentMS()<60000);
 	QTableWidgetItem * pItem = ui->repairTable->item(n*2+1, 1);
 	if (destms < 0)
 	{
@@ -87,7 +87,7 @@ void TimerMainWindow::setRepairTime(int n, qint64 destms, qint64 totalms, QStrin
 
 void TimerMainWindow::setBuildTime(int n, qint64 destms, qint64 totalms, QString comment, QColor col)
 {
-	buildtimerecord[n].setValue(destms, totalms, comment, col);
+	buildtimerecord[n].setValue(destms, totalms, comment);
 	QTableWidgetItem * pNameItem = ui->buildTable->item(n, 2);
 	if (destms < 0)
 	{
@@ -448,9 +448,16 @@ bool TimerMainWindow::updateDisplay(int &mintdiff, qint64 ct, qint64 dt, qint64 
 	qint64 tdiff = dt-ct;
 	int percentage = getPercentage(tdiff, tt);
 	bool bYellow = isYellow(tdiff);
-	if (bYellow && tdiff < mintdiff && tdiff >= 0)
+	if (bYellow && tdiff < mintdiff)
 	{
-		mintdiff = tdiff;
+		if (tdiff < 0)
+		{
+			mintdiff = 0;
+		}
+		else
+		{
+			mintdiff = tdiff;
+		}
 	}
 
 	bool bUpdated = setPercentageFlag(pRemainItem, percentage, bYellow);

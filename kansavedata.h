@@ -93,6 +93,7 @@ public:
 
 	int shipcountoffset;
 	int slotitemcountoffset;
+	int lastdeckid;
 
 private:
 	KanSaveData(void);

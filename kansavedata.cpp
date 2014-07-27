@@ -14,4 +14,5 @@ KanSaveData::KanSaveData()
 
     shipcountoffset = 0;
     slotitemcountoffset = 0;
+	lastdeckid = 0;
 }

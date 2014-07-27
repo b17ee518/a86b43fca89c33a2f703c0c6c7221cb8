@@ -6,6 +6,17 @@
 #define _LREAD(name)    name=(qint64)jobj[#name].toDouble();
 #define _FREAD(name)    name=(float)jobj[#name].toDouble();
 
+#define _SIREAD(name)\
+	if (jobj[#name].isString())\
+	{\
+		##name##_s = jobj[#name].toString();\
+		name = ##name##_s.toInt();\
+	}\
+	else\
+	{\
+		_IREAD(name);\
+	}
+
 #define _AIREAD(name)   \
 	jarray=jobj[#name].toArray();\
 	name.clear();\
@@ -1046,8 +1057,8 @@ bool Api_Mst_Mapinfo::ReadFromJObj(const QJsonObject &jobj)
 	_SREAD(api_opetext);
 	_SREAD(api_infotext);
 	_AIREAD(api_item);
-	_AIREAD(api_max_maphp);
-	_AIREAD(api_required_defeat_count);
+	_IREAD(api_max_maphp);
+	_IREAD(api_required_defeat_count);
 	return bParseRet;
 }
 
@@ -1269,6 +1280,7 @@ bool kcsapi_battle_raigeki::ReadFromJObj(const QJsonObject &jobj)
 bool kcsapi_battle::ReadFromJObj(const QJsonObject &jobj)
 {
 	_IREAD(api_dock_id);
+	_SIREAD(api_deck_id);
 	_AIREAD(api_ship_ke); //enemy ship list from #1
 	_AIREAD(api_ship_lv); //enemy ship lv from #1
 	_AIREAD(api_nowhps); // both hps from #1 (13)

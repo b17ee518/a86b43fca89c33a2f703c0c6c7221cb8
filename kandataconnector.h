@@ -50,6 +50,8 @@ private:
 
 	void processHouraiDamages(const kcsapi_battle_hougeki* api_hougeki, QList<float>* totalfdamage, QList<float>* totaledamage);
 
+	void checkWoundQuit();
+
     bool RemoveShip(int shipno);
 
     kcsapi_ship2 *findShipFromShipno(int shipno);

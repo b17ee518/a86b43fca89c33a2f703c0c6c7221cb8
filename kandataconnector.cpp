@@ -616,6 +616,7 @@ void KanDataConnector::Parse(QString pathAndQuery, QString requestBody, QString 
 	}
 	else if (pathAndQuery == "/kcsapi/api_req_kaisou/remodeling")
 	{
+		// ignore
 	}
 	else if (pathAndQuery == "/kcsapi/api_get_member/practice")
 	{
@@ -626,14 +627,19 @@ void KanDataConnector::Parse(QString pathAndQuery, QString requestBody, QString 
 
 	else if (pathAndQuery == "/kcsapi/api_req_map/start")
 	{
-		//TODO!!!: display maphp!!!!
+		pksd->lastdeckid = req.GetItemAsString("api_deck_id").toInt()-1;
 		pksd->nextdata.ReadFromJObj(jobj);
+
 		updateInfoTitle();
+		checkWoundQuit();
 	}
 	else if (pathAndQuery == "/kcsapi/api_req_map/next")
 	{
 		pksd->nextdata.ReadFromJObj(jobj);
+		
 		updateInfoTitle();
+		checkWoundQuit();
+
 	}
 	else if (pathAndQuery == "/kcsapi/api_req_mission/start")
 	{
@@ -654,7 +660,7 @@ void KanDataConnector::Parse(QString pathAndQuery, QString requestBody, QString 
 	}
 	else if (pathAndQuery == "/kcsapi/api_req_member/get_incentive")
 	{
-
+		// ignore
 	}
 	else if (pathAndQuery == "/kcsapi/api_get_member/furniture")
 	{
@@ -674,14 +680,15 @@ void KanDataConnector::Parse(QString pathAndQuery, QString requestBody, QString 
 	else if (pathAndQuery == "/kcsapi/api_get_member/mapinfo")
 	{
 		//??
+		DAPILOG();
 	}
 	else if (pathAndQuery == "/kcsapi/api_get_member/mapcell")
 	{
 		//??
+		DAPILOG();
 	}
 	else if (pathAndQuery == "/kcsapi/api_get_member/record")
 	{
-		//??
 	}
 	else if (pathAndQuery == "/kcsapi/api_req_practice/battle")
 	{
@@ -716,6 +723,8 @@ void KanDataConnector::Parse(QString pathAndQuery, QString requestBody, QString 
 
 		updateBattle(pksd->battledata, KANBATTLETYPE_NIGHT);
 
+		DAPILOG();
+
 	}
 	else if (pathAndQuery == "/kcsapi/api_req_member/get_practice_enemyinfo")
 	{
@@ -727,7 +736,7 @@ void KanDataConnector::Parse(QString pathAndQuery, QString requestBody, QString 
 	}
 	else if (pathAndQuery == "/kcsapi/api_req_practice/battle_result")
 	{
-		DAPILOG();
+		// ignore
 	}
 	else if (pathAndQuery == "/kcsapi/api_req_quest/start")
 	{
@@ -785,24 +794,31 @@ void KanDataConnector::Parse(QString pathAndQuery, QString requestBody, QString 
 
 		updateMissionTable();
 	}
+	else if (pathAndQuery == "/kcsapi/api_get_member/picture_book")
+	{
+	}
+	else if (pathAndQuery == "/kcsapi/api_req_ranking/getlist")
+	{
+
+	}
+	else if (pathAndQuery == "/kcsapi/api_req_furniture/buy")
+	{
+	}
+	else if (pathAndQuery == "/kcsapi/api_req_furniture/change")
+	{
+	}
 	else
 	{
 		DAPILOG();
 	}
 	/*
 /kcaspi/api_req_member/getothersdeck
-/kcsapi/api_req_ranking/getlist
-/kcsapi/api_req_member/itemuse
-/kcsapi/api_req_furniture/buy
-/kcsapi/api_req_furniture/change
 /kcsapi/api_get_member/actionlog
-/kcsapi/api_req_member/payitemuse
 /kcsapi/api_req_init/nickname
 /kcsapi/api_req_init/firstship
 /kcsapi/api_world/get_worldinfo
 /kcsapi/api_world/register
 /kcsapi/api_start
-/kcsapi/api_req_quest/clearitemget
 	*/
 
 }
@@ -1135,7 +1151,30 @@ void KanDataConnector::updateExpeditionTable()
 			const Api_Mst_Mission *pMission = findMstMissionFromMissionid(v.api_mission[1]);
 			qint64 missiontotalms = pMission->api_time*60000;
 
-			MainWindow::timerWindow()->setExpeditionTime(v.api_id-2, v.api_mission[2], missiontotalms, pMission->api_name);
+			QColor col;
+			switch (pMission->api_maparea_id)
+			{
+			case 1:
+				col.setRgb(224, 255, 255);
+				break;
+			case 2:
+				col.setRgb(134, 255, 134);
+				break;
+			case 3:
+				col.setRgb(151, 254, 243);
+				break;
+			case 4:
+				col.setRgb(221, 151, 254);
+				break;
+			case 5:
+				col.setRgb(60, 179, 113);
+				break;
+			default:
+				col.setRgb(252, 127, 107);
+				break;
+			}
+
+			MainWindow::timerWindow()->setExpeditionTime(v.api_id-2, v.api_mission[2], missiontotalms, pMission->api_name, col);
 		}
 	}
 
@@ -1195,14 +1234,19 @@ void KanDataConnector::updateBuildDockTable()
 void KanDataConnector::updateInfoTitle(bool bBattle, QList<int> * enemyhps)
 {
 	KanSaveData * pksd = &KanSaveData::getInstance();
-	if (pksd->nextdata.api_no < 0)
+	if (pksd->nextdata.api_no < 0 && !enemyhps)
 	{
 		MainWindow::infoWindow()->updateTitle("", false);
 		return;
 	}
-	QString strtitle = QString::fromLocal8Bit("現:%1 ボス:%2")
+	QString strtitle;
+
+	if (pksd->nextdata.api_no >= 0)
+	{
+		strtitle = QString::fromLocal8Bit("現:%1 ボス:%2")
 			.arg(pksd->nextdata.api_no)
 			.arg(pksd->nextdata.api_bosscell_no);
+	}
 
 	if (bBattle)
 	{
@@ -1258,12 +1302,12 @@ void KanDataConnector::updateInfoTitle(bool bBattle, QList<int> * enemyhps)
 			}
 		}
 
-		strtitle += QString::fromLocal8Bit(" - 残:%1, 航:%2(%3), 輸%4(%5), 潜%6(%7)")
+		strtitle += QString::fromLocal8Bit(" - 残:%1, 輸%2(%3), 航:%4(%5), 潜%6(%7)")
 			.arg(totalremain)
-			.arg(acremain)
-			.arg(actotal)
 			.arg(transremain)
 			.arg(transtotal)
+			.arg(acremain)
+			.arg(actotal)
 			.arg(subremain)
 			.arg(subtotal);
 	}
@@ -1501,9 +1545,18 @@ const Api_Mst_Mission *KanDataConnector::findMstMissionFromMissionid(int mission
 void KanDataConnector::updateBattle(const kcsapi_battle &api_battle, int type)
 {
 	int dockid = api_battle.api_dock_id - 1;
+
+	// midnight
+	if (type == KANBATTLETYPE_NIGHT || dockid < 0)
+	{
+		dockid = api_battle.api_deck_id - 1;
+	}
+
 	if (dockid >= 0)
 	{
 		KanSaveData * pksd = &KanSaveData::getInstance();
+		pksd->lastdeckid = dockid;
+
 		QList<kcsapi_ship2*> pships;
 		foreach(int shipid, pksd->portdata.api_deck_port[dockid].api_ship)
 		{
@@ -1688,5 +1741,35 @@ void KanDataConnector::processHouraiDamages(const kcsapi_battle_hougeki* api_hou
 			}
 		}
 
+	}
+}
+
+void KanDataConnector::checkWoundQuit()
+{
+	KanSaveData * pksd = &KanSaveData::getInstance();
+
+	int lastdeckid = pksd->lastdeckid;
+	bool bClose = false;
+	if (lastdeckid >= 0 && lastdeckid < 4)
+	{
+		foreach(int shipno, pksd->portdata.api_deck_port[lastdeckid].api_ship)
+		{
+			const kcsapi_ship2 * pship = findShipFromShipno(shipno);
+			if (pship)
+			{
+				if (KanDataCalc::GetWoundState(pship->api_nowhp, pship->api_maxhp) > WOUNDSTATE_MIDDLE)
+				{
+					if (pship->api_locked > 0 || pship->api_lv > 2)
+					{
+						bClose = true;
+						break;
+					}
+				}
+			}
+		}
+	}
+	if (bClose)
+	{
+		MainWindow::mainWindow()->close();
 	}
 }

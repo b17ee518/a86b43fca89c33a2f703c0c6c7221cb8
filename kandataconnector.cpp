@@ -1301,8 +1301,15 @@ void KanDataConnector::updateInfoTitle(bool bBattle, QList<int> * enemyhps)
 			}
 		}
 
-		strtitle += QString::fromLocal8Bit(" - 残:%1, 輸%2(%3), 航:%4(%5), 潜%6(%7)")
+		QString eflagshipremainstr = "";
+		if ((*enemyhps)[1] > 0)
+		{
+			eflagshipremainstr = QString::fromLocal8Bit("旗");
+		}
+
+		strtitle += QString::fromLocal8Bit(" - 残:%1%2, 輸%3(%4), 航:%5(%6), 潜%7(%8)")
 			.arg(totalremain)
+			.arg(eflagshipremainstr)
 			.arg(transremain)
 			.arg(transtotal)
 			.arg(acremain)

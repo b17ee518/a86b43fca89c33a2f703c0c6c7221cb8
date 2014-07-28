@@ -15,6 +15,15 @@
 #include <Mmdeviceapi.h>
 #define SAFE_RELEASE(x) if(x) { x->Release(); x = NULL; } 
 
+
+enum{
+	QWEBVIEWCSS_NORMAL,
+	QWEBVIEWCSS_TRANSPARENT,
+	QWEBVIEWCSS_END,
+};
+QUrl csses[QWEBVIEWCSS_END];
+
+
 MainWindow * MainWindow::s_pMainWindow = NULL;
 
 MainWindow::MainWindow(QWidget *parent) :
@@ -68,10 +77,26 @@ body {
 	z-index:1
 }
 	*/
-	QUrl css("data:text/css;charset=utf-8;base64,Ym9keSB7DQogICAgbWFyZ2luOjA7DQogICAgb3ZlcmZsb3c6aGlkZGVuDQp9DQoNCiNnYW1lX2ZyYW1lIHsNCiAgICBwb3NpdGlvbjpmaXhlZDsNCiAgICBsZWZ0OjAlOw0KICAgIHRvcDotMTZweDsNCiAgICBsZWZ0Oi01MHB4Ow0KICAgIHotaW5kZXg6MQ0KfQ==");
+	csses[QWEBVIEWCSS_NORMAL] = (QUrl("data:text/css;charset=utf-8;base64,Ym9keSB7DQogICAgbWFyZ2luOjA7DQogICAgb3ZlcmZsb3c6aGlkZGVuDQp9DQoNCiNnYW1lX2ZyYW1lIHsNCiAgICBwb3NpdGlvbjpmaXhlZDsNCiAgICBsZWZ0OjAlOw0KICAgIHRvcDotMTZweDsNCiAgICBsZWZ0Oi01MHB4Ow0KICAgIHotaW5kZXg6MQ0KfQ=="));
+	/*
+body {
+	margin:0;
+	overflow:hidden;
+	opacity: 0.1;
+}
 
-	ui->webView->page()->settings()->setUserStyleSheetUrl(css);
-
+#game_frame {
+	position:fixed;
+	left:0%;
+	top:-16px;
+	left:-50px;
+	z-index:1;
+}
+*/
+	csses[QWEBVIEWCSS_TRANSPARENT] = QUrl("data:text/css;charset=utf-8;base64,Ym9keSB7DQoJbWFyZ2luOjA7DQoJb3ZlcmZsb3c6aGlkZGVuOw0KCW9wYWNpdHk6IDAuMTsNCn0NCg0KI2dhbWVfZnJhbWUgew0KCXBvc2l0aW9uOmZpeGVkOw0KCWxlZnQ6MCU7DQoJdG9wOi0xNnB4Ow0KCWxlZnQ6LTUwcHg7DQoJei1pbmRleDoxOw0KfQ==");
+	
+	ui->webView->page()->settings()->setUserStyleSheetUrl(csses[QWEBVIEWCSS_NORMAL]);
+	
 //	ui->webView->load(QUrl("http://www.google.com"));
 	ui->webView->load(QUrl("http://www.dmm.com/netgame/social/application/-/detail/=/app_id=854854/"));
 }
@@ -312,6 +337,7 @@ void MainWindow::on_pbCheckTrasparent_toggled(bool checked)
 			w->setStyleSheet(stylestr);
 		}
 
+		ui->webView->page()->settings()->setUserStyleSheetUrl(csses[QWEBVIEWCSS_TRANSPARENT]);
 	}
 	else
 	{
@@ -324,6 +350,8 @@ void MainWindow::on_pbCheckTrasparent_toggled(bool checked)
 			}
 		}
 		s_listpair.clear();
+
+		ui->webView->page()->settings()->setUserStyleSheetUrl(csses[QWEBVIEWCSS_NORMAL]);
 	}
 
 }

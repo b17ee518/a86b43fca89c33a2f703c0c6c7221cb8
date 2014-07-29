@@ -71,29 +71,27 @@ body {
 
 #game_frame {
 	position:fixed;
-	left:0%;
 	top:-16px;
 	left:-50px;
 	z-index:1
 }
 	*/
-	csses[QWEBVIEWCSS_NORMAL] = (QUrl("data:text/css;charset=utf-8;base64,Ym9keSB7DQogICAgbWFyZ2luOjA7DQogICAgb3ZlcmZsb3c6aGlkZGVuDQp9DQoNCiNnYW1lX2ZyYW1lIHsNCiAgICBwb3NpdGlvbjpmaXhlZDsNCiAgICBsZWZ0OjAlOw0KICAgIHRvcDotMTZweDsNCiAgICBsZWZ0Oi01MHB4Ow0KICAgIHotaW5kZXg6MQ0KfQ=="));
+	csses[QWEBVIEWCSS_NORMAL] = (QUrl("data:text/css;charset=utf-8;base64,Ym9keSB7DQoJbWFyZ2luOjA7DQoJb3ZlcmZsb3c6aGlkZGVuDQp9DQoNCiNnYW1lX2ZyYW1lIHsNCglwb3NpdGlvbjpmaXhlZDsNCgl0b3A6LTE2cHg7DQoJbGVmdDotNTBweDsNCgl6LWluZGV4OjENCn0="));
 	/*
 body {
 	margin:0;
 	overflow:hidden;
-	opacity: 0.1;
+	opacity: 0.4;
 }
 
 #game_frame {
 	position:fixed;
-	left:0%;
 	top:-16px;
 	left:-50px;
 	z-index:1;
 }
 */
-	csses[QWEBVIEWCSS_TRANSPARENT] = QUrl("data:text/css;charset=utf-8;base64,Ym9keSB7DQoJbWFyZ2luOjA7DQoJb3ZlcmZsb3c6aGlkZGVuOw0KCW9wYWNpdHk6IDAuMTsNCn0NCg0KI2dhbWVfZnJhbWUgew0KCXBvc2l0aW9uOmZpeGVkOw0KCWxlZnQ6MCU7DQoJdG9wOi0xNnB4Ow0KCWxlZnQ6LTUwcHg7DQoJei1pbmRleDoxOw0KfQ==");
+	csses[QWEBVIEWCSS_TRANSPARENT] = QUrl("data:text/css;charset=utf-8;base64,Ym9keSB7DQoJbWFyZ2luOjA7DQoJb3ZlcmZsb3c6aGlkZGVuOw0KCW9wYWNpdHk6IDAuNDsNCn0NCg0KI2dhbWVfZnJhbWUgew0KCXBvc2l0aW9uOmZpeGVkOw0KCXRvcDotMTZweDsNCglsZWZ0Oi01MHB4Ow0KCXotaW5kZXg6MTsNCn0=");
 	
 	ui->webView->page()->settings()->setUserStyleSheetUrl(csses[QWEBVIEWCSS_NORMAL]);
 	

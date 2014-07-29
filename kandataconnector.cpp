@@ -569,15 +569,15 @@ void KanDataConnector::Parse(QString pathAndQuery, QString requestBody, QString 
 		if (shipid > 0)
 		{
 			pksd->shipcountoffset++;
-		}
-		const kcsapi_mst_ship * pmstship = findMstShipFromShipid(shipid);
-		if (pmstship)
-		{
-			foreach(int slotitemid, pmstship->api_defeq)
+			const kcsapi_mst_ship * pmstship = findMstShipFromShipid(shipid);
+			if (pmstship)
 			{
-				if (slotitemid > 0)
+				foreach(int slotitemid, pmstship->api_defeq)
 				{
-					pksd->slotitemcountoffset++;
+					if (slotitemid > 0)
+					{
+						pksd->slotitemcountoffset++;
+					}
 				}
 			}
 		}
@@ -1760,15 +1760,18 @@ void KanDataConnector::checkWoundQuit()
 	{
 		foreach(int shipno, pksd->portdata.api_deck_port[lastdeckid].api_ship)
 		{
-			const kcsapi_ship2 * pship = findShipFromShipno(shipno);
-			if (pship)
+			if (shipno > 0)
 			{
-				if (KanDataCalc::GetWoundState(pship->api_nowhp, pship->api_maxhp) > WOUNDSTATE_MIDDLE)
+				const kcsapi_ship2 * pship = findShipFromShipno(shipno);
+				if (pship)
 				{
-					if (pship->api_locked > 0 || pship->api_lv > 2)
+					if (KanDataCalc::GetWoundState(pship->api_nowhp, pship->api_maxhp) > WOUNDSTATE_MIDDLE)
 					{
-						bClose = true;
-						break;
+						if (pship->api_locked > 0 || pship->api_lv > 2)
+						{
+							bClose = true;
+							break;
+						}
 					}
 				}
 			}

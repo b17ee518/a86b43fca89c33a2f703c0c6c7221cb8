@@ -41,7 +41,14 @@ private:
     void updateBuildDockTable();
     void updateInfoTitle(bool bBattle=false, QList<int> *enemyhps=0);
 
-	void updateBattle(const kcsapi_battle &api_battle, int type);
+	QString logBattleResult(bool bNoWrite=false);
+	void logBattleDetail();
+	QString getLogDevLeadStr();
+	void logBuildResult();
+	void logCreateItemResult(int slotitemid, int fuel, int bull, int steel, int bauxite);
+	QString getFormationStr(int formation);
+
+	QList<int> updateBattle(const kcsapi_battle &api_battle, int type);
 
     void getShipColors(const kcsapi_ship2 *pship, QColor *pcolCond=0, QColor *pcolWound=0, int* pcondstate=0, int* pwoundstate=0);
     void getShipChargeColors(const kcsapi_ship2 *pship, const kcsapi_mst_ship *pmstship, QColor *pcolFuel, QColor *pcolBullet);
@@ -57,6 +64,8 @@ private:
     kcsapi_ship2 *findShipFromShipno(int shipno);
     const kcsapi_mst_ship *findMstShipFromShipid(int shipid) const;
     const Api_Mst_Mission *findMstMissionFromMissionid(int missionid) const;
+	const kcsapi_slotitem *findSlotitemFromId(int id) const;
+	const kcsapi_mst_slotitem *findMstSlotItemFromSlotitemid(int slotitemid) const;
     QColor colWhite;
     QColor colGray;
     QColor colOrange;

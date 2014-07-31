@@ -78,6 +78,31 @@ enum
 	SHIPTYPE_UNKNOWN = 21,
 };
 
+enum
+{
+	SEIKU_KAKUHO = 1,
+	SEIKU_YUSEI = 2,
+	SEIKU_KORE = 3,
+	SEIKU_SOUSITSU = 4,
+};
+
+class CreateShipSaveData
+{
+public:
+	void setValue(int fuel, int bull, int steel, int bauxite, int dev, int kdock);
+	void clearValue();
+	bool isValueSet(){ return flag > 0; }
+	bool isAll30(){ return usefuel == 30 && usebull == 30 && usesteel == 30 && usebauxite == 30; }
+
+	int usefuel;
+	int usebull;
+	int usesteel;
+	int usebauxite;
+	int usedevelopment;
+	int kdockid;
+	int flag;
+};
+
 class KanSaveData
 {
 public:
@@ -90,6 +115,11 @@ public:
 	QList<kcsapi_quest> questdata;
 	kcsapi_next nextdata;
 	kcsapi_battle battledata;
+	kcsapi_battleresult battleresultdata;
+
+	CreateShipSaveData createshipdata;
+
+	QList<int> enemyhpdata;
 
 	int shipcountoffset;
 	int slotitemcountoffset;

@@ -17,11 +17,13 @@ void KLog::Init()
 {
     errorlog = new QFile(QApplication::applicationDirPath()+"/errorlog.txt");
     apilog = new QFile(QApplication::applicationDirPath()+"/apilog.txt");
-    resultlog = new QFile(QApplication::applicationDirPath()+"/resultlog.txt");
+    battleresultlog = new QFile(QApplication::applicationDirPath()+"/battleresultlog.txt");
+	battledetaillog = new QFile(QApplication::applicationDirPath() + "/battledetaillog.txt");
 
     errorlog->open(QIODevice::ReadWrite|QIODevice::Append|QIODevice::Text);
-    apilog->open(QIODevice::ReadWrite|QIODevice::Append|QIODevice::Text);
-    resultlog->open(QIODevice::ReadWrite|QIODevice::Append|QIODevice::Text);
+	apilog->open(QIODevice::ReadWrite | QIODevice::Append | QIODevice::Text);
+	battleresultlog->open(QIODevice::ReadWrite | QIODevice::Append | QIODevice::Text);
+	battledetaillog->open(QIODevice::ReadWrite | QIODevice::Append | QIODevice::Text);
 }
 
 void KLog::Release()
@@ -36,11 +38,16 @@ void KLog::Release()
         apilog->close();
         apilog = 0;
     }
-    if (resultlog)
+    if (battleresultlog)
     {
-        resultlog->close();
-        resultlog = 0;
+        battleresultlog->close();
+        battleresultlog = 0;
     }
+	if (battledetaillog)
+	{
+		battledetaillog->close();
+		battledetaillog = 0;
+	}
 }
 
 void KLog::AppendLog(QFile *f, QString log)
@@ -69,7 +76,26 @@ void KLog::LogAPI(QString path, QString request, QString response)
     AppendLog(apilog, str);
 }
 
-void KLog::LogResult(QString log)
+void KLog::LogBattleResult(QString log)
 {
-    AppendLog(resultlog, log);
+    AppendLog(battleresultlog, log);
+}
+
+void KLog::LogBattleDetail(QString log)
+{
+	AppendLog(battledetaillog, log);
+}
+
+
+void KLog::RecordLog(QString filename, QString log)
+{
+	QFile * file = new QFile(QApplication::applicationDirPath() + "/" + filename);
+	if (file)
+	{
+		file->open(QIODevice::ReadWrite | QIODevice::Append | QIODevice::Text);
+
+		AppendLog(file, log);
+
+		file->close();
+	}
 }

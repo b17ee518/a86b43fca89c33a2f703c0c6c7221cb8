@@ -55,7 +55,7 @@ MainWindow::MainWindow(QWidget *parent) :
 			this,
 			SLOT(slotParse(const QString &, const QString &, const QString &)));
 
-	pFiddler->SetBeforeRequest((int)&MainWindow::BeforeRequestFunc);
+//	pFiddler->SetBeforeRequest((int)&MainWindow::BeforeRequestFunc);
 	pFiddler->SetAfterSessionComplete((int)&MainWindow::AfterSessionCompleteFunc);
 
 	useport = 13347;
@@ -243,6 +243,7 @@ void MainWindow::mouseReleaseEvent(QMouseEvent *event)
 
 void MainWindow::slotActivate(QWidget *w, bool bActivate)
 {
+	Q_UNUSED(bActivate);
 	this->raise();
 	w->stackUnder(this);
 }
@@ -362,14 +363,16 @@ void MainWindow::slotWebViewException(int code, const QString &source, const QSt
 	qDebug(help.toUtf8());
 	qDebug("Put FiddlerCore.dll to exe folder.");
 }
-
+/*
 void MainWindow::BeforeRequestFunc(int sessionID, char *fullURL, char *requestBody)
 {
 
 }
-
+*/
 void MainWindow::AfterSessionCompleteFunc(int sessionID, char *mimeType, int responseCode, char *PathAndQuery, char *requestBody, char *responseBody)
 {
+	Q_UNUSED(sessionID);
+	Q_UNUSED(responseCode);
 	QString strPathAndQuery = PathAndQuery;
 
 	if (strPathAndQuery.startsWith("/kcsapi"))

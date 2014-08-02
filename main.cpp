@@ -76,7 +76,7 @@ int main(int argc, char *argv[])
 	MainWindow::setMainWindow(w);
 
 	//
-
+	/*
 	QFile inputfile(QApplication::applicationDirPath()+"/input.txt");
 	inputfile.open(QIODevice::ReadOnly);
 	QTextStream in(&inputfile);
@@ -90,6 +90,7 @@ int main(int argc, char *argv[])
 		}
 		lstargs.append(line);
 	}
+	*/
 /*
 	KanReqData req;
 	req.ReadFromString("abc", "api%5ftoken=123&api_ver=132");
@@ -99,12 +100,12 @@ int main(int argc, char *argv[])
 	kcsapi_basic d;
 	d.ReadFromJObj(doc.object()["api_data"].toObject());
 */
-
+	/*
 	for (int i=0; i<lstargs.count()/3; i++)
 	{
 //        KanDataConnector::getInstance().Parse(lstargs[i*3], lstargs[i*3+1], lstargs[i*3+2]);
 	}
-
+	*/
 	//
 
 	w->show();

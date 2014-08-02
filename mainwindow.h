@@ -61,7 +61,7 @@ private:
 
 	int useport;
 	FiddlerCOM::FiddlerCOMClass * pFiddler;
-	static void __stdcall BeforeRequestFunc(int sessionID, char * fullURL, char * requestBody);
+//	static void __stdcall BeforeRequestFunc(int sessionID, char * fullURL, char * requestBody);
 	static void __stdcall AfterSessionCompleteFunc(int sessionID, char * mimeType, int responseCode, char * PathAndQuery, char * requestBody, char * responseBody);
 	void SetWebSettings();
 

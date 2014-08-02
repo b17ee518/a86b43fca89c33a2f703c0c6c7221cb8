@@ -563,18 +563,6 @@ public:
 	QList<int> api_unsetslot;
 };
 
-/**
- * @brief The kcsapi_createship class
- */
-class kcsapi_createship : public KAPIBaseData
-{
-
-public:
-	kcsapi_createship(){}
-
-	virtual bool ReadFromJObj(const QJsonObject &jobj);
-
-};
 
 /**
  * @brief The kcsapi_deck class

@@ -293,12 +293,6 @@ bool kcsapi_createitem::ReadFromJObj(const QJsonObject &jobj)
 }
 
 
-bool kcsapi_createship::ReadFromJObj(const QJsonObject &jobj)
-{
-	return true;
-}
-
-
 bool kcsapi_deck::ReadFromJObj(const QJsonObject &jobj)
 {
 	_IREAD(api_member_id);
@@ -604,7 +598,6 @@ bool kcsapi_port::ReadFromJObj(const QJsonObject &jobj)
 	_ACREAD(api_deck_port, kcsapi_deck);
 	_ACREAD(api_ndock, kcsapi_ndock);
 	_ACREAD(api_ship, kcsapi_ship2);
-	int n = jobj["api_basic"].toObject()["api_level"].toDouble();
 	_CREAD(api_basic, kcsapi_basic);
 
 	return bParseRet;

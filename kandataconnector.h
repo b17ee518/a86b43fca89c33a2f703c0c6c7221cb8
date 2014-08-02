@@ -41,7 +41,7 @@ private:
     void updateBuildDockTable();
     void updateInfoTitle(bool bBattle=false, QList<int> *enemyhps=0);
 
-	QString logBattleResult(bool bNoWrite=false);
+	QString logBattleResult(bool bWrite=true);
 	void logBattleDetail();
 	QString getLogDevLeadStr();
 	void logBuildResult();

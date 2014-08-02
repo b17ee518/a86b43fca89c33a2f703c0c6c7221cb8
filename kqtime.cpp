@@ -116,5 +116,6 @@ qint64 KQTime::msecsTo(const KQTime &t) const
 
 bool KQTime::isValid(int h, int m, int s, int ms)
 {
+	Q_UNUSED(h);
     return (uint)m < 60 && (uint)s < 60 && (uint)ms < 1000;
 }

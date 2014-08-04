@@ -520,10 +520,40 @@ void MainWindow::showEvent(QShowEvent *event)
 	}
 }
 
-void MainWindow::SetProgressBarPos(int pos)
+void MainWindow::SetProgressBarPos(int pos, int state)
 {
 	if (m_pTaskbarButton)
 	{
+		QWinTaskbarProgress * pProgress = m_pTaskbarButton->progress();
 		m_pTaskbarButton->progress()->setValue(pos);
+		switch (state)
+		{
+		case PROGRESSBARSTATE_NORMAL:
+			if (pProgress->isPaused() || pProgress->isStopped())
+			{
+				pProgress->resume();
+			}
+			break;
+		case PROGRESSBARSTATE_PAUSED:
+			if (pProgress->isStopped())
+			{
+				pProgress->resume();
+			}
+			if (!pProgress->isPaused())
+			{
+				pProgress->setPaused(true);
+			}
+			break;
+		case PROGRESSBARSTATE_STOPPED:
+			if (pProgress->isPaused())
+			{
+				pProgress->resume();
+			}
+			if (!pProgress->isStopped())
+			{
+				pProgress->stop();
+			}
+			break;
+		}
 	}
 }

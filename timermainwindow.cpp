@@ -118,6 +118,7 @@ void TimerMainWindow::slotUpdateTimer()
 	qint64 ct = currentMS();
 
 	int mintdiff = 3600000;
+	int progressbarstate = PROGRESSBARSTATE_NORMAL;
 
 	// exp
 	for (int i=0; i<3; i++)
@@ -140,6 +141,10 @@ void TimerMainWindow::slotUpdateTimer()
 						  , progressExpUs[i]
 						  , true
 						  );
+			if (mintdiff < 60000)
+			{
+				progressbarstate = PROGRESSBARSTATE_STOPPED;
+			}
 
 
 		}
@@ -189,6 +194,10 @@ void TimerMainWindow::slotUpdateTimer()
 						  , progressRepairUs[i]
 						  , true
 						  );
+			if (mintdiff < 60000 && !progressbarstate)
+			{
+				progressbarstate = PROGRESSBARSTATE_PAUSED;
+			}
 		}
 		else if (repairtimerecord[i].desttime == -1)
 		{
@@ -262,7 +271,7 @@ void TimerMainWindow::slotUpdateTimer()
 		mintdiff = 0;
 	}
 	int processpercentage = getPercentage(mintdiff, 3600000);
-	MainWindow::mainWindow()->SetProgressBarPos(processpercentage);
+	MainWindow::mainWindow()->SetProgressBarPos(processpercentage, progressbarstate);
 }
 
 qint64 TimerMainWindow::currentMS()

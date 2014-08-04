@@ -9,6 +9,13 @@
 #include <QShowEvent>
 #include <QWinTaskbarButton>
 
+enum
+{
+	PROGRESSBARSTATE_NORMAL,
+	PROGRESSBARSTATE_PAUSED,
+	PROGRESSBARSTATE_STOPPED,
+};
+
 namespace Ui {
 class MainWindow;
 }
@@ -29,7 +36,7 @@ public:
 
 	void AdjustVolume(int vol);
 	void onSubMainWindowShowHide(bool bShow, MainWindowBase * pWindow);
-	void SetProgressBarPos(int pos);
+	void SetProgressBarPos(int pos, int state);
 signals:
 	void sigParse(const QString &PathAndQuery, const QString &requestBody, const QString &responseBody);
 

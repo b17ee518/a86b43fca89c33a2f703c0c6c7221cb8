@@ -141,7 +141,7 @@ void TimerMainWindow::slotUpdateTimer()
 						  , progressExpUs[i]
 						  , true
 						  );
-			if (mintdiff < 60000)
+			if (mintdiff <= 0)
 			{
 				progressbarstate = PROGRESSBARSTATE_STOPPED;
 			}
@@ -194,7 +194,7 @@ void TimerMainWindow::slotUpdateTimer()
 						  , progressRepairUs[i]
 						  , true
 						  );
-			if (mintdiff < 60000 && !progressbarstate)
+			if (mintdiff <= 0 && !progressbarstate)
 			{
 				progressbarstate = PROGRESSBARSTATE_PAUSED;
 			}

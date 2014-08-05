@@ -64,6 +64,7 @@ void KanDataConnector::Parse(QString pathAndQuery, QString requestBody, QString 
 
 	if (pathAndQuery == "/kcsapi/api_start2")
 	{
+//		DAPILOG();
 		pksd->start2data.ReadFromJObj(jobj);
 		// mst table no update
 	}
@@ -1084,7 +1085,10 @@ void KanDataConnector::updateFleetTable()
 			int woundstate;
 
 			getShipColors(pship, &colCond, &colWound, &condstate, &woundstate);
-			getShipChargeColors(pship, pmstship, &colFuel, &colBullet);
+			if (pmstship)
+			{
+				getShipChargeColors(pship, pmstship, &colFuel, &colBullet);
+			}
 
 			if (condstate > CONDSTATE_SMALL)
 			{
@@ -1102,7 +1106,7 @@ void KanDataConnector::updateFleetTable()
 			{
 				kiracount++;
 			}
-			if (!bNeedCharge)
+			if (!bNeedCharge && pmstship)
 			{
 				if (pship->api_fuel != pmstship->api_fuel_max || pship->api_bull != pmstship->api_bull_max)
 				{
@@ -1111,7 +1115,7 @@ void KanDataConnector::updateFleetTable()
 			}
 
 			rd.appendCell(KQRowCellData(QString("%1:").arg(shipcount)));
-			rd.appendCell(KQRowCellData(pmstship->api_name, colCond)); // tooltip?
+			rd.appendCell(KQRowCellData(pmstship?pmstship->api_name:"", colCond)); // tooltip?
 			rd.appendCell(KQRowCellData(QString("Lv.%1").arg(pship->api_lv), colCond));
 			rd.appendCell(KQRowCellData(QString("(%1)").arg(pship->api_cond), colCond));
 			rd.appendCell(KQRowCellData(QString::fromLocal8Bit("次:%1").arg(nextexp), colCond));
@@ -1198,32 +1202,35 @@ void KanDataConnector::updateExpeditionTable()
 		else
 		{
 			const Api_Mst_Mission *pMission = findMstMissionFromMissionid(v.api_mission[1]);
-			qint64 missiontotalms = pMission->api_time*60000;
-
-			QColor col;
-			switch (pMission->api_maparea_id)
+			if (pMission)
 			{
-			case 1:
-				col.setRgb(224, 255, 255);
-				break;
-			case 2:
-				col.setRgb(134, 255, 134);
-				break;
-			case 3:
-				col.setRgb(151, 254, 243);
-				break;
-			case 4:
-				col.setRgb(221, 151, 254);
-				break;
-			case 5:
-				col.setRgb(60, 179, 113);
-				break;
-			default:
-				col.setRgb(252, 127, 107);
-				break;
-			}
+				qint64 missiontotalms = pMission->api_time * 60000;
 
-			MainWindow::timerWindow()->setExpeditionTime(v.api_id-2, v.api_mission[2], missiontotalms, pMission->api_name, col);
+				QColor col;
+				switch (pMission->api_maparea_id)
+				{
+				case 1:
+					col.setRgb(224, 255, 255);
+					break;
+				case 2:
+					col.setRgb(134, 255, 134);
+					break;
+				case 3:
+					col.setRgb(151, 254, 243);
+					break;
+				case 4:
+					col.setRgb(221, 151, 254);
+					break;
+				case 5:
+					col.setRgb(60, 179, 113);
+					break;
+				default:
+					col.setRgb(252, 127, 107);
+					break;
+				}
+
+				MainWindow::timerWindow()->setExpeditionTime(v.api_id - 2, v.api_mission[2], missiontotalms, pMission->api_name, col);
+			}
 		}
 	}
 

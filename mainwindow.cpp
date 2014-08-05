@@ -49,34 +49,14 @@ MainWindow::MainWindow(QWidget *parent) :
 
 	ui->titleFrame->setHandlingWidget(this);
 
-	useport = 13347;
-	if (bUseFiddler)
-	{
-		pFiddler = new FiddlerCOM::FiddlerCOMClass(this);
+	connect(this,
+		SIGNAL(sigParse(const QString &, const QString &, const QString &)),
+		this,
+		SLOT(slotParse(const QString &, const QString &, const QString &)));
 
-		connect(
-			pFiddler,
-			SIGNAL(exception(int, const QString &, const QString &, const QString &)),
-			this,
-			SLOT(slotWebViewException(int, const QString &, const QString &, const QString &)));
-
-		connect(this,
-			SIGNAL(sigParse(const QString &, const QString &, const QString &)),
-			this,
-			SLOT(slotParse(const QString &, const QString &, const QString &)));
-
-		//	pFiddler->SetBeforeRequest((int)&MainWindow::BeforeRequestFunc);
-		pFiddler->SetAfterSessionComplete((int)&MainWindow::AfterSessionCompleteFunc);
-
-		pFiddler->Startup(useport, false, true);
-	}
 
 	SetWebSettings();
-	if (!bUseFiddler)
-	{
-		KQNetworkAccessManager * manager = new KQNetworkAccessManager(this);
-		ui->webView->page()->setNetworkAccessManager(manager);
-	}
+
 	/*
 	 *
 body {
@@ -423,8 +403,14 @@ void MainWindow::onGetNetworkReply(QNetworkReply * reply)
 		QString PathAndQuery = url.path();
 		if (PathAndQuery.startsWith("/kcsapi"))
 		{
-			QString requestBody; //TODO
-			QString responseBody = reply->peek(reply->bytesAvailable() + 1);
+			QString requestBody = reply->property("requestBody").toString();
+			QByteArray bytes = reply->readAll();
+			QString responseBody = QString::fromUtf8(bytes.constData(), bytes.size());
+			/*
+			qDebug(QString::number(reply->bytesAvailable()).toLocal8Bit());
+			qDebug(QString::number(reply->readBufferSize()).toLocal8Bit());
+			qDebug(QString::number(reply->size()).toLocal8Bit());
+			*/
 			emit MainWindow::mainWindow()->sigParse(PathAndQuery, requestBody, responseBody);
 		}
 	}
@@ -432,22 +418,38 @@ void MainWindow::onGetNetworkReply(QNetworkReply * reply)
 
 void MainWindow::SetWebSettings()
 {
-	KQWebPage * page = new KQWebPage();
-	ui->webView->setPage(page);
+	useport = 13347;
 	if (bUseFiddler)
 	{
+		pFiddler = new FiddlerCOM::FiddlerCOMClass(this);
+
+		connect(
+			pFiddler,
+			SIGNAL(exception(int, const QString &, const QString &, const QString &)),
+			this,
+			SLOT(slotWebViewException(int, const QString &, const QString &, const QString &)));
+
+
+		//	pFiddler->SetBeforeRequest((int)&MainWindow::BeforeRequestFunc);
+		pFiddler->SetAfterSessionComplete((int)&MainWindow::AfterSessionCompleteFunc);
+
+		pFiddler->Startup(useport, false, true);
+
 		QNetworkProxyFactorySet * proxies = new QNetworkProxyFactorySet();
 		proxies->init(useport);
 		QNetworkProxyFactory::setApplicationProxyFactory(proxies);
 	}
-	else
+
+	KQWebPage * page = new KQWebPage();
+	ui->webView->setPage(page);
+
+	if (!bUseFiddler)
 	{
-
+		KQNetworkAccessManager * manager = new KQNetworkAccessManager(this);
+		ui->webView->page()->setNetworkAccessManager(manager);
 	}
-
 	CookieJar* jar = new CookieJar(this);
 	ui->webView->page()->networkAccessManager()->setCookieJar(jar);
-
 	//WebView
 	QNetworkDiskCache *cache = new QNetworkDiskCache(this);
 	cache->setCacheDirectory(QStandardPaths::writableLocation(QStandardPaths::CacheLocation));

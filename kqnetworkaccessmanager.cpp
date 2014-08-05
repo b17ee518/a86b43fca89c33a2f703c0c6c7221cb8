@@ -14,7 +14,8 @@ QNetworkReply *KQNetworkAccessManager::createRequest(QNetworkAccessManager::Oper
 	
 	if (outgoingData)
 	{
-		qDebug(outgoingData->peek(outgoingData->size() + 1));
+		QString requestBody = outgoingData->peek(outgoingData->size() + 1);
+		reply->setProperty("requestBody", requestBody);
 	}
 //	reply->setUserData()
     connect(reply, SIGNAL(readyRead()), this, SLOT(slotReadyRead()));

@@ -8,6 +8,7 @@
 #include "FiddlerCOM.h"
 #include <QShowEvent>
 #include <QWinTaskbarButton>
+#include <QNetworkReply>
 
 enum
 {
@@ -37,6 +38,9 @@ public:
 	void AdjustVolume(int vol);
 	void onSubMainWindowShowHide(bool bShow, MainWindowBase * pWindow);
 	void SetProgressBarPos(int pos, int state);
+
+	void onGetNetworkReply(QNetworkReply * reply);
+
 signals:
 	void sigParse(const QString &PathAndQuery, const QString &requestBody, const QString &responseBody);
 
@@ -66,6 +70,7 @@ private slots:
 private:
 	Ui::MainWindow *ui;
 
+	bool bUseFiddler;
 	int useport;
 	FiddlerCOM::FiddlerCOMClass * pFiddler;
 //	static void __stdcall BeforeRequestFunc(int sessionID, char * fullURL, char * requestBody);

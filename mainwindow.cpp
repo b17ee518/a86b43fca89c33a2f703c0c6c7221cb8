@@ -10,9 +10,13 @@
 #include "kandataconnector.h"
 #include <QWinTaskbarProgress>
 #include <QMessageBox>
+#include "kqnetworkaccessmanager.h"
+#include <QNetworkRequest>
 
 #include <Audiopolicy.h>
 #include <Mmdeviceapi.h>
+#include <QHttpPart>
+
 #define SAFE_RELEASE(x) if(x) { x->Release(); x = NULL; } 
 
 
@@ -32,6 +36,9 @@ MainWindow::MainWindow(QWidget *parent) :
 {
 	m_pTaskbarButton = NULL;
 
+	bUseFiddler = true;
+//	bUseFiddler = false;
+
 	setMainWindow(this);
 	ui->setupUi(this);
 	ui->retranslateUi(this);
@@ -42,26 +49,34 @@ MainWindow::MainWindow(QWidget *parent) :
 
 	ui->titleFrame->setHandlingWidget(this);
 
-	pFiddler = new FiddlerCOM::FiddlerCOMClass(this);
+	useport = 13347;
+	if (bUseFiddler)
+	{
+		pFiddler = new FiddlerCOM::FiddlerCOMClass(this);
 
-	connect(
+		connect(
 			pFiddler,
 			SIGNAL(exception(int, const QString &, const QString &, const QString &)),
 			this,
 			SLOT(slotWebViewException(int, const QString &, const QString &, const QString &)));
 
-	connect(this,
+		connect(this,
 			SIGNAL(sigParse(const QString &, const QString &, const QString &)),
 			this,
 			SLOT(slotParse(const QString &, const QString &, const QString &)));
 
-//	pFiddler->SetBeforeRequest((int)&MainWindow::BeforeRequestFunc);
-	pFiddler->SetAfterSessionComplete((int)&MainWindow::AfterSessionCompleteFunc);
+		//	pFiddler->SetBeforeRequest((int)&MainWindow::BeforeRequestFunc);
+		pFiddler->SetAfterSessionComplete((int)&MainWindow::AfterSessionCompleteFunc);
 
-	useport = 13347;
-	pFiddler->Startup(useport, false, true);
+		pFiddler->Startup(useport, false, true);
+	}
 
 	SetWebSettings();
+	if (!bUseFiddler)
+	{
+		KQNetworkAccessManager * manager = new KQNetworkAccessManager(this);
+		ui->webView->page()->setNetworkAccessManager(manager);
+	}
 	/*
 	 *
 body {
@@ -199,7 +214,10 @@ void MainWindow::closeEvent(QCloseEvent *e)
 		return;
 	}
 
-	pFiddler->Shutdown();
+	if (bUseFiddler)
+	{
+		pFiddler->Shutdown();
+	}
 
 	MainWindowBase::closeEvent(e);
 
@@ -396,14 +414,36 @@ void MainWindow::AfterSessionCompleteFunc(int sessionID, char *mimeType, int res
 	}
 }
 
+void MainWindow::onGetNetworkReply(QNetworkReply * reply)
+{
+	QString mimetype = reply->header(QNetworkRequest::ContentTypeHeader).toString();
+	if (mimetype.contains("text/plain"))
+	{
+		QUrl url = reply->request().url();
+		QString PathAndQuery = url.path();
+		if (PathAndQuery.startsWith("/kcsapi"))
+		{
+			QString requestBody; //TODO
+			QString responseBody = reply->peek(reply->bytesAvailable() + 1);
+			emit MainWindow::mainWindow()->sigParse(PathAndQuery, requestBody, responseBody);
+		}
+	}
+}
+
 void MainWindow::SetWebSettings()
 {
 	KQWebPage * page = new KQWebPage();
 	ui->webView->setPage(page);
-	QNetworkProxyFactorySet * proxies = new QNetworkProxyFactorySet();
-	proxies->init(useport);
+	if (bUseFiddler)
+	{
+		QNetworkProxyFactorySet * proxies = new QNetworkProxyFactorySet();
+		proxies->init(useport);
+		QNetworkProxyFactory::setApplicationProxyFactory(proxies);
+	}
+	else
+	{
 
-	QNetworkProxyFactory::setApplicationProxyFactory(proxies);
+	}
 
 	CookieJar* jar = new CookieJar(this);
 	ui->webView->page()->networkAccessManager()->setCookieJar(jar);

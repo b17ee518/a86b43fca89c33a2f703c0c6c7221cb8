@@ -123,6 +123,7 @@ public:
 
 	int shipcountoffset;
 	int slotitemcountoffset;
+	int lastbattletype;
 	int lastdeckid;
 
 private:

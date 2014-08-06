@@ -27,6 +27,11 @@ void KQNetworkAccessManager::slotReadyRead()
 {
     QNetworkReply * reply = static_cast<QNetworkReply*>(sender());
 
+	if (reply->request().url().path().startsWith("/kcsapi"))
+	{
+		QByteArray data = reply->peek(reply->bytesAvailable());
+		qDebug(QString::number(data.size()).toLocal8Bit());
+	}
 	MainWindow::mainWindow()->onGetNetworkReply(reply);
 /*
 

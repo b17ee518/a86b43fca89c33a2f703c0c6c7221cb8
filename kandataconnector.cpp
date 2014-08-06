@@ -766,7 +766,7 @@ void KanDataConnector::Parse(QString pathAndQuery, QString requestBody, QString 
 	{
 		pksd->battledata.ReadFromJObj(jobj);
 
-		pksd->enemyhpdata = updateBattle(pksd->battledata, KANBATTLETYPE_NIGHT);
+		pksd->enemyhpdata = updateBattle(pksd->battledata, KANBATTLETYPE_DAYTONIGHT);
 
 	}
 	else if (pathAndQuery == "/kcsapi/api_req_practice/midnight_battle")
@@ -1643,7 +1643,7 @@ QList<int> KanDataConnector::updateBattle(const kcsapi_battle &api_battle, int t
 
 	QList<int> enemyhps;
 	// midnight
-	if (type == KANBATTLETYPE_NIGHT || dockid < 0)
+	if (type == KANBATTLETYPE_NIGHT || type == KANBATTLETYPE_DAYTONIGHT || dockid < 0)
 	{
 		dockid = api_battle.api_deck_id - 1;
 	}
@@ -1651,6 +1651,8 @@ QList<int> KanDataConnector::updateBattle(const kcsapi_battle &api_battle, int t
 	if (dockid >= 0)
 	{
 		KanSaveData * pksd = &KanSaveData::getInstance();
+
+		pksd->lastbattletype = type;
 		pksd->lastdeckid = dockid;
 
 		QList<kcsapi_ship2*> pships;
@@ -1695,7 +1697,7 @@ QList<int> KanDataConnector::updateBattle(const kcsapi_battle &api_battle, int t
 			}
 		}
 
-		if (type != KANBATTLETYPE_NIGHT)
+		if (type != KANBATTLETYPE_NIGHT && type != KANBATTLETYPE_DAYTONIGHT)
 		{
 			// support
 			if (api_battle.api_support_flag > 0)
@@ -1974,9 +1976,27 @@ QString KanDataConnector::logBattleResult(bool bWrite/*=true*/)
 		dropstr = pksd->battleresultdata.api_get_ship.api_ship_name;
 	}
 
+	QString battletypestr = "-";
+	switch (pksd->lastbattletype)
+	{
+	case KANBATTLETYPE_DAY:
+		battletypestr = QString::fromLocal8Bit("昼戦");
+		break;
+	case KANBATTLETYPE_NIGHT:
+		battletypestr = QString::fromLocal8Bit("夜戦");
+		break;
+	case KANBATTLETYPE_DAYTONIGHT:
+		battletypestr = QString::fromLocal8Bit("昼夜");
+		break;
+	case KANBATTLETYPE_NIGHTTODAY:
+		battletypestr = QString::fromLocal8Bit("夜昼");
+		break;
+	}
+
 	QString writestr = mapareastr + "\t"
 		+ pksd->battleresultdata.api_quest_name + "\t"
 		+ pksd->battleresultdata.api_enemy_info.api_deck_name + "\t"
+		+ battletypestr + "\t"
 		+ pksd->battleresultdata.api_win_rank + "\t"
 		+ dropstr + "\t"
 		+ seikustr + "\t"

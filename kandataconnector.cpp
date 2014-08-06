@@ -369,8 +369,8 @@ void KanDataConnector::Parse(QString pathAndQuery, QString requestBody, QString 
 
 		int usefuel = req.GetItemAsString("api_item1").toInt();
 		int usebull = req.GetItemAsString("api_item2").toInt();
-		int usebauxite = req.GetItemAsString("api_item3").toInt();
-		int usesteel = req.GetItemAsString("api_item4").toInt();
+		int usesteel = req.GetItemAsString("api_item3").toInt();
+		int usebauxite = req.GetItemAsString("api_item4").toInt();
 		//TODO: adjust item?
 		logCreateItemResult(api_createitem.api_slot_item.api_slotitem_id, usefuel, usebull, usesteel, usebauxite);
 	}

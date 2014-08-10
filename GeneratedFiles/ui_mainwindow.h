@@ -40,8 +40,12 @@ public:
     QSpacerItem *horizontalSpacer_5;
     QComboBox *comboBoxZoom;
     QSpacerItem *horizontalSpacer_4;
+    QPushButton *pbMoveTogether;
+    QSpacerItem *horizontalSpacer_7;
     QPushButton *pbCheckTrasparent;
     QSpacerItem *horizontalSpacer_3;
+    QPushButton *pbRefresh;
+    QSpacerItem *horizontalSpacer_6;
     QPushButton *pbMinimize;
     QPushButton *pbClose;
     QFrame *webFrame;
@@ -125,6 +129,22 @@ public:
 
         horizontalLayout->addItem(horizontalSpacer_4);
 
+        pbMoveTogether = new QPushButton(titleFrame);
+        pbMoveTogether->setObjectName(QStringLiteral("pbMoveTogether"));
+        sizePolicy1.setHeightForWidth(pbMoveTogether->sizePolicy().hasHeightForWidth());
+        pbMoveTogether->setSizePolicy(sizePolicy1);
+        pbMoveTogether->setMinimumSize(QSize(20, 20));
+        pbMoveTogether->setMaximumSize(QSize(20, 20));
+        pbMoveTogether->setCheckable(true);
+        pbMoveTogether->setChecked(true);
+        pbMoveTogether->setFlat(true);
+
+        horizontalLayout->addWidget(pbMoveTogether);
+
+        horizontalSpacer_7 = new QSpacerItem(16, 17, QSizePolicy::Fixed, QSizePolicy::Minimum);
+
+        horizontalLayout->addItem(horizontalSpacer_7);
+
         pbCheckTrasparent = new QPushButton(titleFrame);
         pbCheckTrasparent->setObjectName(QStringLiteral("pbCheckTrasparent"));
         sizePolicy1.setHeightForWidth(pbCheckTrasparent->sizePolicy().hasHeightForWidth());
@@ -139,6 +159,20 @@ public:
         horizontalSpacer_3 = new QSpacerItem(16, 17, QSizePolicy::Fixed, QSizePolicy::Minimum);
 
         horizontalLayout->addItem(horizontalSpacer_3);
+
+        pbRefresh = new QPushButton(titleFrame);
+        pbRefresh->setObjectName(QStringLiteral("pbRefresh"));
+        sizePolicy1.setHeightForWidth(pbRefresh->sizePolicy().hasHeightForWidth());
+        pbRefresh->setSizePolicy(sizePolicy1);
+        pbRefresh->setMinimumSize(QSize(20, 20));
+        pbRefresh->setMaximumSize(QSize(20, 20));
+        pbRefresh->setFlat(true);
+
+        horizontalLayout->addWidget(pbRefresh);
+
+        horizontalSpacer_6 = new QSpacerItem(16, 17, QSizePolicy::Fixed, QSizePolicy::Minimum);
+
+        horizontalLayout->addItem(horizontalSpacer_6);
 
         pbMinimize = new QPushButton(titleFrame);
         pbMinimize->setObjectName(QStringLiteral("pbMinimize"));
@@ -205,7 +239,9 @@ public:
          << QApplication::translate("MainWindow", "175%", 0)
          << QApplication::translate("MainWindow", "200%", 0)
         );
+        pbMoveTogether->setText(QApplication::translate("MainWindow", "\347\247\273", 0));
         pbCheckTrasparent->setText(QApplication::translate("MainWindow", "\351\200\217", 0));
+        pbRefresh->setText(QApplication::translate("MainWindow", "\346\226\260", 0));
         pbMinimize->setText(QApplication::translate("MainWindow", "-", 0));
         pbClose->setText(QApplication::translate("MainWindow", "X", 0));
     } // retranslateUi

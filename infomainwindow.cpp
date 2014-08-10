@@ -161,6 +161,12 @@ void InfoMainWindow::updateTitle(QString title, int colindex)
 			color: rgb(255, 255, 0);\
 			border: none;\
 		}\
+		",
+		" \
+		QLineEdit{\
+			color: rgb(255, 153, 0);\
+			border: none;\
+		}\
 		"
 	};
 	ui->lineEditTitle->setText(title);

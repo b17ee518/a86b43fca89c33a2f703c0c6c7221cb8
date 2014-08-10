@@ -22,7 +22,16 @@
 	name.clear();\
 	foreach(const QJsonValue &v, jarray)\
 	{\
-		name.append(v.toInt());\
+		int val = 0;\
+		if (v.isString())\
+		{\
+			val = v.toString().toInt();\
+		}\
+		else\
+		{\
+			val = v.toInt();\
+		}\
+		name.append(val);\
 	}
 #define _AFREAD(name)   \
 	jarray=jobj[#name].toArray();\
@@ -221,11 +230,16 @@ bool kcsapi_battleresult::ReadFromJObj(const QJsonObject &jobj)
 	_SREAD(api_win_rank);
 	_IREAD(api_get_exp);
 	_IREAD(api_mvp);
+	// combined
+	_IREAD(api_mvp_combined);
 	_IREAD(api_member_lv);
 	_IREAD(api_member_exp);
 	_IREAD(api_get_base_exp);
 	_AIREAD(api_get_ship_exp);
 	_AAIREAD(api_get_exp_lvup);
+	// combined
+	_AIREAD(api_get_ship_exp_combined);
+	_AAIREAD(api_get_exp_lvup_combined);
 	_IREAD(api_dests);
 	_IREAD(api_destsf);
 	_AIREAD(api_lost_flag);
@@ -1214,6 +1228,8 @@ bool kcsapi_battle_kouku::ReadFromJObj(const QJsonObject &jobj)
 	_CREAD(api_stage1, kcsapi_battle_kouku_stage1);
 	_CREAD(api_stage2, kcsapi_battle_kouku_stage2);
 	_CREAD(api_stage3, kcsapi_battle_kouku_stage3);
+	// combined
+	_CREAD(api_stage3_combined, kcsapi_battle_kouku_stage3);
 
 	return bParseRet;
 }
@@ -1278,10 +1294,17 @@ bool kcsapi_battle::ReadFromJObj(const QJsonObject &jobj)
 	_AIREAD(api_ship_lv); //enemy ship lv from #1
 	_AIREAD(api_nowhps); // both hps from #1 (13)
 	_AIREAD(api_maxhps);
+
+	// combined
+	_AIREAD(api_nowhps_combined);
+	_AIREAD(api_maxhps_combined);
+
 	_IREAD(api_midnight_flag);
 	_AAIREAD(api_eSlot); // from #0
 	_AAIREAD(api_eKyouka); // from #0
 	_AAIREAD(api_fParam); // from $0
+	// combined
+	_AAIREAD(api_fParam_combined);
 	_AAIREAD(api_eParam); // from $0
 	_AIREAD(api_search); //?
 	_AIREAD(api_formation); // f, e, i { null, "単縦陣", "複縦陣", "輪形陣", "梯形陣", "単横陣" } { null, "同航戦", "反航戦", "Ｔ字戦(有利)", "Ｔ字戦(不利)" }
@@ -1292,6 +1315,10 @@ bool kcsapi_battle::ReadFromJObj(const QJsonObject &jobj)
 	_AIREAD(api_flare_pos);
 
 	_CREAD(api_kouku, kcsapi_battle_kouku);
+
+	// combined
+	_CREAD(api_kouku2, kcsapi_battle_kouku);
+
 	_IREAD(api_support_flag);
 	_CREAD(api_support_info, kcsapi_battle_support_info);
 	_IREAD(api_opening_flag);

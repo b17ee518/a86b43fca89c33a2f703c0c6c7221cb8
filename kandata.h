@@ -139,6 +139,7 @@ public:
 	int api_firstflag;
 	int api_tutorial_progress;
 	QList<int> api_pvp;
+	// "api_large_dock":1
 
 };
 
@@ -194,6 +195,8 @@ public:
 	kcsapi_battle_kouku_stage1 api_stage1;
 	kcsapi_battle_kouku_stage2 api_stage2;
 	kcsapi_battle_kouku_stage3 api_stage3;
+	// combined
+	kcsapi_battle_kouku_stage3 api_stage3_combined;
 };
 
 class kcsapi_battle_support_airatack_stage1 : public KAPIBaseData
@@ -358,10 +361,18 @@ public:
 	QList<int> api_ship_lv; //enemy ship lv from #1
 	QList<int> api_nowhps; // both hps from #1 (13)
 	QList<int> api_maxhps;
+
+	// combined
+	QList<int> api_nowhps_combined;
+	QList<int> api_maxhps_combined;
+	//
+
 	int api_midnight_flag;
 	QList<QList<int>> api_eSlot; // from #0
 	QList<QList<int>> api_eKyouka; // from #0
 	QList<QList<int>> api_fParam; // from #0
+	// combined
+	QList<QList<int>> api_fParam_combined; // from #0
 	QList<QList<int>> api_eParam; // from #0
 	QList<int> api_search; //?
 	QList<int> api_formation; // f, e, i { null, "単縦陣", "複縦陣", "輪形陣", "梯形陣", "単横陣" } { null, "同航戦", "反航戦", "Ｔ字戦(有利)", "Ｔ字戦(不利)" }
@@ -372,6 +383,9 @@ public:
 	QList<int> api_flare_pos;
 
 	kcsapi_battle_kouku api_kouku;
+	// combine
+	kcsapi_battle_kouku api_kouku2;
+
 	int api_support_flag; //空爆1　砲撃2　雷撃3
 	kcsapi_battle_support_info api_support_info;
 	int api_opening_flag;
@@ -429,11 +443,18 @@ public:
 	QString api_win_rank;
 	int api_get_exp;
 	int api_mvp;
+	// combined
+	int api_mvp_combined;
+
 	int api_member_lv;
 	int api_member_exp;
 	int api_get_base_exp;
 	QList<int> api_get_ship_exp;
 	QList<QList<int>> api_get_exp_lvup;
+	// combined
+	QList<int> api_get_ship_exp_combined;
+	QList<QList<int>> api_get_exp_lvup_combined;
+
 	int api_dests;
 	int api_destsf;
 	QList<int> api_lost_flag;
@@ -742,6 +763,8 @@ public:
 	QList<int> api_sakuteki;
 	QList<int> api_lucky;
 	int api_locked;
+	// "api_locked_equip":0,
+	// "api_sally_area":0
 };
 
 /**
@@ -909,6 +932,7 @@ public:
 	QString api_name;
 	int api_scnt;
 	int api_kcnt;
+	//"api_equip_type":{"1":0,"2":0,"3":0,"4":0,"5":0,"6":0,"7":0,"8":0,"9":0,"10":0,"11":0,"12":0,"13":0,"14":0,"15":0,"16":0,"17":0,"18":0,"19":0,"20":0,"21":0,"22":0,"23":0,"24":0,"25":0,"26":0,"27":0,"28":0,"29":0,"30":0,"31":0,"32":0,"33":0,"34":0,"35":0
 };
 
 /**
@@ -1383,6 +1407,8 @@ virtual bool ReadFromJObj(const QJsonObject &jobj);
 	int api_type;
 };
 
+//"api_mst_item_shop":{"api_cabinet_1":[1,2,3,4,15,5,7,6,11,14,10,13],"api_cabinet_2":[16,17,20,19,8,9,18,-1,-1,-1]},"api_mst_maparea":[{"api_id":1,"api_name":"\u93ae\u5b88\u5e9c\u6d77\u57df","api_type":0},{"api_id":2,"api_name":"\u5357\u897f\u8af8\u5cf6\u6d77\u57df","api_type":0},{"api_id":3,"api_name":"\u5317\u65b9\u6d77\u57df","api_type":0},{"api_id":4,"api_name":"\u897f\u65b9\u6d77\u57df","api_type":0},{"api_id":5,"api_name":"\u5357\u65b9\u6d77\u57df","api_type":0},{"api_id":27,"api_name":"AL \/ MI\u4f5c\u6226","api_type":1}],
+
 class Api_Mst_Mapinfo: public KAPIBaseData
 {
 
@@ -1400,6 +1426,7 @@ virtual bool ReadFromJObj(const QJsonObject &jobj);
 	QList<int> api_item;
 	int api_max_maphp;
 	int api_required_defeat_count;
+	// "api_sally_flag":[1,0]
 };
 
 class Api_Mst_Mapbgm: public KAPIBaseData
@@ -1448,6 +1475,7 @@ virtual bool ReadFromJObj(const QJsonObject &jobj);
 	float api_use_bull;
 	QList<int> api_win_item1;
 	QList<int> api_win_item2;
+	// "api_return_flag":1
 };
 
 class Api_Mst_Shipupgrade: public KAPIBaseData

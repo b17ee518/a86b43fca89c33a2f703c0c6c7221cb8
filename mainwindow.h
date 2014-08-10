@@ -67,6 +67,10 @@ private slots:
 
 	void slotWebViewException(int code, const QString & source, const QString & desc, const QString & help);
 
+    void on_pbMoveTogether_toggled(bool checked);
+
+    void on_pbRefresh_clicked();
+
 private:
 	Ui::MainWindow *ui;
 
@@ -83,6 +87,8 @@ private:
 	static MainWindow * s_pMainWindow;
 
 	QWinTaskbarButton * m_pTaskbarButton;
+
+	bool bMoveSubTogether;
 };
 
 #endif // MAINWINDOW_H

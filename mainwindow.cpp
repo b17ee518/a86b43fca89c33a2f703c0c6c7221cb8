@@ -54,6 +54,7 @@ MainWindow::MainWindow(QWidget *parent) :
 		this,
 		SLOT(slotParse(const QString &, const QString &, const QString &)));
 
+	bMoveSubTogether = true;
 
 	SetWebSettings();
 
@@ -91,7 +92,8 @@ body {
 	ui->webView->page()->settings()->setUserStyleSheetUrl(csses[QWEBVIEWCSS_NORMAL]);
 	
 //	ui->webView->load(QUrl("http://www.google.com"));
-	ui->webView->load(QUrl("http://www.dmm.com/netgame/social/application/-/detail/=/app_id=854854/"));
+	ui->webView->load(QUrl("http://www.dmm.com/netgame/social/-/gadgets/=/app_id=854854/?f1=1&p1=0"));
+//	ui->webView->load(QUrl("https://www.dmm.com/my/-/login/auth/"));
 }
 
 MainWindow::~MainWindow()
@@ -211,13 +213,16 @@ void MainWindow::moveEvent(QMoveEvent *e)
 
 	QPoint diffPos = e->pos()-e->oldPos();
 
-	if (!m_pInfoWindow->isDockingOnTop())
+	if (bMoveSubTogether)
 	{
-		m_pInfoWindow->move(m_pInfoWindow->pos()+diffPos);
-	}
-	if (!m_pTimerWindow->isDockingOnTop())
-	{
-		m_pTimerWindow->move(m_pTimerWindow->pos()+diffPos);
+		if (!m_pInfoWindow->isDockingOnTop())
+		{
+			m_pInfoWindow->move(m_pInfoWindow->pos() + diffPos);
+		}
+		if (!m_pTimerWindow->isDockingOnTop())
+		{
+			m_pTimerWindow->move(m_pTimerWindow->pos() + diffPos);
+		}
 	}
 }
 
@@ -598,4 +603,28 @@ void MainWindow::SetProgressBarPos(int pos, int state)
 			break;
 		}
 	}
+}
+
+void MainWindow::on_pbMoveTogether_toggled(bool checked)
+{
+	bMoveSubTogether = checked;
+}
+
+void MainWindow::on_pbRefresh_clicked()
+{
+	QMessageBox * pMessageBox = new QMessageBox(
+		QMessageBox::NoIcon
+		, QString::fromLocal8Bit("")
+		, QString::fromLocal8Bit("リロードしますか？")
+		, QMessageBox::Yes | QMessageBox::No
+		, this
+		, Qt::Dialog | Qt::MSWindowsFixedSizeDialogHint | Qt::FramelessWindowHint);
+	pMessageBox->setDefaultButton(QMessageBox::No);
+	int reply = pMessageBox->exec();
+
+	if (reply == QMessageBox::Yes)
+	{
+		ui->webView->reload();
+	}
+
 }

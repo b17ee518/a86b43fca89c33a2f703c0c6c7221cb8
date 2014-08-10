@@ -30,6 +30,7 @@
 
  /kcsapi/api_req_hensei/change
  /kcsapi/api_req_hensei/lock
+ /kcsapi/api_req_hensei/combined
  /kcsapi/api_get_member/unsetslot
  /kcsapi/api_req_kaisou/unsetslot_all
 
@@ -131,6 +132,7 @@ KanDataConnector::KanDataConnector(void)
 	get_member_material_flag = PARSEFLAG_NORMAL;
 	req_hensei_change_flag = PARSEFLAG_NORMAL;
 	req_hensei_lock_flag = PARSEFLAG_NORMAL;
+	req_hensei_combined_flag = PARSEFLAG_NORMAL;
 	get_member_unsetslot_flag = PARSEFLAG_NORMAL;
 	req_kaisou_unsetslot_all_flag = PARSEFLAG_NORMAL;
 	req_kousyou_getship_flag = PARSEFLAG_NORMAL;
@@ -253,6 +255,7 @@ bool KanDataConnector::Parse(QString _pathAndQuery, QString _requestBody, QStrin
 	PARSEAPI("/kcsapi/api_get_member/material", get_member_material)
 	PARSEAPI("/kcsapi/api_req_hensei/change", req_hensei_change)
 	PARSEAPI("/kcsapi/api_req_hensei/lock", req_hensei_lock)
+	PARSEAPI("/kcsapi/api_req_hensei/combined", req_hensei_combined)
 	PARSEAPI("/kcsapi/api_get_member/unsetslot", get_member_unsetslot)
 	PARSEAPI("/kcsapi/api_req_kaisou/unsetslot_all", req_kaisou_unsetslot_all)
 	PARSEAPI("/kcsapi/api_req_kousyou/getship", req_kousyou_getship)
@@ -2230,6 +2233,11 @@ bool KanDataConnector::req_hensei_change_parse()
 }
 
 bool KanDataConnector::req_hensei_lock_parse()
+{
+	return true;
+}
+
+bool KanDataConnector::req_hensei_combined_parse()
 {
 	return true;
 }

@@ -95,6 +95,7 @@ private:
 	bool get_member_material_parse();
 	bool req_hensei_change_parse();
 	bool req_hensei_lock_parse();
+	bool req_hensei_combined_parse();
 	bool get_member_unsetslot_parse();
 	bool req_kaisou_unsetslot_all_parse();
 	bool req_kousyou_getship_parse();
@@ -169,6 +170,7 @@ private:
 	int get_member_material_flag;
 	int req_hensei_change_flag;
 	int req_hensei_lock_flag;
+	int req_hensei_combined_flag;
 	int get_member_unsetslot_flag;
 	int req_kaisou_unsetslot_all_flag;
 	int req_kousyou_getship_flag;

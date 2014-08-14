@@ -519,6 +519,10 @@ void KanDataConnector::updateFleetTable()
 		int alltaikyu=0;
 		int alllv=0;
 		int allsakuteki = 0;
+		int allsakuteki_sp = 0;
+
+		int sakuteki_teisatsu = 0;
+		int sakuteki_dentan = 0;
 		foreach(int shipno, v.api_ship)
 		{
 			if (shipno <= 0)
@@ -609,6 +613,14 @@ void KanDataConnector::updateFleetTable()
 										bDone = true;
 										break;
 									}
+									if (type == SLOTITEMTYPE_TEISATSU || type == SLOTITEMTYPE_SUITEI)
+									{
+										sakuteki_teisatsu += item.api_saku;
+									}
+									if (type == SLOTITEMTYPE_DENTAN_L || type == SLOTITEMTYPE_DENTAN_S)
+									{
+										sakuteki_dentan += item.api_saku;
+									}
 								}
 							}
 						}
@@ -626,6 +638,8 @@ void KanDataConnector::updateFleetTable()
 			rows.append(rd);
 		}
 
+		allsakuteki_sp = (int)(sakuteki_teisatsu * 2 + sakuteki_dentan + sqrt((double)(allsakuteki - sakuteki_dentan - sakuteki_teisatsu)));
+
 		int colindex = 0;
 		if (bNeedCharge || bCondDown)
 		{
@@ -640,7 +654,7 @@ void KanDataConnector::updateFleetTable()
 			colindex = 1;
 		}
 
-		QString strtitle = QString::fromLocal8Bit("%1 (Lv計:%2 制空:%3 索敵:%4)").arg(v.api_name).arg(alllv).arg(alltaikyu).arg(allsakuteki);
+		QString strtitle = QString::fromLocal8Bit("%1 (Lv計:%2 制空:%3 索敵:%4[%5])").arg(v.api_name).arg(alllv).arg(alltaikyu).arg(allsakuteki).arg(allsakuteki_sp);
 		MainWindow::infoWindow()->updateFleetTable(v.api_id-1, strtitle, colindex, bRed, rows);
 	}
 

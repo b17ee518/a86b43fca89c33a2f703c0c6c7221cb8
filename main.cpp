@@ -65,6 +65,7 @@ int main(int argc, char *argv[])
 	a.setStyleSheet(style);
 
 	MainWindow * w = new MainWindow();
+	w->setWindowTitle("KanPlay");
 
 	InfoMainWindow * wInfo = new InfoMainWindow();
 	wInfo->setWindowTitle("KanPlay - Info");

@@ -2751,42 +2751,51 @@ bool KanDataConnector::get_member_questlist_parse()
 		questcount = api_questlist.api_list.count();
 	}
 
-	int beginindex = api_questlist.api_list[0].api_no;
-	int endindex = api_questlist.api_list[questcount - 1].api_no;
-	/*
-	if (api_questlist.api_disp_page == 1)
+	if (!questcount)
 	{
-	beginindex = -1;
+		pksd->questdata.removeLast();
+		// when last page nothing??
 	}
-	else if (api_questlist.api_disp_page == api_questlist.api_page_count)
+	else
 	{
-	endindex = 10000000;
-	}
-	*/
+		int beginindex = api_questlist.api_list[0].api_no;
+		int endindex = api_questlist.api_list[questcount - 1].api_no;
+		/*
+		if (api_questlist.api_disp_page == 1)
+		{
+		beginindex = -1;
+		}
+		else if (api_questlist.api_disp_page == api_questlist.api_page_count)
+		{
+		endindex = 10000000;
+		}
+		*/
 
-	//delete all in questdata
-	QList<kcsapi_quest>::iterator it;
-	for (it = pksd->questdata.begin(); it != pksd->questdata.end();)
-	{
-		if (it->api_no >= beginindex && it->api_no <= endindex)
+		//delete all in questdata
+		QList<kcsapi_quest>::iterator it;
+		for (it = pksd->questdata.begin(); it != pksd->questdata.end();)
 		{
-			it = pksd->questdata.erase(it);
+			if (it->api_no >= beginindex && it->api_no <= endindex)
+			{
+				it = pksd->questdata.erase(it);
+			}
+			else
+			{
+				++it;
+			}
 		}
-		else
+
+		// add to
+		for (int i = 0; i<questcount; i++)
 		{
-			++it;
+			if (api_questlist.api_list[i].api_state > 1)
+			{
+				pksd->questdata.append(api_questlist.api_list[i]);
+			}
 		}
+		qSort(pksd->questdata.begin(), pksd->questdata.end(), questDataSort);
 	}
 
-	// add to
-	for (int i = 0; i<questcount; i++)
-	{
-		if (api_questlist.api_list[i].api_state > 1)
-		{
-			pksd->questdata.append(api_questlist.api_list[i]);
-		}
-	}
-	qSort(pksd->questdata.begin(), pksd->questdata.end(), questDataSort);
 
 	updateMissionTable();
 	return true;

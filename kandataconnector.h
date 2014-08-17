@@ -33,23 +33,23 @@ class KanDataConnector
 private:
 	KanDataConnector(void);
 public:
-    static KanDataConnector& getInstance(void) {
-        static KanDataConnector singleton;
-        return singleton;
-    }
+	static KanDataConnector& getInstance(void) {
+		static KanDataConnector singleton;
+		return singleton;
+	}
 
 public:
-    bool Parse(QString pathAndQuery, QString requestBody, QString responseBody);
+	bool Parse(QString pathAndQuery, QString requestBody, QString responseBody);
 
 private:
-    void updateOverviewTable();
-    void updateMissionTable();
-    void updateRepairTable();
-    void updateFleetTable();
-    void updateExpeditionTable();
-    void updateRepairDockTable();
-    void updateBuildDockTable();
-    void updateInfoTitleBattle(bool bBattle=false, QList<int> *enemyhps=0);
+	void updateOverviewTable();
+	void updateMissionTable();
+	void updateRepairTable();
+	void updateFleetTable();
+	void updateExpeditionTable();
+	void updateRepairDockTable();
+	void updateBuildDockTable();
+	void updateInfoTitleBattle(bool bBattle=false, QList<int> *enemyhps=0);
 	void updateInfoTitleCond();
 
 	QString logBattleResult(bool bWrite=true);
@@ -61,20 +61,20 @@ private:
 
 	QList<int> updateBattle(const kcsapi_battle &api_battle, int type);
 
-    void getShipColors(const kcsapi_ship2 *pship, QColor *pcolCond=0, QColor *pcolWound=0, int* pcondstate=0, int* pwoundstate=0);
-    void getShipChargeColors(const kcsapi_ship2 *pship, const kcsapi_mst_ship *pmstship, QColor *pcolFuel, QColor *pcolBullet);
-    QString getShipWoundStateString(const kcsapi_ship2 *pship);
-    bool isShipRepairing(const kcsapi_ship2 *pship);
+	void getShipColors(const kcsapi_ship2 *pship, QColor *pcolCond=0, QColor *pcolWound=0, int* pcondstate=0, int* pwoundstate=0);
+	void getShipChargeColors(const kcsapi_ship2 *pship, const kcsapi_mst_ship *pmstship, QColor *pcolFuel, QColor *pcolBullet);
+	QString getShipWoundStateString(const kcsapi_ship2 *pship);
+	bool isShipRepairing(const kcsapi_ship2 *pship);
 
 	void processHouraiDamages(const kcsapi_battle_hougeki* api_hougeki, QList<float>* totalfdamage, QList<float>* totaledamage, QList<float>* totalfdamage_combined, bool bCombined);
 
 	void checkWoundQuit();
 
-    bool RemoveShip(int shipno);
+	bool RemoveShip(int shipno);
 
-    kcsapi_ship2 *findShipFromShipno(int shipno);
-    const kcsapi_mst_ship *findMstShipFromShipid(int shipid) const;
-    const Api_Mst_Mission *findMstMissionFromMissionid(int missionid) const;
+	kcsapi_ship2 *findShipFromShipno(int shipno);
+	const kcsapi_mst_ship *findMstShipFromShipid(int shipid) const;
+	const Api_Mst_Mission *findMstMissionFromMissionid(int missionid) const;
 	const kcsapi_slotitem *findSlotitemFromId(int id) const;
 	const kcsapi_mst_slotitem *findMstSlotItemFromSlotitemid(int slotitemid) const;
 
@@ -230,12 +230,12 @@ private:
 	int get_member_payitem_flag;
 
 private:
-    QColor colWhite;
-    QColor colGray;
-    QColor colOrange;
-    QColor colYellow;
-    QColor colRed;
-    QColor colBlue;
+	QColor colWhite;
+	QColor colGray;
+	QColor colOrange;
+	QColor colYellow;
+	QColor colRed;
+	QColor colBlue;
 
 	QString pathAndQuery;
 	QString requestBody;

@@ -1,4 +1,5 @@
-﻿#ifndef MAINWINDOW_H
+﻿void on_pbScreenshot_clicked();
+#ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
 #include <QMainWindow>
@@ -71,6 +72,12 @@ private slots:
 
     void on_pbRefresh_clicked();
 
+	void on_pbScreenshot_clicked();
+
+    void on_pbSwitchScreenshot_toggled(bool checked);
+
+	void slotScreenshotTimeout();
+
 private:
 	Ui::MainWindow *ui;
 
@@ -81,6 +88,8 @@ private:
 	static void __stdcall AfterSessionCompleteFunc(int sessionID, char * mimeType, int responseCode, char * PathAndQuery, char * requestBody, char * responseBody);
 	void SetWebSettings();
 
+	void ShootScreen();
+
 	InfoMainWindow * m_pInfoWindow;
 	TimerMainWindow * m_pTimerWindow;
 	
@@ -89,6 +98,8 @@ private:
 	QWinTaskbarButton * m_pTaskbarButton;
 
 	bool bMoveSubTogether;
+
+	QTimer * m_pScreenshotTimer;
 };
 
 #endif // MAINWINDOW_H

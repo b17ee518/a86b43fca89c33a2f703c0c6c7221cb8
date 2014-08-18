@@ -34,6 +34,12 @@ public:
     QVBoxLayout *verticalLayout;
     KQTitleFrame *titleFrame;
     QHBoxLayout *horizontalLayout;
+    QSpacerItem *horizontalSpacer_3;
+    QPushButton *pbRefresh;
+    QSpacerItem *horizontalSpacer_8;
+    QPushButton *pbScreenshot;
+    QSpacerItem *horizontalSpacer_9;
+    QPushButton *pbSwitchScreenshot;
     QSpacerItem *horizontalSpacer;
     QPushButton *pbCheckInfo;
     QPushButton *pbCheckTimer;
@@ -43,8 +49,6 @@ public:
     QPushButton *pbMoveTogether;
     QSpacerItem *horizontalSpacer_7;
     QPushButton *pbCheckTrasparent;
-    QSpacerItem *horizontalSpacer_3;
-    QPushButton *pbRefresh;
     QSpacerItem *horizontalSpacer_6;
     QPushButton *pbMinimize;
     QPushButton *pbClose;
@@ -81,15 +85,58 @@ public:
         horizontalLayout->setContentsMargins(11, 11, 11, 11);
         horizontalLayout->setObjectName(QStringLiteral("horizontalLayout"));
         horizontalLayout->setContentsMargins(0, 0, 0, 0);
+        horizontalSpacer_3 = new QSpacerItem(16, 17, QSizePolicy::Fixed, QSizePolicy::Minimum);
+
+        horizontalLayout->addItem(horizontalSpacer_3);
+
+        pbRefresh = new QPushButton(titleFrame);
+        pbRefresh->setObjectName(QStringLiteral("pbRefresh"));
+        QSizePolicy sizePolicy1(QSizePolicy::Fixed, QSizePolicy::Fixed);
+        sizePolicy1.setHorizontalStretch(0);
+        sizePolicy1.setVerticalStretch(0);
+        sizePolicy1.setHeightForWidth(pbRefresh->sizePolicy().hasHeightForWidth());
+        pbRefresh->setSizePolicy(sizePolicy1);
+        pbRefresh->setMinimumSize(QSize(20, 20));
+        pbRefresh->setMaximumSize(QSize(20, 20));
+        pbRefresh->setFlat(true);
+
+        horizontalLayout->addWidget(pbRefresh);
+
+        horizontalSpacer_8 = new QSpacerItem(120, 17, QSizePolicy::Fixed, QSizePolicy::Minimum);
+
+        horizontalLayout->addItem(horizontalSpacer_8);
+
+        pbScreenshot = new QPushButton(titleFrame);
+        pbScreenshot->setObjectName(QStringLiteral("pbScreenshot"));
+        sizePolicy1.setHeightForWidth(pbScreenshot->sizePolicy().hasHeightForWidth());
+        pbScreenshot->setSizePolicy(sizePolicy1);
+        pbScreenshot->setMinimumSize(QSize(20, 20));
+        pbScreenshot->setMaximumSize(QSize(20, 20));
+        pbScreenshot->setFlat(true);
+
+        horizontalLayout->addWidget(pbScreenshot);
+
+        horizontalSpacer_9 = new QSpacerItem(16, 17, QSizePolicy::Fixed, QSizePolicy::Minimum);
+
+        horizontalLayout->addItem(horizontalSpacer_9);
+
+        pbSwitchScreenshot = new QPushButton(titleFrame);
+        pbSwitchScreenshot->setObjectName(QStringLiteral("pbSwitchScreenshot"));
+        sizePolicy1.setHeightForWidth(pbSwitchScreenshot->sizePolicy().hasHeightForWidth());
+        pbSwitchScreenshot->setSizePolicy(sizePolicy1);
+        pbSwitchScreenshot->setMinimumSize(QSize(20, 20));
+        pbSwitchScreenshot->setMaximumSize(QSize(20, 20));
+        pbSwitchScreenshot->setCheckable(true);
+        pbSwitchScreenshot->setFlat(true);
+
+        horizontalLayout->addWidget(pbSwitchScreenshot);
+
         horizontalSpacer = new QSpacerItem(599, 17, QSizePolicy::Expanding, QSizePolicy::Minimum);
 
         horizontalLayout->addItem(horizontalSpacer);
 
         pbCheckInfo = new QPushButton(titleFrame);
         pbCheckInfo->setObjectName(QStringLiteral("pbCheckInfo"));
-        QSizePolicy sizePolicy1(QSizePolicy::Fixed, QSizePolicy::Fixed);
-        sizePolicy1.setHorizontalStretch(0);
-        sizePolicy1.setVerticalStretch(0);
         sizePolicy1.setHeightForWidth(pbCheckInfo->sizePolicy().hasHeightForWidth());
         pbCheckInfo->setSizePolicy(sizePolicy1);
         pbCheckInfo->setMinimumSize(QSize(20, 20));
@@ -156,20 +203,6 @@ public:
 
         horizontalLayout->addWidget(pbCheckTrasparent);
 
-        horizontalSpacer_3 = new QSpacerItem(16, 17, QSizePolicy::Fixed, QSizePolicy::Minimum);
-
-        horizontalLayout->addItem(horizontalSpacer_3);
-
-        pbRefresh = new QPushButton(titleFrame);
-        pbRefresh->setObjectName(QStringLiteral("pbRefresh"));
-        sizePolicy1.setHeightForWidth(pbRefresh->sizePolicy().hasHeightForWidth());
-        pbRefresh->setSizePolicy(sizePolicy1);
-        pbRefresh->setMinimumSize(QSize(20, 20));
-        pbRefresh->setMaximumSize(QSize(20, 20));
-        pbRefresh->setFlat(true);
-
-        horizontalLayout->addWidget(pbRefresh);
-
         horizontalSpacer_6 = new QSpacerItem(16, 17, QSizePolicy::Fixed, QSizePolicy::Minimum);
 
         horizontalLayout->addItem(horizontalSpacer_6);
@@ -226,6 +259,9 @@ public:
     void retranslateUi(QMainWindow *MainWindow)
     {
         MainWindow->setWindowTitle(QApplication::translate("MainWindow", "MainWindow", 0));
+        pbRefresh->setText(QApplication::translate("MainWindow", "\346\226\260", 0));
+        pbScreenshot->setText(QApplication::translate("MainWindow", "\346\222\256", 0));
+        pbSwitchScreenshot->setText(QApplication::translate("MainWindow", "\351\200\243", 0));
         pbCheckInfo->setText(QApplication::translate("MainWindow", "\346\203\205", 0));
         pbCheckTimer->setText(QApplication::translate("MainWindow", "\346\231\202", 0));
         comboBoxZoom->clear();
@@ -241,7 +277,6 @@ public:
         );
         pbMoveTogether->setText(QApplication::translate("MainWindow", "\347\247\273", 0));
         pbCheckTrasparent->setText(QApplication::translate("MainWindow", "\351\200\217", 0));
-        pbRefresh->setText(QApplication::translate("MainWindow", "\346\226\260", 0));
         pbMinimize->setText(QApplication::translate("MainWindow", "-", 0));
         pbClose->setText(QApplication::translate("MainWindow", "X", 0));
     } // retranslateUi

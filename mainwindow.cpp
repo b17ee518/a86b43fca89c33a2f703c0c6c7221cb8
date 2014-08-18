@@ -12,6 +12,7 @@
 #include <QMessageBox>
 #include "kqnetworkaccessmanager.h"
 #include <QNetworkRequest>
+#include <QPixmap>
 
 #include <Audiopolicy.h>
 #include <Mmdeviceapi.h>
@@ -36,6 +37,9 @@ MainWindow::MainWindow(QWidget *parent) :
 	ui(new Ui::MainWindow)
 {
 	m_pTaskbarButton = NULL;
+
+	m_pScreenshotTimer = new QTimer(this);
+	connect(m_pScreenshotTimer, SIGNAL(timeout()), this, SLOT(slotScreenshotTimeout()));
 
 	bUseFiddler = true;
 //	bUseFiddler = false;
@@ -644,4 +648,47 @@ void MainWindow::on_pbRefresh_clicked()
 		ui->webView->reload();
 	}
 
+}
+
+void MainWindow::on_pbScreenshot_clicked()
+{
+	ShootScreen();
+}
+
+void MainWindow::on_pbSwitchScreenshot_toggled(bool checked)
+{
+	if (checked)
+	{
+		ShootScreen();
+		m_pScreenshotTimer->start(250);
+	}
+	else
+	{
+		m_pScreenshotTimer->stop();
+	}
+}
+
+void MainWindow::ShootScreen()
+{
+	if (ui->pbCheckTrasparent->isChecked())
+	{
+		ui->webView->page()->settings()->setUserStyleSheetUrl(csses[QWEBVIEWCSS_NORMAL]);
+	}
+	QPixmap pixmap = QPixmap::grabWidget(ui->webView);
+
+	QString filename = QApplication::applicationDirPath();
+	filename += "/screenshot/";
+
+	filename += QDateTime::currentDateTime().toString("yyyy_MM_dd_HH_mm_ss_zzz.png");
+
+	pixmap.save(filename, "PNG");
+	if (ui->pbCheckTrasparent->isChecked())
+	{
+		ui->webView->page()->settings()->setUserStyleSheetUrl(csses[QWEBVIEWCSS_TRANSPARENT]);
+	}
+}
+
+void MainWindow::slotScreenshotTimeout()
+{
+	ShootScreen();
 }

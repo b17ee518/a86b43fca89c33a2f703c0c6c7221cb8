@@ -33,7 +33,8 @@ SOURCES += main.cpp\
     kandataconnector.cpp \
     kandatacalc.cpp \
     kqwebpage.cpp \
-    klog.cpp
+    klog.cpp \
+    kqnetworkaccessmanager.cpp
 
 HEADERS  += mainwindow.h \
     infomainwindow.h \
@@ -54,7 +55,8 @@ HEADERS  += mainwindow.h \
     kandataconnector.h \
     kandatacalc.h \
     kqwebpage.h \
-    klog.h
+    klog.h \
+    kqnetworkaccessmanager.h
 
 FORMS    += mainwindow.ui \
     infomainwindow.ui \

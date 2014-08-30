@@ -548,7 +548,14 @@ void MainWindow::AdjustVolume(int vol)
 
 	if (vol < 0)
 	{
-		vol = 12;
+		if (bLowVol)
+		{
+			vol = 12;
+		}
+		else
+		{
+			vol = 100;
+		}
 	}
 
 	pSimpleVolume->SetMasterVolume(vol / 100.0f, &nid);
@@ -691,4 +698,10 @@ void MainWindow::ShootScreen()
 void MainWindow::slotScreenshotTimeout()
 {
 	ShootScreen();
+}
+
+void MainWindow::on_pbCheckLowVol_toggled(bool checked)
+{
+	bLowVol = checked;
+	AdjustVolume(-1);
 }

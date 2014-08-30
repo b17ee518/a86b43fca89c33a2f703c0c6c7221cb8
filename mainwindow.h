@@ -1,4 +1,5 @@
-﻿void on_pbScreenshot_clicked();
+﻿void on_pbCheckLowVol_toggled(bool checked);
+void on_pbScreenshot_clicked();
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
@@ -68,15 +69,17 @@ private slots:
 
 	void slotWebViewException(int code, const QString & source, const QString & desc, const QString & help);
 
-    void on_pbMoveTogether_toggled(bool checked);
+	void on_pbMoveTogether_toggled(bool checked);
 
-    void on_pbRefresh_clicked();
+	void on_pbRefresh_clicked();
 
 	void on_pbScreenshot_clicked();
 
-    void on_pbSwitchScreenshot_toggled(bool checked);
+	void on_pbSwitchScreenshot_toggled(bool checked);
 
 	void slotScreenshotTimeout();
+
+	void on_pbCheckLowVol_toggled(bool checked);
 
 private:
 	Ui::MainWindow *ui;
@@ -100,6 +103,7 @@ private:
 	bool bMoveSubTogether;
 
 	QTimer * m_pScreenshotTimer;
+	bool bLowVol;
 };
 
 #endif // MAINWINDOW_H

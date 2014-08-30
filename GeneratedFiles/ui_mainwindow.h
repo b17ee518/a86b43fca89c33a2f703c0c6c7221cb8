@@ -41,6 +41,8 @@ public:
     QSpacerItem *horizontalSpacer_9;
     QPushButton *pbSwitchScreenshot;
     QSpacerItem *horizontalSpacer;
+    QPushButton *pbCheckLowVol;
+    QSpacerItem *horizontalSpacer_10;
     QPushButton *pbCheckInfo;
     QPushButton *pbCheckTimer;
     QSpacerItem *horizontalSpacer_5;
@@ -134,6 +136,22 @@ public:
         horizontalSpacer = new QSpacerItem(599, 17, QSizePolicy::Expanding, QSizePolicy::Minimum);
 
         horizontalLayout->addItem(horizontalSpacer);
+
+        pbCheckLowVol = new QPushButton(titleFrame);
+        pbCheckLowVol->setObjectName(QStringLiteral("pbCheckLowVol"));
+        sizePolicy1.setHeightForWidth(pbCheckLowVol->sizePolicy().hasHeightForWidth());
+        pbCheckLowVol->setSizePolicy(sizePolicy1);
+        pbCheckLowVol->setMinimumSize(QSize(20, 20));
+        pbCheckLowVol->setMaximumSize(QSize(20, 20));
+        pbCheckLowVol->setCheckable(true);
+        pbCheckLowVol->setChecked(true);
+        pbCheckLowVol->setFlat(true);
+
+        horizontalLayout->addWidget(pbCheckLowVol);
+
+        horizontalSpacer_10 = new QSpacerItem(32, 17, QSizePolicy::Fixed, QSizePolicy::Minimum);
+
+        horizontalLayout->addItem(horizontalSpacer_10);
 
         pbCheckInfo = new QPushButton(titleFrame);
         pbCheckInfo->setObjectName(QStringLiteral("pbCheckInfo"));
@@ -262,6 +280,7 @@ public:
         pbRefresh->setText(QApplication::translate("MainWindow", "\346\226\260", 0));
         pbScreenshot->setText(QApplication::translate("MainWindow", "\346\222\256", 0));
         pbSwitchScreenshot->setText(QApplication::translate("MainWindow", "\351\200\243", 0));
+        pbCheckLowVol->setText(QApplication::translate("MainWindow", "\351\235\231", 0));
         pbCheckInfo->setText(QApplication::translate("MainWindow", "\346\203\205", 0));
         pbCheckTimer->setText(QApplication::translate("MainWindow", "\346\231\202", 0));
         comboBoxZoom->clear();

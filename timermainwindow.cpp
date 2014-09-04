@@ -17,6 +17,7 @@ TimerMainWindow::TimerMainWindow(QWidget *parent) :
 	pPlaylist = new QMediaPlaylist(pPlayer);
 
 	QString filename = QApplication::applicationDirPath();
+	filename += "/se";
 	pPlaylist->addMedia(QUrl::fromLocalFile(filename+"/expedition.mp3"));
 	pPlaylist->addMedia(QUrl::fromLocalFile(filename+"/repair.mp3"));
 	pPlaylist->addMedia(QUrl::fromLocalFile(filename+"/build.mp3"));

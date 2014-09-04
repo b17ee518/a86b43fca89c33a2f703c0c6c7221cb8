@@ -112,7 +112,7 @@ body {
 	
 	ui->webView->page()->settings()->setUserStyleSheetUrl(csses[QWEBVIEWCSS_NORMAL]);
 	
-//	ui->webView->load(QUrl("http://www.google.com"));
+//  ui->webView->load(QUrl("http://www.google.com"));
 	ui->webView->load(QUrl("http://www.dmm.com/netgame/social/-/gadgets/=/app_id=854854/?f1=1&p1=0"));
 //	ui->webView->load(QUrl("https://www.dmm.com/my/-/login/auth/"));
 }

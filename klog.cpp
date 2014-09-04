@@ -41,7 +41,7 @@ void KLog::LogAPI(QString path, QString request, QString response)
 
 void KLog::RecordLog(QString filename, QString log)
 {
-	QFile * file = new QFile(QApplication::applicationDirPath() + "/" + filename + ".table");
+	QFile * file = new QFile(QApplication::applicationDirPath() + "/log/" + filename + ".table");
 	if (file)
 	{
 		file->open(QIODevice::ReadWrite | QIODevice::Append | QIODevice::Text);

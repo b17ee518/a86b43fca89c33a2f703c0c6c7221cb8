@@ -160,6 +160,7 @@ KanDataConnector::KanDataConnector(void)
 	req_battle_midnight_sp_midnight_flag = PARSEFLAG_NORMAL;
 	req_sortie_night_to_day_flag = PARSEFLAG_NORMAL;
 	req_combined_battle_airbattle_flag = PARSEFLAG_NORMAL;
+	req_combined_battle_battlewater_flag = PARSEFLAG_NORMAL;
 	req_combined_battle_battleresult_flag = PARSEFLAG_NORMAL;
 	req_combined_battle_battle_flag = PARSEFLAG_NORMAL;
 	req_combined_battle_midnight_battle_flag = PARSEFLAG_NORMAL;
@@ -205,6 +206,7 @@ KanDataConnector::KanDataConnector(void)
 //	start2_flag = PARSEFLAG_OUTPUT;
 //	port_port_flag = PARSEFLAG_OUTPUT;
 	req_combined_battle_airbattle_flag = PARSEFLAG_OUTPUT;
+	req_combined_battle_battlewater_flag = PARSEFLAG_OUTPUT;
 	req_combined_battle_battleresult_flag = PARSEFLAG_OUTPUT;
 	req_combined_battle_battle_flag = PARSEFLAG_OUTPUT;
 	req_combined_battle_midnight_battle_flag = PARSEFLAG_OUTPUT;
@@ -283,6 +285,7 @@ bool KanDataConnector::Parse(QString _pathAndQuery, QString _requestBody, QStrin
 	PARSEAPI("/kcsapi/api_req_battle_midnight/sp_midnight", req_battle_midnight_sp_midnight)
 	PARSEAPI("/kcsapi/api_req_sortie/night_to_day", req_sortie_night_to_day)
 	PARSEAPI("/kcsapi/api_req_combined_battle/airbattle", req_combined_battle_airbattle)
+	PARSEAPI("/kcsapi/api_req_combined_battle/battle_water", req_combined_battle_battlewater)
 	PARSEAPI("/kcsapi/api_req_combined_battle/battleresult", req_combined_battle_battleresult)
 	PARSEAPI("/kcsapi/api_req_combined_battle/battle", req_combined_battle_battle)
 	PARSEAPI("/kcsapi/api_req_combined_battle/midnight_battle", req_combined_battle_midnight_battle)
@@ -1682,6 +1685,9 @@ QString KanDataConnector::logBattleResult(bool bWrite/*=true*/)
 	case KANBATTLETYPE_NIGHTTODAY:
 		battletypestr = QString::fromLocal8Bit("夜昼");
 		break;
+	case KANBATTLETYPE_COMBINED_WATER:
+		battletypestr = QString::fromLocal8Bit("連航水");
+		break;
 	case KANBATTLETYPE_COMBINED_KOUKU:
 		battletypestr = QString::fromLocal8Bit("連航");
 		break;
@@ -2651,6 +2657,14 @@ bool KanDataConnector::req_sortie_night_to_day_parse()
 }
 
 bool KanDataConnector::req_combined_battle_airbattle_parse()
+{
+	pksd->battledata.ReadFromJObj(jobj);
+
+	pksd->enemyhpdata = updateBattle(pksd->battledata, KANBATTLETYPE_COMBINED_WATER);
+	return true;
+}
+
+bool KanDataConnector::req_combined_battle_battlewater_parse()
 {
 	pksd->battledata.ReadFromJObj(jobj);
 

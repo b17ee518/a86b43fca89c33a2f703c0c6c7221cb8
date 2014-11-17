@@ -1379,7 +1379,7 @@ QList<int> KanDataConnector::updateBattle(const kcsapi_battle &api_battle, int t
 			{
 				for (int i = 0; i < api_battle.api_opening_atack.api_fdam.count(); i++)
 				{
-					if (api_battle.api_formation[0] == 11)
+					if (bCombined/*api_battle.api_formation[0] == 11*/)
 					{
 						totalfdamage_combined[i] += api_battle.api_opening_atack.api_fdam[i];
 					}
@@ -1402,24 +1402,34 @@ QList<int> KanDataConnector::updateBattle(const kcsapi_battle &api_battle, int t
 				int hougeki2flag = api_battle.api_hourai_flag[1];
 				int hougeki3flag = api_battle.api_hourai_flag[2];
 				int raigekiflag = api_battle.api_hourai_flag[3];
-				if (bCombined)
+				if (bCombined && type == KANBATTLETYPE_COMBINED_KOUKU || type == KANBATTLETYPE_COMBINED_DAY)
 				{
 					raigekiflag = api_battle.api_hourai_flag[1];
 					hougeki2flag = api_battle.api_hourai_flag[2];
 					hougeki3flag = api_battle.api_hourai_flag[3];
 				}
-
 				if (hougeki1flag)
 				{
-					processHouraiDamages(&(api_battle.api_hougeki1), &totalfdamage, &totaledamage, &totalfdamage_combined, bCombined);
+					bool bCombineDamage = false;
+					if (type == KANBATTLETYPE_COMBINED_KOUKU || type == KANBATTLETYPE_COMBINED_DAY)
+					{
+						bCombineDamage = bCombined;
+					}
+					processHouraiDamages(&(api_battle.api_hougeki1), &totalfdamage, &totaledamage, &totalfdamage_combined, bCombineDamage);
 				}
 				if (hougeki2flag)
 				{
-					processHouraiDamages(&(api_battle.api_hougeki2), &totalfdamage, &totaledamage, &totalfdamage_combined, false);
+					bool bCombineDamage = false;
+					processHouraiDamages(&(api_battle.api_hougeki2), &totalfdamage, &totaledamage, &totalfdamage_combined, bCombineDamage);
 				}
 				if (hougeki3flag)
 				{
-					processHouraiDamages(&(api_battle.api_hougeki3), &totalfdamage, &totaledamage, &totalfdamage_combined, false);
+					bool bCombineDamage = bCombined;
+					if (type == KANBATTLETYPE_COMBINED_KOUKU || type == KANBATTLETYPE_COMBINED_DAY)
+					{
+						bCombineDamage = false;
+					}
+					processHouraiDamages(&(api_battle.api_hougeki3), &totalfdamage, &totaledamage, &totalfdamage_combined, bCombineDamage);
 				}
 				// raigeki
 				if (raigekiflag)
@@ -2660,7 +2670,7 @@ bool KanDataConnector::req_combined_battle_airbattle_parse()
 {
 	pksd->battledata.ReadFromJObj(jobj);
 
-	pksd->enemyhpdata = updateBattle(pksd->battledata, KANBATTLETYPE_COMBINED_WATER);
+	pksd->enemyhpdata = updateBattle(pksd->battledata, KANBATTLETYPE_COMBINED_KOUKU);
 	return true;
 }
 
@@ -2668,7 +2678,7 @@ bool KanDataConnector::req_combined_battle_battlewater_parse()
 {
 	pksd->battledata.ReadFromJObj(jobj);
 
-	pksd->enemyhpdata = updateBattle(pksd->battledata, KANBATTLETYPE_COMBINED_KOUKU);
+	pksd->enemyhpdata = updateBattle(pksd->battledata, KANBATTLETYPE_COMBINED_WATER);
 	return true;
 }
 

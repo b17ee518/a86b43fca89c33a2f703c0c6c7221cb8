@@ -262,11 +262,24 @@ bool kcsapi_slotitem::ReadFromJObj(const QJsonObject &jobj)
 {
 	_IREAD(api_id);
 	_IREAD(api_slotitem_id);
+	_IREAD(api_locked);
+	_IREAD(api_level);
 
 	return bParseRet;
 
 }
 
+bool kcsapi_slotitem::ReadFromSlotItem(const kcsapi_slotitem& slotitem)
+{
+	if (slotitem.api_id == this->api_id)
+	{
+		this->api_slotitem_id = slotitem.api_slotitem_id;
+		this->api_locked = slotitem.api_locked;
+		this->api_level = slotitem.api_level;
+		return true;
+	}
+	return false;
+}
 
 bool kcsapi_charge_ship::ReadFromJObj(const QJsonObject &jobj)
 {
@@ -389,6 +402,8 @@ bool kcsapi_ship2::ReadFromJObj(const QJsonObject &jobj)
 	_AIREAD(api_sakuteki);
 	_AIREAD(api_lucky);
 	_IREAD(api_locked);
+	_IREAD(api_locked_equip);
+	_IREAD(api_sally_area);
 
 	return bParseRet;
 
@@ -427,6 +442,90 @@ bool kcsapi_ship2::ReadFromShip(const kcsapi_ship &ship)
 		api_lucky = ship.api_lucky;
 		return true;
 	}
+	return false;
+}
+
+bool kcsapi_ship2::ReadFromMstShip(const kcsapi_mst_ship& mstship, int id)
+{
+	api_id = id;
+	api_sortno = mstship.api_sortno;
+	api_ship_id = mstship.api_id;
+	api_lv = 1;
+
+	api_exp.clear();
+	api_exp.push_back(0); // total exp
+	api_exp.push_back(100); // next level exp
+	api_exp.push_back(0); // ?
+
+	api_nowhp = mstship.api_taik.first();
+	api_maxhp = api_nowhp;
+	api_leng = mstship.api_leng;
+
+	//add slotitem later
+	api_slot.clear();
+	api_slot.push_back(-1);
+	api_slot.push_back(-1);
+	api_slot.push_back(-1);
+	api_slot.push_back(-1);
+	api_slot.push_back(-1);
+
+	api_onslot.clear();
+	api_onslot.push_back(0);
+	api_onslot.push_back(0);
+	api_onslot.push_back(0);
+	api_onslot.push_back(0);
+	api_onslot.push_back(0);
+
+	api_kyouka.clear();
+	api_kyouka.push_back(0);
+	api_kyouka.push_back(0);
+	api_kyouka.push_back(0);
+	api_kyouka.push_back(0);
+	api_kyouka.push_back(0);
+
+	api_backs = mstship.api_backs;
+	api_fuel = mstship.api_fuel_max;
+	api_bull = mstship.api_bull_max;
+	api_slotnum = mstship.api_slot_num;
+	api_ndock_time = 0;
+
+	api_ndock_item.clear();
+	api_ndock_item.push_back(0);
+	api_ndock_item.push_back(0);
+
+	api_srate = api_backs; //?
+	api_cond = 40;
+
+	// no data
+	api_karyoku.clear();
+	api_karyoku.push_back(0);
+	api_karyoku.push_back(0);
+	api_raisou.clear();
+	api_raisou.push_back(0);
+	api_raisou.push_back(0);
+	api_taiku.clear();
+	api_taiku.push_back(0);
+	api_taiku.push_back(0);
+	api_soukou.clear();
+	api_soukou.push_back(0);
+	api_soukou.push_back(0);
+	api_kaihi.clear();
+	api_kaihi.push_back(0);
+	api_kaihi.push_back(0);
+	api_taisen.clear();
+	api_taisen.push_back(0);
+	api_taisen.push_back(0);
+	api_sakuteki.clear();
+	api_sakuteki.push_back(0);
+	api_sakuteki.push_back(0);
+	api_lucky.clear();
+	api_lucky.push_back(0);
+	api_lucky.push_back(0);
+
+	api_locked = 0;
+	api_locked_equip = 0;
+	api_sally_area = 0;
+
 	return false;
 }
 
@@ -759,6 +858,19 @@ bool kcsapi_slot_data::ReadFromJObj(const QJsonObject &jobj)
 	_AIREAD(api_slottype21);
 	_AIREAD(api_slottype22);
 	_AIREAD(api_slottype23);
+	_AIREAD(api_slottype24);
+	_AIREAD(api_slottype25);
+	_AIREAD(api_slottype26);
+	_AIREAD(api_slottype27);
+	_AIREAD(api_slottype28);
+	_AIREAD(api_slottype29);
+	_AIREAD(api_slottype30);
+	_AIREAD(api_slottype31);
+	_AIREAD(api_slottype32);
+	_AIREAD(api_slottype33);
+	_AIREAD(api_slottype34);
+	_AIREAD(api_slottype35);
+	_AIREAD(api_slottype36);
 
 	return bParseRet;
 }
@@ -1439,6 +1551,31 @@ bool kcsapi_practice_enemyinfo::ReadFromJObj(const QJsonObject &jobj)
 	_SREAD(api_deckname);
 	_SREAD(api_deckname_id);
 	_CREAD(api_deck, kcsapi_practice_enemyinfo_deck);
+
+	return bParseRet;
+}
+
+bool kcsapi_hensei_lock::ReadFromJObj(const QJsonObject &jobj)
+{
+	_IREAD(api_locked);
+
+	return bParseRet;
+}
+
+bool kcsapi_kaisou_lock::ReadFromJObj(const QJsonObject &jobj)
+{
+	_IREAD(api_locked);
+
+	return bParseRet;
+}
+
+bool kcsapi_remodel_slot::ReadFromJObj(const QJsonObject &jobj)
+{
+	_IREAD(api_remodel_flag);
+	_AIREAD(api_remodel_id);
+	_AIREAD(api_after_material);
+	_IREAD(api_voice_id);
+	_CREAD(api_after_slot, kcsapi_slotitem);
 
 	return bParseRet;
 }

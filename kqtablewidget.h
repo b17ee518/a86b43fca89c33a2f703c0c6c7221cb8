@@ -26,8 +26,6 @@ signals:
 
     void sigTableSizeChanged();
 
-public slots:
-
 private:
     int separatorColumn;
 

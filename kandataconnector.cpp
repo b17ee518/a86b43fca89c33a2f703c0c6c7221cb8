@@ -191,6 +191,16 @@ KanDataConnector::KanDataConnector(void)
 	get_member_book2_flag = PARSEFLAG_NORMAL;
 	req_member_get_incentive_flag = PARSEFLAG_NORMAL;
 	get_member_payitem_flag = PARSEFLAG_NORMAL;
+	req_kaisou_lock_flag = PARSEFLAG_NORMAL;			// lock slot item
+	req_mission_return_instruction_flag = PARSEFLAG_NORMAL;	// force mission return
+	req_member_payitemuse_flag = PARSEFLAG_NORMAL;
+	req_kaisou_marriage_flag = PARSEFLAG_NORMAL;
+	req_kousyou_remodel_slotlist_flag = PARSEFLAG_NORMAL;
+	req_kousyou_remodel_slotlist_detail_flag = PARSEFLAG_NORMAL;
+	req_kousyou_remodel_slot_flag = PARSEFLAG_NORMAL;		// kaisyu
+	req_furniture_music_list_flag = PARSEFLAG_NORMAL;
+	req_furniture_music_play_flag = PARSEFLAG_NORMAL;
+	req_furniture_set_portbgm_flag = PARSEFLAG_NORMAL;
 
 
 	/************************************************************************/
@@ -211,7 +221,9 @@ KanDataConnector::KanDataConnector(void)
 	req_combined_battle_battle_flag = PARSEFLAG_OUTPUT;
 	req_combined_battle_midnight_battle_flag = PARSEFLAG_OUTPUT;
 	req_combined_battle_sp_midnight_flag = PARSEFLAG_OUTPUT;
-	
+
+	req_kaisou_remodeling_flag = PARSEFLAG_OUTPUT;
+	req_quest_clearitemget_flag = PARSEFLAG_OUTPUT;	//item?ship?
 }
 
 bool KanDataConnector::Parse(QString _pathAndQuery, QString _requestBody, QString _responseBody)
@@ -222,6 +234,12 @@ bool KanDataConnector::Parse(QString _pathAndQuery, QString _requestBody, QStrin
 	responseBody = _responseBody.right(_responseBody.length() - 7);
 
 	jdoc = QJsonDocument::fromJson(responseBody.toLocal8Bit());
+	int api_result = jdoc.object()["api_result"].toInt();
+	if (api_result != 1)
+	{
+		DAPILOG();
+		return false;
+	}
 	jobj = jdoc.object()["api_data"].toObject();
 
 	req.ReadFromString(pathAndQuery, requestBody);
@@ -243,79 +261,89 @@ bool KanDataConnector::Parse(QString _pathAndQuery, QString _requestBody, QStrin
 #define PARSEAPI(apistr, api) else PARSEAPIF(apistr, api)
 
 	PARSEAPIF("/kcsapi/api_start2", start2)
-	PARSEAPI("/kcsapi/api_port/port", port_port)
-	PARSEAPI("/kcsapi/api_get_member/basic", get_member_basic)
-	PARSEAPI("/kcsapi/api_get_member/ship", get_member_ship)
-	PARSEAPI("/kcsapi/api_get_member/ship2", get_member_ship2)
-	PARSEAPI("/kcsapi/api_get_member/ship3", get_member_ship3)
-	PARSEAPI("/kcsapi/api_get_member/slot_item", get_member_slot_item)
-	PARSEAPI("/kcsapi/api_get_member/useitem", get_member_useitem)
-	PARSEAPI("/kcsapi/api_get_member/deck", get_member_deck)
-	PARSEAPI("/kcsapi/api_get_member/deck_port", get_member_deck_port)
-	PARSEAPI("/kcsapi/api_get_member/ndock", get_member_ndock)
-	PARSEAPI("/kcsapi/api_get_member/kdock", get_member_kdock)
-	PARSEAPI("/kcsapi/api_get_member/material", get_member_material)
-	PARSEAPI("/kcsapi/api_req_hensei/change", req_hensei_change)
-	PARSEAPI("/kcsapi/api_req_hensei/lock", req_hensei_lock)
-	PARSEAPI("/kcsapi/api_req_hensei/combined", req_hensei_combined)
-	PARSEAPI("/kcsapi/api_get_member/unsetslot", get_member_unsetslot)
-	PARSEAPI("/kcsapi/api_req_kaisou/unsetslot_all", req_kaisou_unsetslot_all)
-	PARSEAPI("/kcsapi/api_req_kousyou/getship", req_kousyou_getship)
-	PARSEAPI("/kcsapi/api_req_kousyou/createitem", req_kousyou_createitem)
-	PARSEAPI("/kcsapi/api_req_kousyou/createship", req_kousyou_createship)
-	PARSEAPI("/kcsapi/api_req_kousyou/createship_speedchange", req_kousyou_createship_speedchange)
-	PARSEAPI("/kcsapi/api_req_kousyou/destroyship", req_kousyou_destroyship)
-	PARSEAPI("/kcsapi/api_req_kousyou/destroyitem2", req_kousyou_destroyitem2)
-	PARSEAPI("/kcsapi/api_req_nyukyo/start", req_nyukyo_start)
-	PARSEAPI("/kcsapi/api_req_nyukyo/speedchange", req_nyukyo_speedchange)
-	PARSEAPI("/kcsapi/api_req_hokyu/charge", req_hokyu_charge)
-	PARSEAPI("/kcsapi/api_req_kaisou/powerup", req_kaisou_powerup)
-	PARSEAPI("/kcsapi/api_req_kaisou/slotset", req_kaisou_slotset)
-	PARSEAPI("/kcsapi/api_req_kaisou/remodeling", req_kaisou_remodeling)
-	PARSEAPI("/kcsapi/api_req_mission/start", req_mission_start)
-	PARSEAPI("/kcsapi/api_req_mission/result", req_mission_result)
-	PARSEAPI("/kcsapi/api_get_member/mission", get_member_mission)
-	PARSEAPI("/kcsapi/api_get_member/mapinfo", get_member_mapinfo)
-	PARSEAPI("/kcsapi/api_get_member/mapcell", get_member_mapcell)
-	PARSEAPI("/kcsapi/api_req_map/start", req_map_start)
-	PARSEAPI("/kcsapi/api_req_map/next", req_map_next)
-	PARSEAPI("/kcsapi/api_req_sortie/battleresult", req_sortie_battleresult)
-	PARSEAPI("/kcsapi/api_req_sortie/battle", req_sortie_battle)
-	PARSEAPI("/kcsapi/api_req_battle_midnight/battle", req_battle_midnight_battle)
-	PARSEAPI("/kcsapi/api_req_battle_midnight/sp_midnight", req_battle_midnight_sp_midnight)
-	PARSEAPI("/kcsapi/api_req_sortie/night_to_day", req_sortie_night_to_day)
-	PARSEAPI("/kcsapi/api_req_combined_battle/airbattle", req_combined_battle_airbattle)
-	PARSEAPI("/kcsapi/api_req_combined_battle/battle_water", req_combined_battle_battlewater)
-	PARSEAPI("/kcsapi/api_req_combined_battle/battleresult", req_combined_battle_battleresult)
-	PARSEAPI("/kcsapi/api_req_combined_battle/battle", req_combined_battle_battle)
-	PARSEAPI("/kcsapi/api_req_combined_battle/midnight_battle", req_combined_battle_midnight_battle)
-	PARSEAPI("/kcsapi/api_req_combined_battle/sp_midnight", req_combined_battle_sp_midnight)
-	PARSEAPI("/kcsapi/api_get_member/practice", get_member_practice)
-	PARSEAPI("/kcsapi/api_req_member/get_practice_enemyinfo", req_member_get_practice_enemyinfo)
-	PARSEAPI("/kcsapi/api_req_practice/battle", req_practice_battle)
-	PARSEAPI("/kcsapi/api_req_practice/midnight_battle", req_practice_midnight_battle)
-	PARSEAPI("/kcsapi/api_req_practice/battle_result", req_practice_battle_result)
-	PARSEAPI("/kcsapi/api_get_member/questlist", get_member_questlist)
-	PARSEAPI("/kcsapi/api_req_quest/start", req_quest_start)
-	PARSEAPI("/kcsapi/api_req_quest/stop", req_quest_stop)
-	PARSEAPI("/kcsapi/api_req_quest/clearitemget", req_quest_clearitemget)
-	PARSEAPI("/kcsapi/api_get_member/sortie_conditions", get_member_sortie_conditions)
-	PARSEAPI("/kcsapi/api_req_member/updatedeckname", req_member_updatedeckname)
-	PARSEAPI("/kcsapi/api_req_member/updatecomment", req_member_updatecomment)
-	PARSEAPI("/kcsapi/api_req_kousyou/open_new_dock", req_kousyou_open_new_dock)
-	PARSEAPI("/kcsapi/api_req_nyukyo/open_new_dock", req_nyukyo_open_new_dock)
-	PARSEAPI("/kcsapi/api_auth_member/logincheck", auth_member_logincheck)
-	PARSEAPI("/kcsapi/api_get_member/furniture", get_member_furniture)
-	PARSEAPI("/kcsapi/api_req_furniture/buy", req_furniture_buy)
-	PARSEAPI("/kcsapi/api_req_furniture/change", req_furniture_change)
-	PARSEAPI("/kcsapi/api_req_member/itemuse", req_member_itemuse)
-	PARSEAPI("/kcsapi/api_req_member/itemuse_cond", req_member_itemuse_cond)
-	PARSEAPI("/kcsapi/api_get_member/record", get_member_record)
-	PARSEAPI("/kcsapi/api_req_ranking/getlist", req_ranking_getlist)
-	PARSEAPI("/kcsapi/api_get_member/picture_book", get_member_picture_book)
-	PARSEAPI("/kcsapi/api_get_member/book2", get_member_book2)
-	PARSEAPI("/kcsapi/api_req_member/get_incentive", req_member_get_incentive)
-	PARSEAPI("/kcsapi/api_get_member/payitem", get_member_payitem)
+		PARSEAPI("/kcsapi/api_port/port", port_port)
+		PARSEAPI("/kcsapi/api_get_member/basic", get_member_basic)
+		PARSEAPI("/kcsapi/api_get_member/ship", get_member_ship)
+		PARSEAPI("/kcsapi/api_get_member/ship2", get_member_ship2)
+		PARSEAPI("/kcsapi/api_get_member/ship3", get_member_ship3)
+		PARSEAPI("/kcsapi/api_get_member/slot_item", get_member_slot_item)
+		PARSEAPI("/kcsapi/api_get_member/useitem", get_member_useitem)
+		PARSEAPI("/kcsapi/api_get_member/deck", get_member_deck)
+		PARSEAPI("/kcsapi/api_get_member/deck_port", get_member_deck_port)
+		PARSEAPI("/kcsapi/api_get_member/ndock", get_member_ndock)
+		PARSEAPI("/kcsapi/api_get_member/kdock", get_member_kdock)
+		PARSEAPI("/kcsapi/api_get_member/material", get_member_material)
+		PARSEAPI("/kcsapi/api_req_hensei/change", req_hensei_change)
+		PARSEAPI("/kcsapi/api_req_hensei/lock", req_hensei_lock)
+		PARSEAPI("/kcsapi/api_req_hensei/combined", req_hensei_combined)
+		PARSEAPI("/kcsapi/api_get_member/unsetslot", get_member_unsetslot)
+		PARSEAPI("/kcsapi/api_req_kaisou/unsetslot_all", req_kaisou_unsetslot_all)
+		PARSEAPI("/kcsapi/api_req_kousyou/getship", req_kousyou_getship)
+		PARSEAPI("/kcsapi/api_req_kousyou/createitem", req_kousyou_createitem)
+		PARSEAPI("/kcsapi/api_req_kousyou/createship", req_kousyou_createship)
+		PARSEAPI("/kcsapi/api_req_kousyou/createship_speedchange", req_kousyou_createship_speedchange)
+		PARSEAPI("/kcsapi/api_req_kousyou/destroyship", req_kousyou_destroyship)
+		PARSEAPI("/kcsapi/api_req_kousyou/destroyitem2", req_kousyou_destroyitem2)
+		PARSEAPI("/kcsapi/api_req_nyukyo/start", req_nyukyo_start)
+		PARSEAPI("/kcsapi/api_req_nyukyo/speedchange", req_nyukyo_speedchange)
+		PARSEAPI("/kcsapi/api_req_hokyu/charge", req_hokyu_charge)
+		PARSEAPI("/kcsapi/api_req_kaisou/powerup", req_kaisou_powerup)
+		PARSEAPI("/kcsapi/api_req_kaisou/slotset", req_kaisou_slotset)
+		PARSEAPI("/kcsapi/api_req_kaisou/remodeling", req_kaisou_remodeling)
+		PARSEAPI("/kcsapi/api_req_mission/start", req_mission_start)
+		PARSEAPI("/kcsapi/api_req_mission/result", req_mission_result)
+		PARSEAPI("/kcsapi/api_get_member/mission", get_member_mission)
+		PARSEAPI("/kcsapi/api_get_member/mapinfo", get_member_mapinfo)
+		PARSEAPI("/kcsapi/api_get_member/mapcell", get_member_mapcell)
+		PARSEAPI("/kcsapi/api_req_map/start", req_map_start)
+		PARSEAPI("/kcsapi/api_req_map/next", req_map_next)
+		PARSEAPI("/kcsapi/api_req_sortie/battleresult", req_sortie_battleresult)
+		PARSEAPI("/kcsapi/api_req_sortie/battle", req_sortie_battle)
+		PARSEAPI("/kcsapi/api_req_battle_midnight/battle", req_battle_midnight_battle)
+		PARSEAPI("/kcsapi/api_req_battle_midnight/sp_midnight", req_battle_midnight_sp_midnight)
+		PARSEAPI("/kcsapi/api_req_sortie/night_to_day", req_sortie_night_to_day)
+		PARSEAPI("/kcsapi/api_req_combined_battle/airbattle", req_combined_battle_airbattle)
+		PARSEAPI("/kcsapi/api_req_combined_battle/battle_water", req_combined_battle_battlewater)
+		PARSEAPI("/kcsapi/api_req_combined_battle/battleresult", req_combined_battle_battleresult)
+		PARSEAPI("/kcsapi/api_req_combined_battle/battle", req_combined_battle_battle)
+		PARSEAPI("/kcsapi/api_req_combined_battle/midnight_battle", req_combined_battle_midnight_battle)
+		PARSEAPI("/kcsapi/api_req_combined_battle/sp_midnight", req_combined_battle_sp_midnight)
+		PARSEAPI("/kcsapi/api_get_member/practice", get_member_practice)
+		PARSEAPI("/kcsapi/api_req_member/get_practice_enemyinfo", req_member_get_practice_enemyinfo)
+		PARSEAPI("/kcsapi/api_req_practice/battle", req_practice_battle)
+		PARSEAPI("/kcsapi/api_req_practice/midnight_battle", req_practice_midnight_battle)
+		PARSEAPI("/kcsapi/api_req_practice/battle_result", req_practice_battle_result)
+		PARSEAPI("/kcsapi/api_get_member/questlist", get_member_questlist)
+		PARSEAPI("/kcsapi/api_req_quest/start", req_quest_start)
+		PARSEAPI("/kcsapi/api_req_quest/stop", req_quest_stop)
+		PARSEAPI("/kcsapi/api_req_quest/clearitemget", req_quest_clearitemget)
+		PARSEAPI("/kcsapi/api_get_member/sortie_conditions", get_member_sortie_conditions)
+		PARSEAPI("/kcsapi/api_req_member/updatedeckname", req_member_updatedeckname)
+		PARSEAPI("/kcsapi/api_req_member/updatecomment", req_member_updatecomment)
+		PARSEAPI("/kcsapi/api_req_kousyou/open_new_dock", req_kousyou_open_new_dock)
+		PARSEAPI("/kcsapi/api_req_nyukyo/open_new_dock", req_nyukyo_open_new_dock)
+		PARSEAPI("/kcsapi/api_auth_member/logincheck", auth_member_logincheck)
+		PARSEAPI("/kcsapi/api_get_member/furniture", get_member_furniture)
+		PARSEAPI("/kcsapi/api_req_furniture/buy", req_furniture_buy)
+		PARSEAPI("/kcsapi/api_req_furniture/change", req_furniture_change)
+		PARSEAPI("/kcsapi/api_req_member/itemuse", req_member_itemuse)
+		PARSEAPI("/kcsapi/api_req_member/itemuse_cond", req_member_itemuse_cond)
+		PARSEAPI("/kcsapi/api_get_member/record", get_member_record)
+		PARSEAPI("/kcsapi/api_req_ranking/getlist", req_ranking_getlist)
+		PARSEAPI("/kcsapi/api_get_member/picture_book", get_member_picture_book)
+		PARSEAPI("/kcsapi/api_get_member/book2", get_member_book2)
+		PARSEAPI("/kcsapi/api_req_member/get_incentive", req_member_get_incentive)
+		PARSEAPI("/kcsapi/api_get_member/payitem", get_member_payitem)
+		PARSEAPI("/kcsapi/api_req_kaisou/lock", req_kaisou_lock)
+		PARSEAPI("/kcsapi/api_req_mission/return_instruction", req_mission_return_instruction)
+		PARSEAPI("/kcsapi/api_req_member/payitemuse", req_member_payitemuse)
+		PARSEAPI("/kcsapi/api_req_kaisou/marriage", req_kaisou_marriage)
+		PARSEAPI("/kcsapi/api_req_kousyou/remodel_slotlist", req_kousyou_remodel_slotlist)
+		PARSEAPI("/kcsapi/api_req_kousyou/remodel_slotlist_detail", req_kousyou_remodel_slotlist_detail)
+		PARSEAPI("/kcsapi/api_req_kousyou/remodel_slot", req_kousyou_remodel_slot)
+		PARSEAPI("/kcsapi/api_req_furniture/music_list", req_furniture_music_list)
+		PARSEAPI("/kcsapi/api_req_furniture/music_play", req_furniture_music_play)
+		PARSEAPI("/kcsapi/api_req_furniture/set_portbgm", req_furniture_set_portbgm)
 
 	if (!bRet)
 	{
@@ -971,6 +999,59 @@ void KanDataConnector::updateInfoTitleCond()
 	MainWindow::infoWindow()->updateTitle(titlestr, colindex);
 }
 
+void KanDataConnector::updateWeaponTable()
+{
+    if (!pksd->portdata.api_ship.size())
+    {
+        return;
+    }
+    MainWindow::weaponWindow()->clearWeaponData();
+    foreach (const kcsapi_slotitem& v, pksd->slotitemdata)
+    {
+        bool bLocked = v.api_locked>0;
+        int level = v.api_level;
+        int slotitemId = v.api_slotitem_id;
+        auto slotitem = findMstSlotItemFromSlotitemid(slotitemId);
+        QString itemname;
+        int rare = 0;
+        if (slotitem)
+        {
+            itemname = slotitem->api_name;
+            rare = slotitem->api_rare;
+        }
+        QString shipname;
+        int shipid = -1;
+        int shiplv = 0;
+        foreach(const kcsapi_ship2& ship, pksd->portdata.api_ship)
+        {
+            foreach(int itemid, ship.api_slot)
+            {
+                if (itemid == v.api_id)
+                {
+                    shipid = ship.api_ship_id;
+                    shiplv = ship.api_lv;
+                    break;
+                }
+            }
+            if (shipid >= 0)
+            {
+                break;
+            }
+        }
+        if (shipid >= 0)
+        {
+            auto mstship = findMstShipFromShipid(shipid);
+            if (mstship)
+            {
+                shipname = mstship->api_name;
+            }
+        }
+
+        MainWindow::weaponWindow()->addWeaponData(slotitemId, itemname, rare, bLocked, level, shipname, shiplv);
+    }
+    MainWindow::weaponWindow()->buildTable();
+}
+
 void KanDataConnector::getShipColors(const kcsapi_ship2 *pship, QColor *pcolCond, QColor *pcolWound, int* pcondstate, int* pwoundstate)
 {
 	if (pcolCond || pcondstate)
@@ -1135,13 +1216,15 @@ bool KanDataConnector::isShipRepairing(const kcsapi_ship2 *pship)
 
 bool KanDataConnector::RemoveShip(int shipno)
 {
-	KanSaveData * pksd = &KanSaveData::getInstance();
-
 	for (QList<kcsapi_ship2>::iterator it=pksd->portdata.api_ship.begin();
 		 it!=pksd->portdata.api_ship.end(); ++it)
 	{
 		if (it->api_id == shipno)
 		{
+            foreach (auto itemid , it->api_slot)
+			{
+				RemoveSlotItem(itemid);
+			}
 			pksd->portdata.api_ship.erase(it);
 			return true;
 		}
@@ -1149,10 +1232,81 @@ bool KanDataConnector::RemoveShip(int shipno)
 	return false;
 }
 
+bool KanDataConnector::RemoveSlotItem(int id)
+{
+	for (auto it = pksd->slotitemdata.begin();
+		it != pksd->slotitemdata.end(); ++it)
+	{
+		if (it->api_id == id)
+		{
+			pksd->slotitemdata.erase(it);
+			return true;
+		}
+	}
+	return false;
+}
+
+bool KanDataConnector::AddShip(const kcsapi_ship2& ship)
+{
+	if (findShipFromShipno(ship.api_id))
+	{
+		return false;
+	}
+	pksd->portdata.api_ship.push_back(ship);
+	return true;
+}
+
+bool KanDataConnector::AddShip(int shipid, const QList<int>& slotitems)
+{
+	int newid = 0;
+    foreach (auto it , pksd->portdata.api_ship)
+	{
+		if (it.api_id > newid)
+		{
+			newid = it.api_id;
+		}
+	}
+	newid++;
+	kcsapi_ship2 ship;
+	auto mstship = findMstShipFromShipid(shipid);
+	if (mstship)
+	{
+		if (ship.ReadFromMstShip(*mstship, newid))
+		{
+			int i = 0;
+            foreach (auto slotitemid , slotitems)
+			{
+				ship.api_slot[i] = slotitemid;
+				i++;
+			}
+			return AddShip(ship);
+		}
+	}
+	return false;
+}
+
+bool KanDataConnector::AddSlotItem(const kcsapi_slotitem& item)
+{
+	if (findSlotitemFromId(item.api_id))
+	{
+		return false;
+	}
+	pksd->slotitemdata.push_back(item);
+	return true;
+}
+
+bool KanDataConnector::AddSlotItem(int id, int slotitemId)
+{
+	kcsapi_slotitem slotitem;
+	slotitem.api_id = id;
+	slotitem.api_slotitem_id = slotitemId;
+	slotitem.api_locked = 0;
+	slotitem.api_level = 0;
+
+	return AddSlotItem(slotitem);
+}
 kcsapi_ship2 *KanDataConnector::findShipFromShipno(int shipno)
 {
-	KanSaveData * pksd = &KanSaveData::getInstance();
-
 	for (QList<kcsapi_ship2>::iterator it=pksd->portdata.api_ship.begin();
 		 it!=pksd->portdata.api_ship.end(); ++it)
 	{
@@ -1167,7 +1321,6 @@ kcsapi_ship2 *KanDataConnector::findShipFromShipno(int shipno)
 
 const kcsapi_mst_ship *KanDataConnector::findMstShipFromShipid(int shipid) const
 {
-	KanSaveData * pksd = &KanSaveData::getInstance();
 	foreach(const kcsapi_mst_ship &v, pksd->start2data.api_mst_ship)
 	{
 		if (v.api_id == shipid)
@@ -1181,7 +1334,6 @@ const kcsapi_mst_ship *KanDataConnector::findMstShipFromShipid(int shipid) const
 
 const Api_Mst_Mission *KanDataConnector::findMstMissionFromMissionid(int missionid) const
 {
-	KanSaveData * pksd = &KanSaveData::getInstance();
 	foreach(const Api_Mst_Mission &v, pksd->start2data.api_mst_mission)
 	{
 		if (v.api_id == missionid)
@@ -1193,14 +1345,14 @@ const Api_Mst_Mission *KanDataConnector::findMstMissionFromMissionid(int mission
 	return 0;
 }
 
-const kcsapi_slotitem * KanDataConnector::findSlotitemFromId(int id) const
+kcsapi_slotitem * KanDataConnector::findSlotitemFromId(int id)
 {
-	KanSaveData * pksd = &KanSaveData::getInstance();
-	foreach(const kcsapi_slotitem &v, pksd->slotitemdata)
+	for (auto it = pksd->slotitemdata.begin();
+		it != pksd->slotitemdata.end(); ++it)
 	{
-		if (v.api_id == id)
+		if (it->api_id == id)
 		{
-			return &v;
+			return &(*it);
 		}
 	}
 	qDebug("No slotitem data.");
@@ -1209,7 +1361,6 @@ const kcsapi_slotitem * KanDataConnector::findSlotitemFromId(int id) const
 
 const kcsapi_mst_slotitem * KanDataConnector::findMstSlotItemFromSlotitemid(int slotitemid) const
 {
-	KanSaveData * pksd = &KanSaveData::getInstance();
 	foreach(const kcsapi_mst_slotitem &v, pksd->start2data.api_mst_slotitem)
 	{
 		if (v.api_id == slotitemid)
@@ -1246,8 +1397,6 @@ QList<int> KanDataConnector::updateBattle(const kcsapi_battle &api_battle, int t
 
 	if (dockid >= 0)
 	{
-		KanSaveData * pksd = &KanSaveData::getInstance();
-
 		pksd->lastbattletype = type;
 		pksd->lastdeckid = dockid;
 
@@ -1539,8 +1688,6 @@ void KanDataConnector::processHouraiDamages(const kcsapi_battle_hougeki* api_hou
 
 void KanDataConnector::checkWoundQuit()
 {
-	KanSaveData * pksd = &KanSaveData::getInstance();
-
 	int lastdeckid = pksd->lastdeckid;
 	bool bClose = false;
 	if (lastdeckid >= 0 && lastdeckid < 4)
@@ -1572,8 +1719,6 @@ void KanDataConnector::checkWoundQuit()
 
 QString KanDataConnector::logBattleResult(bool bWrite/*=true*/)
 {
-	KanSaveData * pksd = &KanSaveData::getInstance();
-
 	int maparea_id = pksd->nextdata.api_maparea_id;
 	int mapinfo_no = pksd->nextdata.api_mapinfo_no;
 
@@ -1772,7 +1917,6 @@ QString KanDataConnector::getFormationStr(int formation)
 
 void KanDataConnector::logBattleDetail(bool bCombined)
 {
-	KanSaveData * pksd = &KanSaveData::getInstance();
 	QString infoline = logBattleResult(false);
 
 	QList<const kcsapi_ship2*> sships;
@@ -1920,7 +2064,6 @@ void KanDataConnector::logBattleDetail(bool bCombined)
 
 void KanDataConnector::logBuildResult()
 {
-	KanSaveData * pksd = &KanSaveData::getInstance();
 	if (pksd->createshipdata.isAll30())
 	{
 		return;
@@ -1983,7 +2126,6 @@ void KanDataConnector::logCreateItemResult(int slotitemid, int fuel, int bull, i
 
 QString KanDataConnector::getLogDevLeadStr()
 {
-	KanSaveData * pksd = &KanSaveData::getInstance();
 	QString writestr;
 
 	QString leadnamestr;
@@ -2033,6 +2175,13 @@ bool KanDataConnector::port_port_parse()
 	pksd->nextdata.api_no = -1;
 	updateInfoTitleBattle();
 	updateInfoTitleCond();
+
+    static bool firstTime = true;
+    if (firstTime)
+    {
+        updateWeaponTable();
+        firstTime = false;
+    }
 
 	return true;
 }
@@ -2126,6 +2275,7 @@ bool KanDataConnector::get_member_slot_item_parse()
 	pksd->slotitemcountoffset = 0;
 
 	updateOverviewTable();
+	updateWeaponTable();
 	//TODO: update tootip?
 	return true;
 }
@@ -2264,6 +2414,14 @@ bool KanDataConnector::req_hensei_change_parse()
 
 bool KanDataConnector::req_hensei_lock_parse()
 {
+	int shipid = req.GetItemAsString("api_ship_id").toInt();
+	kcsapi_hensei_lock api_hensei_lock;
+	api_hensei_lock.ReadFromJObj(jobj);
+	kcsapi_ship2 * pship = findShipFromShipno(shipid);
+	if (pship)
+	{
+		pship->api_locked = api_hensei_lock.api_locked;
+	}
 	return true;
 }
 
@@ -2274,12 +2432,26 @@ bool KanDataConnector::req_hensei_combined_parse()
 
 bool KanDataConnector::get_member_unsetslot_parse()
 {
+	// slotitem that does not on
+//	kcsapi_slot_data api_unsetslot_data;
+//	api_unsetslot_data.ReadFromJObj(jobj);
 	return true;
 }
 
 bool KanDataConnector::req_kaisou_unsetslot_all_parse()
 {
-	return true;
+	int shipno = req.GetItemAsString("api_id").toInt();
+	auto ship = findShipFromShipno(shipno);
+	if (ship)
+	{
+		for (int i = 0; i < ship->api_slot.size(); i++)
+		{
+			ship->api_slot[i] = -1;
+		}
+	}
+
+	updateWeaponTable();
+	return false;
 }
 
 bool KanDataConnector::req_kousyou_getship_parse()
@@ -2293,14 +2465,17 @@ bool KanDataConnector::req_kousyou_getship_parse()
 	{
 		if (v.api_slotitem_id >= 0)
 		{
-			pksd->slotitemcountoffset++;
+			AddSlotItem(v);
+			//pksd->slotitemcountoffset++;
 		}
 	}
 
-	pksd->shipcountoffset++;
+//	pksd->shipcountoffset++;
+	AddShip(api_kdock_getship.api_ship);
 
 	updateOverviewTable();
 	updateBuildDockTable();
+	updateWeaponTable();
 	return true;
 }
 
@@ -2310,7 +2485,8 @@ bool KanDataConnector::req_kousyou_createitem_parse()
 	api_createitem.ReadFromJObj(jobj);
 	if (api_createitem.api_create_flag == 1)
 	{
-		pksd->slotitemcountoffset++;
+		AddSlotItem(api_createitem.api_slot_item);
+		//pksd->slotitemcountoffset++;
 	}
 	for (int i = 0; i<api_createitem.api_material.count(); i++)
 	{
@@ -2318,6 +2494,7 @@ bool KanDataConnector::req_kousyou_createitem_parse()
 	}
 
 	updateOverviewTable();
+	updateWeaponTable();
 
 	int usefuel = req.GetItemAsString("api_item1").toInt();
 	int usebull = req.GetItemAsString("api_item2").toInt();
@@ -2378,6 +2555,7 @@ bool KanDataConnector::req_kousyou_destroyship_parse()
 	int shipno = req.GetItemAsString("api_ship_id").toInt();
 	if (shipno > 0)
 	{
+		/*
 		bool bDone = false;
 
 		QList<kcsapi_deck>::iterator it;
@@ -2410,7 +2588,7 @@ bool KanDataConnector::req_kousyou_destroyship_parse()
 				}
 			}
 		}
-
+		*/
 		// material
 		kcsapi_destroyship api_destroyship;
 		api_destroyship.ReadFromJObj(jobj);
@@ -2420,14 +2598,12 @@ bool KanDataConnector::req_kousyou_destroyship_parse()
 			pksd->portdata.api_material[i].api_value = api_material[i];
 		}
 
-		if (!RemoveShip(shipno))
-		{
-			pksd->shipcountoffset--;
-		}
+		RemoveShip(shipno);
 		updateOverviewTable();
 		updateFleetTable();
 
 		updateRepairTable();
+		updateWeaponTable();
 	}
 	return true;
 }
@@ -2436,7 +2612,13 @@ bool KanDataConnector::req_kousyou_destroyitem2_parse()
 {
 	QString idsstr = req.GetItemAsString("api_slotitem_ids");
 	QStringList idslst = idsstr.split("%2C");
-	pksd->slotitemcountoffset -= idslst.count();
+
+    foreach (auto v , idslst)
+	{
+		int itemid = v.toInt();
+		RemoveSlotItem(itemid);
+	}
+//	pksd->slotitemcountoffset -= idslst.count();
 
 
 	kcsapi_destroyitem2 api_destroyitem2;
@@ -2447,6 +2629,7 @@ bool KanDataConnector::req_kousyou_destroyitem2_parse()
 		pksd->portdata.api_material[i].api_value += api_get_material[i];
 	}
 	updateOverviewTable();
+	updateWeaponTable();
 	return true;
 }
 
@@ -2527,8 +2710,8 @@ bool KanDataConnector::req_kaisou_powerup_parse()
 	QStringList shipsids = req.GetItemAsString("api_id_items").split("%2C");
 	foreach(const QString &v, shipsids)
 	{
-		Q_UNUSED(v);
-		pksd->shipcountoffset--;
+		int shipno = v.toInt();
+		RemoveShip(shipno);
 	}
 
 	kcsapi_powerup api_powerup;
@@ -2542,11 +2725,24 @@ bool KanDataConnector::req_kaisou_powerup_parse()
 
 bool KanDataConnector::req_kaisou_slotset_parse()
 {
-	return true;
+	int shipno = req.GetItemAsString("api_id").toInt();
+	int slotindex = req.GetItemAsString("api_slot_idx").toInt();
+	int itemid = req.GetItemAsString("api_item_id").toInt();
+
+	auto ship = findShipFromShipno(shipno);
+	if (ship)
+	{
+		ship->api_slot[slotindex] = itemid;
+		updateWeaponTable();
+		return true;
+	}
+
+	return false;
 }
 
 bool KanDataConnector::req_kaisou_remodeling_parse()
 {
+	//TODO
 	return true;
 }
 
@@ -2963,6 +3159,82 @@ bool KanDataConnector::req_member_get_incentive_parse()
 }
 
 bool KanDataConnector::get_member_payitem_parse()
+{
+	return true;
+}
+
+bool KanDataConnector::req_kaisou_lock_parse()
+{
+	int slotitemid = req.GetItemAsString("api_slotitem_id").toInt();
+
+	kcsapi_kaisou_lock api_kaisou_lock;
+	api_kaisou_lock.ReadFromJObj(jobj);
+	auto slotitem = findSlotitemFromId(slotitemid);
+	if (slotitem)
+	{
+		slotitem->api_locked = api_kaisou_lock.api_locked;
+		updateWeaponTable();
+	}
+	return true;
+}
+
+bool KanDataConnector::req_mission_return_instruction_parse()
+{
+	return true;
+}
+
+bool KanDataConnector::req_member_payitemuse_parse()
+{
+	return true;
+}
+
+bool KanDataConnector::req_kaisou_marriage_parse()
+{
+	return true;
+}
+
+bool KanDataConnector::req_kousyou_remodel_slotlist_parse()
+{
+	return true;
+}
+
+bool KanDataConnector::req_kousyou_remodel_slotlist_detail_parse()
+{
+	return true;
+}
+
+bool KanDataConnector::req_kousyou_remodel_slot_parse()
+{
+	int oslotitemid = req.GetItemAsString("api_slot_id").toInt();
+
+	kcsapi_remodel_slot api_remodel_slot;
+	api_remodel_slot.ReadFromJObj(jobj);
+	if (oslotitemid == api_remodel_slot.api_after_slot.api_id)
+	{
+		auto slotitem = findSlotitemFromId(oslotitemid);
+		slotitem->ReadFromSlotItem(api_remodel_slot.api_after_slot);
+	}
+	else
+	{
+		RemoveSlotItem(oslotitemid);
+		AddSlotItem(api_remodel_slot.api_after_slot);
+	}
+	updateWeaponTable();
+
+	return true;
+}
+
+bool KanDataConnector::req_furniture_music_list_parse()
+{
+	return true;
+}
+
+bool KanDataConnector::req_furniture_music_play_parse()
+{
+	return true;
+}
+
+bool KanDataConnector::req_furniture_set_portbgm_parse()
 {
 	return true;
 }

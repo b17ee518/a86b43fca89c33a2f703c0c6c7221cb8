@@ -528,8 +528,12 @@ public:
 
 	virtual bool ReadFromJObj(const QJsonObject &jobj);
 
+	bool ReadFromSlotItem(const kcsapi_slotitem& slotitem);
+
 	int api_id;
 	int api_slotitem_id;
+    int api_locked;
+	int api_level;
 };
 
 
@@ -722,87 +726,11 @@ public:
 	int api_use_bull;
 	int api_voicef;
 };
-/**
- * @brief The kcsapi_ship2 class
- */
-class kcsapi_ship2 : public KAPIBaseData
-{
-
-public:
-	kcsapi_ship2(){}
-
-	virtual bool ReadFromJObj(const QJsonObject &jobj);
-
-	bool ReadFromShip(const kcsapi_ship &ship);
-
-	int api_id;
-	int api_sortno;
-	int api_ship_id;
-	int api_lv;
-	QList<int> api_exp;
-	int api_nowhp;
-	int api_maxhp;
-	int api_leng;
-	QList<int> api_slot;
-	QList<int> api_onslot;
-	QList<int> api_kyouka;
-	int api_backs;
-	int api_fuel;
-	int api_bull;
-	int api_slotnum;
-	qint64 api_ndock_time;
-	QList<int> api_ndock_item;
-	int api_srate;
-	int api_cond;
-	QList<int> api_karyoku;
-	QList<int> api_raisou;
-	QList<int> api_taiku;
-	QList<int> api_soukou;
-	QList<int> api_kaihi;
-	QList<int> api_taisen;
-	QList<int> api_sakuteki;
-	QList<int> api_lucky;
-	int api_locked;
-	// "api_locked_equip":0,
-	// "api_sally_area":0
-};
 
 /**
- * @brief The kcsapi_kdock_getship class
- */
-class kcsapi_kdock_getship : public KAPIBaseData
-{
-
-public:
-	kcsapi_kdock_getship(){}
-
-	virtual bool ReadFromJObj(const QJsonObject &jobj);
-	int api_id;
-	int api_ship_id;
-	QList<kcsapi_kdock> api_kdock;
-	kcsapi_ship2 api_ship;
-	QList<kcsapi_slotitem> api_slotitem;
-};
-
-/**
- * @brief The kcsapi_material class
- */
-class kcsapi_material: public KAPIBaseData
-{
-
-public:
-	kcsapi_material(){}
-
-	virtual bool ReadFromJObj(const QJsonObject &jobj);
-	int api_member_id;
-	int api_id;
-	int api_value;
-};
-
-/**
- * @brief The kcsapi_mst_ship class
- */
-class kcsapi_mst_ship: public KAPIBaseData
+* @brief The kcsapi_mst_ship class
+*/
+class kcsapi_mst_ship : public KAPIBaseData
 {
 
 public:
@@ -863,6 +791,85 @@ public:
 	int api_bull_max;
 	int api_voicef;
 };
+
+/**
+ * @brief The kcsapi_ship2 class
+ */
+class kcsapi_ship2 : public KAPIBaseData
+{
+
+public:
+	kcsapi_ship2(){}
+
+	virtual bool ReadFromJObj(const QJsonObject &jobj);
+
+	bool ReadFromShip(const kcsapi_ship &ship);
+	bool ReadFromMstShip(const kcsapi_mst_ship& mstship, int id);
+
+	int api_id;
+	int api_sortno;
+	int api_ship_id;
+	int api_lv;
+	QList<int> api_exp;
+	int api_nowhp;
+	int api_maxhp;
+	int api_leng;	// short .. super long
+	QList<int> api_slot;
+	QList<int> api_onslot;
+	QList<int> api_kyouka;
+	int api_backs;
+	int api_fuel;
+	int api_bull;
+	int api_slotnum;
+	qint64 api_ndock_time;
+	QList<int> api_ndock_item; // fuel bull->ndock
+	int api_srate;	// normal .. ss
+	int api_cond;
+	QList<int> api_karyoku;
+	QList<int> api_raisou;
+	QList<int> api_taiku;
+	QList<int> api_soukou;
+	QList<int> api_kaihi;
+	QList<int> api_taisen;
+	QList<int> api_sakuteki;
+	QList<int> api_lucky;
+	int api_locked;
+	int api_locked_equip;
+	int api_sally_area;
+};
+
+/**
+ * @brief The kcsapi_kdock_getship class
+ */
+class kcsapi_kdock_getship : public KAPIBaseData
+{
+
+public:
+	kcsapi_kdock_getship(){}
+
+	virtual bool ReadFromJObj(const QJsonObject &jobj);
+	int api_id;
+	int api_ship_id;
+	QList<kcsapi_kdock> api_kdock;
+	kcsapi_ship2 api_ship;
+	QList<kcsapi_slotitem> api_slotitem;
+};
+
+/**
+ * @brief The kcsapi_material class
+ */
+class kcsapi_material: public KAPIBaseData
+{
+
+public:
+	kcsapi_material(){}
+
+	virtual bool ReadFromJObj(const QJsonObject &jobj);
+	int api_member_id;
+	int api_id;
+	int api_value;
+};
+
 
 /**
  * @brief The kcsapi_mst_slotitem class
@@ -1106,6 +1113,19 @@ public:
 	QList<int> api_slottype21;
 	QList<int> api_slottype22;
 	QList<int> api_slottype23;
+	QList<int> api_slottype24;
+	QList<int> api_slottype25;
+	QList<int> api_slottype26;
+	QList<int> api_slottype27;
+	QList<int> api_slottype28;
+	QList<int> api_slottype29;
+	QList<int> api_slottype30;
+	QList<int> api_slottype31;
+	QList<int> api_slottype32;
+	QList<int> api_slottype33;
+	QList<int> api_slottype34;
+	QList<int> api_slottype35;
+	QList<int> api_slottype36;
 };
 
 class Api_Mst_Item_Shop: public KAPIBaseData
@@ -1605,9 +1625,9 @@ public:
 };
 
 /**
- * @brief The kcsapi_mission_start class
- */
-class kcsapi_mission_start: public KAPIBaseData
+* @brief The kcsapi_mission_start class
+*/
+class kcsapi_mission_start : public KAPIBaseData
 {
 public:
 	kcsapi_mission_start(){}
@@ -1617,6 +1637,48 @@ public:
 	qint64 api_complatetime;
 	QString api_complatetime_str;
 
+};
+
+/**
+* @brief The kcsapi_hensei_lock class
+*/
+class kcsapi_hensei_lock : public KAPIBaseData
+{
+public:
+	kcsapi_hensei_lock(){}
+
+	virtual bool ReadFromJObj(const QJsonObject &jobj);
+
+	int api_locked;
+};
+
+/**
+* @brief The kcsapi_kaisou_lock class
+*/
+class kcsapi_kaisou_lock : public KAPIBaseData
+{
+public:
+	kcsapi_kaisou_lock(){}
+
+	virtual bool ReadFromJObj(const QJsonObject &jobj);
+
+	int api_locked;
+};
+/**
+* @brief The kcsapi_remodel_slot class
+*/
+class kcsapi_remodel_slot : public KAPIBaseData
+{
+public:
+	kcsapi_remodel_slot(){}
+
+	virtual bool ReadFromJObj(const QJsonObject &jobj);
+
+	int api_remodel_flag;
+	QList<int> api_remodel_id;
+	QList<int> api_after_material;
+	int api_voice_id;
+	kcsapi_slotitem api_after_slot;
 };
 
 class KanData

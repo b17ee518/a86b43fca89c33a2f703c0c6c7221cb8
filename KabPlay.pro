@@ -34,7 +34,8 @@ SOURCES += main.cpp\
     kandatacalc.cpp \
     kqwebpage.cpp \
     klog.cpp \
-    kqnetworkaccessmanager.cpp
+    kqnetworkaccessmanager.cpp \
+    weaponmainwindow.cpp
 
 HEADERS  += mainwindow.h \
     infomainwindow.h \
@@ -56,9 +57,11 @@ HEADERS  += mainwindow.h \
     kandatacalc.h \
     kqwebpage.h \
     klog.h \
-    kqnetworkaccessmanager.h
+    kqnetworkaccessmanager.h \
+    weaponmainwindow.h
 
 FORMS    += mainwindow.ui \
     infomainwindow.ui \
     kqui_collapsibleframe.ui \
-    timermainwindow.ui
+    timermainwindow.ui \
+    weaponmainwindow.ui

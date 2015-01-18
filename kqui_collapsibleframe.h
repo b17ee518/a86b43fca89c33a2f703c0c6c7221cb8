@@ -20,6 +20,9 @@ public:
     KQTableWidget * tableWidget();
     QPushButton * pushButton();
 
+public slots:
+    void slotResize(bool bValue);
+
 private:
     Ui::KQUI_CollapsibleFrame *ui;
 };

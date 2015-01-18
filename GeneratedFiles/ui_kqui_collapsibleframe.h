@@ -35,6 +35,11 @@ public:
         if (KQUI_CollapsibleFrame->objectName().isEmpty())
             KQUI_CollapsibleFrame->setObjectName(QStringLiteral("KQUI_CollapsibleFrame"));
         KQUI_CollapsibleFrame->resize(400, 300);
+        QSizePolicy sizePolicy(QSizePolicy::Preferred, QSizePolicy::Expanding);
+        sizePolicy.setHorizontalStretch(0);
+        sizePolicy.setVerticalStretch(0);
+        sizePolicy.setHeightForWidth(KQUI_CollapsibleFrame->sizePolicy().hasHeightForWidth());
+        KQUI_CollapsibleFrame->setSizePolicy(sizePolicy);
         gridLayout = new QGridLayout(KQUI_CollapsibleFrame);
         gridLayout->setSpacing(0);
         gridLayout->setObjectName(QStringLiteral("gridLayout"));
@@ -54,11 +59,11 @@ public:
 
         tableWidget = new KQTableWidget(KQUI_CollapsibleFrame);
         tableWidget->setObjectName(QStringLiteral("tableWidget"));
-        QSizePolicy sizePolicy(QSizePolicy::Minimum, QSizePolicy::Expanding);
-        sizePolicy.setHorizontalStretch(0);
-        sizePolicy.setVerticalStretch(0);
-        sizePolicy.setHeightForWidth(tableWidget->sizePolicy().hasHeightForWidth());
-        tableWidget->setSizePolicy(sizePolicy);
+        QSizePolicy sizePolicy1(QSizePolicy::Minimum, QSizePolicy::Expanding);
+        sizePolicy1.setHorizontalStretch(0);
+        sizePolicy1.setVerticalStretch(0);
+        sizePolicy1.setHeightForWidth(tableWidget->sizePolicy().hasHeightForWidth());
+        tableWidget->setSizePolicy(sizePolicy1);
         tableWidget->setMinimumSize(QSize(280, 0));
         tableWidget->setFrameShape(QFrame::NoFrame);
         tableWidget->setFrameShadow(QFrame::Plain);

@@ -3,6 +3,7 @@
 
 #include "infomainwindow.h"
 #include "timermainwindow.h"
+#include "weaponmainwindow.h"
 
 #include <QJsonDocument>
 #include "kandata.h"
@@ -73,10 +74,11 @@ int main(int argc, char *argv[])
 	TimerMainWindow * wTimer = new TimerMainWindow();
 	wTimer->setWindowTitle("KanPlay - Timer");
 
-	w->postInit(wInfo, wTimer);
-	MainWindow::setMainWindow(w);
+    WeaponMainWindow * wWeapon = new WeaponMainWindow();
+    wWeapon->setWindowTitle("KanPlay - Weapon");
 
-	//
+    w->postInit(wInfo, wTimer, wWeapon);
+	MainWindow::setMainWindow(w);
 	/*
 	QFile inputfile(QApplication::applicationDirPath()+"/input.txt");
 	inputfile.open(QIODevice::ReadOnly);
@@ -91,20 +93,10 @@ int main(int argc, char *argv[])
 		}
 		lstargs.append(line);
 	}
-	*/
-/*
-	KanReqData req;
-	req.ReadFromString("abc", "api%5ftoken=123&api_ver=132");
 
-	QString str = "";
-	QJsonDocument doc = QJsonDocument::fromJson(str.toLocal8Bit());
-	kcsapi_basic d;
-	d.ReadFromJObj(doc.object()["api_data"].toObject());
-*/
-	/*
 	for (int i=0; i<lstargs.count()/3; i++)
 	{
-//        KanDataConnector::getInstance().Parse(lstargs[i*3], lstargs[i*3+1], lstargs[i*3+2]);
+        KanDataConnector::getInstance().Parse(lstargs[i*3], lstargs[i*3+1], lstargs[i*3+2]);
 	}
 	*/
 	//

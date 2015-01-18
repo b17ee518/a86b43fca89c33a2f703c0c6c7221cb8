@@ -190,6 +190,15 @@
     <ClCompile Include="kqnetworkaccessmanager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="weaponmainwindow.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Debug\moc_weaponmainwindow.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="Release\moc_weaponmainwindow.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="FiddlerCOM.h">
@@ -267,6 +276,9 @@
     <ClInclude Include="klog.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="GeneratedFiles\ui_weaponmainwindow.h">
+      <Filter>Generated Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="infomainwindow.ui">
@@ -283,6 +295,12 @@
     </CustomBuild>
     <CustomBuild Include="kqnetworkaccessmanager.h">
       <Filter>Header Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="weaponmainwindow.h">
+      <Filter>Header Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="weaponmainwindow.ui">
+      <Filter>Form Files</Filter>
     </CustomBuild>
   </ItemGroup>
   <ItemGroup>

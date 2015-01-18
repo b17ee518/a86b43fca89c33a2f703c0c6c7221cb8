@@ -124,6 +124,10 @@ void InfoMainWindow::updateFleetTable(int n, QString buttonTitle, int colindex, 
 			background-color: rgb(153, 0, 0);\
 			border: none; \
 		}\
+		QPushButton:flat{\
+			background-color: rgb(153, 0, 0);\
+			border: none; \
+		}\
 		QPushButton:{\
 			background-color: rgb(153, 0, 0);\
 			border: none; \
@@ -246,22 +250,22 @@ void InfoMainWindow::setRepairColumnFormat()
 
 void InfoMainWindow::slotOnTableSizeChanged()
 {
-	int minw=280;
-	KQUI_CollapsibleFrame * pFrame;
-	foreach (pFrame, lstCollapsibleFrames)
-	{
-		pFrame->tableWidget()->resizeColumnsToContents();
-		int w = pFrame->tableWidget()->minimumWidth();
-		if (w > minw)
-		{
-			minw = w;
-		}
-	}
-	foreach (pFrame, lstCollapsibleFrames)
-	{
-		pFrame->tableWidget()->adjustSizeToWidth(minw);
-	}
-	this->adjustSize();
+    int minw=280;
+    KQUI_CollapsibleFrame * pFrame;
+    foreach (pFrame, lstCollapsibleFrames)
+    {
+        pFrame->tableWidget()->resizeColumnsToContents();
+        int w = pFrame->tableWidget()->minimumWidth();
+        if (w > minw)
+        {
+            minw = w;
+        }
+    }
+    foreach (pFrame, lstCollapsibleFrames)
+    {
+        pFrame->tableWidget()->adjustSizeToWidth(minw);
+    }
+    this->adjustSize();
 
 }
 void InfoMainWindow::slotUpdateTimer()
@@ -269,7 +273,7 @@ void InfoMainWindow::slotUpdateTimer()
 	static int count = 0;
 	count++;
 
-	this->adjustSize();
+    this->adjustSize();
 }
 
 void InfoMainWindow::on_pbClose_clicked()

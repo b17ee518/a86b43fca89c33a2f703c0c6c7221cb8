@@ -121,3 +121,4 @@ QSize KQTableWidget::minimumSizeHint() const
     */
     return QSize(minimumWidth(), minimumHeight());
 }
+

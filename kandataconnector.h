@@ -52,6 +52,7 @@ private:
 	void updateBuildDockTable();
 	void updateInfoTitleBattle(bool bBattle=false, QList<int> *enemyhps=0);
 	void updateInfoTitleCond();
+	void updateWeaponTable();
 
 	QString logBattleResult(bool bWrite=true);
 	void logBattleDetail(bool bCombined);
@@ -72,12 +73,18 @@ private:
 	void checkWoundQuit();
 
 	bool RemoveShip(int shipno);
+	bool RemoveSlotItem(int id);
+	bool AddShip(const kcsapi_ship2& ship);
+	bool AddSlotItem(const kcsapi_slotitem& item);
+	bool AddShip(int shipid, const QList<int>& slotitems);
+	bool AddSlotItem(int id, int slotitemId);
 
 	kcsapi_ship2 *findShipFromShipno(int shipno);
 	const kcsapi_mst_ship *findMstShipFromShipid(int shipid) const;
 	const Api_Mst_Mission *findMstMissionFromMissionid(int missionid) const;
-	const kcsapi_slotitem *findSlotitemFromId(int id) const;
+	kcsapi_slotitem *findSlotitemFromId(int id);
 	const kcsapi_mst_slotitem *findMstSlotItemFromSlotitemid(int slotitemid) const;
+
 
 private:
 
@@ -155,6 +162,16 @@ private:
 	bool get_member_book2_parse();
 	bool req_member_get_incentive_parse();
 	bool get_member_payitem_parse();
+	bool req_kaisou_lock_parse();			// lock slot item
+	bool req_mission_return_instruction_parse();	// force mission return
+	bool req_member_payitemuse_parse();
+	bool req_kaisou_marriage_parse();
+	bool req_kousyou_remodel_slotlist_parse();
+	bool req_kousyou_remodel_slotlist_detail_parse();
+	bool req_kousyou_remodel_slot_parse();		// kaisyu
+	bool req_furniture_music_list_parse();
+	bool req_furniture_music_play_parse();
+	bool req_furniture_set_portbgm_parse();
 
 private:
 	int start2_flag;
@@ -231,6 +248,16 @@ private:
 	int get_member_book2_flag;
 	int req_member_get_incentive_flag;
 	int get_member_payitem_flag;
+	int req_kaisou_lock_flag;			// lock slot item
+	int req_mission_return_instruction_flag;	// force mission return
+	int req_member_payitemuse_flag;
+	int req_kaisou_marriage_flag;
+	int req_kousyou_remodel_slotlist_flag;
+	int req_kousyou_remodel_slotlist_detail_flag;
+	int req_kousyou_remodel_slot_flag;		// kaisyu
+	int req_furniture_music_list_flag;
+	int req_furniture_music_play_flag;
+	int req_furniture_set_portbgm_flag;
 
 private:
 	QColor colWhite;

@@ -26,3 +26,10 @@ QPushButton *KQUI_CollapsibleFrame::pushButton()
 {
     return ui->pushButton;
 }
+
+void KQUI_CollapsibleFrame::slotResize(bool bValue)
+{
+    QSize minsize = QSize(pushButton()->minimumWidth(),
+                          (bValue?tableWidget()->minimumHeight():0)+pushButton()->minimumHeight());
+    setMinimumSize(minsize);
+}

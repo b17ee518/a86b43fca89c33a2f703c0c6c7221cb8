@@ -45,6 +45,8 @@ public:
     QSpacerItem *horizontalSpacer_10;
     QPushButton *pbCheckInfo;
     QPushButton *pbCheckTimer;
+    QSpacerItem *horizontalSpacer_11;
+    QPushButton *pbCheckWeapon;
     QSpacerItem *horizontalSpacer_5;
     QComboBox *comboBoxZoom;
     QSpacerItem *horizontalSpacer_4;
@@ -177,7 +179,23 @@ public:
 
         horizontalLayout->addWidget(pbCheckTimer);
 
-        horizontalSpacer_5 = new QSpacerItem(8, 17, QSizePolicy::Fixed, QSizePolicy::Minimum);
+        horizontalSpacer_11 = new QSpacerItem(16, 17, QSizePolicy::Fixed, QSizePolicy::Minimum);
+
+        horizontalLayout->addItem(horizontalSpacer_11);
+
+        pbCheckWeapon = new QPushButton(titleFrame);
+        pbCheckWeapon->setObjectName(QStringLiteral("pbCheckWeapon"));
+        sizePolicy1.setHeightForWidth(pbCheckWeapon->sizePolicy().hasHeightForWidth());
+        pbCheckWeapon->setSizePolicy(sizePolicy1);
+        pbCheckWeapon->setMinimumSize(QSize(20, 20));
+        pbCheckWeapon->setMaximumSize(QSize(20, 20));
+        pbCheckWeapon->setCheckable(true);
+        pbCheckWeapon->setChecked(false);
+        pbCheckWeapon->setFlat(true);
+
+        horizontalLayout->addWidget(pbCheckWeapon);
+
+        horizontalSpacer_5 = new QSpacerItem(16, 17, QSizePolicy::Fixed, QSizePolicy::Minimum);
 
         horizontalLayout->addItem(horizontalSpacer_5);
 
@@ -283,6 +301,7 @@ public:
         pbCheckLowVol->setText(QApplication::translate("MainWindow", "\351\235\231", 0));
         pbCheckInfo->setText(QApplication::translate("MainWindow", "\346\203\205", 0));
         pbCheckTimer->setText(QApplication::translate("MainWindow", "\346\231\202", 0));
+        pbCheckWeapon->setText(QApplication::translate("MainWindow", "\346\255\246", 0));
         comboBoxZoom->clear();
         comboBoxZoom->insertItems(0, QStringList()
          << QApplication::translate("MainWindow", "\347\255\211\345\200\215", 0)

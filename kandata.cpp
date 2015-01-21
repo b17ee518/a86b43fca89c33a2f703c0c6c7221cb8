@@ -1501,11 +1501,20 @@ bool kcsapi_battle_support_hourai::ReadFromJObj(const QJsonObject &jobj)
 	return bParseRet;
 }
 
+bool kcsapi_clearitemget_bounus_item::ReadFromJObj(const QJsonObject &jobj)
+{
+	_IREAD(api_id);
+	_SREAD(api_name);
+
+	return bParseRet;
+}
+
 bool kcsapi_clearitemget_bounus::ReadFromJObj(const QJsonObject &jobj)
 {
 	_IREAD(api_count);
 	_IREAD(api_type);
-	//api_item?
+	// check
+	_CREAD(api_item, kcsapi_clearitemget_bounus_item);
 
 	return bParseRet;
 }

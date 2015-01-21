@@ -223,7 +223,7 @@ KanDataConnector::KanDataConnector(void)
 	req_combined_battle_sp_midnight_flag = PARSEFLAG_OUTPUT;
 
 	req_kaisou_remodeling_flag = PARSEFLAG_OUTPUT;
-	req_quest_clearitemget_flag = PARSEFLAG_OUTPUT;	//item?ship?
+	req_kousyou_remodel_slot_flag = PARSEFLAG_OUTPUT;
 }
 
 bool KanDataConnector::Parse(QString _pathAndQuery, QString _requestBody, QString _responseBody)
@@ -1292,12 +1292,20 @@ bool KanDataConnector::AddSlotItem(const kcsapi_slotitem& item)
 		return false;
 	}
 	pksd->slotitemdata.push_back(item);
+	if (item.api_id > pksd->maxslotitemid)
+	{
+		pksd->maxslotitemid = item.api_id;
+	}
 	return true;
 }
 
 bool KanDataConnector::AddSlotItem(int id, int slotitemId)
 {
 	kcsapi_slotitem slotitem;
+	if (id < 0)
+	{
+		id = pksd->maxslotitemid + 1;
+	}
 	slotitem.api_id = id;
 	slotitem.api_slotitem_id = slotitemId;
 	slotitem.api_locked = 0;
@@ -1305,6 +1313,7 @@ bool KanDataConnector::AddSlotItem(int id, int slotitemId)
 
 	return AddSlotItem(slotitem);
 }
+
 kcsapi_ship2 *KanDataConnector::findShipFromShipno(int shipno)
 {
 	for (QList<kcsapi_ship2>::iterator it=pksd->portdata.api_ship.begin();
@@ -2270,6 +2279,11 @@ bool KanDataConnector::get_member_slot_item_parse()
 		kcsapi_slotitem api_slotitem;
 		api_slotitem.ReadFromJObj(jarray[i].toObject());
 		pksd->slotitemdata.append(api_slotitem);
+
+		if (api_slotitem.api_id > pksd->maxslotitemid)
+		{
+			pksd->maxslotitemid = api_slotitem.api_id;
+		}
 	}
 
 	pksd->slotitemcountoffset = 0;
@@ -3055,11 +3069,29 @@ bool KanDataConnector::req_quest_clearitemget_parse()
 	{
 		for (int i = 0; i < api_clearitemget.api_bounus_count; i++)
 		{
-			int index = api_clearitemget.api_bounus[i].api_type + 3;
-			if (index < 7)
+			auto bonus = &(api_clearitemget.api_bounus[i]);
+			if (bonus->api_type == 1)
 			{
-				pksd->portdata.api_material[index].api_value += api_clearitemget.api_bounus[i].api_count;
+				int index = bonus->api_item.api_id;
+				if (index < 7)
+				{
+					pksd->portdata.api_material[index].api_value += bonus->api_count;
+				}
 			}
+			else if (bonus->api_type == 3)
+			{
+				// furniture box
+			}
+			else if (bonus->api_type == 12)
+			{
+				// item
+				AddSlotItem(-1, bonus->api_item.api_id);
+			}
+			else
+			{
+				DAPILOG();
+			}
+			// ship?
 		}
 	}
 

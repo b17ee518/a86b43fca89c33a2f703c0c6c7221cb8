@@ -125,6 +125,7 @@ public:
 	int slotitemcountoffset;
 	int lastbattletype;
 	int lastdeckid;
+	int maxslotitemid;
 
 private:
 	KanSaveData(void);

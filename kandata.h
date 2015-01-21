@@ -998,6 +998,15 @@ public:
 	QList<kcsapi_deck> api_deck;
 };
 
+class kcsapi_clearitemget_bounus_item : public KAPIBaseData
+{
+public:
+	kcsapi_clearitemget_bounus_item(){}
+	virtual bool ReadFromJObj(const QJsonObject &jobj);
+
+	int api_id;
+	QString api_name;
+};
 
 class kcsapi_clearitemget_bounus : public KAPIBaseData
 {
@@ -1007,8 +1016,8 @@ public:
 
 	int api_type;
 	int api_count;
-	//TODO: clearitemget api_item? ship?? item??
-//	int api_item;
+	//TODO: check ship
+	kcsapi_clearitemget_bounus_item api_item;
 };
 /************************************************************************/
 /*                                                                      */

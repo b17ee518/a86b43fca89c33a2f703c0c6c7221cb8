@@ -320,6 +320,7 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="FiddlerCOM.cpp" />
     <ClCompile Include="infomainwindow.cpp" />
     <ClCompile Include="kandata.cpp" />
     <ClCompile Include="kandatacalc.cpp" />
@@ -391,7 +392,6 @@
     <ClCompile Include="weaponmainwindow.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="FiddlerCOM.h" />
     <CustomBuild Include="weaponmainwindow.h">
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>
       <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Moc%27ing weaponmainwindow.h...</Message>
@@ -447,6 +447,7 @@
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>
     </CustomBuild>
+    <ClInclude Include="FiddlerCOM.h" />
     <ClInclude Include="GeneratedFiles\ui_infomainwindow.h" />
     <ClInclude Include="GeneratedFiles\ui_kqui_collapsibleframe.h" />
     <ClInclude Include="GeneratedFiles\ui_mainwindow.h" />
@@ -625,9 +626,6 @@
     </CustomBuild>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="FiddlerCOM.cpp" />
-  </ItemGroup>
-  <ItemGroup>
     <CustomBuild Include="infomainwindow.ui">
       <FileType>Document</FileType>
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(QTDIR)\bin\uic.exe;%(AdditionalInputs)</AdditionalInputs>
@@ -732,7 +730,7 @@
   <ImportGroup Label="ExtensionTargets" />
   <ProjectExtensions>
     <VisualStudio>
-      <UserProperties UicDir=".\GeneratedFiles" RccDir=".\GeneratedFiles" Qt5Version_x0020_Win32="msvc2013" Qt5Version_x0020_x64="msvc2013_64" />
+      <UserProperties UicDir=".\GeneratedFiles" RccDir=".\GeneratedFiles" Qt5Version_x0020_Win32="msvc2013_opengl_5_4" Qt5Version_x0020_x64="msvc2013_64" />
     </VisualStudio>
   </ProjectExtensions>
 </Project>

@@ -178,9 +178,6 @@
     <ClCompile Include="klog.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="FiddlerCOM.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Debug\moc_kqnetworkaccessmanager.cpp">
       <Filter>Generated Files\Debug</Filter>
     </ClCompile>
@@ -199,11 +196,11 @@
     <ClCompile Include="Release\moc_weaponmainwindow.cpp">
       <Filter>Generated Files\Release</Filter>
     </ClCompile>
+    <ClCompile Include="FiddlerCOM.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="FiddlerCOM.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <CustomBuild Include="cookiejar.h">
       <Filter>Header Files</Filter>
     </CustomBuild>
@@ -307,5 +304,10 @@
     <None Include="FiddlerCOM\FiddlerCOM\bin\Release\FiddlerCOM.tlb">
       <Filter>CPP</Filter>
     </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="FiddlerCOM.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

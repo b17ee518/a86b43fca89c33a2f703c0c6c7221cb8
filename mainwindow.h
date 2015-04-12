@@ -83,13 +83,15 @@ private slots:
 
 	void on_pbCheckLowVol_toggled(bool checked);
 
+	void onPanic();
+
 private:
 	Ui::MainWindow *ui;
 
 	bool bUseFiddler;
 	int useport;
 	FiddlerCOM::FiddlerCOMClass * pFiddler;
-//	static void __stdcall BeforeRequestFunc(int sessionID, char * fullURL, char * requestBody);
+	static void __stdcall BeforeRequestFunc(int sessionID, char * fullURL, char * requestBody);
 	static void __stdcall AfterSessionCompleteFunc(int sessionID, char * mimeType, int responseCode, char * PathAndQuery, char * requestBody, char * responseBody);
 	void SetWebSettings();
 
@@ -106,6 +108,7 @@ private:
 	bool bMoveSubTogether;
 
 	QTimer * m_pScreenshotTimer;
+	QTimer* m_panicTimer;
 	bool bLowVol;
 };
 

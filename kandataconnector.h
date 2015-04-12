@@ -14,6 +14,8 @@ enum
 	KANBATTLETYPE_DAYTONIGHT,
 	KANBATTLETYPE_NIGHTTODAY,
 
+	KANBATTLETYPE_AIR,
+
 	KANBATTLETYPE_COMBINED_BEGIN,
 
 	KANBATTLETYPE_COMBINED_KOUKU,
@@ -130,6 +132,7 @@ private:
 	bool req_battle_midnight_battle_parse();
 	bool req_battle_midnight_sp_midnight_parse();
 	bool req_sortie_night_to_day_parse();
+	bool req_sortie_airbattle_parse();
 	bool req_combined_battle_airbattle_parse();
 	bool req_combined_battle_battlewater_parse();
 	bool req_combined_battle_battleresult_parse();
@@ -216,6 +219,7 @@ private:
 	int req_battle_midnight_battle_flag;
 	int req_battle_midnight_sp_midnight_flag;
 	int req_sortie_night_to_day_flag;
+	int req_sortie_airbattle_flag;
 	int req_combined_battle_airbattle_flag;
 	int req_combined_battle_battlewater_flag;
 	int req_combined_battle_battleresult_flag;

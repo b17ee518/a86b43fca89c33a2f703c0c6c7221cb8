@@ -13,6 +13,8 @@
 #include "kqnetworkaccessmanager.h"
 #include <QNetworkRequest>
 #include <QPixmap>
+#include <QWebFrame>
+#include <QShortcut>
 
 #include <Audiopolicy.h>
 #include <Mmdeviceapi.h>
@@ -40,6 +42,8 @@ MainWindow::MainWindow(QWidget *parent) :
 
 	m_pScreenshotTimer = new QTimer(this);
 	connect(m_pScreenshotTimer, SIGNAL(timeout()), this, SLOT(slotScreenshotTimeout()));
+	m_panicTimer = new QTimer(this);
+	connect(m_panicTimer, SIGNAL(timeout()), this, SLOT(onPanic()));
 
 	bUseFiddler = true;
 //	bUseFiddler = false;
@@ -58,6 +62,9 @@ MainWindow::MainWindow(QWidget *parent) :
 		SIGNAL(sigParse(const QString &, const QString &, const QString &)),
 		this,
 		SLOT(slotParse(const QString &, const QString &, const QString &)));
+
+	QShortcut *shortcut = new QShortcut(QKeySequence("Escape"), this);
+	connect(shortcut, SIGNAL(activated()), this, SLOT(onPanic()));
 
 	bMoveSubTogether = true;
 
@@ -115,6 +122,7 @@ body {
 //  ui->webView->load(QUrl("http://www.google.com"));
 	ui->webView->load(QUrl("http://www.dmm.com/netgame/social/-/gadgets/=/app_id=854854/?f1=1&p1=0"));
 //	ui->webView->load(QUrl("https://www.dmm.com/my/-/login/auth/"));
+
 }
 
 MainWindow::~MainWindow()
@@ -431,14 +439,21 @@ void MainWindow::slotWebViewException(int code, const QString &source, const QSt
 	qDebug(help.toUtf8());
 	qDebug("Put FiddlerCore.dll to exe folder.");
 }
-/*
+
 void MainWindow::BeforeRequestFunc(int sessionID, char *fullURL, char *requestBody)
 {
+	mainWindow()->m_panicTimer->start(4000);
+
+	Q_UNUSED(sessionID);
+	Q_UNUSED(fullURL);
+	Q_UNUSED(requestBody);
 
 }
-*/
+
 void MainWindow::AfterSessionCompleteFunc(int sessionID, char *mimeType, int responseCode, char *PathAndQuery, char *requestBody, char *responseBody)
 {
+	mainWindow()->m_panicTimer->stop();
+
 	Q_UNUSED(sessionID);
 	Q_UNUSED(responseCode);
 	QString strPathAndQuery = PathAndQuery;
@@ -500,7 +515,7 @@ void MainWindow::SetWebSettings()
 			SLOT(slotWebViewException(int, const QString &, const QString &, const QString &)));
 
 
-		//	pFiddler->SetBeforeRequest((int)&MainWindow::BeforeRequestFunc);
+		pFiddler->SetBeforeRequest((int)&MainWindow::BeforeRequestFunc);
 		pFiddler->SetAfterSessionComplete((int)&MainWindow::AfterSessionCompleteFunc);
 
 		pFiddler->Startup(useport, false, true);
@@ -704,6 +719,16 @@ void MainWindow::on_pbRefresh_clicked()
 void MainWindow::on_pbScreenshot_clicked()
 {
 	ShootScreen();
+}
+
+void MainWindow::onPanic()
+{
+	QString jsstr = QString::fromLocal8Bit("window.alert('%1'); ").arg(QString::fromLocal8Bit("パニック！"));
+	ui->webView->page()->mainFrame()->evaluateJavaScript(jsstr);
+	if (m_panicTimer)
+	{
+		m_panicTimer->stop();
+	}
 }
 
 void MainWindow::on_pbSwitchScreenshot_toggled(bool checked)

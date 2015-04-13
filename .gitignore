@@ -2,3 +2,4 @@
 *.sdf
 debug/
 release/
+*.suo

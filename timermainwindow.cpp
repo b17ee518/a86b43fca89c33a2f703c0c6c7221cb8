@@ -427,6 +427,15 @@ void TimerMainWindow::setProgressColor(QProgressBar *pBar, qint64 tdiff, bool bY
 
 bool TimerMainWindow::updateDisplay(int &mintdiff, qint64 ct, qint64 dt, qint64 tt, QTableWidgetItem *pRemainItem, QTableWidgetItem *pExpectedItem, QProgressBar *pProgress, bool bMinusOne)
 {
+	auto mainWindow = MainWindow::mainWindow();
+	if (mainWindow)
+	{
+		if (mainWindow->isSleepMode())
+		{
+			return false;
+		}
+	}
+
 	if (ct < 0)
 	{
 		pRemainItem->setText("-- : -- : --");

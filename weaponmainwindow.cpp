@@ -1,6 +1,8 @@
 ﻿#include "WeaponMainWindow.h"
 #include "ui_WeaponMainWindow.h"
 
+#include "mainwindow.h"
+
 #define QPROPERTY_SLOTITEMID	"slotitem_id"
 
 #define COLINDEX_NORMAL			0
@@ -279,17 +281,27 @@ void WeaponMainWindow::slotOnTableSizeChanged()
 
 void WeaponMainWindow::slotUpdateTimer()
 {
+	/*
 	static int count = 0;
 	count++;
-	/*
+	
 	if (count == 50)
 	{
 		needRebuildTable = true;
 		buildTable();
 	}
 	*/
-	if (isVisible())
+
+	if (isVisible() && !isMinimized())
 	{
+		auto mainWindow = MainWindow::mainWindow();
+		if (mainWindow)
+		{
+			if (mainWindow->isSleepMode())
+			{
+				return;
+			}
+		}
 		this->adjustSize();
 	}
 }

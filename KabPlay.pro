@@ -11,7 +11,7 @@ greaterThan(QT_MAJOR_VERSION, 4): QT += widgets axcontainer webkitwidgets winext
 TARGET = KabPlay
 TEMPLATE = app
 
-TYPELIBS = $$system(dumpcpp -getfile {8A497A30-FE7D-445F-8082-8ED319E1B386})
+#TYPELIBS = $$system(dumpcpp -getfile {8A497A30-FE7D-445F-8082-8ED319E1B386})
 
 SOURCES += main.cpp\
         mainwindow.cpp \

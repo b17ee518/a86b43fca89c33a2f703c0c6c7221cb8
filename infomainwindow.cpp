@@ -1,6 +1,8 @@
 ﻿#include "infomainwindow.h"
 #include "ui_infomainwindow.h"
 
+#include "mainwindow.h"
+
 InfoMainWindow::InfoMainWindow(QWidget *parent) :
 	SubMainWindow(parent),
 	ui(new Ui::InfoMainWindow)
@@ -270,9 +272,18 @@ void InfoMainWindow::slotOnTableSizeChanged()
 }
 void InfoMainWindow::slotUpdateTimer()
 {
+	/*
 	static int count = 0;
 	count++;
-
+	*/
+	auto mainWindow = MainWindow::mainWindow();
+	if (mainWindow)
+	{
+		if (mainWindow->isSleepMode())
+		{
+			return;
+		}
+	}
     this->adjustSize();
 }
 

@@ -13,6 +13,14 @@ void on_pbScreenshot_clicked();
 #include <QWinTaskbarButton>
 #include <QNetworkReply>
 
+#include <QAbstractNativeEventFilter>
+
+class QWindowsEventFilter : public QAbstractNativeEventFilter
+{
+public:
+	QWindowsEventFilter();
+	virtual bool nativeEventFilter(const QByteArray &eventType, void *message, long *result);
+};
 enum
 {
 	PROGRESSBARSTATE_NORMAL,
@@ -45,8 +53,12 @@ public:
 
 	void onGetNetworkReply(QNetworkReply * reply);
 
+	void setSleepMode(bool val);
+	bool isSleepMode();
+
 signals:
 	void sigParse(const QString &PathAndQuery, const QString &requestBody, const QString &responseBody);
+	void sigTogglePanicTimer(int timeVal);
 
 public slots:
 	virtual void slotActivate(QWidget* w, bool bActivate);
@@ -54,6 +66,7 @@ public slots:
 	virtual void slotSelfToggleRestoreMinimize(bool bRestore);
 	void slotParse(const QString &PathAndQuery, const QString &requestBody, const QString &responseBody);
 	void slotSoundEnded();
+	void slotTogglePanicTimer(int timeVal);
 
 protected:
 	virtual void changeEvent(QEvent * e);
@@ -109,7 +122,12 @@ private:
 
 	QTimer * m_pScreenshotTimer;
 	QTimer* m_panicTimer;
-	bool bLowVol = false;
+	bool m_bLowVol = false;
+	bool m_bSleep = false;
+
+	QWindowsEventFilter m_windowsEventfilter;
 };
+
+
 
 #endif // MAINWINDOW_H

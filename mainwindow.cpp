@@ -123,6 +123,7 @@ body {
 	ui->webView->load(QUrl("http://www.dmm.com/netgame/social/-/gadgets/=/app_id=854854/?f1=1&p1=0"));
 //	ui->webView->load(QUrl("https://www.dmm.com/my/-/login/auth/"));
 
+	QApplication::instance()->installNativeEventFilter(&m_windowsEventfilter);
 }
 
 MainWindow::~MainWindow()
@@ -161,6 +162,12 @@ void MainWindow::postInit(InfoMainWindow *pInfo, TimerMainWindow *pTimer, Weapon
 	connect(ui->pbCheckInfo, SIGNAL(toggled(bool)), m_pInfoWindow, SLOT(setVisible(bool)));
 	connect(ui->pbCheckTimer, SIGNAL(toggled(bool)), m_pTimerWindow, SLOT(setVisible(bool)));
     connect(ui->pbCheckWeapon, SIGNAL(toggled(bool)), m_pWeaponWindow, SLOT(slotSetVisible(bool)));
+
+	HWND hwnd = (HWND)winId();
+	RegisterPowerSettingNotification(hwnd, &GUID_CONSOLE_DISPLAY_STATE, DEVICE_NOTIFY_WINDOW_HANDLE);
+	RegisterPowerSettingNotification(hwnd, &GUID_SYSTEM_AWAYMODE, DEVICE_NOTIFY_WINDOW_HANDLE);
+
+	//RegisterPowerSettingNotification(hwnd, &GUID_MONITOR_POWER_ON, DEVICE_NOTIFY_WINDOW_HANDLE); // win7
 }
 
 void MainWindow::onSubMainWindowShowHide(bool bShow, MainWindowBase *pWindow)
@@ -218,6 +225,7 @@ void MainWindow::changeEvent(QEvent *e)
 //            }
 			this->raise();
 			this->activateWindow();
+			this->setSleepMode(false);
 		}
 		else if (isMinimized())
 		{
@@ -233,6 +241,7 @@ void MainWindow::changeEvent(QEvent *e)
             {
                 m_pWeaponWindow->hide();
             }
+			this->setSleepMode(true);
 		}
 	}
 
@@ -442,7 +451,8 @@ void MainWindow::slotWebViewException(int code, const QString &source, const QSt
 
 void MainWindow::BeforeRequestFunc(int sessionID, char *fullURL, char *requestBody)
 {
-	mainWindow()->m_panicTimer->start(4000);
+	emit mainWindow()->sigTogglePanicTimer(4000);
+//	mainWindow()->m_panicTimer->start(4000);
 
 	Q_UNUSED(sessionID);
 	Q_UNUSED(fullURL);
@@ -452,7 +462,8 @@ void MainWindow::BeforeRequestFunc(int sessionID, char *fullURL, char *requestBo
 
 void MainWindow::AfterSessionCompleteFunc(int sessionID, char *mimeType, int responseCode, char *PathAndQuery, char *requestBody, char *responseBody)
 {
-	mainWindow()->m_panicTimer->stop();
+	emit mainWindow()->sigTogglePanicTimer(-1);
+//	mainWindow()->m_panicTimer->stop();
 
 	Q_UNUSED(sessionID);
 	Q_UNUSED(responseCode);
@@ -501,6 +512,30 @@ void MainWindow::onGetNetworkReply(QNetworkReply * reply)
 	}
 }
 
+void MainWindow::setSleepMode(bool val)
+{
+	m_bSleep = val;
+//	qDebug("state changed");
+}
+
+bool MainWindow::isSleepMode()
+{
+	return m_bSleep;
+}
+
+void MainWindow::slotTogglePanicTimer(int timeVal)
+{
+	if (timeVal > 0)
+	{
+		m_panicTimer->start(timeVal);
+	}
+	else
+	{
+		m_panicTimer->stop();
+	}
+}
+
+
 void MainWindow::SetWebSettings()
 {
 	useport = 13347;
@@ -527,6 +562,8 @@ void MainWindow::SetWebSettings()
 
 	KQWebPage * page = new KQWebPage();
 	ui->webView->setPage(page);
+
+	ui->webView->setContextMenuPolicy(Qt::PreventContextMenu);
 
 	if (!bUseFiddler)
 	{
@@ -607,7 +644,7 @@ void MainWindow::AdjustVolume(int vol)
 
 	if (vol < 0)
 	{
-		if (bLowVol)
+		if (m_bLowVol)
 		{
 			vol = 12;
 		}
@@ -771,6 +808,62 @@ void MainWindow::slotScreenshotTimeout()
 
 void MainWindow::on_pbCheckLowVol_toggled(bool checked)
 {
-	bLowVol = checked;
+	m_bLowVol = checked;
 	AdjustVolume(-1);
+}
+
+QWindowsEventFilter::QWindowsEventFilter()
+{
+
+}
+
+bool QWindowsEventFilter::nativeEventFilter(const QByteArray &eventType, void *message, long *result)
+{
+	Q_UNUSED(result);
+	if (eventType == "windows_generic_MSG")
+	{
+		MSG *msg = static_cast<MSG *>(message);
+		if (msg->message == WM_POWERBROADCAST)
+		{
+			auto mainWindow = MainWindow::mainWindow();
+			if (!mainWindow)
+			{
+				return false;
+			}
+			if (msg->wParam == PBT_APMSUSPEND)
+			{
+				// sleep
+				mainWindow->setSleepMode(true);
+				return false;
+			}
+			if (msg->wParam == PBT_APMRESUMEAUTOMATIC)
+			{
+				// resume
+				mainWindow->setSleepMode(false);
+				return false;
+			}
+			if (msg->wParam == PBT_POWERSETTINGCHANGE)
+			{
+				POWERBROADCAST_SETTING *ps = (POWERBROADCAST_SETTING*)(msg->lParam);
+				if (ps->PowerSetting == GUID_CONSOLE_DISPLAY_STATE)
+				{
+					DWORD dw = *(DWORD*)(ps->Data);
+					if (dw == 0x0)
+					{
+						// off
+						mainWindow->setSleepMode(true);
+						return false;
+					}
+					if (dw == 0x1)
+					{
+						// on
+						mainWindow->setSleepMode(false);
+						return false;
+					}
+				}
+			}
+			return false;
+		}
+	}
+	return false;
 }

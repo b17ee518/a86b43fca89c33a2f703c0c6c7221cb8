@@ -109,6 +109,7 @@ private:
 
 	QTimer * m_pScreenshotTimer;
 	QTimer* m_panicTimer;
+	bool m_bLowVol = true;
 };
 
 #endif // MAINWINDOW_H

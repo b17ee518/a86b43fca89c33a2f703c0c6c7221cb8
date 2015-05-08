@@ -161,6 +161,8 @@ void MainWindow::postInit(InfoMainWindow *pInfo, TimerMainWindow *pTimer, Weapon
 	connect(ui->pbCheckInfo, SIGNAL(toggled(bool)), m_pInfoWindow, SLOT(setVisible(bool)));
 	connect(ui->pbCheckTimer, SIGNAL(toggled(bool)), m_pTimerWindow, SLOT(setVisible(bool)));
     connect(ui->pbCheckWeapon, SIGNAL(toggled(bool)), m_pWeaponWindow, SLOT(slotSetVisible(bool)));
+
+	AdjustVolume(-1);
 }
 
 void MainWindow::onSubMainWindowShowHide(bool bShow, MainWindowBase *pWindow)
@@ -607,7 +609,7 @@ void MainWindow::AdjustVolume(int vol)
 
 	if (vol < 0)
 	{
-		if (bLowVol)
+		if (m_bLowVol)
 		{
 			vol = 12;
 		}
@@ -771,6 +773,6 @@ void MainWindow::slotScreenshotTimeout()
 
 void MainWindow::on_pbCheckLowVol_toggled(bool checked)
 {
-	bLowVol = checked;
+	m_bLowVol = checked;
 	AdjustVolume(-1);
 }

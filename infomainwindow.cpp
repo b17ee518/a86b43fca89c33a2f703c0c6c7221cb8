@@ -284,7 +284,10 @@ void InfoMainWindow::slotUpdateTimer()
 			return;
 		}
 	}
-    this->adjustSize();
+	if (!this->isMinimized())
+	{
+		this->adjustSize();
+	}
 }
 
 void InfoMainWindow::on_pbClose_clicked()

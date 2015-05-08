@@ -241,7 +241,7 @@ void MainWindow::changeEvent(QEvent *e)
             {
                 m_pWeaponWindow->hide();
             }
-			this->setSleepMode(true);
+//			this->setSleepMode(true);
 		}
 	}
 

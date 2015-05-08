@@ -292,7 +292,7 @@ void WeaponMainWindow::slotUpdateTimer()
 	}
 	*/
 
-	if (isVisible())
+	if (isVisible() && !isMinimized())
 	{
 		auto mainWindow = MainWindow::mainWindow();
 		if (mainWindow)

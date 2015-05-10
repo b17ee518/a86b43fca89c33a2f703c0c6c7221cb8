@@ -41,7 +41,9 @@ private:
     QList<KQUI_CollapsibleFrame*> lstCollapsibleFrames;
 
 public slots:
-    void slotOnTableSizeChanged();
+	void slotOnTableSizeChanged();
+
+	void onToggleSleepMode(bool bSleep);
 
 private slots:
     void slotUpdateTimer();

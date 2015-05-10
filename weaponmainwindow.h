@@ -88,6 +88,8 @@ public slots:
 	void slotToggled(bool bValue);
 	void slotTextChanged(QString text);
 
+	void onToggleSleepMode(bool bSleep);
+
 private slots:
     void slotUpdateTimer();
     void on_pbClose_clicked();

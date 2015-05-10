@@ -11,6 +11,8 @@
 #define COLINDEX_ONNOLOCK		3
 #define COLINDEX_NOON			4
 
+#define WEAPON_UPDATETIMER_INTERVAL	50
+
 WeaponMainWindow::WeaponMainWindow(QWidget *parent)
 : SubMainWindow(parent)
 , ui(new Ui::WeaponMainWindow)
@@ -26,7 +28,8 @@ WeaponMainWindow::WeaponMainWindow(QWidget *parent)
 
 	pUpdateTimer = new QTimer(this);
 	connect(pUpdateTimer, SIGNAL(timeout()), this, SLOT(slotUpdateTimer()));
-	pUpdateTimer->start(50);
+	pUpdateTimer->start(WEAPON_UPDATETIMER_INTERVAL);
+	connect(MainWindow::mainWindow(), SIGNAL(sigToggleSleepMode(bool)), this, SLOT(onToggleSleepMode(bool)));
 
 }
 
@@ -445,5 +448,17 @@ void WeaponMainWindow::slotTextChanged(QString text)
 				pFrame->setVisible(false);
 			}
 		}
+	}
+}
+
+void WeaponMainWindow::onToggleSleepMode(bool bSleep)
+{
+	if (bSleep)
+	{
+		pUpdateTimer->stop();
+	}
+	else
+	{
+		pUpdateTimer->start(WEAPON_UPDATETIMER_INTERVAL);
 	}
 }

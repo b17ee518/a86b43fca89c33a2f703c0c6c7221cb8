@@ -59,6 +59,7 @@ public:
 signals:
 	void sigParse(const QString &PathAndQuery, const QString &requestBody, const QString &responseBody);
 	void sigTogglePanicTimer(int timeVal);
+	void sigToggleSleepMode(bool bSleep);
 
 public slots:
 	virtual void slotActivate(QWidget* w, bool bActivate);

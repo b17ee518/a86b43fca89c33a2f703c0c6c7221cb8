@@ -5,6 +5,8 @@
 #include <QDateTime>
 #include "mainwindow.h"
 
+#define TIMER_UPDATETIMER_INTERVAL	250
+
 TimerMainWindow::TimerMainWindow(QWidget *parent) :
 	SubMainWindow(parent),
 	ui(new Ui::TimerMainWindow)
@@ -44,7 +46,8 @@ TimerMainWindow::TimerMainWindow(QWidget *parent) :
 
 	pUpdateTimer = new QTimer(this);
 	connect(pUpdateTimer, SIGNAL(timeout()), this, SLOT(slotUpdateTimer()));
-	pUpdateTimer->start(250);
+	pUpdateTimer->start(TIMER_UPDATETIMER_INTERVAL);
+	connect(MainWindow::mainWindow(), SIGNAL(sigToggleSleepMode(bool)), this, SLOT(onToggleSleepMode(bool)));
 
 	this->adjustSize();
 
@@ -589,4 +592,16 @@ void TimerMainWindow::initTableItem()
 	ui->buildTable->item(0, 0)->setText(QString::fromLocal8Bit("①"));
 	ui->buildTable->item(1, 0)->setText(QString::fromLocal8Bit("②"));
 
+}
+
+void TimerMainWindow::onToggleSleepMode(bool bSleep)
+{
+	if (bSleep)
+	{
+		pUpdateTimer->stop();
+	}
+	else
+	{
+		pUpdateTimer->start(TIMER_UPDATETIMER_INTERVAL);
+	}
 }

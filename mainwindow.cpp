@@ -452,8 +452,8 @@ void MainWindow::slotWebViewException(int code, const QString &source, const QSt
 
 void MainWindow::BeforeRequestFunc(int sessionID, char *fullURL, char *requestBody)
 {
-	emit mainWindow()->sigTogglePanicTimer(4000);
-//	mainWindow()->m_panicTimer->start(4000);
+//	emit mainWindow()->sigTogglePanicTimer(4000);
+	// comment out for tablet
 
 	Q_UNUSED(sessionID);
 	Q_UNUSED(fullURL);
@@ -463,8 +463,8 @@ void MainWindow::BeforeRequestFunc(int sessionID, char *fullURL, char *requestBo
 
 void MainWindow::AfterSessionCompleteFunc(int sessionID, char *mimeType, int responseCode, char *PathAndQuery, char *requestBody, char *responseBody)
 {
-	emit mainWindow()->sigTogglePanicTimer(-1);
-//	mainWindow()->m_panicTimer->stop();
+//	emit mainWindow()->sigTogglePanicTimer(-1);
+	// comment out for tablet
 
 	Q_UNUSED(sessionID);
 	Q_UNUSED(responseCode);
@@ -515,7 +515,12 @@ void MainWindow::onGetNetworkReply(QNetworkReply * reply)
 
 void MainWindow::setSleepMode(bool val)
 {
-	m_bSleep = val;
+	if (m_bSleep != val)
+	{
+		m_bSleep = val;
+
+		emit this->sigToggleSleepMode(m_bSleep);
+	}
 //	qDebug("state changed");
 }
 
@@ -852,13 +857,13 @@ bool QWindowsEventFilter::nativeEventFilter(const QByteArray &eventType, void *m
 					if (dw == 0x0)
 					{
 						// off
-						mainWindow->setSleepMode(true);
+//						mainWindow->setSleepMode(true);
 						return false;
 					}
 					if (dw == 0x1)
 					{
 						// on
-						mainWindow->setSleepMode(false);
+//						mainWindow->setSleepMode(false);
 						return false;
 					}
 				}

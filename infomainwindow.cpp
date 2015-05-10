@@ -3,6 +3,8 @@
 
 #include "mainwindow.h"
 
+#define INFO_UPDATETIMER_INTERVAL	50
+
 InfoMainWindow::InfoMainWindow(QWidget *parent) :
 	SubMainWindow(parent),
 	ui(new Ui::InfoMainWindow)
@@ -34,7 +36,8 @@ InfoMainWindow::InfoMainWindow(QWidget *parent) :
 
 	pUpdateTimer = new QTimer(this);
 	connect(pUpdateTimer, SIGNAL(timeout()), this, SLOT(slotUpdateTimer()));
-	pUpdateTimer->start(50);
+	pUpdateTimer->start(INFO_UPDATETIMER_INTERVAL);
+	connect(MainWindow::mainWindow(), SIGNAL(sigToggleSleepMode(bool)), this, SLOT(onToggleSleepMode(bool)));
 
 	KQUI_CollapsibleFrame * pFrame;
 	foreach(pFrame, lstCollapsibleFrames)
@@ -298,4 +301,16 @@ void InfoMainWindow::on_pbClose_clicked()
 void InfoMainWindow::on_pbMinimize_clicked()
 {
 	setWindowState(Qt::WindowMinimized);
+}
+
+void InfoMainWindow::onToggleSleepMode(bool bSleep)
+{
+	if (bSleep)
+	{
+		pUpdateTimer->stop();
+	}
+	else
+	{
+		pUpdateTimer->start(INFO_UPDATETIMER_INTERVAL);
+	}
 }

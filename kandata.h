@@ -15,6 +15,7 @@
 	"/kcsapi/api_get_member/ship",
 	"/kcsapi/api_get_member/ship2",
 	"/kcsapi/api_get_member/ship3",
+	"/kcsapi/api_get_member/ship_deck",
 	"/kcsapi/api_get_member/slot_item",
 	"/kcsapi/api_get_member/useitem",
 	"/kcsapi/api_get_member/deck",
@@ -69,6 +70,7 @@ kcsapi_questlist
 kcsapi_ship
 kcsapi_ship2
 kcsapi_ship3
+kcsapi_ship_deck
 kcsapi_slot_data
 kcsapi_slotitem
 kcsapi_start2
@@ -1092,6 +1094,21 @@ public:
 	//
 	//public kcsapi_slot_data api_slot_data;
 };
+
+/**
+* @brief The kcsapi_ship_deck class
+*/
+class kcsapi_ship_deck : public KAPIBaseData
+{
+public:
+	kcsapi_ship_deck(){}
+
+	virtual bool ReadFromJObj(const QJsonObject &jobj);
+
+	QList<kcsapi_ship2> api_ship_data;
+	QList<kcsapi_deck> api_deck_data;
+};
+
 class kcsapi_slot_data: public KAPIBaseData
 {
 

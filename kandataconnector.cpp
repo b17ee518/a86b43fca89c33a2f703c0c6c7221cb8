@@ -20,6 +20,7 @@
  /kcsapi/api_get_member/ship
  /kcsapi/api_get_member/ship2
  /kcsapi/api_get_member/ship3
+ /kcsapi/api_get_member/ship_deck
  /kcsapi/api_get_member/slot_item
  /kcsapi/api_get_member/useitem
  /kcsapi/api_get_member/deck
@@ -123,6 +124,7 @@ KanDataConnector::KanDataConnector(void)
 	get_member_ship_flag = PARSEFLAG_NORMAL;
 	get_member_ship2_flag = PARSEFLAG_NORMAL;
 	get_member_ship3_flag = PARSEFLAG_NORMAL;
+	get_member_ship_deck_flag = PARSEFLAG_NORMAL;
 	get_member_slot_item_flag = PARSEFLAG_NORMAL;
 	get_member_useitem_flag = PARSEFLAG_NORMAL;
 	get_member_deck_flag = PARSEFLAG_NORMAL;
@@ -268,6 +270,7 @@ bool KanDataConnector::Parse(QString _pathAndQuery, QString _requestBody, QStrin
 		PARSEAPI("/kcsapi/api_get_member/ship", get_member_ship)
 		PARSEAPI("/kcsapi/api_get_member/ship2", get_member_ship2)
 		PARSEAPI("/kcsapi/api_get_member/ship3", get_member_ship3)
+		PARSEAPI("/kcsapi/api_get_member/ship_deck", get_member_ship_deck)
 		PARSEAPI("/kcsapi/api_get_member/slot_item", get_member_slot_item)
 		PARSEAPI("/kcsapi/api_get_member/useitem", get_member_useitem)
 		PARSEAPI("/kcsapi/api_get_member/deck", get_member_deck)
@@ -2263,6 +2266,37 @@ bool KanDataConnector::get_member_ship3_parse()
 
 
 	pksd->portdata.api_deck_port = api_ship3.api_deck_data;
+	updateOverviewTable();
+	updateFleetTable();
+	updateRepairTable();
+
+	pksd->shipcountoffset = 0;
+	updateExpeditionTable();
+	updateInfoTitleCond();
+	return true;
+}
+
+// same as ship3
+bool KanDataConnector::get_member_ship_deck_parse()
+{
+	kcsapi_ship_deck api_ship_deck;
+	api_ship_deck.ReadFromJObj(jobj);
+
+	//        pksd->portdata.api_ship = api_ship_deck.api_ship_data;
+	foreach(const kcsapi_ship2 &v, api_ship_deck.api_ship_data)
+	{
+		QList<kcsapi_ship2>::iterator it;
+		for (it = pksd->portdata.api_ship.begin(); it != pksd->portdata.api_ship.end(); ++it)
+		{
+			if (v.api_id == it->api_id)
+			{
+				(*it) = v;
+			}
+		}
+	}
+
+
+	pksd->portdata.api_deck_port = api_ship_deck.api_deck_data;
 	updateOverviewTable();
 	updateFleetTable();
 	updateRepairTable();

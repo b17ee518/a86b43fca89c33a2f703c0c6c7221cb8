@@ -831,6 +831,14 @@ bool kcsapi_ship3::ReadFromJObj(const QJsonObject &jobj)
 
 }
 
+bool kcsapi_ship_deck::ReadFromJObj(const QJsonObject &jobj)
+{
+	_ACREAD(api_ship_data, kcsapi_ship2);
+	_ACREAD(api_deck_data, kcsapi_deck);
+
+	return bParseRet;
+
+}
 
 bool kcsapi_slot_data::ReadFromJObj(const QJsonObject &jobj)
 {

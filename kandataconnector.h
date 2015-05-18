@@ -96,6 +96,7 @@ private:
 	bool get_member_ship_parse();
 	bool get_member_ship2_parse();
 	bool get_member_ship3_parse();
+	bool get_member_ship_deck_parse();
 	bool get_member_slot_item_parse();
 	bool get_member_useitem_parse();
 	bool get_member_deck_parse();
@@ -183,6 +184,7 @@ private:
 	int get_member_ship_flag;
 	int get_member_ship2_flag;
 	int get_member_ship3_flag;
+	int get_member_ship_deck_flag;
 	int get_member_slot_item_flag;
 	int get_member_useitem_flag;
 	int get_member_deck_flag;

@@ -12,6 +12,8 @@ void on_pbScreenshot_clicked();
 #include <QShowEvent>
 #include <QWinTaskbarButton>
 #include <QNetworkReply>
+#include <QWebView>
+#include <QAxWidget>
 
 #include <QAbstractNativeEventFilter>
 
@@ -28,6 +30,14 @@ enum
 	PROGRESSBARSTATE_STOPPED,
 };
 
+enum {
+	QWEBVIEWCSS_NORMAL,
+	QWEBVIEWCSS_TRANSPARENT,
+	//	QWEBVIEWCSS_CLEAR,
+	QWEBVIEWCSS_END,
+};
+
+
 namespace Ui {
 class MainWindow;
 }
@@ -43,9 +53,9 @@ public:
 	static MainWindow * mainWindow(){return s_pMainWindow;}
 	static void setMainWindow(MainWindow * pWindow){s_pMainWindow = pWindow;}
     void postInit(InfoMainWindow * pInfo, TimerMainWindow * pTimer, WeaponMainWindow *pWeapon);
-	static InfoMainWindow * infoWindow(){return s_pMainWindow->m_pInfoWindow;}
-	static TimerMainWindow * timerWindow(){return s_pMainWindow->m_pTimerWindow;}
-    static WeaponMainWindow * weaponWindow(){return s_pMainWindow->m_pWeaponWindow;}
+	static InfoMainWindow * infoWindow(){return s_pMainWindow->_pInfoWindow;}
+	static TimerMainWindow * timerWindow(){return s_pMainWindow->_pTimerWindow;}
+    static WeaponMainWindow * weaponWindow(){return s_pMainWindow->_pWeaponWindow;}
 
 	void AdjustVolume(int vol);
 	void onSubMainWindowShowHide(bool bShow, MainWindowBase * pWindow);
@@ -55,6 +65,10 @@ public:
 
 	void setSleepMode(bool val);
 	bool isSleepMode();
+
+	QWidget* getBrowserWidget();
+	void navigateTo(QString urlString);
+	void navigateReload();
 
 signals:
 	void sigParse(const QString &PathAndQuery, const QString &requestBody, const QString &responseBody);
@@ -78,31 +92,24 @@ protected:
 
 private slots:
 	void on_pbClose_clicked();
-
 	void on_pbMinimize_clicked();
-
 	void on_pbCheckTrasparent_toggled(bool checked);
 
-	void slotWebViewException(int code, const QString & source, const QString & desc, const QString & help);
-
 	void on_pbMoveTogether_toggled(bool checked);
-
 	void on_pbRefresh_clicked();
-
 	void on_pbScreenshot_clicked();
-
 	void on_pbSwitchScreenshot_toggled(bool checked);
-
 	void slotScreenshotTimeout();
-
 	void on_pbCheckLowVol_toggled(bool checked);
 
+	void slotNavigateComplete2(IDispatch*, QVariant&);
+	void slotWebViewException(int code, const QString & source, const QString & desc, const QString & help);
 	void onPanic();
 
 private:
 	Ui::MainWindow *ui;
 
-	bool bUseFiddler;
+	bool _bUseFiddler = true;
 	int useport;
 	FiddlerCOM::FiddlerCOMClass * pFiddler;
 	static void __stdcall BeforeRequestFunc(int sessionID, char * fullURL, char * requestBody);
@@ -111,23 +118,33 @@ private:
 
 	void ShootScreen();
 
-	InfoMainWindow * m_pInfoWindow;
-	TimerMainWindow * m_pTimerWindow;
-    WeaponMainWindow * m_pWeaponWindow;
+	void applyCss(int css);
+	bool _bIEPageLoaded = false;
+	int _applyCssWhenLoaded = -1;
+	QString _ieCsses[QWEBVIEWCSS_END];
+	QUrl _webViewCsses[QWEBVIEWCSS_END];
+	
+	InfoMainWindow * _pInfoWindow;
+	TimerMainWindow * _pTimerWindow;
+    WeaponMainWindow * _pWeaponWindow;
 	
 	static MainWindow * s_pMainWindow;
 
-	QWinTaskbarButton * m_pTaskbarButton;
+	QWinTaskbarButton * _pTaskbarButton;
 
-	bool bMoveSubTogether;
+	bool _bMoveSubTogether;
 
-	QTimer * m_pScreenshotTimer;
-	QTimer* m_panicTimer;
+	QTimer * _pScreenshotTimer;
+	QTimer* _panicTimer;
 
-	bool m_bLowVol = true;
-	bool m_bSleep = false;
+	bool _bLowVol = true;
+	bool _bSleep = false;
 
-	QWindowsEventFilter m_windowsEventfilter;
+	QWindowsEventFilter _windowsEventfilter;
+
+	QWebView* _webView = NULL;
+	QAxWidget* _axWidget = NULL;
+	bool _bUseIE = true;
 };
 
 

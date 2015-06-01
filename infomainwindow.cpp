@@ -10,6 +10,7 @@ InfoMainWindow::InfoMainWindow(QWidget *parent) :
 	ui(new Ui::InfoMainWindow)
 {
 	ui->setupUi(this);
+
 	mwbPostInit();
 	ui->titleFrame->setHandlingWidget(this);
 	ui->overviewTable->setFont(QApplication::font());

@@ -20,17 +20,9 @@
 #include <Mmdeviceapi.h>
 #include <QHttpPart>
 
+#include <QAxWidget>
+
 #define SAFE_RELEASE(x) if(x) { x->Release(); x = NULL; } 
-
-
-enum{
-	QWEBVIEWCSS_NORMAL,
-	QWEBVIEWCSS_TRANSPARENT,
-//	QWEBVIEWCSS_CLEAR,
-	QWEBVIEWCSS_END,
-};
-QUrl csses[QWEBVIEWCSS_END];
-
 
 MainWindow * MainWindow::s_pMainWindow = NULL;
 
@@ -38,19 +30,43 @@ MainWindow::MainWindow(QWidget *parent) :
 	MainWindowBase(parent),
 	ui(new Ui::MainWindow)
 {
-	m_pTaskbarButton = NULL;
+	_pTaskbarButton = NULL;
 
-	m_pScreenshotTimer = new QTimer(this);
-	connect(m_pScreenshotTimer, SIGNAL(timeout()), this, SLOT(slotScreenshotTimeout()));
-	m_panicTimer = new QTimer(this);
-	connect(m_panicTimer, SIGNAL(timeout()), this, SLOT(onPanic()));
+	_pScreenshotTimer = new QTimer(this);
+	connect(_pScreenshotTimer, SIGNAL(timeout()), this, SLOT(slotScreenshotTimeout()));
+	_panicTimer = new QTimer(this);
+	connect(_panicTimer, SIGNAL(timeout()), this, SLOT(onPanic()));
 
-	bUseFiddler = true;
+	_bUseFiddler = true;
 //	bUseFiddler = false;
+	_bUseIE = false;
 
 	setMainWindow(this);
 	ui->setupUi(this);
 	ui->retranslateUi(this);
+
+	if (_bUseIE)
+	{
+		setAttribute(Qt::WA_TranslucentBackground, false);
+
+		_axWidget = new QAxWidget(ui->webFrame);
+		_axWidget->setControl(QString::fromUtf8("{8856F961-340A-11D0-A96B-00C04FD705A2}"));
+		_axWidget->dynamicCall("SetFullScreen(bool)", true);
+		_axWidget->dynamicCall("Navigate(const QString&)", "about:blank");
+		QObject::connect(_axWidget,
+			SIGNAL(NavigateComplete2(IDispatch*, QVariant&)),
+			this,
+			SLOT(slotNavigateComplete2(IDispatch*, QVariant&)));
+		ui->webFrame_layout->addWidget(_axWidget);
+
+	}
+	else
+	{
+		_webView = new QWebView(ui->webFrame);
+		_webView->setObjectName(QStringLiteral("webView"));
+		_webView->setUrl(QUrl(QStringLiteral("about:blank")));
+		ui->webFrame_layout->addWidget(_webView);
+	}
 
 	ui->comboBoxZoom->insertSeparator(1);
 
@@ -66,7 +82,7 @@ MainWindow::MainWindow(QWidget *parent) :
 	QShortcut *shortcut = new QShortcut(QKeySequence("Escape"), this);
 	connect(shortcut, SIGNAL(activated()), this, SLOT(onPanic()));
 
-	bMoveSubTogether = true;
+	_bMoveSubTogether = true;
 
 	SetWebSettings();
 
@@ -83,8 +99,20 @@ body {
 	left:-50px;
 	z-index:1
 }
-	*/
-	csses[QWEBVIEWCSS_NORMAL] = (QUrl("data:text/css;charset=utf-8;base64,Ym9keSB7DQoJbWFyZ2luOjA7DQoJb3ZlcmZsb3c6aGlkZGVuDQp9DQoNCiNnYW1lX2ZyYW1lIHsNCglwb3NpdGlvbjpmaXhlZDsNCgl0b3A6LTE2cHg7DQoJbGVmdDotNTBweDsNCgl6LWluZGV4OjENCn0="));
+*/
+	_ieCsses[QWEBVIEWCSS_NORMAL] = "\
+								body {\
+									margin:0;\
+									overflow:hidden\
+								}\
+								#game_frame{\
+									position:fixed;\
+									top:-16px;\
+									left:-50px;\
+									margin-left:-450px;\
+									z-index:1\
+								 }";
+	_webViewCsses[QWEBVIEWCSS_NORMAL] = (QUrl("data:text/css;charset=utf-8;base64,Ym9keSB7DQoJbWFyZ2luOjA7DQoJb3ZlcmZsb3c6aGlkZGVuDQp9DQoNCiNnYW1lX2ZyYW1lIHsNCglwb3NpdGlvbjpmaXhlZDsNCgl0b3A6LTE2cHg7DQoJbGVmdDotNTBweDsNCgl6LWluZGV4OjENCn0="));
 	/*
 body {
 	margin:0;
@@ -115,53 +143,71 @@ body {
 	z-index:1;
 	}
 	*/
-	csses[QWEBVIEWCSS_TRANSPARENT] = QUrl("data:text/css;charset=utf-8;base64,Ym9keSB7DQoJbWFyZ2luOjA7DQoJb3ZlcmZsb3c6aGlkZGVuOw0KCW9wYWNpdHk6IDAuMjsNCn0NCg0KI2dhbWVfZnJhbWUgew0KCXBvc2l0aW9uOmZpeGVkOw0KCXRvcDotMTZweDsNCglsZWZ0Oi01MHB4Ow0KCXotaW5kZXg6MTsNCn0=");
-	
-	ui->webView->page()->settings()->setUserStyleSheetUrl(csses[QWEBVIEWCSS_NORMAL]);
-	
-//  ui->webView->load(QUrl("http://www.google.com"));
-	ui->webView->load(QUrl("http://www.dmm.com/netgame/social/-/gadgets/=/app_id=854854/?f1=1&p1=0"));
-//	ui->webView->load(QUrl("https://www.dmm.com/my/-/login/auth/"));
+	_webViewCsses[QWEBVIEWCSS_TRANSPARENT] = QUrl("data:text/css;charset=utf-8;base64,Ym9keSB7DQoJbWFyZ2luOjA7DQoJb3ZlcmZsb3c6aGlkZGVuOw0KCW9wYWNpdHk6IDAuMjsNCn0NCg0KI2dhbWVfZnJhbWUgew0KCXBvc2l0aW9uOmZpeGVkOw0KCXRvcDotMTZweDsNCglsZWZ0Oi01MHB4Ow0KCXotaW5kZXg6MTsNCn0=");
 
-	QApplication::instance()->installNativeEventFilter(&m_windowsEventfilter);
+	// do not set opacity
+	_ieCsses[QWEBVIEWCSS_TRANSPARENT] = "\
+										body {\
+											margin:0;\
+											overflow:hidden;\
+										}\
+										#game_frame{\
+											position:fixed;\
+											top:-16px;\
+											left:-50px;\
+											z - index:1;\
+										}\
+										";
+	
+	applyCss(QWEBVIEWCSS_NORMAL);
+	
+//	navigateTo("http://www.google.com");
+	navigateTo("http://www.dmm.com/netgame/social/-/gadgets/=/app_id=854854/?f1=1&p1=0");
+//	navigateTo("https://www.dmm.com/my/-/login/auth/");
+
+	QApplication::instance()->installNativeEventFilter(&_windowsEventfilter);
 }
 
 MainWindow::~MainWindow()
 {
+	if (pFiddler)
+	{
+		delete pFiddler;
+	}
 	delete ui;
 }
 
 void MainWindow::postInit(InfoMainWindow *pInfo, TimerMainWindow *pTimer, WeaponMainWindow* pWeapon)
 {
-	m_pInfoWindow = pInfo;
-	m_pTimerWindow = pTimer;
-    m_pWeaponWindow = pWeapon;
+	_pInfoWindow = pInfo;
+	_pTimerWindow = pTimer;
+    _pWeaponWindow = pWeapon;
 
-    QObject::connect( this, SIGNAL( sigActivated( QWidget*, bool ) ), m_pInfoWindow, SLOT( slotActivate( QWidget*, bool ) ) );
-    QObject::connect( this, SIGNAL( sigActivated( QWidget*, bool ) ), m_pTimerWindow, SLOT( slotActivate( QWidget*, bool ) ) );
-    QObject::connect( this, SIGNAL( sigActivated( QWidget*, bool ) ), m_pWeaponWindow, SLOT( slotActivate( QWidget*, bool ) ) );
+    QObject::connect( this, SIGNAL( sigActivated( QWidget*, bool ) ), _pInfoWindow, SLOT( slotActivate( QWidget*, bool ) ) );
+    QObject::connect( this, SIGNAL( sigActivated( QWidget*, bool ) ), _pTimerWindow, SLOT( slotActivate( QWidget*, bool ) ) );
+    QObject::connect( this, SIGNAL( sigActivated( QWidget*, bool ) ), _pWeaponWindow, SLOT( slotActivate( QWidget*, bool ) ) );
 
-    QObject::connect( m_pInfoWindow, SIGNAL( sigActivated( QWidget*, bool ) ), this, SLOT( slotActivate( QWidget*, bool ) ) );
-    QObject::connect( m_pInfoWindow, SIGNAL( sigActivated( QWidget*, bool ) ), m_pTimerWindow, SLOT( slotActivate( QWidget*, bool ) ) );
-    QObject::connect( m_pInfoWindow, SIGNAL( sigActivated( QWidget*, bool ) ), m_pWeaponWindow, SLOT( slotActivate( QWidget*, bool ) ) );
+    QObject::connect( _pInfoWindow, SIGNAL( sigActivated( QWidget*, bool ) ), this, SLOT( slotActivate( QWidget*, bool ) ) );
+    QObject::connect( _pInfoWindow, SIGNAL( sigActivated( QWidget*, bool ) ), _pTimerWindow, SLOT( slotActivate( QWidget*, bool ) ) );
+    QObject::connect( _pInfoWindow, SIGNAL( sigActivated( QWidget*, bool ) ), _pWeaponWindow, SLOT( slotActivate( QWidget*, bool ) ) );
 
-    QObject::connect( m_pTimerWindow, SIGNAL( sigActivated( QWidget*, bool ) ), m_pInfoWindow, SLOT( slotActivate( QWidget*, bool ) ) );
-    QObject::connect( m_pTimerWindow, SIGNAL( sigActivated( QWidget*, bool ) ), m_pWeaponWindow, SLOT( slotActivate( QWidget*, bool ) ) );
-    QObject::connect( m_pTimerWindow, SIGNAL( sigActivated( QWidget*, bool ) ), this, SLOT( slotActivate( QWidget*, bool ) ) );
+    QObject::connect( _pTimerWindow, SIGNAL( sigActivated( QWidget*, bool ) ), _pInfoWindow, SLOT( slotActivate( QWidget*, bool ) ) );
+    QObject::connect( _pTimerWindow, SIGNAL( sigActivated( QWidget*, bool ) ), _pWeaponWindow, SLOT( slotActivate( QWidget*, bool ) ) );
+    QObject::connect( _pTimerWindow, SIGNAL( sigActivated( QWidget*, bool ) ), this, SLOT( slotActivate( QWidget*, bool ) ) );
 
-    QObject::connect( m_pWeaponWindow, SIGNAL( sigActivated( QWidget*, bool ) ), m_pInfoWindow, SLOT( slotActivate( QWidget*, bool ) ) );
-    QObject::connect( m_pWeaponWindow, SIGNAL( sigActivated( QWidget*, bool ) ), m_pTimerWindow, SLOT( slotActivate( QWidget*, bool ) ) );
-    QObject::connect( m_pWeaponWindow, SIGNAL( sigActivated( QWidget*, bool ) ), this, SLOT( slotActivate( QWidget*, bool ) ) );
+    QObject::connect( _pWeaponWindow, SIGNAL( sigActivated( QWidget*, bool ) ), _pInfoWindow, SLOT( slotActivate( QWidget*, bool ) ) );
+    QObject::connect( _pWeaponWindow, SIGNAL( sigActivated( QWidget*, bool ) ), _pTimerWindow, SLOT( slotActivate( QWidget*, bool ) ) );
+    QObject::connect( _pWeaponWindow, SIGNAL( sigActivated( QWidget*, bool ) ), this, SLOT( slotActivate( QWidget*, bool ) ) );
 
-    connect(m_pInfoWindow, SIGNAL(sigRestoreMinimizeToggled(bool)), this, SLOT(slotToggleRestoreMinimize(bool)));
-    connect(m_pTimerWindow, SIGNAL(sigRestoreMinimizeToggled(bool)), this, SLOT(slotToggleRestoreMinimize(bool)));
-    connect(m_pWeaponWindow, SIGNAL(sigRestoreMinimizeToggled(bool)), this, SLOT(slotToggleRestoreMinimize(bool)));
+    connect(_pInfoWindow, SIGNAL(sigRestoreMinimizeToggled(bool)), this, SLOT(slotToggleRestoreMinimize(bool)));
+    connect(_pTimerWindow, SIGNAL(sigRestoreMinimizeToggled(bool)), this, SLOT(slotToggleRestoreMinimize(bool)));
+    connect(_pWeaponWindow, SIGNAL(sigRestoreMinimizeToggled(bool)), this, SLOT(slotToggleRestoreMinimize(bool)));
 	connect(this, SIGNAL(sigRestoreMinimizeToggled(bool)), this, SLOT(slotSelfToggleRestoreMinimize(bool)));
 
 
-	connect(ui->pbCheckInfo, SIGNAL(toggled(bool)), m_pInfoWindow, SLOT(setVisible(bool)));
-	connect(ui->pbCheckTimer, SIGNAL(toggled(bool)), m_pTimerWindow, SLOT(setVisible(bool)));
-    connect(ui->pbCheckWeapon, SIGNAL(toggled(bool)), m_pWeaponWindow, SLOT(slotSetVisible(bool)));
+	connect(ui->pbCheckInfo, SIGNAL(toggled(bool)), _pInfoWindow, SLOT(setVisible(bool)));
+	connect(ui->pbCheckTimer, SIGNAL(toggled(bool)), _pTimerWindow, SLOT(setVisible(bool)));
+    connect(ui->pbCheckWeapon, SIGNAL(toggled(bool)), _pWeaponWindow, SLOT(slotSetVisible(bool)));
 
 	AdjustVolume(-1);
 
@@ -174,15 +220,15 @@ void MainWindow::postInit(InfoMainWindow *pInfo, TimerMainWindow *pTimer, Weapon
 void MainWindow::onSubMainWindowShowHide(bool bShow, MainWindowBase *pWindow)
 {
 	QPushButton * pButton = 0;
-	if (pWindow == m_pInfoWindow)
+	if (pWindow == _pInfoWindow)
 	{
 		pButton = ui->pbCheckInfo;
 	}
-	else if (pWindow == m_pTimerWindow)
+	else if (pWindow == _pTimerWindow)
 	{
 		pButton = ui->pbCheckTimer;
 	}
-    else if (pWindow == m_pWeaponWindow)
+    else if (pWindow == _pWeaponWindow)
     {
         pButton = ui->pbCheckWeapon;
     }
@@ -206,16 +252,16 @@ void MainWindow::changeEvent(QEvent *e)
 		{
 //            if (ui->pbCheckInfo->isChecked())
             {
-                m_pInfoWindow->setWindowState(Qt::WindowNoState);
-                m_pInfoWindow->show();
-                m_pInfoWindow->stackUnder(this);
+                _pInfoWindow->setWindowState(Qt::WindowNoState);
+                _pInfoWindow->show();
+                _pInfoWindow->stackUnder(this);
             }
 
 //            if (ui->pbCheckTimer->isChecked())
             {
-                m_pTimerWindow->setWindowState(Qt::WindowNoState);
-                m_pTimerWindow->show();
-                m_pTimerWindow->stackUnder(m_pInfoWindow);
+                _pTimerWindow->setWindowState(Qt::WindowNoState);
+                _pTimerWindow->show();
+                _pTimerWindow->stackUnder(_pInfoWindow);
             }
 
 //            if (ui->pbCheckWeapon->isChecked())
@@ -230,17 +276,17 @@ void MainWindow::changeEvent(QEvent *e)
 		}
 		else if (isMinimized())
 		{
-			if (!m_pInfoWindow->isDockingOnTop())
+			if (!_pInfoWindow->isDockingOnTop())
 			{
-				m_pInfoWindow->hide();
+				_pInfoWindow->hide();
 			}
-			if (!m_pTimerWindow->isDockingOnTop())
+			if (!_pTimerWindow->isDockingOnTop())
 			{
-				m_pTimerWindow->hide();
+				_pTimerWindow->hide();
 			}
-            if (!m_pWeaponWindow->isDockingOnTop())
+            if (!_pWeaponWindow->isDockingOnTop())
             {
-                m_pWeaponWindow->hide();
+                _pWeaponWindow->hide();
             }
 //			this->setSleepMode(true);
 		}
@@ -258,6 +304,7 @@ void MainWindow::closeEvent(QCloseEvent *e)
 		, this
 		, Qt::Dialog | Qt::MSWindowsFixedSizeDialogHint | Qt::FramelessWindowHint);
 	pMessageBox->setDefaultButton(QMessageBox::No);
+	pMessageBox->setAttribute(Qt::WA_DeleteOnClose, true);
 	int reply = pMessageBox->exec();
 
 	if (reply == QMessageBox::No)
@@ -266,16 +313,16 @@ void MainWindow::closeEvent(QCloseEvent *e)
 		return;
 	}
 
-	if (bUseFiddler)
+	if (_bUseFiddler)
 	{
 		pFiddler->Shutdown();
 	}
 
 	MainWindowBase::closeEvent(e);
 
-	m_pInfoWindow->close();
-	m_pTimerWindow->close();
-    m_pWeaponWindow->close();
+	_pInfoWindow->close();
+	_pTimerWindow->close();
+    _pWeaponWindow->close();
 }
 
 void MainWindow::moveEvent(QMoveEvent *e)
@@ -284,19 +331,19 @@ void MainWindow::moveEvent(QMoveEvent *e)
 
 	QPoint diffPos = e->pos()-e->oldPos();
 
-	if (bMoveSubTogether)
+	if (_bMoveSubTogether)
 	{
-		if (!m_pInfoWindow->isDockingOnTop())
+		if (!_pInfoWindow->isDockingOnTop())
 		{
-			m_pInfoWindow->move(m_pInfoWindow->pos() + diffPos);
+			_pInfoWindow->move(_pInfoWindow->pos() + diffPos);
 		}
-		if (!m_pTimerWindow->isDockingOnTop())
+		if (!_pTimerWindow->isDockingOnTop())
 		{
-			m_pTimerWindow->move(m_pTimerWindow->pos() + diffPos);
+			_pTimerWindow->move(_pTimerWindow->pos() + diffPos);
 		}
-        if (!m_pWeaponWindow->isDockingOnTop())
+        if (!_pWeaponWindow->isDockingOnTop())
         {
-            m_pWeaponWindow->move(m_pWeaponWindow->pos() + diffPos);
+            _pWeaponWindow->move(_pWeaponWindow->pos() + diffPos);
         }
 	}
 }
@@ -388,7 +435,7 @@ void MainWindow::on_pbCheckTrasparent_toggled(bool checked)
 			s_listpair.append(pair);
 		}
 
-		lstWidget = m_pInfoWindow->findChildren<QWidget *>();
+		lstWidget = _pInfoWindow->findChildren<QWidget *>();
 		foreach(w, lstWidget)
 		{
 			QPair<QString, QWidget*> pair;
@@ -396,7 +443,7 @@ void MainWindow::on_pbCheckTrasparent_toggled(bool checked)
 			pair.second = w;
 			s_listpair.append(pair);
         }
-        lstWidget = m_pTimerWindow->findChildren<QWidget *>();
+        lstWidget = _pTimerWindow->findChildren<QWidget *>();
         foreach(w, lstWidget)
         {
             QPair<QString, QWidget*> pair;
@@ -404,7 +451,7 @@ void MainWindow::on_pbCheckTrasparent_toggled(bool checked)
             pair.second = w;
             s_listpair.append(pair);
         }
-        lstWidget = m_pWeaponWindow->findChildren<QWidget *>();
+        lstWidget = _pWeaponWindow->findChildren<QWidget *>();
         foreach(w, lstWidget)
         {
             QPair<QString, QWidget*> pair;
@@ -422,21 +469,21 @@ void MainWindow::on_pbCheckTrasparent_toggled(bool checked)
 			w->setStyleSheet(stylestr);
 		}
 
-		ui->webView->page()->settings()->setUserStyleSheetUrl(csses[QWEBVIEWCSS_TRANSPARENT]);
+		applyCss(QWEBVIEWCSS_TRANSPARENT);
 	}
 	else
 	{
 		QPair<QString, QWidget*> p;
 		foreach(p, s_listpair)
 		{
-			if (isAncestorOf(p.second) || m_pInfoWindow->isAncestorOf(p.second) || m_pTimerWindow->isAncestorOf(p.second))
+			if (isAncestorOf(p.second) || _pInfoWindow->isAncestorOf(p.second) || _pTimerWindow->isAncestorOf(p.second))
 			{
 				p.second->setStyleSheet(p.first);
 			}
 		}
 		s_listpair.clear();
 
-		ui->webView->page()->settings()->setUserStyleSheetUrl(csses[QWEBVIEWCSS_NORMAL]);
+		applyCss(QWEBVIEWCSS_NORMAL);
 	}
 
 }
@@ -515,29 +562,62 @@ void MainWindow::onGetNetworkReply(QNetworkReply * reply)
 
 void MainWindow::setSleepMode(bool val)
 {
-	if (m_bSleep != val)
+	if (_bSleep != val)
 	{
-		m_bSleep = val;
+		_bSleep = val;
 
-		emit this->sigToggleSleepMode(m_bSleep);
+		emit this->sigToggleSleepMode(_bSleep);
 	}
 //	qDebug("state changed");
 }
 
 bool MainWindow::isSleepMode()
 {
-	return m_bSleep;
+	return _bSleep;
+}
+
+QWidget* MainWindow::getBrowserWidget()
+{
+	if (_bUseIE)
+	{
+		return _axWidget;
+	}
+	return _webView;
+}
+
+void MainWindow::navigateTo(QString urlString)
+{
+	if (_bUseIE)
+	{
+		_axWidget->dynamicCall("Navigate(const QString&)", urlString);
+	}
+	else
+	{
+		_webView->load(QUrl(urlString));
+	}
+}
+
+void MainWindow::navigateReload()
+{
+	if (_bUseIE)
+	{
+		_axWidget->dynamicCall("Refresh()");
+	}
+	else
+	{
+		_webView->reload();
+	}
 }
 
 void MainWindow::slotTogglePanicTimer(int timeVal)
 {
 	if (timeVal > 0)
 	{
-		m_panicTimer->start(timeVal);
+		_panicTimer->start(timeVal);
 	}
 	else
 	{
-		m_panicTimer->stop();
+		_panicTimer->stop();
 	}
 }
 
@@ -545,7 +625,7 @@ void MainWindow::slotTogglePanicTimer(int timeVal)
 void MainWindow::SetWebSettings()
 {
 	useport = 13347;
-	if (bUseFiddler)
+	if (_bUseFiddler)
 	{
 		pFiddler = new FiddlerCOM::FiddlerCOMClass(this);
 
@@ -566,55 +646,58 @@ void MainWindow::SetWebSettings()
 		QNetworkProxyFactory::setApplicationProxyFactory(proxies);
 	}
 
-	KQWebPage * page = new KQWebPage();
-	ui->webView->setPage(page);
-
-	ui->webView->setContextMenuPolicy(Qt::PreventContextMenu);
-
-	if (!bUseFiddler)
+	if (!_bUseIE)
 	{
-		KQNetworkAccessManager * manager = new KQNetworkAccessManager(this);
-		ui->webView->page()->setNetworkAccessManager(manager);
-	}
-	CookieJar* jar = new CookieJar(this);
-	ui->webView->page()->networkAccessManager()->setCookieJar(jar);
-	//WebView
-	QNetworkDiskCache *cache = new QNetworkDiskCache(this);
-	cache->setCacheDirectory(QStandardPaths::writableLocation(QStandardPaths::CacheLocation));
-	cache->setMaximumCacheSize(1073741824); //about 1024MB
-	ui->webView->page()->networkAccessManager()->setCache(cache);
-	/*
-	QDir dir(QStandardPaths::writableLocation(QStandardPaths::CacheLocation));
-	if(dir.exists()){
-		dir.removeRecursively();
-	}
-	*/
+		KQWebPage * page = new KQWebPage();
+		_webView->setPage(page);
 
-	QWebSettings *websetting = QWebSettings::globalSettings();
-	//JavaScript関連設定
-	websetting->setAttribute(QWebSettings::JavascriptCanOpenWindows, true);
-	websetting->setAttribute(QWebSettings::JavascriptCanCloseWindows, true);
-	websetting->setAttribute(QWebSettings::PluginsEnabled, true);
-	websetting->setAttribute(QWebSettings::JavascriptEnabled, true);
-	//フォント設定
+		_webView->setContextMenuPolicy(Qt::PreventContextMenu);
+
+		if (!_bUseFiddler)
+		{
+			KQNetworkAccessManager * manager = new KQNetworkAccessManager(this);
+			_webView->page()->setNetworkAccessManager(manager);
+		}
+		CookieJar* jar = new CookieJar(this);
+		_webView->page()->networkAccessManager()->setCookieJar(jar);
+		//WebView
+		QNetworkDiskCache *cache = new QNetworkDiskCache(this);
+		cache->setCacheDirectory(QStandardPaths::writableLocation(QStandardPaths::CacheLocation));
+		cache->setMaximumCacheSize(1073741824); //about 1024MB
+		_webView->page()->networkAccessManager()->setCache(cache);
+		/*
+		QDir dir(QStandardPaths::writableLocation(QStandardPaths::CacheLocation));
+		if(dir.exists()){
+		dir.removeRecursively();
+		}
+		*/
+
+		QWebSettings *websetting = QWebSettings::globalSettings();
+		//JavaScript関連設定
+		websetting->setAttribute(QWebSettings::JavascriptCanOpenWindows, true);
+		websetting->setAttribute(QWebSettings::JavascriptCanCloseWindows, true);
+		websetting->setAttribute(QWebSettings::PluginsEnabled, true);
+		websetting->setAttribute(QWebSettings::JavascriptEnabled, true);
+		//フォント設定
 #if defined(Q_OS_WIN32)
-//    websetting->setFontFamily(QWebSettings::StandardFont, "ＭＳ Ｐゴシック");
-//    websetting->setFontFamily(QWebSettings::StandardFont, "MS PGothic");
-	websetting->setFontFamily(QWebSettings::StandardFont, "Meiryo UI");
-	websetting->setFontFamily(QWebSettings::SerifFont, "MS PMincho");
-	websetting->setFontFamily(QWebSettings::SansSerifFont, "MS PGothic");
-	websetting->setFontFamily(QWebSettings::FixedFont, "MS Gothic");
+		//    websetting->setFontFamily(QWebSettings::StandardFont, "ＭＳ Ｐゴシック");
+		//    websetting->setFontFamily(QWebSettings::StandardFont, "MS PGothic");
+		websetting->setFontFamily(QWebSettings::StandardFont, "Meiryo UI");
+		websetting->setFontFamily(QWebSettings::SerifFont, "MS PMincho");
+		websetting->setFontFamily(QWebSettings::SansSerifFont, "MS PGothic");
+		websetting->setFontFamily(QWebSettings::FixedFont, "MS Gothic");
 #elif defined(Q_OS_LINUX)
 #elif defined(Q_OS_MAC)
-	websetting->setFontFamily(QWebSettings::StandardFont, "ヒラギノ角ゴPro");
-	websetting->setFontFamily(QWebSettings::SerifFont, "ヒラギノ明朝Pro");
-	websetting->setFontFamily(QWebSettings::SansSerifFont, "ヒラギノ角ゴPro");
-	websetting->setFontFamily(QWebSettings::FixedFont, "Osaka");
+		websetting->setFontFamily(QWebSettings::StandardFont, "ヒラギノ角ゴPro");
+		websetting->setFontFamily(QWebSettings::SerifFont, "ヒラギノ明朝Pro");
+		websetting->setFontFamily(QWebSettings::SansSerifFont, "ヒラギノ角ゴPro");
+		websetting->setFontFamily(QWebSettings::FixedFont, "Osaka");
 #else
 #endif
 
-//    QNetworkProxyFactory::setUseSystemConfiguration(false);
-	//    updateProxyConfiguration();
+		//    QNetworkProxyFactory::setUseSystemConfiguration(false);
+		//    updateProxyConfiguration();
+	}
 }
 
 void MainWindow::AdjustVolume(int vol)
@@ -650,7 +733,7 @@ void MainWindow::AdjustVolume(int vol)
 
 	if (vol < 0)
 	{
-		if (m_bLowVol)
+		if (_bLowVol)
 		{
 			vol = 12;
 		}
@@ -683,11 +766,11 @@ void MainWindow::slotSoundEnded()
 void MainWindow::showEvent(QShowEvent *event)
 {
 	MainWindowBase::showEvent(event);
-	if (!m_pTaskbarButton)
+	if (!_pTaskbarButton)
 	{
-		m_pTaskbarButton = new QWinTaskbarButton(this);
-		m_pTaskbarButton->setWindow(windowHandle());
-		QWinTaskbarProgress * pTaskbarProgress = m_pTaskbarButton->progress();
+		_pTaskbarButton = new QWinTaskbarButton(this);
+		_pTaskbarButton->setWindow(windowHandle());
+		QWinTaskbarProgress * pTaskbarProgress = _pTaskbarButton->progress();
 		pTaskbarProgress->setVisible(true);
 
 		pTaskbarProgress->setMinimum(0);
@@ -699,10 +782,10 @@ void MainWindow::showEvent(QShowEvent *event)
 
 void MainWindow::SetProgressBarPos(int pos, int state)
 {
-	if (m_pTaskbarButton)
+	if (_pTaskbarButton)
 	{
-		QWinTaskbarProgress * pProgress = m_pTaskbarButton->progress();
-		m_pTaskbarButton->progress()->setValue(pos);
+		QWinTaskbarProgress * pProgress = _pTaskbarButton->progress();
+		_pTaskbarButton->progress()->setValue(pos);
 		switch (state)
 		{
 		case PROGRESSBARSTATE_NORMAL:
@@ -737,7 +820,7 @@ void MainWindow::SetProgressBarPos(int pos, int state)
 
 void MainWindow::on_pbMoveTogether_toggled(bool checked)
 {
-	bMoveSubTogether = checked;
+	_bMoveSubTogether = checked;
 }
 
 void MainWindow::on_pbRefresh_clicked()
@@ -750,11 +833,12 @@ void MainWindow::on_pbRefresh_clicked()
 		, this
 		, Qt::Dialog | Qt::MSWindowsFixedSizeDialogHint | Qt::FramelessWindowHint);
 	pMessageBox->setDefaultButton(QMessageBox::No);
+	pMessageBox->setAttribute(Qt::WA_DeleteOnClose, true);
 	int reply = pMessageBox->exec();
 
 	if (reply == QMessageBox::Yes)
 	{
-		ui->webView->reload();
+		navigateReload();
 	}
 
 }
@@ -767,10 +851,27 @@ void MainWindow::on_pbScreenshot_clicked()
 void MainWindow::onPanic()
 {
 	QString jsstr = QString::fromLocal8Bit("window.alert('%1'); ").arg(QString::fromLocal8Bit("パニック！"));
-	ui->webView->page()->mainFrame()->evaluateJavaScript(jsstr);
-	if (m_panicTimer)
+	if (_bUseIE)
 	{
-		m_panicTimer->stop();
+		// TODO
+		QMessageBox* pMessageBox = new QMessageBox(
+			QMessageBox::NoIcon
+			, QString::fromLocal8Bit("")
+			, QString::fromLocal8Bit("パニック！")
+			, QMessageBox::Ok
+			, this
+			, Qt::Dialog | Qt::MSWindowsFixedSizeDialogHint | Qt::FramelessWindowHint);
+		pMessageBox->setDefaultButton(QMessageBox::NoButton);
+		pMessageBox->setAttribute(Qt::WA_DeleteOnClose, true);
+		pMessageBox->exec();
+	}
+	else
+	{
+		_webView->page()->mainFrame()->evaluateJavaScript(jsstr);
+	}
+	if (_panicTimer)
+	{
+		_panicTimer->stop();
 	}
 }
 
@@ -779,11 +880,11 @@ void MainWindow::on_pbSwitchScreenshot_toggled(bool checked)
 	if (checked)
 	{
 		ShootScreen();
-		m_pScreenshotTimer->start(250);
+		_pScreenshotTimer->start(250);
 	}
 	else
 	{
-		m_pScreenshotTimer->stop();
+		_pScreenshotTimer->stop();
 	}
 }
 
@@ -791,9 +892,9 @@ void MainWindow::ShootScreen()
 {
 	if (ui->pbCheckTrasparent->isChecked())
 	{
-		ui->webView->page()->settings()->setUserStyleSheetUrl(csses[QWEBVIEWCSS_NORMAL]);
+		applyCss(QWEBVIEWCSS_NORMAL);
 	}
-	QPixmap pixmap = QPixmap::grabWidget(ui->webView);
+	QPixmap pixmap = QPixmap::grabWidget(getBrowserWidget());
 
 	QString filename = QApplication::applicationDirPath();
 	filename += "/screenshot/";
@@ -803,7 +904,46 @@ void MainWindow::ShootScreen()
 	pixmap.save(filename, "PNG");
 	if (ui->pbCheckTrasparent->isChecked())
 	{
-		ui->webView->page()->settings()->setUserStyleSheetUrl(csses[QWEBVIEWCSS_TRANSPARENT]);
+		applyCss(QWEBVIEWCSS_TRANSPARENT);
+	}
+}
+
+void MainWindow::applyCss(int css)
+{
+	if (css < 0 || css >= QWEBVIEWCSS_END)
+	{
+		return;
+	}
+	if (_bUseIE)
+	{
+		_applyCssWhenLoaded = css;
+		if (!_bIEPageLoaded)
+		{
+			return;
+		}
+
+		IDispatch* htmlDoc = _axWidget->property("Document").value<IDispatch*>();
+		if (!htmlDoc)
+		{
+			return;
+		}
+		QAxObject * htmlDocObj = new QAxObject((IUnknown*)htmlDoc);
+		if (!htmlDocObj)
+		{
+			return;
+		}
+		QAxObject * styleSheetObj = htmlDocObj->querySubObject("createStyleSheet(QString, int)", "", 0);
+		if (!styleSheetObj)
+		{
+			return;
+		}
+		styleSheetObj->setProperty("cssText", _ieCsses[css]);
+		_applyCssWhenLoaded = -1;
+		delete htmlDocObj;
+	}
+	else
+	{
+		_webView->page()->settings()->setUserStyleSheetUrl(_webViewCsses[css]);
 	}
 }
 
@@ -814,8 +954,17 @@ void MainWindow::slotScreenshotTimeout()
 
 void MainWindow::on_pbCheckLowVol_toggled(bool checked)
 {
-	m_bLowVol = checked;
+	_bLowVol = checked;
 	AdjustVolume(-1);
+}
+
+void MainWindow::slotNavigateComplete2(IDispatch*, QVariant&)
+{
+	_bIEPageLoaded = true;
+	if (_applyCssWhenLoaded >= 0)
+	{
+		applyCss(_applyCssWhenLoaded);
+	}
 }
 
 QWindowsEventFilter::QWindowsEventFilter()

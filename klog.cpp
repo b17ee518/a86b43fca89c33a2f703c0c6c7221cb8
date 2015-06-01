@@ -49,5 +49,7 @@ void KLog::RecordLog(QString filename, QString log)
 		AppendLog(file, log);
 
 		file->close();
+
+		delete file;
 	}
 }

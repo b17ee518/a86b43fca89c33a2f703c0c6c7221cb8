@@ -101,6 +101,13 @@ int main(int argc, char *argv[])
 	*/
 	//
 
+	/*
+	w->setAttribute(Qt::WA_DeleteOnClose, true);
+	wInfo->setAttribute(Qt::WA_DeleteOnClose, true);
+	wTimer->setAttribute(Qt::WA_DeleteOnClose, true);
+	wWeapon->setAttribute(Qt::WA_DeleteOnClose, true);
+	*/
+
 	w->show();
 	wInfo->show();
 	wTimer->show();

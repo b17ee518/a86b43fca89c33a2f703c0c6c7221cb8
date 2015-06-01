@@ -10,7 +10,6 @@
 #define UI_MAINWINDOW_H
 
 #include <QtCore/QVariant>
-#include <QtWebKitWidgets/QWebView>
 #include <QtWidgets/QAction>
 #include <QtWidgets/QApplication>
 #include <QtWidgets/QButtonGroup>
@@ -57,8 +56,7 @@ public:
     QPushButton *pbMinimize;
     QPushButton *pbClose;
     QFrame *webFrame;
-    QVBoxLayout *verticalLayout_2;
-    QWebView *webView;
+    QVBoxLayout *webFrame_layout;
 
     void setupUi(QMainWindow *MainWindow)
     {
@@ -271,17 +269,11 @@ public:
         webFrame->setFrameShape(QFrame::NoFrame);
         webFrame->setFrameShadow(QFrame::Plain);
         webFrame->setLineWidth(0);
-        verticalLayout_2 = new QVBoxLayout(webFrame);
-        verticalLayout_2->setSpacing(0);
-        verticalLayout_2->setContentsMargins(11, 11, 11, 11);
-        verticalLayout_2->setObjectName(QStringLiteral("verticalLayout_2"));
-        verticalLayout_2->setContentsMargins(0, 0, 0, 0);
-        webView = new QWebView(webFrame);
-        webView->setObjectName(QStringLiteral("webView"));
-        webView->setUrl(QUrl(QStringLiteral("about:blank")));
-
-        verticalLayout_2->addWidget(webView);
-
+        webFrame_layout = new QVBoxLayout(webFrame);
+        webFrame_layout->setSpacing(0);
+        webFrame_layout->setContentsMargins(11, 11, 11, 11);
+        webFrame_layout->setObjectName(QStringLiteral("webFrame_layout"));
+        webFrame_layout->setContentsMargins(0, 0, 0, 0);
 
         verticalLayout->addWidget(webFrame);
 

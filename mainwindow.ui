@@ -652,7 +652,7 @@
       <property name="lineWidth">
        <number>0</number>
       </property>
-      <layout class="QVBoxLayout" name="verticalLayout_2">
+      <layout class="QVBoxLayout" name="webFrame_layout">
        <property name="spacing">
         <number>0</number>
        </property>
@@ -668,15 +668,6 @@
        <property name="bottomMargin">
         <number>0</number>
        </property>
-       <item>
-        <widget class="QWebView" name="webView">
-         <property name="url">
-          <url>
-           <string>about:blank</string>
-          </url>
-         </property>
-        </widget>
-       </item>
       </layout>
      </widget>
     </item>
@@ -685,11 +676,6 @@
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <customwidgets>
-  <customwidget>
-   <class>QWebView</class>
-   <extends>QWidget</extends>
-   <header>QtWebKitWidgets/QWebView</header>
-  </customwidget>
   <customwidget>
    <class>KQTitleFrame</class>
    <extends>QFrame</extends>

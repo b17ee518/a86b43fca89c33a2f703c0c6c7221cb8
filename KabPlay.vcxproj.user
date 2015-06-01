@@ -3,7 +3,7 @@
   <PropertyGroup />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <QTDIR>C:\Qt\Qt5.4.1\5.4\msvc2013</QTDIR>
-    <LocalDebuggerEnvironment>PATH="$(QTDIR)\bin%3b$(PATH)</LocalDebuggerEnvironment>
+    <LocalDebuggerEnvironment>PATH=$(QTDIR)\bin%3b"$(QTDIR)\bin%3b$(PATH)</LocalDebuggerEnvironment>
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
     <RemoteDebuggerCommand>C:\KanPlayReleased\KabPlay.exe</RemoteDebuggerCommand>
     <RemoteDebuggerWorkingDirectory>C:\KanPlayReleased\</RemoteDebuggerWorkingDirectory>
@@ -16,7 +16,7 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <QTDIR>C:\Qt\Qt5.4.1\5.4\msvc2013</QTDIR>
-    <LocalDebuggerEnvironment>PATH="$(QTDIR)\bin%3b$(PATH)</LocalDebuggerEnvironment>
+    <LocalDebuggerEnvironment>PATH=$(QTDIR)\bin%3b"$(QTDIR)\bin%3b$(PATH)</LocalDebuggerEnvironment>
     <DebuggerFlavor>WindowsRemoteDebugger</DebuggerFlavor>
   </PropertyGroup>
 </Project>

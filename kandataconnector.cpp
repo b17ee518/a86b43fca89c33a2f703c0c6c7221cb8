@@ -1855,6 +1855,9 @@ QString KanDataConnector::logBattleResult(bool bWrite/*=true*/)
 	case KANBATTLETYPE_NIGHTTODAY:
 		battletypestr = QString::fromLocal8Bit("夜昼");
 		break;
+	case KANBATTLETYPE_AIR:
+		battletypestr = QString::fromLocal8Bit("昼空");
+		break;
 	case KANBATTLETYPE_COMBINED_WATER:
 		battletypestr = QString::fromLocal8Bit("連航水");
 		break;
@@ -2909,7 +2912,7 @@ bool KanDataConnector::req_sortie_night_to_day_parse()
 	//TODO night to day:
 	pksd->battledata.ReadFromJObj(jobj);
 
-	pksd->enemyhpdata = updateBattle(pksd->battledata, KANBATTLETYPE_AIR);
+	pksd->enemyhpdata = updateBattle(pksd->battledata, KANBATTLETYPE_NIGHTTODAY);
 	return true;
 }
 
@@ -2917,7 +2920,8 @@ bool KanDataConnector::req_sortie_airbattle_parse()
 {
 	pksd->battledata.ReadFromJObj(jobj);
 
-	pksd->enemyhpdata = updateBattle(pksd->battledata, KANBATTLETYPE_COMBINED_KOUKU);
+	pksd->enemyhpdata = updateBattle(pksd->battledata, KANBATTLETYPE_AIR);
+	// TODO check air???
 	return true;
 }
 

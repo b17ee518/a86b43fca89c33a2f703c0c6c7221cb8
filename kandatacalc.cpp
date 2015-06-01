@@ -177,7 +177,7 @@ int KanDataCalc::GetChargeState(int curVal, int maxVal)
     }
     else if (val < 1.0)
     {
-        return WOUNDSTATE_SMALL;
+		return CHARGESTATE_SMALL;
     }
     return CHARGESTATE_FULL;
 

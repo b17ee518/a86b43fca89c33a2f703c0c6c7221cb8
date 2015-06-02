@@ -53,6 +53,9 @@
       <Extensions>cpp;moc</Extensions>
       <SourceControlFiles>False</SourceControlFiles>
     </Filter>
+    <Filter Include="IECOM">
+      <UniqueIdentifier>{ea4ed6d2-399d-483e-abcc-3a36cab3830b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="cookiejar.cpp">
@@ -199,6 +202,9 @@
     <ClCompile Include="FiddlerCOM.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="shdocvw.cpp">
+      <Filter>IECOM</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="cookiejar.h">
@@ -308,6 +314,9 @@
   <ItemGroup>
     <ClInclude Include="FiddlerCOM.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="shdocvw.h">
+      <Filter>IECOM</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

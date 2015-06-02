@@ -14,6 +14,9 @@ void on_pbScreenshot_clicked();
 #include <QNetworkReply>
 #include <QWebView>
 #include <QAxWidget>
+#include "shdocvw.h"
+
+using namespace SHDocVw;
 
 #include <QAbstractNativeEventFilter>
 
@@ -143,7 +146,7 @@ private:
 	QWindowsEventFilter _windowsEventfilter;
 
 	QWebView* _webView = NULL;
-	QAxWidget* _axWidget = NULL;
+	WebBrowser* _axWidget = NULL;
 	bool _bUseIE = true;
 };
 

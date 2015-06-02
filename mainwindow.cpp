@@ -49,10 +49,9 @@ MainWindow::MainWindow(QWidget *parent) :
 	{
 		setAttribute(Qt::WA_TranslucentBackground, false);
 
-		_axWidget = new QAxWidget(ui->webFrame);
-		_axWidget->setControl(QString::fromUtf8("{8856F961-340A-11D0-A96B-00C04FD705A2}"));
-		_axWidget->dynamicCall("SetFullScreen(bool)", true);
-		_axWidget->dynamicCall("Navigate(const QString&)", "about:blank");
+		_axWidget = new WebBrowser(ui->webFrame);
+		_axWidget->SetFullScreen(true);
+		_axWidget->Navigate("about:blank");
 		QObject::connect(_axWidget,
 			SIGNAL(NavigateComplete2(IDispatch*, QVariant&)),
 			this,
@@ -109,7 +108,6 @@ body {
 									position:fixed;\
 									top:-16px;\
 									left:-50px;\
-									margin-left:-450px;\
 									z-index:1\
 								 }";
 	_webViewCsses[QWEBVIEWCSS_NORMAL] = (QUrl("data:text/css;charset=utf-8;base64,Ym9keSB7DQoJbWFyZ2luOjA7DQoJb3ZlcmZsb3c6aGlkZGVuDQp9DQoNCiNnYW1lX2ZyYW1lIHsNCglwb3NpdGlvbjpmaXhlZDsNCgl0b3A6LTE2cHg7DQoJbGVmdDotNTBweDsNCgl6LWluZGV4OjENCn0="));
@@ -423,50 +421,53 @@ void MainWindow::on_pbCheckTrasparent_toggled(bool checked)
 	static QList<QPair<QString, QWidget*>> s_listpair;
 	if (checked)
 	{
-		s_listpair.clear();
-
-		QList<QWidget *> lstWidget = findChildren<QWidget *>();
-		QWidget * w;
-		foreach(w, lstWidget)
+		if (!_bUseIE)
 		{
-			QPair<QString, QWidget*> pair;
-			pair.first = w->styleSheet();
-			pair.second = w;
-			s_listpair.append(pair);
-		}
+			s_listpair.clear();
 
-		lstWidget = _pInfoWindow->findChildren<QWidget *>();
-		foreach(w, lstWidget)
-		{
-			QPair<QString, QWidget*> pair;
-			pair.first = w->styleSheet();
-			pair.second = w;
-			s_listpair.append(pair);
-        }
-        lstWidget = _pTimerWindow->findChildren<QWidget *>();
-        foreach(w, lstWidget)
-        {
-            QPair<QString, QWidget*> pair;
-            pair.first = w->styleSheet();
-            pair.second = w;
-            s_listpair.append(pair);
-        }
-        lstWidget = _pWeaponWindow->findChildren<QWidget *>();
-        foreach(w, lstWidget)
-        {
-            QPair<QString, QWidget*> pair;
-            pair.first = w->styleSheet();
-            pair.second = w;
-            s_listpair.append(pair);
-        }
+			QList<QWidget *> lstWidget = findChildren<QWidget *>();
+			QWidget * w;
+			foreach(w, lstWidget)
+			{
+				QPair<QString, QWidget*> pair;
+				pair.first = w->styleSheet();
+				pair.second = w;
+				s_listpair.append(pair);
+			}
 
-		QPair<QString, QWidget*> p;
-		foreach(p, s_listpair)
-		{
-			w = p.second;
-			QString stylestr = w->styleSheet();
-			stylestr += "background-color: rgba(45, 45, 48, 30%);";
-			w->setStyleSheet(stylestr);
+			lstWidget = _pInfoWindow->findChildren<QWidget *>();
+			foreach(w, lstWidget)
+			{
+				QPair<QString, QWidget*> pair;
+				pair.first = w->styleSheet();
+				pair.second = w;
+				s_listpair.append(pair);
+			}
+			lstWidget = _pTimerWindow->findChildren<QWidget *>();
+			foreach(w, lstWidget)
+			{
+				QPair<QString, QWidget*> pair;
+				pair.first = w->styleSheet();
+				pair.second = w;
+				s_listpair.append(pair);
+			}
+			lstWidget = _pWeaponWindow->findChildren<QWidget *>();
+			foreach(w, lstWidget)
+			{
+				QPair<QString, QWidget*> pair;
+				pair.first = w->styleSheet();
+				pair.second = w;
+				s_listpair.append(pair);
+			}
+
+			QPair<QString, QWidget*> p;
+			foreach(p, s_listpair)
+			{
+				w = p.second;
+				QString stylestr = w->styleSheet();
+				stylestr += "background-color: rgba(45, 45, 48, 30%);";
+				w->setStyleSheet(stylestr);
+			}
 		}
 
 		applyCss(QWEBVIEWCSS_TRANSPARENT);
@@ -474,14 +475,17 @@ void MainWindow::on_pbCheckTrasparent_toggled(bool checked)
 	else
 	{
 		QPair<QString, QWidget*> p;
-		foreach(p, s_listpair)
+		if (!_bUseIE)
 		{
-			if (isAncestorOf(p.second) || _pInfoWindow->isAncestorOf(p.second) || _pTimerWindow->isAncestorOf(p.second))
+			foreach(p, s_listpair)
 			{
-				p.second->setStyleSheet(p.first);
+				if (isAncestorOf(p.second) || _pInfoWindow->isAncestorOf(p.second) || _pTimerWindow->isAncestorOf(p.second))
+				{
+					p.second->setStyleSheet(p.first);
+				}
 			}
+			s_listpair.clear();
 		}
-		s_listpair.clear();
 
 		applyCss(QWEBVIEWCSS_NORMAL);
 	}
@@ -589,7 +593,7 @@ void MainWindow::navigateTo(QString urlString)
 {
 	if (_bUseIE)
 	{
-		_axWidget->dynamicCall("Navigate(const QString&)", urlString);
+		_axWidget->Navigate(urlString);
 	}
 	else
 	{
@@ -601,7 +605,7 @@ void MainWindow::navigateReload()
 {
 	if (_bUseIE)
 	{
-		_axWidget->dynamicCall("Refresh()");
+		_axWidget->Refresh();
 	}
 	else
 	{
@@ -922,12 +926,13 @@ void MainWindow::applyCss(int css)
 			return;
 		}
 
-		IDispatch* htmlDoc = _axWidget->property("Document").value<IDispatch*>();
+		IDispatch* htmlDoc = _axWidget->Document();
 		if (!htmlDoc)
 		{
 			return;
 		}
-		QAxObject * htmlDocObj = new QAxObject((IUnknown*)htmlDoc);
+		QAxObject * htmlDocObj = new QAxObject(htmlDoc);
+
 		if (!htmlDocObj)
 		{
 			return;
@@ -937,9 +942,11 @@ void MainWindow::applyCss(int css)
 		{
 			return;
 		}
-		styleSheetObj->setProperty("cssText", _ieCsses[css]);
+		styleSheetObj->dynamicCall("setCssText(QString)", _ieCsses[css]);
 		_applyCssWhenLoaded = -1;
 		delete htmlDocObj;
+
+		this->repaint();
 	}
 	else
 	{
@@ -961,6 +968,11 @@ void MainWindow::on_pbCheckLowVol_toggled(bool checked)
 void MainWindow::slotNavigateComplete2(IDispatch*, QVariant&)
 {
 	_bIEPageLoaded = true;
+	if (_bUseIE)
+	{
+		on_pbCheckTrasparent_toggled(true);
+		on_pbCheckTrasparent_toggled(false);
+	}
 	if (_applyCssWhenLoaded >= 0)
 	{
 		applyCss(_applyCssWhenLoaded);

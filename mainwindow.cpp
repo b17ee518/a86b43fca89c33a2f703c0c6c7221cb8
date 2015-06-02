@@ -965,10 +965,11 @@ void MainWindow::on_pbCheckLowVol_toggled(bool checked)
 	AdjustVolume(-1);
 }
 
-void MainWindow::slotNavigateComplete2(IDispatch*, QVariant&)
+void MainWindow::slotNavigateComplete2(IDispatch*, QVariant& url)
 {
 	_bIEPageLoaded = true;
-	if (_bUseIE)
+	QString urlStr = url.toString();
+	if (urlStr.contains("app_id=854854"))
 	{
 		on_pbCheckTrasparent_toggled(true);
 		on_pbCheckTrasparent_toggled(false);

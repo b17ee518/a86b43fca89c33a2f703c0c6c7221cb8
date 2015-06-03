@@ -110,35 +110,41 @@ private slots:
 	void onPanic();
 
 private:
+	// Fiddler
+	static void __stdcall BeforeRequestFunc(int sessionID, char * fullURL, char * requestBody);
+	static void __stdcall AfterSessionCompleteFunc(int sessionID, char * mimeType, int responseCode, char * PathAndQuery, char * requestBody, char * responseBody);
+
+private:
+	void setWebSettings();
+	void applyCss(int css);
+	void shootScreen();
+	void setupCss();
+	void loadSettings();
+
+private:
 	Ui::MainWindow *ui;
 
 	bool _bUseFiddler = true;
-	int useport;
-	FiddlerCOM::FiddlerCOMClass * pFiddler;
-	static void __stdcall BeforeRequestFunc(int sessionID, char * fullURL, char * requestBody);
-	static void __stdcall AfterSessionCompleteFunc(int sessionID, char * mimeType, int responseCode, char * PathAndQuery, char * requestBody, char * responseBody);
-	void SetWebSettings();
+	int _useport = 0;
+	FiddlerCOM::FiddlerCOMClass * _pFiddler = NULL;
 
-	void ShootScreen();
-
-	void applyCss(int css);
 	bool _bIEPageLoaded = false;
 	int _applyCssWhenLoaded = -1;
 	QString _ieCsses[QWEBVIEWCSS_END];
 	QUrl _webViewCsses[QWEBVIEWCSS_END];
 	
-	InfoMainWindow * _pInfoWindow;
-	TimerMainWindow * _pTimerWindow;
-    WeaponMainWindow * _pWeaponWindow;
+	InfoMainWindow * _pInfoWindow = NULL;
+	TimerMainWindow * _pTimerWindow = NULL;
+    WeaponMainWindow * _pWeaponWindow = NULL;
 	
 	static MainWindow * s_pMainWindow;
 
-	QWinTaskbarButton * _pTaskbarButton;
+	QWinTaskbarButton * _pTaskbarButton = NULL;
 
-	bool _bMoveSubTogether;
+	bool _bMoveSubTogether = true;
 
-	QTimer * _pScreenshotTimer;
-	QTimer* _panicTimer;
+	QTimer * _pScreenshotTimer = NULL;
+	QTimer* _panicTimer = NULL;
 
 	bool _bLowVol = true;
 	bool _bSleep = false;
@@ -147,7 +153,11 @@ private:
 
 	QWebView* _webView = NULL;
 	WebBrowser* _axWidget = NULL;
-	bool _bUseIE = true;
+
+	// settings
+	bool _bUseIE = false;
+	QString _gameUrl;
+	QString _gameUrlId;
 };
 
 

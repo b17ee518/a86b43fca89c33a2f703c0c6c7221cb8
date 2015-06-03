@@ -1141,7 +1141,7 @@ void KanDataConnector::getShipChargeColors(const kcsapi_ship2 *pship, const kcsa
 		*pcol = colWhite;
 		break;
 	case CHARGESTATE_SMALL:
-		*pcol = colYellow;
+		*pcol = colGray;
 		break;
 	case CHARGESTATE_MIDDLE:
 		*pcol = colOrange;
@@ -1162,7 +1162,7 @@ void KanDataConnector::getShipChargeColors(const kcsapi_ship2 *pship, const kcsa
 		*pcol = colWhite;
 		break;
 	case CHARGESTATE_SMALL:
-		*pcol = colYellow;
+		*pcol = colGray;
 		break;
 	case CHARGESTATE_MIDDLE:
 		*pcol = colOrange;

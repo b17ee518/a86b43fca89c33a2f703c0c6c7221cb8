@@ -21,6 +21,8 @@
 #include <QHttpPart>
 
 #include <QAxWidget>
+#include <QSettings>
+#include <QSysInfo>
 
 #define SAFE_RELEASE(x) if(x) { x->Release(); x = NULL; } 
 
@@ -30,17 +32,13 @@ MainWindow::MainWindow(QWidget *parent) :
 	MainWindowBase(parent),
 	ui(new Ui::MainWindow)
 {
-	_pTaskbarButton = NULL;
+	loadSettings();
 
 	_pScreenshotTimer = new QTimer(this);
 	connect(_pScreenshotTimer, SIGNAL(timeout()), this, SLOT(slotScreenshotTimeout()));
 	_panicTimer = new QTimer(this);
 	connect(_panicTimer, SIGNAL(timeout()), this, SLOT(onPanic()));
-
-	_bUseFiddler = true;
-//	bUseFiddler = false;
-	_bUseIE = false;
-
+	
 	setMainWindow(this);
 	ui->setupUi(this);
 	ui->retranslateUi(this);
@@ -83,84 +81,13 @@ MainWindow::MainWindow(QWidget *parent) :
 
 	_bMoveSubTogether = true;
 
-	SetWebSettings();
+	setWebSettings();
+	setupCss();
 
-	/*
-	 *
-body {
-	margin:0;
-	overflow:hidden
-}
-
-#game_frame {
-	position:fixed;
-	top:-16px;
-	left:-50px;
-	z-index:1
-}
-*/
-	_ieCsses[QWEBVIEWCSS_NORMAL] = "\
-								body {\
-									margin:0;\
-									overflow:hidden\
-								}\
-								#game_frame{\
-									position:fixed;\
-									top:-16px;\
-									left:-50px;\
-									z-index:1\
-								 }";
-	_webViewCsses[QWEBVIEWCSS_NORMAL] = (QUrl("data:text/css;charset=utf-8;base64,Ym9keSB7DQoJbWFyZ2luOjA7DQoJb3ZlcmZsb3c6aGlkZGVuDQp9DQoNCiNnYW1lX2ZyYW1lIHsNCglwb3NpdGlvbjpmaXhlZDsNCgl0b3A6LTE2cHg7DQoJbGVmdDotNTBweDsNCgl6LWluZGV4OjENCn0="));
-	/*
-body {
-	margin:0;
-	overflow:hidden;
-	opacity: 0.4;
-}
-
-#game_frame {
-	position:fixed;
-	top:-16px;
-	left:-50px;
-	z-index:1;
-}
-*/
-//	csses[QWEBVIEWCSS_TRANSPARENT] = QUrl("data:text/css;charset=utf-8;base64,Ym9keSB7DQoJbWFyZ2luOjA7DQoJb3ZlcmZsb3c6aGlkZGVuOw0KCW9wYWNpdHk6IDAuNDsNCn0NCg0KI2dhbWVfZnJhbWUgew0KCXBvc2l0aW9uOmZpeGVkOw0KCXRvcDotMTZweDsNCglsZWZ0Oi01MHB4Ow0KCXotaW5kZXg6MTsNCn0=");
-
-	/*
-	body {
-	margin:0;
-	overflow:hidden;
-	opacity: 0.2;
-	}
-
-	#game_frame {
-	position:fixed;
-	top:-16px;
-	left:-50px;
-	z-index:1;
-	}
-	*/
-	_webViewCsses[QWEBVIEWCSS_TRANSPARENT] = QUrl("data:text/css;charset=utf-8;base64,Ym9keSB7DQoJbWFyZ2luOjA7DQoJb3ZlcmZsb3c6aGlkZGVuOw0KCW9wYWNpdHk6IDAuMjsNCn0NCg0KI2dhbWVfZnJhbWUgew0KCXBvc2l0aW9uOmZpeGVkOw0KCXRvcDotMTZweDsNCglsZWZ0Oi01MHB4Ow0KCXotaW5kZXg6MTsNCn0=");
-
-	// do not set opacity
-	_ieCsses[QWEBVIEWCSS_TRANSPARENT] = "\
-										body {\
-											margin:0;\
-											overflow:hidden;\
-										}\
-										#game_frame{\
-											position:fixed;\
-											top:-16px;\
-											left:-50px;\
-											z - index:1;\
-										}\
-										";
-	
-	applyCss(QWEBVIEWCSS_NORMAL);
+	navigateTo(_gameUrl);
 	
 //	navigateTo("http://www.google.com");
-	navigateTo("http://www.dmm.com/netgame/social/-/gadgets/=/app_id=854854/?f1=1&p1=0");
+//	navigateTo("http://www.dmm.com/netgame/social/-/gadgets/=/app_id=854854/?f1=1&p1=0");
 //	navigateTo("https://www.dmm.com/my/-/login/auth/");
 
 	QApplication::instance()->installNativeEventFilter(&_windowsEventfilter);
@@ -168,9 +95,9 @@ body {
 
 MainWindow::~MainWindow()
 {
-	if (pFiddler)
+	if (_pFiddler)
 	{
-		delete pFiddler;
+		delete _pFiddler;
 	}
 	delete ui;
 }
@@ -209,10 +136,9 @@ void MainWindow::postInit(InfoMainWindow *pInfo, TimerMainWindow *pTimer, Weapon
 
 	AdjustVolume(-1);
 
-	HWND hwnd = (HWND)winId();
+	HWND hwnd = (HWND)effectiveWinId();
 	RegisterPowerSettingNotification(hwnd, &GUID_CONSOLE_DISPLAY_STATE, DEVICE_NOTIFY_WINDOW_HANDLE);
 	RegisterPowerSettingNotification(hwnd, &GUID_SYSTEM_AWAYMODE, DEVICE_NOTIFY_WINDOW_HANDLE);
-
 }
 
 void MainWindow::onSubMainWindowShowHide(bool bShow, MainWindowBase *pWindow)
@@ -313,7 +239,7 @@ void MainWindow::closeEvent(QCloseEvent *e)
 
 	if (_bUseFiddler)
 	{
-		pFiddler->Shutdown();
+		_pFiddler->Shutdown();
 	}
 
 	MainWindowBase::closeEvent(e);
@@ -605,7 +531,9 @@ void MainWindow::navigateReload()
 {
 	if (_bUseIE)
 	{
-		_axWidget->Refresh();
+//		_axWidget->Refresh();
+		// refresh won't work with css
+		navigateTo(_gameUrl);
 	}
 	else
 	{
@@ -626,27 +554,26 @@ void MainWindow::slotTogglePanicTimer(int timeVal)
 }
 
 
-void MainWindow::SetWebSettings()
+void MainWindow::setWebSettings()
 {
-	useport = 13347;
 	if (_bUseFiddler)
 	{
-		pFiddler = new FiddlerCOM::FiddlerCOMClass(this);
+		_pFiddler = new FiddlerCOM::FiddlerCOMClass(this);
 
 		connect(
-			pFiddler,
+			_pFiddler,
 			SIGNAL(exception(int, const QString &, const QString &, const QString &)),
 			this,
 			SLOT(slotWebViewException(int, const QString &, const QString &, const QString &)));
 
 
-		pFiddler->SetBeforeRequest((int)&MainWindow::BeforeRequestFunc);
-		pFiddler->SetAfterSessionComplete((int)&MainWindow::AfterSessionCompleteFunc);
+		_pFiddler->SetBeforeRequest((int)&MainWindow::BeforeRequestFunc);
+		_pFiddler->SetAfterSessionComplete((int)&MainWindow::AfterSessionCompleteFunc);
 
-		pFiddler->Startup(useport, false, true);
+		_pFiddler->Startup(_useport, false, true);
 
 		QNetworkProxyFactorySet * proxies = new QNetworkProxyFactorySet();
-		proxies->init(useport);
+		proxies->init(_useport);
 		QNetworkProxyFactory::setApplicationProxyFactory(proxies);
 	}
 
@@ -849,7 +776,7 @@ void MainWindow::on_pbRefresh_clicked()
 
 void MainWindow::on_pbScreenshot_clicked()
 {
-	ShootScreen();
+	shootScreen();
 }
 
 void MainWindow::onPanic()
@@ -883,7 +810,7 @@ void MainWindow::on_pbSwitchScreenshot_toggled(bool checked)
 {
 	if (checked)
 	{
-		ShootScreen();
+		shootScreen();
 		_pScreenshotTimer->start(250);
 	}
 	else
@@ -892,7 +819,7 @@ void MainWindow::on_pbSwitchScreenshot_toggled(bool checked)
 	}
 }
 
-void MainWindow::ShootScreen()
+void MainWindow::shootScreen()
 {
 	if (ui->pbCheckTrasparent->isChecked())
 	{
@@ -910,6 +837,130 @@ void MainWindow::ShootScreen()
 	{
 		applyCss(QWEBVIEWCSS_TRANSPARENT);
 	}
+}
+
+void MainWindow::setupCss()
+{	
+	/*
+	 *
+body {
+	margin:0;
+	overflow:hidden
+}
+
+#game_frame {
+	position:fixed;
+	top:-16px;
+	left:-50px;
+	z-index:1
+}
+*/
+	_ieCsses[QWEBVIEWCSS_NORMAL] = "\
+								body {\
+									margin:0;\
+									overflow:hidden;\
+								}\
+								#game_frame{\
+									position:fixed;\
+									top:-16px;\
+									left:-50px;\
+									z-index:1\
+								 }";
+	_webViewCsses[QWEBVIEWCSS_NORMAL] = (QUrl("data:text/css;charset=utf-8;base64,Ym9keSB7DQoJbWFyZ2luOjA7DQoJb3ZlcmZsb3c6aGlkZGVuDQp9DQoNCiNnYW1lX2ZyYW1lIHsNCglwb3NpdGlvbjpmaXhlZDsNCgl0b3A6LTE2cHg7DQoJbGVmdDotNTBweDsNCgl6LWluZGV4OjENCn0="));
+	/*
+body {
+	margin:0;
+	overflow:hidden;
+	opacity: 0.4;
+}
+
+#game_frame {
+	position:fixed;
+	top:-16px;
+	left:-50px;
+	z-index:1;
+}
+*/
+//	csses[QWEBVIEWCSS_TRANSPARENT] = QUrl("data:text/css;charset=utf-8;base64,Ym9keSB7DQoJbWFyZ2luOjA7DQoJb3ZlcmZsb3c6aGlkZGVuOw0KCW9wYWNpdHk6IDAuNDsNCn0NCg0KI2dhbWVfZnJhbWUgew0KCXBvc2l0aW9uOmZpeGVkOw0KCXRvcDotMTZweDsNCglsZWZ0Oi01MHB4Ow0KCXotaW5kZXg6MTsNCn0=");
+
+	/*
+	body {
+	margin:0;
+	overflow:hidden;
+	opacity: 0.2;
+	}
+
+	#game_frame {
+	position:fixed;
+	top:-16px;
+	left:-50px;
+	z-index:1;
+	}
+	*/
+	_webViewCsses[QWEBVIEWCSS_TRANSPARENT] = QUrl("data:text/css;charset=utf-8;base64,Ym9keSB7DQoJbWFyZ2luOjA7DQoJb3ZlcmZsb3c6aGlkZGVuOw0KCW9wYWNpdHk6IDAuMjsNCn0NCg0KI2dhbWVfZnJhbWUgew0KCXBvc2l0aW9uOmZpeGVkOw0KCXRvcDotMTZweDsNCglsZWZ0Oi01MHB4Ow0KCXotaW5kZXg6MTsNCn0=");
+
+	// do not set opacity
+	_ieCsses[QWEBVIEWCSS_TRANSPARENT] = "\
+										body {\
+											margin:0;\
+											overflow:visible;\
+										}\
+										#game_frame{\
+											position:fixed;\
+											top:-16px;\
+											left:-50px;\
+											z - index:1;\
+										}\
+										";
+	
+	applyCss(QWEBVIEWCSS_NORMAL);
+}
+
+void MainWindow::loadSettings()
+{
+	QString filename = QApplication::applicationDirPath();
+	filename += "/settings.ini";
+	QSettings* setting = new QSettings(filename, QSettings::IniFormat);
+	setting->setIniCodec("UTF-8");
+
+	const QString itemUseIE = "UseIE";
+	const QString itemGameUrl = "GameUrl";
+	const QString itemUrlId = "UrlId";
+	const QString itemUsePort = "UsePort";
+	
+	setting->beginGroup("Settings");
+	if (!setting->contains(itemUseIE))
+	{
+		if (QSysInfo::WindowsVersion >= QSysInfo::WV_WINDOWS8)
+		{
+			setting->setValue(itemUseIE, true);
+		}
+		else
+		{
+			setting->setValue(itemUseIE, false);
+		}
+	}
+	if (!setting->contains(itemGameUrl))
+	{
+		setting->setValue(itemGameUrl, "http://www.dmm.com/netgame/social/-/gadgets/=/app_id=854854/?f1=1&p1=0");
+	}
+	if (!setting->contains(itemUrlId))
+	{
+		setting->setValue(itemUrlId, "app_id=854854");
+	}
+	if (!setting->contains(itemUsePort))
+	{
+		setting->setValue(itemUsePort, 13347);
+	}
+
+	_bUseIE = setting->value(itemUseIE).toBool();
+	_gameUrl = setting->value(itemGameUrl).toString();
+	_gameUrlId = setting->value(itemUrlId).toString();
+	_useport = setting->value(itemUsePort).toInt();
+
+	setting->endGroup();
+
+	delete setting;
 }
 
 void MainWindow::applyCss(int css)
@@ -937,7 +988,8 @@ void MainWindow::applyCss(int css)
 		{
 			return;
 		}
-		QAxObject * styleSheetObj = htmlDocObj->querySubObject("createStyleSheet(QString, int)", "", 0);
+
+		QAxObject * styleSheetObj = htmlDocObj->querySubObject("createStyleSheet()");
 		if (!styleSheetObj)
 		{
 			return;
@@ -945,8 +997,6 @@ void MainWindow::applyCss(int css)
 		styleSheetObj->dynamicCall("setCssText(QString)", _ieCsses[css]);
 		_applyCssWhenLoaded = -1;
 		delete htmlDocObj;
-
-		this->repaint();
 	}
 	else
 	{
@@ -956,7 +1006,7 @@ void MainWindow::applyCss(int css)
 
 void MainWindow::slotScreenshotTimeout()
 {
-	ShootScreen();
+	shootScreen();
 }
 
 void MainWindow::on_pbCheckLowVol_toggled(bool checked)
@@ -969,7 +1019,7 @@ void MainWindow::slotNavigateComplete2(IDispatch*, QVariant& url)
 {
 	_bIEPageLoaded = true;
 	QString urlStr = url.toString();
-	if (urlStr.contains("app_id=854854"))
+	if (urlStr.contains(_gameUrlId))
 	{
 		on_pbCheckTrasparent_toggled(true);
 		on_pbCheckTrasparent_toggled(false);

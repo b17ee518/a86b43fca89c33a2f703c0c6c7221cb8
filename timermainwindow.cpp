@@ -4,6 +4,7 @@
 #include "customtabledelegate.h"
 #include <QDateTime>
 #include "mainwindow.h"
+#include <QSettings>
 
 #define TIMER_UPDATETIMER_INTERVAL	250
 
@@ -72,6 +73,13 @@ void TimerMainWindow::setExpeditionTime(int n, qint64 destms, qint64 totalms, QS
 		pItem->setText(comment);
 		pItem->setTextColor(col);
 	}
+	// output ini
+	QSettings * setting = new QSettings("C:/KanPlayExpeditionTime.ini", QSettings::IniFormat);
+	setting->setIniCodec("UTF-8");
+
+	setting->setValue(QString::number(n), destms);
+
+	delete setting;
 }
 
 void TimerMainWindow::setRepairTime(int n, qint64 destms, qint64 totalms, QString comment, QColor col)

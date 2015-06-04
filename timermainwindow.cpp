@@ -73,13 +73,15 @@ void TimerMainWindow::setExpeditionTime(int n, qint64 destms, qint64 totalms, QS
 		pItem->setText(comment);
 		pItem->setTextColor(col);
 	}
-	// output ini
-	QSettings * setting = new QSettings("C:/KanPlayExpeditionTime.ini", QSettings::IniFormat);
-	setting->setIniCodec("UTF-8");
+	if (QSysInfo::WindowsVersion >= QSysInfo::WV_WINDOWS8 && MainWindow::mainWindow()->isUsingIE())
+	{
+		// output ini
+		QSettings * setting = new QSettings("C:/KanAlarm/KanAlarm/bin/Release/AppX/KanPlayExpeditionTime.ini", QSettings::IniFormat);
+		setting->setIniCodec("UTF-8");
+		setting->setValue(QString::number(n), destms);
 
-	setting->setValue(QString::number(n), destms);
-
-	delete setting;
+		delete setting;
+	}
 }
 
 void TimerMainWindow::setRepairTime(int n, qint64 destms, qint64 totalms, QString comment, QColor col)

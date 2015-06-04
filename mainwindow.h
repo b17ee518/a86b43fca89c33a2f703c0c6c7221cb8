@@ -73,6 +73,8 @@ public:
 	void navigateTo(QString urlString);
 	void navigateReload();
 
+	bool isUsingIE();
+
 signals:
 	void sigParse(const QString &PathAndQuery, const QString &requestBody, const QString &responseBody);
 	void sigTogglePanicTimer(int timeVal);

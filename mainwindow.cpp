@@ -541,6 +541,11 @@ void MainWindow::navigateReload()
 	}
 }
 
+bool MainWindow::isUsingIE()
+{
+	return _bUseIE;
+}
+
 void MainWindow::slotTogglePanicTimer(int timeVal)
 {
 	if (timeVal > 0)

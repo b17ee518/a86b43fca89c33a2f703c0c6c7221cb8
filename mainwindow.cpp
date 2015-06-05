@@ -47,15 +47,8 @@ MainWindow::MainWindow(QWidget *parent) :
 	{
 		setAttribute(Qt::WA_TranslucentBackground, false);
 
-		_axWidget = new WebBrowser(ui->webFrame);
-		_axWidget->SetFullScreen(true);
-		_axWidget->Navigate("about:blank");
-		QObject::connect(_axWidget,
-			SIGNAL(NavigateComplete2(IDispatch*, QVariant&)),
-			this,
-			SLOT(slotNavigateComplete2(IDispatch*, QVariant&)));
-		ui->webFrame_layout->addWidget(_axWidget);
-
+		rebuildIE(false);
+		
 		HWND hWnd = (HWND)this->winId();
 		LONG lStyle = ::GetWindowLong(hWnd, GWL_STYLE);
 		lStyle &= ~(WS_CAPTION | WS_THICKFRAME | WS_MINIMIZE | WS_MAXIMIZE | WS_SYSMENU);
@@ -360,7 +353,7 @@ void MainWindow::on_pbMinimize_clicked()
 	setWindowState(Qt::WindowMinimized);
 }
 
-void MainWindow::on_pbCheckTrasparent_toggled(bool checked)
+void MainWindow::on_pbCheckTransparent_toggled(bool checked)
 {
 	static QList<QPair<QString, QWidget*>> s_listpair;
 	if (checked)
@@ -549,9 +542,10 @@ void MainWindow::navigateReload()
 {
 	if (_bUseIE)
 	{
+		rebuildIE(true);
 //		_axWidget->Refresh();
 		// refresh won't work with css
-		navigateTo(_gameUrl);
+//		navigateTo(_gameUrl);
 	}
 	else
 	{
@@ -844,7 +838,7 @@ void MainWindow::on_pbSwitchScreenshot_toggled(bool checked)
 
 void MainWindow::shootScreen()
 {
-	if (ui->pbCheckTrasparent->isChecked())
+	if (ui->pbCheckTransparent->isChecked())
 	{
 		applyCss(QWEBVIEWCSS_NORMAL);
 	}
@@ -856,7 +850,7 @@ void MainWindow::shootScreen()
 	filename += QDateTime::currentDateTime().toString("yyyy_MM_dd_HH_mm_ss_zzz.png");
 
 	pixmap.save(filename, "PNG");
-	if (ui->pbCheckTrasparent->isChecked())
+	if (ui->pbCheckTransparent->isChecked())
 	{
 		applyCss(QWEBVIEWCSS_TRANSPARENT);
 	}
@@ -986,6 +980,35 @@ void MainWindow::loadSettings()
 	delete setting;
 }
 
+void MainWindow::rebuildIE(bool bNavigate)
+{
+	if (_axWidget)
+	{
+		WebBrowser* toDelete = _axWidget;
+		QTimer::singleShot(1, [toDelete, this](){
+			QObject::disconnect(toDelete,
+				SIGNAL(NavigateComplete2(IDispatch*, QVariant&)),
+				this,
+				SLOT(slotNavigateComplete2(IDispatch*, QVariant&)));
+			toDelete->clear();
+			delete toDelete; 
+		});
+	}
+
+	_axWidget = new WebBrowser(ui->webFrame);
+	_axWidget->Navigate("about:blank");
+
+	QObject::connect(_axWidget,
+		SIGNAL(NavigateComplete2(IDispatch*, QVariant&)),
+		this,
+		SLOT(slotNavigateComplete2(IDispatch*, QVariant&)));
+	ui->webFrame_layout->addWidget(_axWidget);
+	if (bNavigate)
+	{
+		navigateTo(_gameUrl);
+	}
+}
+
 void MainWindow::applyCss(int css)
 {
 	if (css < 0 || css >= QWEBVIEWCSS_END)
@@ -1017,6 +1040,7 @@ void MainWindow::applyCss(int css)
 		{
 			return;
 		}
+
 		styleSheetObj->dynamicCall("setCssText(QString)", _ieCsses[css]);
 		_applyCssWhenLoaded = -1;
 		delete htmlDocObj;
@@ -1044,8 +1068,8 @@ void MainWindow::slotNavigateComplete2(IDispatch*, QVariant& url)
 	QString urlStr = url.toString();
 	if (urlStr.contains(_gameUrlId))
 	{
-		on_pbCheckTrasparent_toggled(true);
-		on_pbCheckTrasparent_toggled(false);
+		applyCss(QWEBVIEWCSS_TRANSPARENT);
+		applyCss(QWEBVIEWCSS_NORMAL);
 	}
 	if (_applyCssWhenLoaded >= 0)
 	{

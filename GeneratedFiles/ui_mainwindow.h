@@ -51,7 +51,7 @@ public:
     QSpacerItem *horizontalSpacer_4;
     QPushButton *pbMoveTogether;
     QSpacerItem *horizontalSpacer_7;
-    QPushButton *pbCheckTrasparent;
+    QPushButton *pbCheckTransparent;
     QSpacerItem *horizontalSpacer_6;
     QPushButton *pbMinimize;
     QPushButton *pbClose;
@@ -226,16 +226,16 @@ public:
 
         horizontalLayout->addItem(horizontalSpacer_7);
 
-        pbCheckTrasparent = new QPushButton(titleFrame);
-        pbCheckTrasparent->setObjectName(QStringLiteral("pbCheckTrasparent"));
-        sizePolicy1.setHeightForWidth(pbCheckTrasparent->sizePolicy().hasHeightForWidth());
-        pbCheckTrasparent->setSizePolicy(sizePolicy1);
-        pbCheckTrasparent->setMinimumSize(QSize(20, 20));
-        pbCheckTrasparent->setMaximumSize(QSize(20, 20));
-        pbCheckTrasparent->setCheckable(true);
-        pbCheckTrasparent->setFlat(true);
+        pbCheckTransparent = new QPushButton(titleFrame);
+        pbCheckTransparent->setObjectName(QStringLiteral("pbCheckTransparent"));
+        sizePolicy1.setHeightForWidth(pbCheckTransparent->sizePolicy().hasHeightForWidth());
+        pbCheckTransparent->setSizePolicy(sizePolicy1);
+        pbCheckTransparent->setMinimumSize(QSize(20, 20));
+        pbCheckTransparent->setMaximumSize(QSize(20, 20));
+        pbCheckTransparent->setCheckable(true);
+        pbCheckTransparent->setFlat(true);
 
-        horizontalLayout->addWidget(pbCheckTrasparent);
+        horizontalLayout->addWidget(pbCheckTransparent);
 
         horizontalSpacer_6 = new QSpacerItem(16, 17, QSizePolicy::Fixed, QSizePolicy::Minimum);
 
@@ -306,7 +306,7 @@ public:
          << QApplication::translate("MainWindow", "200%", 0)
         );
         pbMoveTogether->setText(QApplication::translate("MainWindow", "\347\247\273", 0));
-        pbCheckTrasparent->setText(QApplication::translate("MainWindow", "\351\200\217", 0));
+        pbCheckTransparent->setText(QApplication::translate("MainWindow", "\351\200\217", 0));
         pbMinimize->setText(QApplication::translate("MainWindow", "-", 0));
         pbClose->setText(QApplication::translate("MainWindow", "X", 0));
     } // retranslateUi

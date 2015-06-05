@@ -98,7 +98,7 @@ protected:
 private slots:
 	void on_pbClose_clicked();
 	void on_pbMinimize_clicked();
-	void on_pbCheckTrasparent_toggled(bool checked);
+	void on_pbCheckTransparent_toggled(bool checked);
 
 	void on_pbMoveTogether_toggled(bool checked);
 	void on_pbRefresh_clicked();
@@ -122,6 +122,7 @@ private:
 	void shootScreen();
 	void setupCss();
 	void loadSettings();
+	void rebuildIE(bool bNavigate);
 
 private:
 	Ui::MainWindow *ui;

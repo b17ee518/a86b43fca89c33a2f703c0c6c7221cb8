@@ -56,6 +56,24 @@ MainWindow::MainWindow(QWidget *parent) :
 			SLOT(slotNavigateComplete2(IDispatch*, QVariant&)));
 		ui->webFrame_layout->addWidget(_axWidget);
 
+		HWND hWnd = (HWND)this->winId();
+		LONG lStyle = ::GetWindowLong(hWnd, GWL_STYLE);
+		lStyle &= ~(WS_CAPTION | WS_THICKFRAME | WS_MINIMIZE | WS_MAXIMIZE | WS_SYSMENU);
+		::SetWindowLong(hWnd, GWL_STYLE, lStyle);
+		LONG lExStyle = ::GetWindowLong(hWnd, GWL_EXSTYLE);
+		::SetWindowLong(hWnd, GWL_EXSTYLE, lExStyle | WS_EX_LAYERED | WS_EX_TOPMOST | WS_EX_TRANSPARENT);
+		typedef int (WINAPI* LPFUNC)(HWND, COLORREF, BYTE, DWORD);
+		HINSTANCE hins = ::LoadLibraryW(L"User32.DLL");
+		if (hins)
+		{
+			LPFUNC funcSetLayeredWindowAttributes = (LPFUNC)GetProcAddress(hins, "SetLayeredWindowAttributes");
+			if (funcSetLayeredWindowAttributes)
+			{
+				COLORREF clrMask = RGB(255, 255, 255);
+				funcSetLayeredWindowAttributes(hWnd, clrMask, 0, LWA_COLORKEY);
+			}
+			FreeLibrary(hins);
+		}
 	}
 	else
 	{

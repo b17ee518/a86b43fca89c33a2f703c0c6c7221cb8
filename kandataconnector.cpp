@@ -555,11 +555,20 @@ void KanDataConnector::updateFleetTable()
 
 		int alltaikyu=0;
 		int alllv=0;
+		int flagshipLv = 0;
 		int allsakuteki = 0;
-		int allsakuteki_sp = 0;
+		double allsakuteki_sp = 0;
 
-		int sakuteki_teisatsu = 0;
-		int sakuteki_dentan = 0;
+//		int sakuteki_teisatsu = 0;
+//		int sakuteki_dentan = 0;
+
+		int keijuncount = 0;
+		int kuchikucount = 0;
+		int drumcount = 0;
+		int drumedshipcount = 0;
+
+		bool bFlagshipKira = false;
+
 		foreach(int shipno, v.api_ship)
 		{
 			if (shipno <= 0)
@@ -606,6 +615,10 @@ void KanDataConnector::updateFleetTable()
 			if (condstate == CONDSTATE_KIRA)
 			{
 				kiracount++;
+				if (shipcount == 1)
+				{
+					bFlagshipKira = true;
+				}
 			}
 			if (!bNeedCharge && pmstship)
 			{
@@ -613,6 +626,15 @@ void KanDataConnector::updateFleetTable()
 				{
 					bNeedCharge = true;
 				}
+			}
+
+			if (pmstship->api_stype == SHIPTYPE_KEIJUN)
+			{
+				keijuncount++;
+			}
+			else if (pmstship->api_stype == SHIPTYPE_KUCHIKU)
+			{
+				kuchikucount++;
 			}
 
 			rd.appendCell(KQRowCellData(QString("%1:").arg(shipcount)));
@@ -629,69 +651,138 @@ void KanDataConnector::updateFleetTable()
 			for (int i=0; i<pship->api_slot.count(); i++)
 			{
 				int slotitemid = pship->api_slot[i];
-				bool bDone = false;
+				bool bHaveDrum = false;
 				foreach(const kcsapi_slotitem &v, pksd->slotitemdata)
 				{
 					if (v.api_id == slotitemid)
 					{
-						foreach(const kcsapi_mst_slotitem &item, pksd->start2data.api_mst_slotitem)
+						const kcsapi_mst_slotitem* pmstslotitem = findMstSlotItemFromSlotitemid(v.api_slotitem_id);
+						if (pmstslotitem)
 						{
-							if (item.api_id == v.api_slotitem_id)
+							if (pmstslotitem->api_type.count() > 2)
 							{
-								if (item.api_type.count() > 2)
+								int type = pmstslotitem->api_type[2];
+								
+								// taikyu
+								if (type == SLOTITEMTYPE_KANSEN
+									|| type == SLOTITEMTYPE_KANBAKU
+									|| type == SLOTITEMTYPE_KANKOU
+									|| type == SLOTITEMTYPE_SUIBAKU)
 								{
-									int type = item.api_type[2];
-									if (type == SLOTITEMTYPE_KANSEN
-										|| type == SLOTITEMTYPE_KANBAKU
-										|| type == SLOTITEMTYPE_KANKOU
-										|| type == SLOTITEMTYPE_SUIBAKU)
-									{
-										taikyu += (int)(item.api_tyku*sqrt((double)pship->api_onslot[i]));
-										bDone = true;
-										break;
-									}
-									if (type == SLOTITEMTYPE_TEISATSU || type == SLOTITEMTYPE_SUITEI)
-									{
-										sakuteki_teisatsu += item.api_saku;
-									}
-									if (type == SLOTITEMTYPE_DENTAN_L || type == SLOTITEMTYPE_DENTAN_S)
-									{
-										sakuteki_dentan += item.api_saku;
-									}
+									taikyu += (int)(pmstslotitem->api_tyku*sqrt((double)pship->api_onslot[i]));
+								}
+
+								// drum
+								if (type == SLOTITEMTYPE_YUSOU)
+								{
+									drumcount++;
+									bHaveDrum = true;
+								}
+
+								// sakuteki
+								// old
+								/*
+								if (type == SLOTITEMTYPE_TEISATSU || type == SLOTITEMTYPE_SUITEI)
+								{
+								sakuteki_teisatsu += item.api_saku;
+								}
+								if (type == SLOTITEMTYPE_DENTAN_L || type == SLOTITEMTYPE_DENTAN_S)
+								{
+								sakuteki_dentan += item.api_saku;
+								}
+								*/
+								// new
+								switch (type)
+								{
+								case SLOTITEMTYPE_KANBAKU:
+									allsakuteki_sp += pmstslotitem->api_saku * 1.0376255;
+									break;
+								case SLOTITEMTYPE_KANKOU:
+									allsakuteki_sp += pmstslotitem->api_saku * 1.3677954;
+									break;
+								case SLOTITEMTYPE_TEISATSU:
+									allsakuteki_sp += pmstslotitem->api_saku * 1.6592780;
+									break;
+								case SLOTITEMTYPE_SUITEI:
+									allsakuteki_sp += pmstslotitem->api_saku * 2.0;
+									break;
+								case SLOTITEMTYPE_SUIBAKU:
+									allsakuteki_sp += pmstslotitem->api_saku * 1.7787282;
+									break;
+								case SLOTITEMTYPE_DENTAN_S:
+									allsakuteki_sp += pmstslotitem->api_saku * 1.0045358;
+									break;
+								case SLOTITEMTYPE_DENTAN_L:
+									allsakuteki_sp += pmstslotitem->api_saku * 0.9906638;
+									break;
+								case SLOTITEMTYPE_TANSYOUTOU:
+									allsakuteki_sp += pmstslotitem->api_saku * 0.9067950;
+									break;
+								default:
+									break;
 								}
 							}
 						}
-						if (bDone)
-						{
-							break;
-						}
 					}
+				}
+				if (bHaveDrum)
+				{
+					drumedshipcount++;
 				}
 			}
 			alltaikyu += taikyu;
 			alllv += pship->api_lv;
+			if (flagshipLv <= 0)
+			{
+				flagshipLv = pship->api_lv;
+			}
 			allsakuteki += pship->api_sakuteki[0];
+			allsakuteki_sp += sqrt((double)pship->api_sakuteki[0]) * 1.6841056;
 
 			rows.append(rd);
 		}
 
-		allsakuteki_sp = (int)(sakuteki_teisatsu * 2 + sakuteki_dentan + sqrt((double)(allsakuteki - sakuteki_dentan - sakuteki_teisatsu)));
+//		allsakuteki_sp = (int)(sakuteki_teisatsu * 2 + sakuteki_dentan + sqrt((double)(allsakuteki - sakuteki_dentan - sakuteki_teisatsu)));
+		allsakuteki_sp += ((pksd->portdata.api_basic.api_level + 5) / 5) * 5 * (-0.6142467);
 
 		int colindex = 0;
 		if (bNeedCharge || bCondDown)
 		{
-			colindex = 3;
+			// need hokyu
+			colindex = 4;
 		}
-		else if (kiracount == shipcount)
+		else if (kiracount == 6)
 		{
+			// 6 kira
 			colindex = 2;
 		}
-		else if (kiracount)
+		else if (kiracount >= 4 
+			&& keijuncount == 1 
+			&& kuchikucount == 5 
+			&& drumcount >= 6
+			&& drumedshipcount >= 3
+			&& flagshipLv >= 50
+			&& alllv >= 200)
+		{
+			// toukyu 1
+			colindex = 3;
+		}
+		else if (kiracount >= 4
+			&& kuchikucount >= 5
+			&& drumcount >= 10
+			&& drumedshipcount >= 4
+			&& flagshipLv >= 65
+			&& alllv >= 240)
+		{
+			// toukyu 2
+			colindex = 3;
+		}
+		else if (kiracount && bFlagshipKira)
 		{
 			colindex = 1;
 		}
 
-		QString strtitle = QString::fromLocal8Bit("%1 (Lv計:%2 制空:%3 索敵:%4[%5])").arg(v.api_name).arg(alllv).arg(alltaikyu).arg(allsakuteki).arg(allsakuteki_sp);
+		QString strtitle = QString::fromLocal8Bit("%1 (Lv計:%2 制空:%3 索敵:%4[%5])").arg(v.api_name).arg(alllv).arg(alltaikyu).arg(allsakuteki).arg((int)allsakuteki_sp);
 		MainWindow::infoWindow()->updateFleetTable(v.api_id-1, strtitle, colindex, bRed, rows);
 	}
 
@@ -2442,24 +2533,62 @@ bool KanDataConnector::req_hensei_change_parse()
 	else
 	{
 		int prev = -1;
-		int previndex = -1;
-		if (lstship->count() >= index + 1)
+//		int previndex = -1;
+
+		bool bDone = false;
+
+		// shipid was in some team (including self)
+		int teamcount = pksd->portdata.api_deck_port.count();
+		for (int i = 0; i < teamcount; i++)
 		{
-			prev = (*lstship)[index];
-			for (int i = 0; i<lstship->count(); i++)
+			QList<int> * lstteamship = &(pksd->portdata.api_deck_port[i].api_ship);
+			int teamshipcount = lstteamship->count();
+			for (int j = 0; j < teamshipcount; j++)
 			{
-				if ((*lstship)[i] == shipid)
+				if (lstteamship->at(j) == shipid)
 				{
-					previndex = i;
-					break;
+					// swap with current
+					if (lstship->count() >= index + 1)
+					{
+						prev = lstship->at(index);
+						(*lstship)[index] = shipid;
+						(*lstteamship)[j] = prev;
+						bDone = true;
+						break;
+					}
 				}
+			}
+			if (bDone)
+			{
+				break;
 			}
 		}
 
-		(*lstship)[index] = shipid;
-		if (previndex >= 0)
+		if (!bDone)
 		{
-			(*lstship)[previndex] = prev;
+			// shipid was free
+			(*lstship)[index] = shipid;
+
+			/*
+			if (lstship->count() >= index + 1)
+			{
+				prev = (*lstship)[index];
+				for (int i = 0; i < lstship->count(); i++)
+				{
+					if ((*lstship)[i] == shipid)
+					{
+						previndex = i;
+						break;
+					}
+				}
+			}
+
+			(*lstship)[index] = shipid;
+			if (previndex >= 0)
+			{
+				(*lstship)[previndex] = prev;
+			}
+			*/
 		}
 	}
 	updateFleetTable();

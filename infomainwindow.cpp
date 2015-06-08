@@ -89,25 +89,31 @@ void InfoMainWindow::updateFleetTable(int n, QString buttonTitle, int colindex, 
 			color:white;    \
 			text-align: left;\
 		}   \
-		",  // normal
+		",  // normal 0
 		"\
 			QPushButton {   \
 			color:rgb(153, 255, 255);    \
 			text-align: left;\
 		}   \
-		",  // have kira
+		",  // have kira 1
 		"\
 		QPushButton {   \
 			color:rgb(255, 255, 0);    \
 			text-align: left;\
 		}   \
-		",   // kira full
+		",  // kira full 2
+		"\
+		QPushButton {   \
+			color:rgb(60, 179, 113);    \
+			text-align: left;\
+		}   \
+		",   // tokyu ok 3
 		"\
 			QPushButton {   \
 			color:rgb(255, 153, 0);    \
 			text-align: left;\
 		}   \
-		"   // need hokyu
+		"   // need hokyu 4
 	};
 	static QString stylesheet_b[] =
 	{

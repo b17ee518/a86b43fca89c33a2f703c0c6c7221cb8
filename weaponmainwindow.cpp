@@ -2,6 +2,8 @@
 #include "ui_WeaponMainWindow.h"
 
 #include "mainwindow.h"
+#include "kandataconnector.h"
+#include "kansavedata.h"
 
 #define QPROPERTY_SLOTITEMID	"slotitem_id"
 
@@ -84,11 +86,63 @@ bool UIWeaponGroupData::higherThan(const UIWeaponGroupData& left, const UIWeapon
 void WeaponMainWindow::buildTable()
 {
 	doNotRecordLast = true;
-	qSort(weaponGroupList.begin(), weaponGroupList.end(), UIWeaponGroupData::higherThan);
 	if (!isVisible() || !needRebuildTable)
 	{
 		return;
 	}
+
+	//
+	// build here
+
+	KanDataConnector * pkdc = &KanDataConnector::getInstance();
+	KanSaveData * pksd = &KanSaveData::getInstance();
+	foreach(const kcsapi_slotitem& v, pksd->slotitemdata)
+	{
+		bool bLocked = v.api_locked > 0;
+		int level = v.api_level;
+		int slotitemId = v.api_slotitem_id;
+		auto slotitem = pkdc->findMstSlotItemFromSlotitemid(slotitemId);
+		QString itemname;
+		int rare = 0;
+		if (slotitem)
+		{
+			itemname = slotitem->api_name;
+			rare = slotitem->api_rare;
+		}
+		QString shipname;
+		int shipid = -1;
+		int shiplv = 0;
+		foreach(const kcsapi_ship2& ship, pksd->portdata.api_ship)
+		{
+			foreach(int itemid, ship.api_slot)
+			{
+				if (itemid == v.api_id)
+				{
+					shipid = ship.api_ship_id;
+					shiplv = ship.api_lv;
+					break;
+				}
+			}
+			if (shipid >= 0)
+			{
+				break;
+			}
+		}
+		if (shipid >= 0)
+		{
+			auto mstship = pkdc->findMstShipFromShipid(shipid);
+			if (mstship)
+			{
+				shipname = mstship->api_name;
+			}
+		}
+
+		MainWindow::weaponWindow()->addWeaponData(slotitemId, itemname, rare, bLocked, level, shipname, shiplv);
+	}
+	//
+
+	qSort(weaponGroupList.begin(), weaponGroupList.end(), UIWeaponGroupData::higherThan);
+
 	for (QList<KQUI_CollapsibleFrame*>::iterator it = lstCollapsibleFrames.begin(); it != lstCollapsibleFrames.end(); ++it)
 	{
 		delete *it;
@@ -439,7 +493,7 @@ void WeaponMainWindow::slotTextChanged(QString text)
 	{
 		foreach(auto pFrame, lstCollapsibleFrames)
 		{
-			if (pFrame->pushButton()->text().contains(text))
+			if (pFrame->pushButton()->text().contains(text, Qt::CaseInsensitive))
 			{
 				pFrame->setVisible(true);
 			}

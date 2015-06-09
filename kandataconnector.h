@@ -43,6 +43,13 @@ public:
 
 public:
 	bool Parse(QString pathAndQuery, QString requestBody, QString responseBody);
+	
+	kcsapi_ship2 *findShipFromShipno(int shipno);
+	const kcsapi_mst_ship *findMstShipFromShipid(int shipid) const;
+	const QString findMstShipTypeNameFromSType(int stype) const;
+	const Api_Mst_Mission *findMstMissionFromMissionid(int missionid) const;
+	kcsapi_slotitem *findSlotitemFromId(int id);
+	const kcsapi_mst_slotitem *findMstSlotItemFromSlotitemid(int slotitemid) const;
 
 private:
 	void updateOverviewTable();
@@ -80,13 +87,6 @@ private:
 	bool AddSlotItem(const kcsapi_slotitem& item);
 	bool AddShip(int shipid, const QList<int>& slotitems);
 	bool AddSlotItem(int id, int slotitemId);
-
-	kcsapi_ship2 *findShipFromShipno(int shipno);
-	const kcsapi_mst_ship *findMstShipFromShipid(int shipid) const;
-	const Api_Mst_Mission *findMstMissionFromMissionid(int missionid) const;
-	kcsapi_slotitem *findSlotitemFromId(int id);
-	const kcsapi_mst_slotitem *findMstSlotItemFromSlotitemid(int slotitemid) const;
-
 
 private:
 

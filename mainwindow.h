@@ -8,6 +8,7 @@ void on_pbScreenshot_clicked();
 #include "infomainwindow.h"
 #include "timermainwindow.h"
 #include "weaponmainwindow.h"
+#include "shipmainwindow.h"
 #include "FiddlerCOM.h"
 #include <QShowEvent>
 #include <QWinTaskbarButton>
@@ -55,10 +56,11 @@ public:
 
 	static MainWindow * mainWindow(){return s_pMainWindow;}
 	static void setMainWindow(MainWindow * pWindow){s_pMainWindow = pWindow;}
-    void postInit(InfoMainWindow * pInfo, TimerMainWindow * pTimer, WeaponMainWindow *pWeapon);
+    void postInit(InfoMainWindow * pInfo, TimerMainWindow * pTimer, WeaponMainWindow *pWeapon, ShipMainWindow* pShip);
 	static InfoMainWindow * infoWindow(){return s_pMainWindow->_pInfoWindow;}
 	static TimerMainWindow * timerWindow(){return s_pMainWindow->_pTimerWindow;}
     static WeaponMainWindow * weaponWindow(){return s_pMainWindow->_pWeaponWindow;}
+	static ShipMainWindow * shipWindow(){ return s_pMainWindow->_pShipWindow; }
 
 	void AdjustVolume(int vol);
 	void onSubMainWindowShowHide(bool bShow, MainWindowBase * pWindow);
@@ -139,6 +141,7 @@ private:
 	InfoMainWindow * _pInfoWindow = NULL;
 	TimerMainWindow * _pTimerWindow = NULL;
     WeaponMainWindow * _pWeaponWindow = NULL;
+	ShipMainWindow* _pShipWindow = NULL;
 	
 	static MainWindow * s_pMainWindow;
 

@@ -531,8 +531,14 @@ void KanDataConnector::updateRepairTable()
 
 void KanDataConnector::updateFleetTable()
 {
-	KanSaveData * pksd = &KanSaveData::getInstance();
+	if (!pksd->portdata.api_ship.size())
+	{
+		return;
+	}
 
+	MainWindow::shipWindow()->clearShipData();
+
+	KanSaveData * pksd = &KanSaveData::getInstance();
 	foreach (const kcsapi_deck &v, pksd->portdata.api_deck_port)
 	{
 		// No.
@@ -786,7 +792,7 @@ void KanDataConnector::updateFleetTable()
 		MainWindow::infoWindow()->updateFleetTable(v.api_id-1, strtitle, colindex, bRed, rows);
 	}
 
-
+	MainWindow::shipWindow()->buildTable();
 }
 
 void KanDataConnector::updateExpeditionTable()
@@ -1103,49 +1109,6 @@ void KanDataConnector::updateWeaponTable()
         return;
     }
     MainWindow::weaponWindow()->clearWeaponData();
-    foreach (const kcsapi_slotitem& v, pksd->slotitemdata)
-    {
-        bool bLocked = v.api_locked>0;
-        int level = v.api_level;
-        int slotitemId = v.api_slotitem_id;
-        auto slotitem = findMstSlotItemFromSlotitemid(slotitemId);
-        QString itemname;
-        int rare = 0;
-        if (slotitem)
-        {
-            itemname = slotitem->api_name;
-            rare = slotitem->api_rare;
-        }
-        QString shipname;
-        int shipid = -1;
-        int shiplv = 0;
-        foreach(const kcsapi_ship2& ship, pksd->portdata.api_ship)
-        {
-            foreach(int itemid, ship.api_slot)
-            {
-                if (itemid == v.api_id)
-                {
-                    shipid = ship.api_ship_id;
-                    shiplv = ship.api_lv;
-                    break;
-                }
-            }
-            if (shipid >= 0)
-            {
-                break;
-            }
-        }
-        if (shipid >= 0)
-        {
-            auto mstship = findMstShipFromShipid(shipid);
-            if (mstship)
-            {
-                shipname = mstship->api_name;
-            }
-        }
-
-        MainWindow::weaponWindow()->addWeaponData(slotitemId, itemname, rare, bLocked, level, shipname, shiplv);
-    }
     MainWindow::weaponWindow()->buildTable();
 }
 
@@ -1436,6 +1399,19 @@ const kcsapi_mst_ship *KanDataConnector::findMstShipFromShipid(int shipid) const
 	}
 	qDebug("No mst ship data.");
 	return 0;
+}
+
+const QString KanDataConnector::findMstShipTypeNameFromSType(int stype) const
+{
+	foreach(auto v, pksd->start2data.api_mst_stype)
+	{
+		if (v.api_id == stype)
+		{
+			return v.api_name;
+		}
+	}
+	qDebug("No mst stype data.");
+	return "";
 }
 
 const Api_Mst_Mission *KanDataConnector::findMstMissionFromMissionid(int missionid) const
@@ -2389,8 +2365,16 @@ bool KanDataConnector::get_member_ship_deck_parse()
 		}
 	}
 
-
+	int decksize = pksd->portdata.api_deck_port.count();
+	if (api_ship_deck.api_deck_data.size() == decksize)
+	{
+		for (int i = 0; i < decksize; i++)
+		{
+			api_ship_deck.api_deck_data[i].api_mission = pksd->portdata.api_deck_port[i].api_mission;
+		}
+	}
 	pksd->portdata.api_deck_port = api_ship_deck.api_deck_data;
+
 	updateOverviewTable();
 	updateFleetTable();
 	updateRepairTable();
@@ -2551,8 +2535,22 @@ bool KanDataConnector::req_hensei_change_parse()
 					if (lstship->count() >= index + 1)
 					{
 						prev = lstship->at(index);
-						(*lstship)[index] = shipid;
-						(*lstteamship)[j] = prev;
+						if (prev < 0)
+						{
+							lstship->removeAt(j);
+							if (i == team-1)
+							{
+								index--;
+							}
+						}
+						else
+						{
+							(*lstteamship)[j] = prev;
+						}
+						if (index >= 0 && index < lstteamship->count())
+						{
+							(*lstship)[index] = shipid;
+						}
 						bDone = true;
 						break;
 					}

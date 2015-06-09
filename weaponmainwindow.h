@@ -66,7 +66,8 @@ public:
 private:
 
     void buildSingleTable(const UIWeaponGroupData& groupData);
-    void setWeaponColumnFormat(KQUI_CollapsibleFrame* pFrame);
+	void setWeaponColumnFormat(KQUI_CollapsibleFrame* pFrame);
+	void setButtonColor(KQUI_CollapsibleFrame* pFrame, int colindex, bool bRed);
 
     Ui::WeaponMainWindow *ui;
 
@@ -95,7 +96,6 @@ private slots:
     void on_pbClose_clicked();
     void on_pbMinimize_clicked();
 
-	void setButtonColor(KQUI_CollapsibleFrame* pFrame, int colindex, bool bRed);
 };
 
 #endif // WeaponMainWindow_H

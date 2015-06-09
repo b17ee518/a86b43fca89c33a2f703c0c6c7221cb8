@@ -113,37 +113,49 @@ MainWindow::~MainWindow()
 	delete ui;
 }
 
-void MainWindow::postInit(InfoMainWindow *pInfo, TimerMainWindow *pTimer, WeaponMainWindow* pWeapon)
+void MainWindow::postInit(InfoMainWindow *pInfo, TimerMainWindow *pTimer, WeaponMainWindow* pWeapon, ShipMainWindow* pShip)
 {
 	_pInfoWindow = pInfo;
 	_pTimerWindow = pTimer;
-    _pWeaponWindow = pWeapon;
+	_pWeaponWindow = pWeapon;
+	_pShipWindow = pShip;
 
-    QObject::connect( this, SIGNAL( sigActivated( QWidget*, bool ) ), _pInfoWindow, SLOT( slotActivate( QWidget*, bool ) ) );
-    QObject::connect( this, SIGNAL( sigActivated( QWidget*, bool ) ), _pTimerWindow, SLOT( slotActivate( QWidget*, bool ) ) );
-    QObject::connect( this, SIGNAL( sigActivated( QWidget*, bool ) ), _pWeaponWindow, SLOT( slotActivate( QWidget*, bool ) ) );
+	QObject::connect(this, SIGNAL(sigActivated(QWidget*, bool)), _pInfoWindow, SLOT(slotActivate(QWidget*, bool)));
+	QObject::connect(this, SIGNAL(sigActivated(QWidget*, bool)), _pTimerWindow, SLOT(slotActivate(QWidget*, bool)));
+	QObject::connect(this, SIGNAL(sigActivated(QWidget*, bool)), _pWeaponWindow, SLOT(slotActivate(QWidget*, bool)));
+	QObject::connect(this, SIGNAL(sigActivated(QWidget*, bool)), _pShipWindow, SLOT(slotActivate(QWidget*, bool)));
 
-    QObject::connect( _pInfoWindow, SIGNAL( sigActivated( QWidget*, bool ) ), this, SLOT( slotActivate( QWidget*, bool ) ) );
-    QObject::connect( _pInfoWindow, SIGNAL( sigActivated( QWidget*, bool ) ), _pTimerWindow, SLOT( slotActivate( QWidget*, bool ) ) );
-    QObject::connect( _pInfoWindow, SIGNAL( sigActivated( QWidget*, bool ) ), _pWeaponWindow, SLOT( slotActivate( QWidget*, bool ) ) );
+	QObject::connect(_pInfoWindow, SIGNAL(sigActivated(QWidget*, bool)), this, SLOT(slotActivate(QWidget*, bool)));
+	QObject::connect(_pInfoWindow, SIGNAL(sigActivated(QWidget*, bool)), _pTimerWindow, SLOT(slotActivate(QWidget*, bool)));
+	QObject::connect(_pInfoWindow, SIGNAL(sigActivated(QWidget*, bool)), _pWeaponWindow, SLOT(slotActivate(QWidget*, bool)));
+	QObject::connect(_pInfoWindow, SIGNAL(sigActivated(QWidget*, bool)), _pShipWindow, SLOT(slotActivate(QWidget*, bool)));
 
-    QObject::connect( _pTimerWindow, SIGNAL( sigActivated( QWidget*, bool ) ), _pInfoWindow, SLOT( slotActivate( QWidget*, bool ) ) );
-    QObject::connect( _pTimerWindow, SIGNAL( sigActivated( QWidget*, bool ) ), _pWeaponWindow, SLOT( slotActivate( QWidget*, bool ) ) );
-    QObject::connect( _pTimerWindow, SIGNAL( sigActivated( QWidget*, bool ) ), this, SLOT( slotActivate( QWidget*, bool ) ) );
+	QObject::connect(_pTimerWindow, SIGNAL(sigActivated(QWidget*, bool)), _pInfoWindow, SLOT(slotActivate(QWidget*, bool)));
+	QObject::connect(_pTimerWindow, SIGNAL(sigActivated(QWidget*, bool)), _pWeaponWindow, SLOT(slotActivate(QWidget*, bool)));
+	QObject::connect(_pTimerWindow, SIGNAL(sigActivated(QWidget*, bool)), _pShipWindow, SLOT(slotActivate(QWidget*, bool)));
+	QObject::connect(_pTimerWindow, SIGNAL(sigActivated(QWidget*, bool)), this, SLOT(slotActivate(QWidget*, bool)));
 
-    QObject::connect( _pWeaponWindow, SIGNAL( sigActivated( QWidget*, bool ) ), _pInfoWindow, SLOT( slotActivate( QWidget*, bool ) ) );
-    QObject::connect( _pWeaponWindow, SIGNAL( sigActivated( QWidget*, bool ) ), _pTimerWindow, SLOT( slotActivate( QWidget*, bool ) ) );
-    QObject::connect( _pWeaponWindow, SIGNAL( sigActivated( QWidget*, bool ) ), this, SLOT( slotActivate( QWidget*, bool ) ) );
+	QObject::connect(_pWeaponWindow, SIGNAL(sigActivated(QWidget*, bool)), _pInfoWindow, SLOT(slotActivate(QWidget*, bool)));
+	QObject::connect(_pWeaponWindow, SIGNAL(sigActivated(QWidget*, bool)), _pTimerWindow, SLOT(slotActivate(QWidget*, bool)));
+	QObject::connect(_pWeaponWindow, SIGNAL(sigActivated(QWidget*, bool)), this, SLOT(slotActivate(QWidget*, bool)));
+	QObject::connect(_pWeaponWindow, SIGNAL(sigActivated(QWidget*, bool)), _pShipWindow, SLOT(slotActivate(QWidget*, bool)));
+
+	QObject::connect(_pShipWindow, SIGNAL(sigActivated(QWidget*, bool)), _pTimerWindow, SLOT(slotActivate(QWidget*, bool)));
+	QObject::connect(_pShipWindow, SIGNAL(sigActivated(QWidget*, bool)), this, SLOT(slotActivate(QWidget*, bool)));
+	QObject::connect(_pShipWindow, SIGNAL(sigActivated(QWidget*, bool)), _pWeaponWindow, SLOT(slotActivate(QWidget*, bool)));
+	QObject::connect(_pShipWindow, SIGNAL(sigActivated(QWidget*, bool)), _pInfoWindow, SLOT(slotActivate(QWidget*, bool)));
 
     connect(_pInfoWindow, SIGNAL(sigRestoreMinimizeToggled(bool)), this, SLOT(slotToggleRestoreMinimize(bool)));
-    connect(_pTimerWindow, SIGNAL(sigRestoreMinimizeToggled(bool)), this, SLOT(slotToggleRestoreMinimize(bool)));
-    connect(_pWeaponWindow, SIGNAL(sigRestoreMinimizeToggled(bool)), this, SLOT(slotToggleRestoreMinimize(bool)));
+	connect(_pTimerWindow, SIGNAL(sigRestoreMinimizeToggled(bool)), this, SLOT(slotToggleRestoreMinimize(bool)));
+	connect(_pWeaponWindow, SIGNAL(sigRestoreMinimizeToggled(bool)), this, SLOT(slotToggleRestoreMinimize(bool)));
+	connect(_pShipWindow, SIGNAL(sigRestoreMinimizeToggled(bool)), this, SLOT(slotToggleRestoreMinimize(bool)));
 	connect(this, SIGNAL(sigRestoreMinimizeToggled(bool)), this, SLOT(slotSelfToggleRestoreMinimize(bool)));
 
 
 	connect(ui->pbCheckInfo, SIGNAL(toggled(bool)), _pInfoWindow, SLOT(setVisible(bool)));
 	connect(ui->pbCheckTimer, SIGNAL(toggled(bool)), _pTimerWindow, SLOT(setVisible(bool)));
     connect(ui->pbCheckWeapon, SIGNAL(toggled(bool)), _pWeaponWindow, SLOT(slotSetVisible(bool)));
+	connect(ui->pbCheckShip, SIGNAL(toggled(bool)), _pShipWindow, SLOT(slotSetVisible(bool)));
 
 	AdjustVolume(-1);
 
@@ -163,10 +175,14 @@ void MainWindow::onSubMainWindowShowHide(bool bShow, MainWindowBase *pWindow)
 	{
 		pButton = ui->pbCheckTimer;
 	}
-    else if (pWindow == _pWeaponWindow)
-    {
-        pButton = ui->pbCheckWeapon;
-    }
+	else if (pWindow == _pWeaponWindow)
+	{
+		pButton = ui->pbCheckWeapon;
+	}
+	else if (pWindow == _pShipWindow)
+	{
+		pButton = ui->pbCheckShip;
+	}
 	if (!pButton)
 	{
 		return;
@@ -219,10 +235,14 @@ void MainWindow::changeEvent(QEvent *e)
 			{
 				_pTimerWindow->hide();
 			}
-            if (!_pWeaponWindow->isDockingOnTop())
-            {
-                _pWeaponWindow->hide();
-            }
+			if (!_pWeaponWindow->isDockingOnTop())
+			{
+				_pWeaponWindow->hide();
+			}
+			if (!_pShipWindow->isDockingOnTop())
+			{
+				_pShipWindow->hide();
+			}
 //			this->setSleepMode(true);
 		}
 	}
@@ -258,6 +278,7 @@ void MainWindow::closeEvent(QCloseEvent *e)
 	_pInfoWindow->close();
 	_pTimerWindow->close();
     _pWeaponWindow->close();
+	_pShipWindow->close();
 }
 
 void MainWindow::moveEvent(QMoveEvent *e)
@@ -276,10 +297,14 @@ void MainWindow::moveEvent(QMoveEvent *e)
 		{
 			_pTimerWindow->move(_pTimerWindow->pos() + diffPos);
 		}
-        if (!_pWeaponWindow->isDockingOnTop())
-        {
-            _pWeaponWindow->move(_pWeaponWindow->pos() + diffPos);
-        }
+		if (!_pWeaponWindow->isDockingOnTop())
+		{
+			_pWeaponWindow->move(_pWeaponWindow->pos() + diffPos);
+		}
+		if (!_pShipWindow->isDockingOnTop())
+		{
+			_pShipWindow->move(_pShipWindow->pos() + diffPos);
+		}
 	}
 }
 
@@ -389,6 +414,14 @@ void MainWindow::on_pbCheckTransparent_toggled(bool checked)
 				s_listpair.append(pair);
 			}
 			lstWidget = _pWeaponWindow->findChildren<QWidget *>();
+			foreach(w, lstWidget)
+			{
+				QPair<QString, QWidget*> pair;
+				pair.first = w->styleSheet();
+				pair.second = w;
+				s_listpair.append(pair);
+			}
+			lstWidget = _pShipWindow->findChildren<QWidget *>();
 			foreach(w, lstWidget)
 			{
 				QPair<QString, QWidget*> pair;

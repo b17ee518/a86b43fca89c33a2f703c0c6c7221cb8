@@ -74,10 +74,13 @@ int main(int argc, char *argv[])
 	TimerMainWindow * wTimer = new TimerMainWindow();
 	wTimer->setWindowTitle("KanPlay - Timer");
 
-    WeaponMainWindow * wWeapon = new WeaponMainWindow();
-    wWeapon->setWindowTitle("KanPlay - Weapon");
+	WeaponMainWindow * wWeapon = new WeaponMainWindow();
+	wWeapon->setWindowTitle("KanPlay - Weapon");
 
-    w->postInit(wInfo, wTimer, wWeapon);
+	ShipMainWindow * wShip = new ShipMainWindow();
+	wShip->setWindowTitle("KanPlay - Ship");
+
+    w->postInit(wInfo, wTimer, wWeapon, wShip);
 	MainWindow::setMainWindow(w);
 	/*
 	QFile inputfile(QApplication::applicationDirPath()+"/input.txt");

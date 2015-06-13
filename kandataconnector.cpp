@@ -2513,6 +2513,10 @@ bool KanDataConnector::req_hensei_change_parse()
 	else if (shipid == -1)
 	{
 		lstship->removeAt(index);
+		while (lstship->count() < 6)
+		{
+			lstship->append(-1);
+		}
 	}
 	else
 	{
@@ -2526,6 +2530,10 @@ bool KanDataConnector::req_hensei_change_parse()
 		for (int i = 0; i < teamcount; i++)
 		{
 			QList<int> * lstteamship = &(pksd->portdata.api_deck_port[i].api_ship);
+			while (lstteamship->count() < 6)
+			{
+				lstteamship->append(-1);
+			}
 			int teamshipcount = lstteamship->count();
 			for (int j = 0; j < teamshipcount; j++)
 			{
@@ -2537,7 +2545,11 @@ bool KanDataConnector::req_hensei_change_parse()
 						prev = lstship->at(index);
 						if (prev < 0)
 						{
-							lstship->removeAt(j);
+							lstteamship->removeAt(j);
+							while (lstteamship->count() < 6)
+							{
+								lstteamship->append(-1);
+							}
 							if (i == team-1)
 							{
 								index--;
@@ -2547,7 +2559,7 @@ bool KanDataConnector::req_hensei_change_parse()
 						{
 							(*lstteamship)[j] = prev;
 						}
-						if (index >= 0 && index < lstteamship->count())
+						if (index >= 0 && index < lstship->count())
 						{
 							(*lstship)[index] = shipid;
 						}

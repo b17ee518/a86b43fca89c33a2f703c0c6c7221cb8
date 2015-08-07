@@ -1429,6 +1429,7 @@ bool kcsapi_battle::ReadFromJObj(const QJsonObject &jobj)
 	_AIREAD(api_search); //?
 	_AIREAD(api_formation); // f, e, i { null, "単縦陣", "複縦陣", "輪形陣", "梯形陣", "単横陣" } { null, "同航戦", "反航戦", "Ｔ字戦(有利)", "Ｔ字戦(不利)" }
 	_AIREAD(api_stage_flag); // ??kouku, ??support/opening?, hougeki
+	_AIREAD(api_stage_flag2);
 
 	// midnight
 	_AIREAD(api_touch_plane);

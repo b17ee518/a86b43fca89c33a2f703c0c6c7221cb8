@@ -379,13 +379,14 @@ public:
 	QList<int> api_search; //?
 	QList<int> api_formation; // f, e, i { null, "単縦陣", "複縦陣", "輪形陣", "梯形陣", "単横陣" } { null, "同航戦", "反航戦", "Ｔ字戦(有利)", "Ｔ字戦(不利)" }
 	QList<int> api_stage_flag; // kouku stage1~3
+	QList<int> api_stage_flag2; // kouku stage1~3 for combine or 1-6
 
 	// midnight
 	QList<int> api_touch_plane;
 	QList<int> api_flare_pos;
 
 	kcsapi_battle_kouku api_kouku;
-	// combine
+	// combine or 1-6
 	kcsapi_battle_kouku api_kouku2;
 
 	int api_support_flag; //空爆1　砲撃2　雷撃3

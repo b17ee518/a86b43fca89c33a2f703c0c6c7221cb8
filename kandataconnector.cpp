@@ -226,8 +226,8 @@ KanDataConnector::KanDataConnector(void)
 	req_combined_battle_midnight_battle_flag = PARSEFLAG_OUTPUT;
 	req_combined_battle_sp_midnight_flag = PARSEFLAG_OUTPUT;
 
-	req_kaisou_remodeling_flag = PARSEFLAG_OUTPUT;
-	req_kousyou_remodel_slot_flag = PARSEFLAG_OUTPUT;
+//	req_kaisou_remodeling_flag = PARSEFLAG_OUTPUT;
+//	req_kousyou_remodel_slot_flag = PARSEFLAG_OUTPUT;
 }
 
 bool KanDataConnector::Parse(QString _pathAndQuery, QString _requestBody, QString _responseBody)
@@ -1549,21 +1549,34 @@ QList<int> KanDataConnector::updateBattle(const kcsapi_battle &api_battle, int t
 					{
 						totalfdamage_combined[i] += api_battle.api_kouku.api_stage3_combined.api_fdam[i];
 					}
+				}
 
+			}
+		}
+		int stageflagcount2 = api_battle.api_stage_flag2.count();
+		if (stageflagcount2 >= 3)
+		{
+			//　航空ダメージ
+			if (api_battle.api_stage_flag2[2] > 0)
+			{
+				// kouku2
+				for (int i = 1; i < api_battle.api_kouku2.api_stage3.api_fdam.count(); i++)
+				{
+					totalfdamage[i] += api_battle.api_kouku2.api_stage3.api_fdam[i];
+				}
+				for (int i = 1; i < api_battle.api_kouku2.api_stage3.api_edam.count(); i++)
+				{
+					totaledamage[i] += api_battle.api_kouku2.api_stage3.api_edam[i];
+				}
+				if (bCombined)
+				{
 					// kouku2
-					for (int i = 1; i < api_battle.api_kouku2.api_stage3.api_fdam.count(); i++)
-					{
-						totalfdamage[i] += api_battle.api_kouku2.api_stage3.api_fdam[i];
-					}
-					for (int i = 1; i < api_battle.api_kouku2.api_stage3.api_edam.count(); i++)
-					{
-						totaledamage[i] += api_battle.api_kouku2.api_stage3.api_edam[i];
-					}
 					for (int i = 1; i < api_battle.api_kouku2.api_stage3_combined.api_fdam.count(); i++)
 					{
 						totalfdamage_combined[i] += api_battle.api_kouku2.api_stage3_combined.api_fdam[i];
 					}
 				}
+
 			}
 		}
 
@@ -2644,7 +2657,7 @@ bool KanDataConnector::req_kaisou_unsetslot_all_parse()
 	}
 
 	updateWeaponTable();
-	return false;
+	return true;
 }
 
 bool KanDataConnector::req_kousyou_getship_parse()

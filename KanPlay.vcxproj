@@ -270,6 +270,8 @@
     </ResourceCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="ControlAction.cpp" />
+    <ClCompile Include="ControlManager.cpp" />
     <ClCompile Include="cookiejar.cpp" />
     <ClCompile Include="customtabledelegate.cpp" />
     <ClCompile Include="Debug\moc_cookiejar.cpp">
@@ -402,6 +404,8 @@
     <ClCompile Include="weaponmainwindow.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="ControlAction.h" />
+    <ClInclude Include="ControlManager.h" />
     <ClInclude Include="GeneratedFiles\ui_shipmainwindow.h" />
     <ClInclude Include="shdocvw.h" />
     <CustomBuild Include="shipmainwindow.h">

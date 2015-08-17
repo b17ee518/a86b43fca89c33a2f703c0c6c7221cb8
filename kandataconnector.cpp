@@ -1467,12 +1467,14 @@ QList<int> KanDataConnector::updateBattle(const kcsapi_battle &api_battle, int t
 		if (type == KANBATTLETYPE_NIGHT || type == KANBATTLETYPE_DAYTONIGHT || dockid < 0)
 		{
 			dockid = api_battle.api_deck_id - 1;
-		}		
+		}
+		pksd->bCombined = bCombined;
 	}
 	else
 	{
 		bCombined = true;
-		dockid_combined = 1;
+		dockid_combined = dockid+1;
+		pksd->bCombined = bCombined;
 	}
 
 	QList<int> enemyhps;
@@ -1480,6 +1482,29 @@ QList<int> KanDataConnector::updateBattle(const kcsapi_battle &api_battle, int t
 	if (dockid >= 0)
 	{
 		pksd->lastbattletype = type;
+
+		if (type != KANBATTLETYPE_DAYTONIGHT
+			&& type != KANBATTLETYPE_NIGHTTODAY
+			&& type != KANBATTLETYPE_COMBINED_DAYTONIGHT)
+		{
+			pksd->lastSeiku = api_battle.api_kouku.api_stage1.api_disp_seiku;
+			pksd->lastSFormation = -1;
+			pksd->lastEFormation = -1;
+			pksd->lastIntercept = -1;
+			if (pksd->battledata.api_formation.count() > 0)
+			{
+				pksd->lastSFormation = pksd->battledata.api_formation[0];
+			}
+			if (pksd->battledata.api_formation.count() > 1)
+			{
+				pksd->lastEFormation = pksd->battledata.api_formation[1];
+			}
+			if (pksd->battledata.api_formation.count() > 2)
+			{
+				pksd->lastIntercept = pksd->battledata.api_formation[2];
+			}
+		}
+
 		pksd->lastdeckid = dockid;
 
 		QList<kcsapi_ship2*> pships;
@@ -1806,6 +1831,31 @@ void KanDataConnector::checkWoundQuit()
 			}
 		}
 	}
+	if (pksd->bCombined && !bClose)
+	{
+		int combineddeckid = lastdeckid + 1;
+		if (combineddeckid >=0 && combineddeckid < 4)
+		{
+			foreach(int shipno, pksd->portdata.api_deck_port[combineddeckid].api_ship)
+			{
+				if (shipno > 0)
+				{
+					const kcsapi_ship2 * pship = findShipFromShipno(shipno);
+					if (pship)
+					{
+						if (KanDataCalc::GetWoundState(pship->api_nowhp, pship->api_maxhp) > WOUNDSTATE_MIDDLE)
+						{
+							if (pship->api_locked > 0 || pship->api_lv > 2)
+							{
+								bClose = true;
+								break;
+							}
+						}
+					}
+				}
+			}
+		}
+	}
 	if (bClose)
 	{
 		MainWindow::mainWindow()->close();
@@ -1827,7 +1877,19 @@ QString KanDataConnector::logBattleResult(bool bWrite/*=true*/)
 		}
 	}
 
+	bool useLast = false;
+	if (pksd->lastbattletype == KANBATTLETYPE_DAYTONIGHT
+		|| pksd->lastbattletype == KANBATTLETYPE_NIGHTTODAY
+		|| pksd->lastbattletype == KANBATTLETYPE_COMBINED_DAYTONIGHT)
+	{
+		useLast = true;
+	}
+
 	int seiku = pksd->battledata.api_kouku.api_stage1.api_disp_seiku;
+	if (useLast)
+	{
+		seiku = pksd->lastSeiku;
+	}
 	QString seikustr = "-";
 	switch (seiku)
 	{
@@ -1846,34 +1908,52 @@ QString KanDataConnector::logBattleResult(bool bWrite/*=true*/)
 	}
 
 	QString sformstr = "-";
-	if (pksd->battledata.api_formation.count() > 0)
+	int sform = -1;
+	if (useLast)
 	{
-		sformstr = getFormationStr(pksd->battledata.api_formation[0]);
+		sform = pksd->lastSFormation;
 	}
+	else if (pksd->battledata.api_formation.count() > 0)
+	{
+		sform = pksd->battledata.api_formation[0];
+	}
+	sformstr = getFormationStr(sform);
 	QString eformstr = "-";
-	if (pksd->battledata.api_formation.count() > 1)
+	int eform = -1;
+	if (useLast)
 	{
-		eformstr = getFormationStr(pksd->battledata.api_formation[1]);
+		eform = pksd->lastEFormation;
 	}
+	else if (pksd->battledata.api_formation.count() > 1)
+	{
+		eform = pksd->battledata.api_formation[1];
+	}
+	eformstr = getFormationStr(eform);
 	QString interceptstr = "-";
 
-	if (pksd->battledata.api_formation.count() > 2)
+	int intercept = -1;
+	if (useLast)
 	{
-		switch (pksd->battledata.api_formation[2])
-		{
-		case 1:
-			interceptstr = QString::fromLocal8Bit("同航戦");
-			break;
-		case 2:
-			interceptstr = QString::fromLocal8Bit("反航戦");
-			break;
-		case 3:
-			interceptstr = QString::fromLocal8Bit("Ｔ字戦(有利)");
-			break;
-		case 4:
-			interceptstr = QString::fromLocal8Bit("Ｔ字戦(不利)");
-			break;
-		}
+		intercept = pksd->lastIntercept;
+	}
+	else if (pksd->battledata.api_formation.count() > 2)
+	{
+		intercept = pksd->battledata.api_formation[2];
+	}
+	switch (intercept)
+	{
+	case 1:
+		interceptstr = QString::fromLocal8Bit("同航戦");
+		break;
+	case 2:
+		interceptstr = QString::fromLocal8Bit("反航戦");
+		break;
+	case 3:
+		interceptstr = QString::fromLocal8Bit("Ｔ字戦(有利)");
+		break;
+	case 4:
+		interceptstr = QString::fromLocal8Bit("Ｔ字戦(不利)");
+		break;
 	}
 
 	QString mvpstr = "-";
@@ -2009,7 +2089,7 @@ QString KanDataConnector::getFormationStr(int formation)
 		return QString::fromLocal8Bit("第四警戒航行序列");
 		break;
 	}
-	return "";
+	return "-";
 }
 
 

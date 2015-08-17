@@ -132,8 +132,14 @@ public:
 	int shipcountoffset;
 	int slotitemcountoffset;
 	int lastbattletype;
-	int lastdeckid;
+	int lastdeckid = 0;
 	int maxslotitemid;
+	bool bCombined = false;
+
+	int lastSeiku = 0;
+	int lastSFormation = -1;
+	int lastEFormation = -1;
+	int lastIntercept = -1;
 
 private:
 	KanSaveData(void);

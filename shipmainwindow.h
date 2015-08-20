@@ -29,16 +29,16 @@ public:
 	}
 	static bool higherThan(const UIShipData& left, const UIShipData& right);
 
-	int team;
-	bool bExpedition;
+	int team = 0;
+	bool bExpedition = false;
 	QString name;
-	int lv;
-	int cond;
-	bool bNeedCharge;
-	bool bNeedRepair;
-	int drumCount;
-	int sortnum;
-	int shipid;
+	int lv = 0;
+	int cond = 0;
+	bool bNeedCharge = false;
+	bool bNeedRepair = false;
+	int drumCount = 0;
+	int sortnum = 0;
+	int shipid = 0;
 };
 
 class UIShipGroupData{

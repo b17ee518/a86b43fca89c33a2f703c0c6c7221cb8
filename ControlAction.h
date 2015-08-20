@@ -14,7 +14,7 @@ class ChangeHenseiAction : public ControlAction
 {
 public:
 	ChangeHenseiAction(const QList<int>){}
-	ChangeHenseiAction(int shipid, int wasteShipid = -1){}
+	ChangeHenseiAction(int shipid, int wasteShipid = -1){ Q_UNUSED(shipid); Q_UNUSED(wasteShipid); }
 
 	virtual bool action() override;
 

@@ -98,7 +98,7 @@ public:
 
 protected:
 	QJsonArray jarray;
-	bool bParseRet;
+	bool bParseRet = false;
 };
 
 class kcsapi_basic : public KAPIBaseData
@@ -376,6 +376,11 @@ public:
 	// combined
 	QList<QList<int>> api_fParam_combined; // from #0
 	QList<QList<int>> api_eParam; // from #0
+
+	// escape
+	QList<int> api_escape_idx;
+	QList<int> api_escape_idx_combined;
+
 	QList<int> api_search; //?
 	QList<int> api_formation; // f, e, i { null, "単縦陣", "複縦陣", "輪形陣", "梯形陣", "単横陣" } { null, "同航戦", "反航戦", "Ｔ字戦(有利)", "Ｔ字戦(不利)" }
 	QList<int> api_stage_flag; // kouku stage1~3
@@ -431,6 +436,17 @@ public:
 	QString api_ship_getmes;
 };
 
+class kcsapi_battleresult_escape : public KAPIBaseData
+{
+public:
+	kcsapi_battleresult_escape(){}
+
+	virtual bool ReadFromJObj(const QJsonObject &jobj);
+
+	QList<int> api_escape_idx;	// need to tow list
+	QList<int> api_tow_idx; // towable list
+};
+
 /**
  * @brief The kcsapi_battleresult class
  */
@@ -470,6 +486,8 @@ public:
 	int api_get_eventflag;
 	int api_get_exmap_rate;
 	int api_get_exmap_useitem_id;
+	int api_escape_flag;
+	kcsapi_battleresult_escape api_escape;
 };
 
 class kcsapi_practice_enemyinfo_deck_ships : public KAPIBaseData
@@ -537,6 +555,7 @@ public:
 	int api_slotitem_id;
     int api_locked;
 	int api_level;
+	int api_alv;
 };
 
 
@@ -818,7 +837,7 @@ public:
 	int api_maxhp;
 	int api_leng;	// short .. super long
 	QList<int> api_slot;
-	QList<int> api_onslot;
+	QList<int> api_onslot; // plane count
 	QList<int> api_kyouka;
 	int api_backs;
 	int api_fuel;
@@ -839,6 +858,7 @@ public:
 	int api_locked;
 	int api_locked_equip;
 	int api_sally_area;
+	int api_slot_ex;
 };
 
 /**

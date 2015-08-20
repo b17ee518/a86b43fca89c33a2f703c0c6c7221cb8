@@ -140,6 +140,7 @@ private:
 	bool req_combined_battle_battle_parse();
 	bool req_combined_battle_midnight_battle_parse();
 	bool req_combined_battle_sp_midnight_parse();
+	bool req_combined_battle_goback_port_parse();
 	bool get_member_practice_parse();
 	bool req_member_get_practice_enemyinfo_parse();
 	bool req_practice_battle_parse();
@@ -176,6 +177,10 @@ private:
 	bool req_furniture_music_list_parse();
 	bool req_furniture_music_play_parse();
 	bool req_furniture_set_portbgm_parse();
+	bool req_map_select_eventmap_rank_parse();
+	bool dmm_payment_paycheck_parse();
+	bool req_kaisou_open_exslot_parse();
+	bool req_kaisou_slotset_ex_parse();
 
 private:
 	int start2_flag;
@@ -228,6 +233,7 @@ private:
 	int req_combined_battle_battle_flag;
 	int req_combined_battle_midnight_battle_flag;
 	int req_combined_battle_sp_midnight_flag;
+	int req_combined_battle_goback_port_flag;
 	int get_member_practice_flag;
 	int req_member_get_practice_enemyinfo_flag;
 	int req_practice_battle_flag;
@@ -264,6 +270,10 @@ private:
 	int req_furniture_music_list_flag;
 	int req_furniture_music_play_flag;
 	int req_furniture_set_portbgm_flag;
+	int req_map_select_eventmap_rank_flag;
+	int dmm_payment_paycheck_flag;
+	int req_kaisou_open_exslot_flag;
+	int req_kaisou_slotset_ex_flag;
 
 private:
 	QColor colWhite;

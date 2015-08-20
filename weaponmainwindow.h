@@ -14,18 +14,20 @@ class UIWeaponData{
 public:
     UIWeaponData(){}
 
-    void setData(bool bLocked, int level, QString shipname, int shiplv)
+    void setData(bool bLocked, int level, QString shipname, int shiplv, int alv)
     {
         this->bLocked = bLocked;
         this->level = level;
         this->shipname = shipname;
         this->shiplv = shiplv;
+		this->alv = alv;
     }
 
-    bool bLocked;
-    int level;
+    bool bLocked = false;
+    int level = 0;
     QString shipname;
-    int shiplv;
+    int shiplv = 0;
+	int alv = 0;
 };
 
 class UIWeaponGroupData{
@@ -41,9 +43,9 @@ public:
 
 	static bool higherThan(const UIWeaponGroupData& left, const UIWeaponGroupData& right);
 
-    int id;
+    int id = 0;
     QString name;
-    int rare;
+    int rare = 0;
 
     QList<UIWeaponData> weapons;
 };
@@ -59,7 +61,7 @@ public:
     void updateWeaponTable(QList<QString> lst, QList<QColor> cols);
 
     void clearWeaponData();
-    void addWeaponData(int slotitemId, QString itemname, int rare, bool bLocked, int level, QString shipname, int shiplv);
+	void addWeaponData(int slotitemId, QString itemname, int rare, bool bLocked, int level, int alv, QString shipname, int shiplv);
 
 	void buildTable();
 

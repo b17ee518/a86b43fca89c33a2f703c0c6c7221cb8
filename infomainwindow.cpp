@@ -3,7 +3,8 @@
 
 #include "mainwindow.h"
 
-#define INFO_UPDATETIMER_INTERVAL	50
+#define INFO_UPDATETIMER_INTERVAL				50
+#define INFO_UPDATETIMER_INTERVAL_SLOW	500
 
 InfoMainWindow::InfoMainWindow(QWidget *parent) :
 	SubMainWindow(parent),
@@ -227,7 +228,7 @@ void InfoMainWindow::setFleetColumnFormat()
 void InfoMainWindow::setFleetColumnFormat(KQTableWidget *pTableWidget)
 {
 	pTableWidget->setRowCount(0);
-	pTableWidget->setColumnCount(9);
+	pTableWidget->setColumnCount(10);
 	pTableWidget->setSeparatorColumn(3);
 	/*
 	pTableWidget->setColumnWidth(0, 12);    // No.
@@ -239,6 +240,7 @@ void InfoMainWindow::setFleetColumnFormat(KQTableWidget *pTableWidget)
 	pTableWidget->setColumnWidth(6, 18);    // Bullet
 	pTableWidget->setColumnWidth(7, 56);    // Hp
 	pTableWidget->setColumnWidth(8, 18);    // State
+	pTableWidget->setColumnWidth(9, 18);    // DamekonState
 	*/
 }
 

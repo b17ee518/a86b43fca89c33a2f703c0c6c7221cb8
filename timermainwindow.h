@@ -18,16 +18,16 @@ class TimerMainWindow;
 class TimeRecord
 {
 public:
-    TimeRecord(){desttime=-1; alarmed=false;}
+	TimeRecord(){}
 
     void setValue(qint64 dtime, qint64 ttime, QString cmt, bool bAlarm=false){desttime=dtime; totaltime=ttime; comment=cmt; alarmed=bAlarm;}
-    void clear(){desttime=-1; alarmed=false;}
+	void clear(){ desttime = -1; totaltime = 0; alarmed = false; }
 
 
-    qint64 desttime;
-    qint64 totaltime;
+    qint64 desttime = -1;
+    qint64 totaltime = 0;
     QString comment;
-    bool alarmed;
+    bool alarmed = false;
 };
 
 class TimerMainWindow : public SubMainWindow

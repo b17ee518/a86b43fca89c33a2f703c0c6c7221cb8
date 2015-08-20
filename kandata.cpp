@@ -223,6 +223,14 @@ bool kcsapi_battleresult_getship::ReadFromJObj(const QJsonObject &jobj)
 	return bParseRet;
 }
 
+bool kcsapi_battleresult_escape::ReadFromJObj(const QJsonObject &jobj)
+{
+	_AIREAD(api_escape_idx);
+	_AIREAD(api_tow_idx);
+
+	return bParseRet;
+}
+
 
 bool kcsapi_battleresult::ReadFromJObj(const QJsonObject &jobj)
 {
@@ -252,6 +260,8 @@ bool kcsapi_battleresult::ReadFromJObj(const QJsonObject &jobj)
 	_IREAD(api_get_eventflag);
 	_IREAD(api_get_exmap_rate);
 	_IREAD(api_get_exmap_useitem_id);
+	_IREAD(api_escape_flag);
+	_CREAD(api_escape, kcsapi_battleresult_escape);
 
 	return bParseRet;
 
@@ -264,6 +274,7 @@ bool kcsapi_slotitem::ReadFromJObj(const QJsonObject &jobj)
 	_IREAD(api_slotitem_id);
 	_IREAD(api_locked);
 	_IREAD(api_level);
+	_IREAD(api_alv);
 
 	return bParseRet;
 
@@ -276,6 +287,7 @@ bool kcsapi_slotitem::ReadFromSlotItem(const kcsapi_slotitem& slotitem)
 		this->api_slotitem_id = slotitem.api_slotitem_id;
 		this->api_locked = slotitem.api_locked;
 		this->api_level = slotitem.api_level;
+		this->api_alv = slotitem.api_alv;
 		return true;
 	}
 	return false;
@@ -404,6 +416,7 @@ bool kcsapi_ship2::ReadFromJObj(const QJsonObject &jobj)
 	_IREAD(api_locked);
 	_IREAD(api_locked_equip);
 	_IREAD(api_sally_area);
+	_IREAD(api_slot_ex);
 
 	return bParseRet;
 
@@ -525,6 +538,7 @@ bool kcsapi_ship2::ReadFromMstShip(const kcsapi_mst_ship& mstship, int id)
 	api_locked = 0;
 	api_locked_equip = 0;
 	api_sally_area = 0;
+	api_slot_ex = -1;
 
 	return false;
 }
@@ -1426,6 +1440,10 @@ bool kcsapi_battle::ReadFromJObj(const QJsonObject &jobj)
 	// combined
 	_AAIREAD(api_fParam_combined);
 	_AAIREAD(api_eParam); // from $0
+
+	_AIREAD(api_escape_idx);
+	_AIREAD(api_escape_idx_combined);
+
 	_AIREAD(api_search); //?
 	_AIREAD(api_formation); // f, e, i { null, "単縦陣", "複縦陣", "輪形陣", "梯形陣", "単横陣" } { null, "同航戦", "反航戦", "Ｔ字戦(有利)", "Ｔ字戦(不利)" }
 	_AIREAD(api_stage_flag); // ??kouku, ??support/opening?, hougeki

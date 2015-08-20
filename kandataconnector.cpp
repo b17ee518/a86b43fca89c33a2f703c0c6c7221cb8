@@ -71,6 +71,7 @@
  /kcsapi/api_req_combined_battle/midnight_battle
  /kcsapi/api_req_combined_battle/sp_midnight
 
+ /kcsapi/api_req_combined_battle/goback_port
 
  /kcsapi/api_get_member/practice
  /kcsapi/api_req_member/get_practice_enemyinfo
@@ -100,6 +101,13 @@
  /kcsapi/api_get_member/book2
  /kcsapi/api_req_member/get_incentive
  /kcsapi/api_get_member/payitem
+ /kcsapi/api_req_map/select_eventmap_rank
+
+ /kcsapi/api_dmm_payment/paycheck
+
+ /kcsapi/api_req_kaisou/open_exslot
+ /kcsapi/api_req_kaisou/slotset_ex
+
 */
 
 bool questDataSort(const kcsapi_quest &left, const kcsapi_quest &right)
@@ -168,6 +176,7 @@ KanDataConnector::KanDataConnector(void)
 	req_combined_battle_battle_flag = PARSEFLAG_NORMAL;
 	req_combined_battle_midnight_battle_flag = PARSEFLAG_NORMAL;
 	req_combined_battle_sp_midnight_flag = PARSEFLAG_NORMAL;
+	req_combined_battle_goback_port_flag = PARSEFLAG_NORMAL;
 	get_member_practice_flag = PARSEFLAG_NORMAL;
 	req_member_get_practice_enemyinfo_flag = PARSEFLAG_NORMAL;
 	req_practice_battle_flag = PARSEFLAG_NORMAL;
@@ -204,18 +213,19 @@ KanDataConnector::KanDataConnector(void)
 	req_furniture_music_list_flag = PARSEFLAG_NORMAL;
 	req_furniture_music_play_flag = PARSEFLAG_NORMAL;
 	req_furniture_set_portbgm_flag = PARSEFLAG_NORMAL;
+	req_map_select_eventmap_rank_flag = PARSEFLAG_NORMAL;
 
 
 	/************************************************************************/
 	/*                                                                      */
 	/************************************************************************/
 
-	req_member_itemuse_cond_flag = PARSEFLAG_OUTPUT;
+//	req_member_itemuse_cond_flag = PARSEFLAG_OUTPUT;
 //	req_sortie_battleresult_flag = PARSEFLAG_OUTPUT;
 //	req_sortie_battle_flag = PARSEFLAG_OUTPUT;
 //	req_battle_midnight_battle_flag = PARSEFLAG_OUTPUT;
 //	req_battle_midnight_sp_midnight_flag = PARSEFLAG_OUTPUT;
-//	req_sortie_night_to_day_flag = PARSEFLAG_OUTPUT;
+	req_sortie_night_to_day_flag = PARSEFLAG_OUTPUT;
 //	start2_flag = PARSEFLAG_OUTPUT;
 //	port_port_flag = PARSEFLAG_OUTPUT;
 	req_sortie_airbattle_flag = PARSEFLAG_OUTPUT;
@@ -314,6 +324,7 @@ bool KanDataConnector::Parse(QString _pathAndQuery, QString _requestBody, QStrin
 		PARSEAPI("/kcsapi/api_req_combined_battle/battle", req_combined_battle_battle)
 		PARSEAPI("/kcsapi/api_req_combined_battle/midnight_battle", req_combined_battle_midnight_battle)
 		PARSEAPI("/kcsapi/api_req_combined_battle/sp_midnight", req_combined_battle_sp_midnight)
+		PARSEAPI("/kcsapi/api_req_combined_battle/goback_port", req_combined_battle_goback_port)
 		PARSEAPI("/kcsapi/api_get_member/practice", get_member_practice)
 		PARSEAPI("/kcsapi/api_req_member/get_practice_enemyinfo", req_member_get_practice_enemyinfo)
 		PARSEAPI("/kcsapi/api_req_practice/battle", req_practice_battle)
@@ -350,6 +361,11 @@ bool KanDataConnector::Parse(QString _pathAndQuery, QString _requestBody, QStrin
 		PARSEAPI("/kcsapi/api_req_furniture/music_list", req_furniture_music_list)
 		PARSEAPI("/kcsapi/api_req_furniture/music_play", req_furniture_music_play)
 		PARSEAPI("/kcsapi/api_req_furniture/set_portbgm", req_furniture_set_portbgm)
+		PARSEAPI("/kcsapi/api_req_map/select_eventmap_rank", req_map_select_eventmap_rank)
+		PARSEAPI("/kcsapi/api_dmm_payment/paycheck", dmm_payment_paycheck)
+		PARSEAPI("/kcsapi/api_req_kaisou/open_exslot", req_kaisou_open_exslot)
+		PARSEAPI("/kcsapi/api_req_kaisou/slotset_ex", req_kaisou_slotset_ex)
+		PARSEAPI("/kcsapi/api_req_member/itemuse_cond", req_member_itemuse_cond)
 
 	if (!bRet)
 	{
@@ -600,6 +616,8 @@ void KanDataConnector::updateFleetTable()
 			int condstate;
 			int woundstate;
 
+			int damekonstate = 0;
+
 			getShipColors(pship, &colCond, &colWound, &condstate, &woundstate);
 			if (pmstship)
 			{
@@ -634,29 +652,26 @@ void KanDataConnector::updateFleetTable()
 				}
 			}
 
-			if (pmstship->api_stype == SHIPTYPE_KEIJUN)
+			if (pmstship)
 			{
-				keijuncount++;
+				if (pmstship->api_stype == SHIPTYPE_KEIJUN)
+				{
+					keijuncount++;
+				}
+				else if (pmstship->api_stype == SHIPTYPE_KUCHIKU)
+				{
+					kuchikucount++;
+				}				
 			}
-			else if (pmstship->api_stype == SHIPTYPE_KUCHIKU)
-			{
-				kuchikucount++;
-			}
-
-			rd.appendCell(KQRowCellData(QString("%1:").arg(shipcount)));
-			rd.appendCell(KQRowCellData(pmstship?pmstship->api_name:"", colCond)); // tooltip?
-			rd.appendCell(KQRowCellData(QString("Lv.%1").arg(pship->api_lv), colCond));
-			rd.appendCell(KQRowCellData(QString("(%1)").arg(pship->api_cond), colCond));
-			rd.appendCell(KQRowCellData(QString::fromLocal8Bit("次:%1").arg(nextexp), colCond));
-			rd.appendCell(KQRowCellData(QString::fromLocal8Bit("燃"), colFuel));
-			rd.appendCell(KQRowCellData(QString::fromLocal8Bit("弾"), colBullet));
-			rd.appendCell(KQRowCellData(QString("(%1/%2)").arg(pship->api_nowhp).arg(pship->api_maxhp), colWound));
-			rd.appendCell(KQRowCellData(woundstatestr, colWound));
-
+			
 			int taikyu = 0;
-			for (int i=0; i<pship->api_slot.count(); i++)
+
+			QList<int> slotitems = pship->api_slot;
+			slotitems.append(pship->api_slot_ex);
+
+			for (int i = 0; i<slotitems.count(); i++)
 			{
-				int slotitemid = pship->api_slot[i];
+				int slotitemid = slotitems[i];
 				bool bHaveDrum = false;
 				foreach(const kcsapi_slotitem &v, pksd->slotitemdata)
 				{
@@ -683,6 +698,18 @@ void KanDataConnector::updateFleetTable()
 								{
 									drumcount++;
 									bHaveDrum = true;
+								}
+
+								if (type == SLOTITEMTYPE_OUKYU)
+								{
+									if (pmstslotitem->api_name == QString::fromLocal8Bit("応急修理女神"))
+									{
+										damekonstate = 2;
+									}
+									else if (damekonstate < 1)
+									{
+										damekonstate = 1;
+									}
 								}
 
 								// sakuteki
@@ -744,7 +771,27 @@ void KanDataConnector::updateFleetTable()
 			}
 			allsakuteki += pship->api_sakuteki[0];
 			allsakuteki_sp += sqrt((double)pship->api_sakuteki[0]) * 1.6841056;
+			
+			QString damekonstr = "";
+			if (damekonstate == 1)
+			{
+				damekonstr = QString::fromLocal8Bit("ダ");
+			}
+			else if (damekonstate == 2)
+			{
+				damekonstr = QString::fromLocal8Bit("女");
+			}
 
+			rd.appendCell(KQRowCellData(QString("%1:").arg(shipcount)));
+			rd.appendCell(KQRowCellData(pmstship ? pmstship->api_name : "", colCond)); // tooltip?
+			rd.appendCell(KQRowCellData(QString("Lv.%1").arg(pship->api_lv), colCond));
+			rd.appendCell(KQRowCellData(QString("(%1)").arg(pship->api_cond), colCond));
+			rd.appendCell(KQRowCellData(QString::fromLocal8Bit("次:%1").arg(nextexp), colCond));
+			rd.appendCell(KQRowCellData(QString::fromLocal8Bit("燃"), colFuel));
+			rd.appendCell(KQRowCellData(QString::fromLocal8Bit("弾"), colBullet));
+			rd.appendCell(KQRowCellData(QString("(%1/%2)").arg(pship->api_nowhp).arg(pship->api_maxhp), colWound));
+			rd.appendCell(KQRowCellData(woundstatestr, colWound));
+			rd.appendCell(KQRowCellData(damekonstr, colYellow));
 			rows.append(rd);
 		}
 
@@ -2737,6 +2784,7 @@ bool KanDataConnector::req_kaisou_unsetslot_all_parse()
 	}
 
 	updateWeaponTable();
+	updateFleetTable();
 	return true;
 }
 
@@ -3020,6 +3068,7 @@ bool KanDataConnector::req_kaisou_slotset_parse()
 	{
 		ship->api_slot[slotindex] = itemid;
 		updateWeaponTable();
+		updateFleetTable();
 		return true;
 	}
 
@@ -3223,6 +3272,12 @@ bool KanDataConnector::req_combined_battle_sp_midnight_parse()
 
 }
 
+bool KanDataConnector::req_combined_battle_goback_port_parse()
+{
+	// TODO: add flags to ship?
+	return true;
+}
+
 bool KanDataConnector::get_member_practice_parse()
 {
 	return true;
@@ -3367,6 +3422,14 @@ bool KanDataConnector::req_quest_clearitemget_parse()
 			{
 				// item
 				AddSlotItem(-1, bonus->api_item.api_id);
+			}
+			else if (bonus->api_type == 13)
+			{
+				// mamiya/ presentbox
+			}
+			else if (bonus->api_type == 99)
+			{
+				// ?
 			}
 			else
 			{
@@ -3549,5 +3612,34 @@ bool KanDataConnector::req_furniture_music_play_parse()
 
 bool KanDataConnector::req_furniture_set_portbgm_parse()
 {
+	return true;
+}
+
+bool KanDataConnector::req_map_select_eventmap_rank_parse()
+{
+	return true;
+}
+
+bool KanDataConnector::dmm_payment_paycheck_parse()
+{
+	return true;
+}
+
+bool KanDataConnector::req_kaisou_open_exslot_parse()
+{
+	return true;
+}
+
+bool KanDataConnector::req_kaisou_slotset_ex_parse()
+{
+	int slotitemid = req.GetItemAsString("api_item_id").toInt();
+	int shipno = req.GetItemAsString("api_id").toInt();
+	kcsapi_ship2* pship = findShipFromShipno(shipno);
+	if (pship)
+	{
+		pship->api_slot_ex = slotitemid;
+		updateWeaponTable();
+		updateFleetTable();
+	}
 	return true;
 }

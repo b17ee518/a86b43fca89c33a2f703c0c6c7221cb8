@@ -46,10 +46,10 @@ void WeaponMainWindow::clearWeaponData()
 	needRebuildTable = true;
 }
 
-void WeaponMainWindow::addWeaponData(int slotitemId, QString itemname, int rare, bool bLocked, int level, QString shipname, int shiplv)
+void WeaponMainWindow::addWeaponData(int slotitemId, QString itemname, int rare, bool bLocked, int level, int alv, QString shipname, int shiplv)
 {
     UIWeaponData data;
-    data.setData(bLocked, level, shipname, shiplv);
+    data.setData(bLocked, level, shipname, shiplv, alv);
     bool bDone = false;
     for (QList<UIWeaponGroupData>::iterator it=weaponGroupList.begin(); it!=weaponGroupList.end(); ++it)
     {
@@ -100,6 +100,7 @@ void WeaponMainWindow::buildTable()
 	{
 		bool bLocked = v.api_locked > 0;
 		int level = v.api_level;
+		int alv = v.api_alv;
 		int slotitemId = v.api_slotitem_id;
 		auto slotitem = pkdc->findMstSlotItemFromSlotitemid(slotitemId);
 		QString itemname;
@@ -137,7 +138,7 @@ void WeaponMainWindow::buildTable()
 			}
 		}
 
-		MainWindow::weaponWindow()->addWeaponData(slotitemId, itemname, rare, bLocked, level, shipname, shiplv);
+		MainWindow::weaponWindow()->addWeaponData(slotitemId, itemname, rare, bLocked, level, alv, shipname, shiplv);
 	}
 	//
 
@@ -234,12 +235,12 @@ void WeaponMainWindow::buildSingleTable(const UIWeaponGroupData& groupData)
 	int lockedcount = 0;
     foreach (const UIWeaponData& it, groupData.weapons)
     {
-        if (it.shipname.isEmpty())
-        {
-            sparecount++;
-            if (!it.bLocked)
-            {
-                sparenolock++;
+		if (it.shipname.isEmpty())
+		{
+			sparecount++;
+			if (!it.bLocked)
+			{
+				sparenolock++;
 				if (colindex < COLINDEX_SPARENOLOCK)
 				{
 					colindex = COLINDEX_SPARENOLOCK;
@@ -248,25 +249,23 @@ void WeaponMainWindow::buildSingleTable(const UIWeaponGroupData& groupData)
 				{
 					maxsparenolocklevel = it.level;
 				}
-            }
+			}
+		}
+        KQRowData rd;
+		rd.appendCell(KQRowCellData(QString::fromLocal8Bit("星%1").arg(it.level), it.level > 0 ? colYellow : colWhite));
+		rd.appendCell(KQRowCellData(QString::fromLocal8Bit("熟%1").arg(it.alv), it.alv > 0 ? colYellow : colWhite));
+        rd.appendCell(KQRowCellData(it.shipname));
+        rd.appendCell(KQRowCellData(QString::fromLocal8Bit("Lv.%1").arg(it.shiplv)));
+        if (it.bLocked)
+        {
+            rd.appendCell(KQRowCellData(QString::fromLocal8Bit("鎖"), colYellow));
         }
         else
         {
-            KQRowData rd;
-            rd.appendCell(KQRowCellData(QString::fromLocal8Bit("★%1").arg(it.level), it.level>0?colYellow:colWhite));
-            rd.appendCell(KQRowCellData(it.shipname));
-            rd.appendCell(KQRowCellData(QString::fromLocal8Bit("Lv.%1").arg(it.shiplv)));
-            if (it.bLocked)
-            {
-                rd.appendCell(KQRowCellData(QString::fromLocal8Bit("鎖"), colYellow));
-            }
-            else
-            {
-                rd.appendCell(KQRowCellData(QString::fromLocal8Bit("空"), colRed));
-				colindex = COLINDEX_ONNOLOCK;
-            }
-            rows.push_back(rd);
-		}
+            rd.appendCell(KQRowCellData(QString::fromLocal8Bit("空"), colRed));
+			colindex = COLINDEX_ONNOLOCK;
+        }
+        rows.push_back(rd);
 		if (it.level && !it.bLocked)
 		{
 			bRed = true;
@@ -284,7 +283,7 @@ void WeaponMainWindow::buildSingleTable(const UIWeaponGroupData& groupData)
 	{
 		colindex = COLINDEX_ALLLOCKED;
 	}
-
+	/*
 	if (sparenolock > 0)
 	{
 		KQRowData rd;
@@ -294,7 +293,7 @@ void WeaponMainWindow::buildSingleTable(const UIWeaponGroupData& groupData)
 		rd.appendCell(KQRowCellData(QString::fromLocal8Bit("空"), colRed));
 		rows.push_back(rd);
 	}
-
+	*/
     QString title = QString::fromLocal8Bit("%2 ★%1 (空:%3/廃:%4/総:%5)")
             .arg(groupData.rare)
             .arg(groupData.name)
@@ -324,12 +323,13 @@ void WeaponMainWindow::setWeaponColumnFormat(KQUI_CollapsibleFrame *pFrame)
 {
     auto pTableWidget = pFrame->tableWidget();
     pTableWidget->setRowCount(0);
-    pTableWidget->setColumnCount(4);
-    pTableWidget->setColumnWidth(0, 40);
-    pTableWidget->setColumnWidth(1, 120);
-    pTableWidget->setColumnWidth(2, 60);
-    pTableWidget->setColumnWidth(3, 18);
-    pTableWidget->setSeparatorColumn(1);
+	pTableWidget->setColumnCount(5);
+	pTableWidget->setColumnWidth(0, 40);
+	pTableWidget->setColumnWidth(1, 40);
+    pTableWidget->setColumnWidth(2, 120);
+    pTableWidget->setColumnWidth(3, 60);
+    pTableWidget->setColumnWidth(4, 18);
+    pTableWidget->setSeparatorColumn(2);
 }
 
 void WeaponMainWindow::slotOnTableSizeChanged()

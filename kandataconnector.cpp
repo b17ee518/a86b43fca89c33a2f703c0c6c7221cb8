@@ -831,7 +831,7 @@ void KanDataConnector::updateFleetTable()
 			colindex = 3;
 		}
 		else if (kiracount >= 4
-			&& kuchikucount >= 4
+			&& kuchikucount >= 3
 			&& drumcount >= 4
 			&& drumedshipcount >= 3
 			&& flagshipLv >= 50

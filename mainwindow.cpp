@@ -23,6 +23,7 @@
 #include <QAxWidget>
 #include <QSettings>
 #include <QSysInfo>
+#include "ControlManager.h"
 
 #define SAFE_RELEASE(x) if(x) { x->Release(); x = NULL; } 
 
@@ -90,6 +91,9 @@ MainWindow::MainWindow(QWidget *parent) :
 	QShortcut *shortcut = new QShortcut(QKeySequence("Escape"), this);
 	connect(shortcut, SIGNAL(activated()), this, SLOT(onPanic()));
 
+	QShortcut *shortcutDoJob = new QShortcut(QKeySequence("Ctrl+F9"), this);
+	connect(shortcutDoJob, SIGNAL(activated()), this, SLOT(onDoJob()));
+
 	_bMoveSubTogether = true;
 
 	setWebSettings();
@@ -102,6 +106,7 @@ MainWindow::MainWindow(QWidget *parent) :
 //	navigateTo("https://www.dmm.com/my/-/login/auth/");
 
 	QApplication::instance()->installNativeEventFilter(&_windowsEventfilter);
+
 }
 
 MainWindow::~MainWindow()
@@ -855,6 +860,14 @@ void MainWindow::onPanic()
 		_panicTimer->stop();
 	}
 }
+
+void MainWindow::onDoJob()
+{
+#ifdef _DEBUG
+	ControlManager::getInstance()->moveMouseToAndClick(QPoint(367, 13));
+#endif
+}
+
 
 void MainWindow::on_pbSwitchScreenshot_toggled(bool checked)
 {

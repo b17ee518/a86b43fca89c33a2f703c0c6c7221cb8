@@ -110,6 +110,12 @@ void InfoMainWindow::updateFleetTable(int n, QString buttonTitle, int colindex, 
 		}   \
 		",   // tokyu ok 3
 		"\
+		QPushButton {   \
+			color:rgb(102, 153, 255);    \
+			text-align: left;\
+		}   \
+		",   // nezumi ok 4
+		"\
 			QPushButton {   \
 			color:rgb(255, 153, 0);    \
 			text-align: left;\

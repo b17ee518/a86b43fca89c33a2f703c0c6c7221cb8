@@ -15,8 +15,15 @@ public:
 		Terminated,
 	};
 
+	enum class SortieTarget
+	{
+		None,
+		Kira,
+		Fuel,
+	};
+
 public:
-	static ControlManager& getInstance() { static ControlManager instance; return instance; }
+	static ControlManager* getInstance() { static ControlManager instance; return &instance; }
 	
 private:
 	ControlManager();
@@ -25,9 +32,11 @@ private:
 	void operator=(ControlManager const&);
 	
 public:
-	void LoadToDoShipList();
+	void LoadToDoShipList_Kira();
+	void BuildNext_Kira();
 
-	void BuildNext();
+	void BuildNext_Fuel();
+
 	void Run();
 	void Pause();
 	void Resume();
@@ -38,14 +47,13 @@ public:
 	int getOneWasteShipId();
 	bool isShipFull();
 
-private:
-	void moveMouseTo(const QPoint& pt);
-	void mouseClick();
+//private:
+	void moveMouseToAndClick(const QPoint& pt);
 	void waitForResponse(const QString& api);
 
 	QList<int> _todoShipids;
 	QList<ControlAction> _actionList;
-
+	
 	State state = State::None;
 }; 
 

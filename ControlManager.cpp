@@ -1,5 +1,8 @@
 #include "ControlManager.h"
-
+#include <QTestEventList>
+#include "mainwindow.h"
+#include <QMouseEvent>
+#include <QGraphicsSceneMouseEvent>
 
 ControlManager::ControlManager()
 {
@@ -10,7 +13,7 @@ ControlManager::~ControlManager()
 {
 }
 
-void ControlManager::BuildNext()
+void ControlManager::BuildNext_Kira()
 {
 	if (_todoShipids.empty())
 	{
@@ -33,7 +36,24 @@ void ControlManager::BuildNext()
 	state = State::Ready;
 }
 
-void ControlManager::LoadToDoShipList()
+void ControlManager::BuildNext_Fuel()
+{
+	if (!_actionList.empty())
+	{
+		return;
+	}
+
+	if (isShipFull())
+	{
+		_actionList.append(DestroyShipAction());
+	}
+	_actionList.append(SortieAction());
+	_actionList.append(SortieAdvanceAction());
+	_actionList.append(BackFromSortieAction());
+	_actionList.append(ChargeAction());
+}
+
+void ControlManager::LoadToDoShipList_Kira()
 {
 	_todoShipids.clear();
 
@@ -96,3 +116,18 @@ int ControlManager::getCurrentShipId()
 {
 	return -1;
 }
+
+void ControlManager::moveMouseToAndClick(const QPoint& pt)
+{
+	QMouseEvent e(QEvent::MouseButtonPress, pt, Qt::LeftButton, Qt::LeftButton, Qt::NoModifier);
+	QApplication::sendEvent(MainWindow::mainWindow()->getBrowserWidget(), &e);
+	QMouseEvent e2(QEvent::MouseButtonRelease, pt, Qt::LeftButton, Qt::LeftButton, Qt::NoModifier);
+	QApplication::sendEvent(MainWindow::mainWindow()->getBrowserWidget(), &e2);
+	/*
+	QTestEventList *events = new QTestEventList();
+	events->addMouseMove(pt);
+	events->simulate(MainWindow::mainWindow());
+	*/
+}
+
+

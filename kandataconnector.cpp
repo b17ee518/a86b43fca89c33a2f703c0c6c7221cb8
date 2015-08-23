@@ -802,7 +802,7 @@ void KanDataConnector::updateFleetTable()
 		if (bNeedCharge || bCondDown)
 		{
 			// need hokyu
-			colindex = 4;
+			colindex = 5;
 		}
 		else if (kiracount == 6)
 		{
@@ -829,6 +829,15 @@ void KanDataConnector::updateFleetTable()
 		{
 			// toukyu 2
 			colindex = 3;
+		}
+		else if (kiracount >= 4
+			&& kuchikucount >= 4
+			&& drumcount >= 4
+			&& drumedshipcount >= 3
+			&& flagshipLv >= 50
+			&& alllv >= 200)
+		{
+			colindex = 4;
 		}
 		else if (kiracount && bFlagshipKira)
 		{
@@ -872,7 +881,7 @@ void KanDataConnector::updateExpeditionTable()
 					col.setRgb(134, 255, 134);
 					break;
 				case 3:
-					col.setRgb(151, 254, 243);
+					col.setRgb(102, 153, 255);
 					break;
 				case 4:
 					col.setRgb(221, 151, 254);

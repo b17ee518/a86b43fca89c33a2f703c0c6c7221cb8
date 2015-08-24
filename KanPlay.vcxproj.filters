@@ -220,6 +220,12 @@
     <ClCompile Include="ControlManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Debug\moc_ControlAction.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="Release\moc_ControlAction.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="cookiejar.h">
@@ -303,6 +309,9 @@
     <CustomBuild Include="shipmainwindow.ui">
       <Filter>Form Files</Filter>
     </CustomBuild>
+    <CustomBuild Include="ControlAction.h">
+      <Filter>Header Files</Filter>
+    </CustomBuild>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="infomainwindow.ui">
@@ -341,9 +350,6 @@
     </ClInclude>
     <ClInclude Include="GeneratedFiles\ui_shipmainwindow.h">
       <Filter>Generated Files</Filter>
-    </ClInclude>
-    <ClInclude Include="ControlAction.h">
-      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="ControlManager.h">
       <Filter>Header Files</Filter>

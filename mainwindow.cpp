@@ -94,6 +94,14 @@ MainWindow::MainWindow(QWidget *parent) :
 	QShortcut *shortcutDoJob = new QShortcut(QKeySequence("Ctrl+F9"), this);
 	connect(shortcutDoJob, SIGNAL(activated()), this, SLOT(onDoJob()));
 
+	QShortcut * shortcutTerminateJob = new QShortcut(QKeySequence("F12"), this);
+	connect(shortcutTerminateJob, SIGNAL(activated()), this, SLOT(onTerminateJob()));
+
+	_jobTimer = new QTimer(this);
+	connect(_jobTimer, SIGNAL(timeout()), this, SLOT(slotJobtTimeout()));
+	_jobTimer->start(200);
+
+
 	_bMoveSubTogether = true;
 
 	setWebSettings();
@@ -256,27 +264,32 @@ void MainWindow::changeEvent(QEvent *e)
 
 void MainWindow::closeEvent(QCloseEvent *e)
 {
-	QMessageBox * pMessageBox = new QMessageBox(
-		QMessageBox::NoIcon
-		, QString::fromLocal8Bit("")
-		, QString::fromLocal8Bit("本当に終了しますか？")
-		, QMessageBox::Yes | QMessageBox::No
-		, this
-		, Qt::Dialog | Qt::MSWindowsFixedSizeDialogHint | Qt::FramelessWindowHint);
-	pMessageBox->setDefaultButton(QMessageBox::No);
-	pMessageBox->setAttribute(Qt::WA_DeleteOnClose, true);
-	int reply = pMessageBox->exec();
-
-	if (reply == QMessageBox::No)
+	if (!ControlManager::getInstance()->isRunning())
 	{
-		e->ignore();
-		return;
+		QMessageBox * pMessageBox = new QMessageBox(
+			QMessageBox::NoIcon
+			, QString::fromLocal8Bit("")
+			, QString::fromLocal8Bit("本当に終了しますか？")
+			, QMessageBox::Yes | QMessageBox::No
+			, this
+			, Qt::Dialog | Qt::MSWindowsFixedSizeDialogHint | Qt::FramelessWindowHint);
+		pMessageBox->setDefaultButton(QMessageBox::No);
+		pMessageBox->setAttribute(Qt::WA_DeleteOnClose, true);
+		int reply = pMessageBox->exec();
+
+		if (reply == QMessageBox::No)
+		{
+			e->ignore();
+			return;
+		}
 	}
 
 	if (_bUseFiddler)
 	{
 		_pFiddler->Shutdown();
 	}
+
+	ControlManager::getInstance()->Terminate();
 
 	MainWindowBase::closeEvent(e);
 
@@ -863,11 +876,18 @@ void MainWindow::onPanic()
 
 void MainWindow::onDoJob()
 {
-#ifdef _DEBUG
-	ControlManager::getInstance()->moveMouseToAndClick(QPoint(367, 13));
-#endif
+	ControlManager::getInstance()->Terminate();
+
+	// fuel test
+	ControlManager::getInstance()->BuildNext_Fuel();
+	ControlManager::getInstance()->StartJob();
 }
 
+
+void MainWindow::onTerminateJob()
+{
+	ControlManager::getInstance()->Terminate();
+}
 
 void MainWindow::on_pbSwitchScreenshot_toggled(bool checked)
 {
@@ -1100,6 +1120,11 @@ void MainWindow::applyCss(int css)
 void MainWindow::slotScreenshotTimeout()
 {
 	shootScreen();
+}
+
+void MainWindow::slotJobtTimeout()
+{
+	ControlManager::getInstance()->Run();
 }
 
 void MainWindow::on_pbCheckLowVol_toggled(bool checked)

@@ -107,12 +107,14 @@ private slots:
 	void on_pbScreenshot_clicked();
 	void on_pbSwitchScreenshot_toggled(bool checked);
 	void slotScreenshotTimeout();
+	void slotJobtTimeout();
 	void on_pbCheckLowVol_toggled(bool checked);
 
 	void slotNavigateComplete2(IDispatch*, QVariant&);
 	void slotWebViewException(int code, const QString & source, const QString & desc, const QString & help);
 	void onPanic();
 	void onDoJob();
+	void onTerminateJob();
 
 private:
 	// Fiddler
@@ -152,6 +154,8 @@ private:
 
 	QTimer * _pScreenshotTimer = NULL;
 	QTimer* _panicTimer = NULL;
+
+	QTimer* _jobTimer = NULL;
 
 	bool _bLowVol = true;
 	bool _bSleep = false;

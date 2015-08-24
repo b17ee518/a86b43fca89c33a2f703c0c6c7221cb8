@@ -9,6 +9,7 @@
 #include "mainwindow.h"
 #include "kqtime.h"
 #include "klog.h"
+#include "ControlManager.h"
 
 #define DAPILOG() APILOG(pathAndQuery, requestBody, responseBody)
 
@@ -370,6 +371,13 @@ bool KanDataConnector::Parse(QString _pathAndQuery, QString _requestBody, QStrin
 	if (!bRet)
 	{
 		DAPILOG();
+	}
+	else
+	{
+		if (ControlManager::getInstance()->isRunning())
+		{
+			ControlManager::getInstance()->setDoneRequest(pathAndQuery);
+		}
 	}
 
 	return false;

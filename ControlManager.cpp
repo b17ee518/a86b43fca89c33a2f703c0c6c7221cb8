@@ -39,7 +39,7 @@ bool ControlManager::BuildNext_Kira()
 //		_actionList.append(new DestroyShipAction());
 	}
 
-	while (isShipKiraDone(_todoShipids.at(0)) || isShipInOtherTeam(_todoShipids.at(0)))
+	while (isShipKiraDone(_todoShipids.at(0)) || isShipInOtherTeam(_todoShipids.at(0)) || isShipInDock(_todoShipids.at(0)))
 	{
 		_todoShipids.removeAt(0);
 		if (_todoShipids.empty())
@@ -325,12 +325,26 @@ bool ControlManager::isShipInOtherTeam(int shipno)
 			bFirst = false;
 			continue;
 		}
-		for (auto id: deck.api_ship)
+		for (auto id : deck.api_ship)
 		{
 			if (id == shipno)
 			{
 				return true;
 			}
+		}
+	}
+	return false;
+}
+
+
+bool ControlManager::isShipInDock(int shipno)
+{
+	KanSaveData* pksd = &KanSaveData::getInstance();
+	for (auto ndock : pksd->portdata.api_ndock)
+	{
+		if (ndock.api_ship_id == shipno)
+		{
+				return true;
 		}
 	}
 	return false;

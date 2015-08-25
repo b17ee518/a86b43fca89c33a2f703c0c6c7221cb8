@@ -77,6 +77,7 @@ public:
 	bool findPagePosByShipId(int shipno, int& page, int& pos, int& lastPage);
 	bool isShipKiraDone(int shipno);
 	bool isShipInOtherTeam(int shipno);
+	bool isShipInDock(int shipno);
 
 	bool isHenseiDone(const QList<int>& ships, int index = -1);
 			

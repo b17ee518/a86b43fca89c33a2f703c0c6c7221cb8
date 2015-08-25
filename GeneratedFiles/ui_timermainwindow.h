@@ -16,6 +16,7 @@
 #include <QtWidgets/QFrame>
 #include <QtWidgets/QHBoxLayout>
 #include <QtWidgets/QHeaderView>
+#include <QtWidgets/QLineEdit>
 #include <QtWidgets/QMainWindow>
 #include <QtWidgets/QProgressBar>
 #include <QtWidgets/QPushButton>
@@ -35,6 +36,7 @@ public:
     KQTitleFrame *titleFrame;
     QHBoxLayout *horizontalLayout;
     QSpacerItem *horizontalSpacer;
+    QLineEdit *lineEditTitle;
     QPushButton *pbMinimize;
     QPushButton *pbClose;
     QTableWidget *expeditionTable;
@@ -82,9 +84,15 @@ public:
         horizontalLayout->setSpacing(0);
         horizontalLayout->setObjectName(QStringLiteral("horizontalLayout"));
         horizontalLayout->setContentsMargins(0, 0, 0, 0);
-        horizontalSpacer = new QSpacerItem(237, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
+        horizontalSpacer = new QSpacerItem(20, 20, QSizePolicy::Fixed, QSizePolicy::Minimum);
 
         horizontalLayout->addItem(horizontalSpacer);
+
+        lineEditTitle = new QLineEdit(titleFrame);
+        lineEditTitle->setObjectName(QStringLiteral("lineEditTitle"));
+        lineEditTitle->setReadOnly(true);
+
+        horizontalLayout->addWidget(lineEditTitle);
 
         pbMinimize = new QPushButton(titleFrame);
         pbMinimize->setObjectName(QStringLiteral("pbMinimize"));

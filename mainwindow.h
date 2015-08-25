@@ -113,8 +113,13 @@ private slots:
 	void slotNavigateComplete2(IDispatch*, QVariant&);
 	void slotWebViewException(int code, const QString & source, const QString & desc, const QString & help);
 	void onPanic();
-	void onDoJob();
+	void onDoJobFuel();
+	void onDoJobKira();
+	void onExportAllList();
 	void onTerminateJob();
+
+	void onJobPauseResume();
+	void onJobPauseNext();
 
 private:
 	// Fiddler

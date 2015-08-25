@@ -116,6 +116,11 @@ void TimerMainWindow::setBuildTime(int n, qint64 destms, qint64 totalms, QString
 }
 
 
+void TimerMainWindow::setTitle(const QString& title)
+{
+	ui->lineEditTitle->setText(title);
+}
+
 void TimerMainWindow::on_pbClose_clicked()
 {
 	close();

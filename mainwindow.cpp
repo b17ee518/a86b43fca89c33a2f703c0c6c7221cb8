@@ -92,7 +92,18 @@ MainWindow::MainWindow(QWidget *parent) :
 	connect(shortcut, SIGNAL(activated()), this, SLOT(onPanic()));
 
 	QShortcut *shortcutDoJob = new QShortcut(QKeySequence("Ctrl+F9"), this);
-	connect(shortcutDoJob, SIGNAL(activated()), this, SLOT(onDoJob()));
+	connect(shortcutDoJob, SIGNAL(activated()), this, SLOT(onDoJobFuel()));
+
+	QShortcut *shortcutDoJobKira = new QShortcut(QKeySequence("Ctrl+F10"), this);
+	connect(shortcutDoJobKira, SIGNAL(activated()), this, SLOT(onDoJobKira()));
+
+	QShortcut *shortcutExport = new QShortcut(QKeySequence("Ctrl+F6"), this);
+	connect(shortcutExport, SIGNAL(activated()), this, SLOT(onExportAllList()));
+
+	QShortcut * shortcutPauseResume = new QShortcut(QKeySequence("F8"), this);
+	connect(shortcutPauseResume, SIGNAL(activated()), this, SLOT(onJobPauseResume()));
+	QShortcut * shortcutPauseNext = new QShortcut(QKeySequence("F7"), this);
+	connect(shortcutPauseNext, SIGNAL(activated()), this, SLOT(onJobPauseNext()));
 
 	QShortcut * shortcutTerminateJob = new QShortcut(QKeySequence("F12"), this);
 	connect(shortcutTerminateJob, SIGNAL(activated()), this, SLOT(onTerminateJob()));
@@ -874,19 +885,161 @@ void MainWindow::onPanic()
 	}
 }
 
-void MainWindow::onDoJob()
+void MainWindow::onDoJobFuel()
 {
 	ControlManager::getInstance()->Terminate();
 
-	// fuel test
 	ControlManager::getInstance()->BuildNext_Fuel();
 	ControlManager::getInstance()->StartJob();
 }
 
 
+void MainWindow::onDoJobKira()
+{
+	ControlManager::getInstance()->Terminate();
+
+	ControlManager::getInstance()->LoadToDoShipList_Kira();
+	ControlManager::getInstance()->BuildNext_Kira();
+	ControlManager::getInstance()->StartJob();
+
+}
+
+void MainWindow::onExportAllList()
+{
+	KanSaveData* pksd = &KanSaveData::getInstance();
+	KanDataConnector * pkdc = &KanDataConnector::getInstance();
+	struct ExportInfo
+	{
+		int shipno;
+		int shiptype;
+		int shipid;
+		QString shipname;
+		int lv;
+		int cond;
+	};
+	QList<ExportInfo> infos;
+	if (pksd->portdata.api_ship.size())
+	{
+		for (auto ship:pksd->portdata.api_ship)
+		{
+			if (ship.api_lv < 10)
+			{
+				continue;
+			}
+			if (ship.api_cond >= 80)
+			{
+				continue;
+			}
+
+			auto pmstship = pkdc->findMstShipFromShipid(ship.api_ship_id);
+			if (pmstship)
+			{
+				ExportInfo info;
+				info.shipno = ship.api_id;
+				info.shiptype = pmstship->api_stype;
+				info.shipid = ship.api_ship_id;
+				info.lv = ship.api_lv;
+				info.shipname = pmstship->api_name;
+				info.cond = ship.api_cond;
+				infos.append(info);
+			}
+		}
+	}
+	if (infos.size())
+	{
+		qSort(infos.begin(), infos.end(), [](const ExportInfo&left, const ExportInfo&right)
+		{
+			if (left.shiptype < right.shiptype)
+			{
+				return true;
+			}
+			else if (left.shiptype == right.shiptype)
+			{
+				if (left.cond < right.cond)
+				{
+					return true;
+				}
+				else if (left.cond == right.cond)
+				{
+					if (left.shipid < right.shipid)
+					{
+						return true;
+					}
+					else if (left.shipid == right.shipid)
+					{
+						if (left.shipno < right.shipno)
+						{
+							return true;
+						}
+					}
+				}
+			}
+			return false;
+		});
+
+
+		QFile * file = new QFile(QApplication::applicationDirPath() + "/action/" + "exported.table");
+		if (file)
+		{
+			if (file->open(QIODevice::WriteOnly | QIODevice::Text))
+			{
+				int lastShipType = -1;
+				for (auto info:infos)
+				{
+					QString str;
+					if (lastShipType >= 0 && lastShipType != info.shiptype)
+					{
+						str += "\n";
+					}
+					lastShipType = info.shiptype;
+					str += "-\t" +
+						QString::number(info.shipno) + "\t" + 
+						info.shipname + "\t" + 
+						QString::number(info.lv) + "\t" +
+						QString::number(info.cond) + "\n";
+
+					QTextStream outstream(file);
+					outstream.setCodec("UTF-16");
+					outstream.setGenerateByteOrderMark(true);
+					outstream << str;
+				}
+
+				file->close();
+			}
+
+
+			delete file;
+		}
+	}
+}
+
 void MainWindow::onTerminateJob()
 {
 	ControlManager::getInstance()->Terminate();
+}
+
+void MainWindow::onJobPauseResume()
+{
+	if (ControlManager::getInstance()->isPaused())
+	{
+		ControlManager::getInstance()->Resume();
+	}
+	else
+	{
+		ControlManager::getInstance()->Pause();
+	}
+}
+
+void MainWindow::onJobPauseNext()
+{
+	if (ControlManager::getInstance()->isPaused())
+	{
+		ControlManager::getInstance()->Resume();
+	}
+	else
+	{
+		ControlManager::getInstance()->PauseNext();
+	}
 }
 
 void MainWindow::on_pbSwitchScreenshot_toggled(bool checked)

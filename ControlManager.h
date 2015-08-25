@@ -63,14 +63,23 @@ public:
 	void Resume();
 	void Terminate();
 
+	bool isPaused();
+	void PauseNext();
+
 	void setToTerminate();
 
 	int getCurrentFlagshipId();
+	int getCurrentSecondshipId();
 	bool shouldChangeSecondShip();
 	bool needChargeFlagship();
 	int getOneWasteShipId();
 	bool isShipFull();
+	bool findPagePosByShipId(int shipno, int& page, int& pos, int& lastPage);
+	bool isShipKiraDone(int shipno);
+	bool isShipInOtherTeam(int shipno);
 
+	bool isHenseiDone(const QList<int>& ships, int index = -1);
+			
 	bool flagshipSevereDamaged();
 
 	bool isRunning(){ return _state == State::Started; }
@@ -105,6 +114,11 @@ public:
 	bool isKiraMode(){ return _target == SortieTarget::Kira; }
 	bool isFuelMode(){ return _target == SortieTarget::Fuel; }
 
+	void setState(State state, const char* str);
+
+	void setStateStr(const QString& str);
+	const QString& getStateStr(){ return _stateStr; }
+
 //private:
 	void moveMouseToAndClick(const QPoint& pt);
 	void moveMouseTo(const QPoint& pt);
@@ -114,9 +128,13 @@ public:
 	void waitForResponse(const QString& api);
 
 	QList<int> _todoShipids;
+	int _toCond = 70;
 	QList<ControlAction*> _actionList;
 	
 	State _state = State::None;
 	SortieTarget _target = SortieTarget::None;
+
+	QString _stateStr;
+	bool _pauseNext = false;
 }; 
 

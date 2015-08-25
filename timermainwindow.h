@@ -42,6 +42,7 @@ public:
     void setRepairTime(int n, qint64 destms=-1, qint64 totalms=-1, QString comment=QString(), QColor col=QColor(0xff, 0xff, 0xff));
     void setBuildTime(int n, qint64 destms=-1, qint64 totalms=-1, QString comment=QString(), QColor col=QColor(0xff, 0xff, 0xff));
 
+	void setTitle(const QString& title);
 
 private slots:
     void on_pbClose_clicked();

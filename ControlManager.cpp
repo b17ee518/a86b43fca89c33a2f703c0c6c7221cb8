@@ -22,35 +22,43 @@ bool ControlManager::BuildNext_Kira()
 {
 	if (_todoShipids.empty())
 	{
+		setState(State::Terminated, "Terminated:NoShip");
 		return false;
 	}
-	// for repeat action
-	/*
-	if (!_actionList.empty())
-	{
-		return;
-	}
-	*/
 	if (flagshipSevereDamaged())
 	{
-		_state = State::Terminated;
+		setState(State::Terminated, "Terminated:Flagship");
 		return false;
 	}
 
 	_target = SortieTarget::Kira;
 	if (isShipFull())
 	{
-		_state = State::Terminated;
+		setState(State::Terminated, "Terminated:ShipFull");
 		return false;
 //		_actionList.append(new DestroyShipAction());
 	}
-	_actionList.append(new ChangeHenseiAction(_todoShipids.at(0), getOneWasteShipId()));
+
+	while (isShipKiraDone(_todoShipids.at(0)) || isShipInOtherTeam(_todoShipids.at(0)))
+	{
+		_todoShipids.removeAt(0);
+		if (_todoShipids.empty())
+		{
+			setState(State::Terminated, "Terminated:NoShip");
+			return false;
+		}
+	}
+
+	auto chAction = new ChangeHenseiAction();
+	chAction->setShips(_todoShipids.at(0), shouldChangeSecondShip()?getOneWasteShipId():getCurrentSecondshipId());
+	_actionList.append(chAction);
+
 	_actionList.append(new SortieAction());
 	_actionList.append(new SortieAdvanceAction());
 	_actionList.append(new ChargeAction());
 	_actionList.append(new RepeatAction());
 
-	_state = State::Ready;
+	setState(State::Ready, "Ready");
 	return true;
 }
 
@@ -66,14 +74,14 @@ bool ControlManager::BuildNext_Fuel()
 
 	if (flagshipSevereDamaged())
 	{
-		_state = State::Terminated;
+		setState(State::Terminated, "Terminated:Flagship");
 		return false;
 	}
 
 	_target = SortieTarget::Fuel;
 	if (isShipFull())
 	{
-		_state = State::Terminated;
+		setState(State::Terminated, "Terminated:ShipFull");
 		return false;
 //		_actionList.append(new DestroyShipAction());
 	}
@@ -82,7 +90,7 @@ bool ControlManager::BuildNext_Fuel()
 	_actionList.append(new ChargeAction());
 	_actionList.append(new RepeatAction());
 
-	_state = State::Ready;
+	setState(State::Ready, "Ready");
 	return true;
 }
 
@@ -90,7 +98,7 @@ void ControlManager::StartJob()
 {
 	if (_state == State::Ready)
 	{
-		_state = State::Started;
+		setState(State::Started, "Started");
 	}
 }
 
@@ -110,11 +118,42 @@ void ControlManager::setDoneRequest(const QString& api)
 bool ControlManager::LoadToDoShipList_Kira()
 {
 	_todoShipids.clear();
-	/*
-	_todoShipids.append(1); // test
-	_todoShipids.append(2); // test
-	_todoShipids.append(3); // test
-	*/
+	QFile * file = new QFile(QApplication::applicationDirPath() + "/action/" + "inport.table");
+	if (file)
+	{
+		if (file->open(QIODevice::ReadOnly | QIODevice::Text))
+		{
+			QTextStream instream(file);
+			bool bFirstLine = true;
+			while (!instream.atEnd())
+			{
+				QString line = instream.readLine();
+				bool bHaveControl = false;
+				if (bFirstLine)
+				{
+					bFirstLine = false;
+					if (line.startsWith("C", Qt::CaseInsensitive))
+					{
+						line = line.right(line.size() - 1);
+						_toCond = line.toInt();
+						bHaveControl = true;
+					}
+				}
+				if (!bHaveControl)
+				{
+					int index = line.indexOf("\t");
+					if (index > 0)
+					{
+						line = line.left(index);
+					}
+					if (!line.isEmpty())
+					{
+						_todoShipids.append(line.toInt());
+					}
+				}
+			}
+		}
+	}
 	return true;
 }
 
@@ -131,41 +170,60 @@ void ControlManager::Run()
 
 	if (_actionList.empty())
 	{
-		_state = State::Terminated;
+		setState(State::Terminated, "Terminated:NoAction");
 		return;
 	}
 	if (_actionList[0]->action())
 	{
 		delete _actionList[0];
 		_actionList.removeAt(0);
-		if (_actionList.empty())
+		if (_pauseNext)
 		{
+			_pauseNext = false;
+			if (!_actionList.empty())
+			{
+				Pause();
+			}
 		}
 	}
 }
 
 void ControlManager::Pause()
 {
-	_state = State::Paused;
+	setState(State::Paused, "Paused");
 }
 
 void ControlManager::Resume()
 {
-	_state = State::Started;
+	setState(State::Started, "Started:Resume");
 }
 
 void ControlManager::Terminate()
 {
 	qDeleteAll(_actionList);
 	_actionList.clear();
-	_state = State::Terminated;
+	_pauseNext = false;
+	setState(State::Terminated, "Terminated");
+}
+
+bool ControlManager::isPaused()
+{
+	return _state == State::Paused;
+}
+
+void ControlManager::PauseNext()
+{
+	if (_state == State::Started)
+	{
+		_pauseNext = true;
+	}
 }
 
 void ControlManager::setToTerminate()
 {
 	if (_state == State::Started)
 	{
-		_state = State::ToTerminate;
+		setState(State::ToTerminate, "ToTerminate");
 	}
 }
 
@@ -191,7 +249,7 @@ int ControlManager::getOneWasteShipId()
 				if (ship.api_fuel == pmstship->api_fuel_max
 					&& ship.api_bull == pmstship->api_bull_max)
 				{
-					return shipid;
+					return ship.api_id;
 				}
 			}
 		}
@@ -205,6 +263,128 @@ bool ControlManager::isShipFull()
 	int kancount = pksd->portdata.api_ship.count() + pksd->shipcountoffset;
 	int kanmaxcount = pksd->portdata.api_basic.api_max_chara;
 	if (kancount+3 <= kanmaxcount)
+	{
+		return false;
+	}
+	return true;
+}
+
+bool ControlManager::findPagePosByShipId(int shipno, int& page, int& pos, int& lastPage)
+{
+	KanSaveData* pksd = &KanSaveData::getInstance();
+	QList<kcsapi_ship2> ships = pksd->portdata.api_ship;
+	page = -1;
+	pos = -1;
+	lastPage = 0;
+	if (!ships.size())
+	{
+		return false;
+	}
+	lastPage = (ships.size() - 1) / 10;
+	qSort(ships.begin(), ships.end(), [](const  kcsapi_ship2& left, const kcsapi_ship2& right)
+	{ 
+		return left.api_id > right.api_id; // newer if id is greater
+	});
+
+	for (int i = 0; i < ships.size(); i++)
+	{
+		if (ships[i].api_id == shipno)
+		{
+			page = i / 10; // from 0
+			pos = i % 10;
+			return true;
+		}
+	}
+	return false;
+}
+
+bool ControlManager::isShipKiraDone(int shipno)
+{
+	KanSaveData* pksd = &KanSaveData::getInstance();
+	for (auto ship:pksd->portdata.api_ship)
+	{
+		if (ship.api_id == shipno)
+		{
+			if (ship.api_cond >= _toCond)
+			{
+				return true;
+			}
+		}
+	}
+	return false;
+}
+
+bool ControlManager::isShipInOtherTeam(int shipno)
+{
+	KanSaveData* pksd = &KanSaveData::getInstance();
+	bool bFirst = true;
+	for (auto deck : pksd->portdata.api_deck_port)
+	{
+		if (bFirst)
+		{
+			bFirst = false;
+			continue;
+		}
+		for (auto id: deck.api_ship)
+		{
+			if (id == shipno)
+			{
+				return true;
+			}
+		}
+	}
+	return false;
+}
+
+bool ControlManager::isHenseiDone(const QList<int>& ships, int index/*=-1*/)
+{
+	KanSaveData* pksd = &KanSaveData::getInstance();
+
+	if (pksd->portdata.api_deck_port.size())
+	{
+		auto firstFleet = pksd->portdata.api_deck_port.first();
+		QList<int> nonEmptyShipList;
+		for (auto id:firstFleet.api_ship)
+		{
+			if (id >= 0)
+			{
+				nonEmptyShipList.append(id);
+			}
+		}
+		if (nonEmptyShipList.size() <= ships.size())
+		{
+			if (index >= 0 && index < ships.size())
+			{
+				if (firstFleet.api_ship[index] == ships[index])
+				{
+					return true;
+				}
+				else
+				{
+					return false;
+				}
+			}
+			else if (nonEmptyShipList.size() != ships.size())
+			{
+				return false;
+			}
+			else 
+			{
+				for (int i = 0; i < ships.size(); i++)
+				{
+					if (firstFleet.api_ship[i] != ships[i])
+					{
+						return false;
+					}
+				}
+			}
+		}
+		else
+		{
+			return false;
+		}
+	}
+	else
 	{
 		return false;
 	}
@@ -292,7 +472,16 @@ bool ControlManager::shouldChangeSecondShip()
 	if (pksd->portdata.api_deck_port.size())
 	{
 		auto firstFleet = pksd->portdata.api_deck_port.first();
-		if (firstFleet.api_ship.size() < 2)
+
+		QList<int> nonEmptyShipList;
+		for (auto id : firstFleet.api_ship)
+		{
+			if (id >= 0)
+			{
+				nonEmptyShipList.append(id);
+			}
+		}
+		if (nonEmptyShipList.size() < 2)
 		{
 			return true;
 		}
@@ -388,6 +577,50 @@ int ControlManager::getCurrentFlagshipId()
 		}
 	}
 	return -1;
+}
+
+int ControlManager::getCurrentSecondshipId()
+{
+	KanSaveData* pksd = &KanSaveData::getInstance();
+
+	if (!pksd->portdata.api_ship.size())
+	{
+		return false;
+	}
+
+	if (pksd->portdata.api_deck_port.size())
+	{
+		auto firstFleet = pksd->portdata.api_deck_port.first();
+		if (firstFleet.api_ship.size() > 1)
+		{
+			int shipno = firstFleet.api_ship.at(1);
+			return shipno;
+		}
+	}
+	return -1;
+
+}
+
+void ControlManager::setState(State state, const char* str)
+{
+	_state = state;
+	setStateStr(str);
+	if (_state == State::Terminated)
+	{
+		QTimer::singleShot(4000, [this]()
+		{
+			if (this->_state == State::Terminated)
+			{
+				setStateStr("");
+			}
+		});
+	}
+}
+
+void ControlManager::setStateStr(const QString& str)
+{
+	_stateStr = str;
+	MainWindow::mainWindow()->timerWindow()->setTitle(str);
 }
 
 void ControlManager::moveMouseToAndClick(const QPoint& pt)

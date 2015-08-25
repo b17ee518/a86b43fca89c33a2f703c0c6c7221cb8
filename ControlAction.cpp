@@ -1,9 +1,12 @@
 #include "ControlAction.h"
 #include "ControlManager.h"
+#include <QDebug>
 
 #define DELAY_TIME			250
 #define DELAY_TIME_CLICK	250
 #define DELAY_TIME_LONG	500
+#define DELAY_TIME_PAGE	300
+#define DELAY_TIME_SUPERLONG	1200
 
 void ControlAction::setDoneRequest(const QString& api)
 {
@@ -29,11 +32,382 @@ void ControlAction::tryRetry()
 
 bool ChangeHenseiAction::action()
 {
-	if (ControlManager::getInstance()->isFuelMode())
+	auto cm = ControlManager::getInstance();
+	switch (_state)
 	{
-		return true;
+	case ChangeHenseiAction::State::None:
+
+		_nowIndex = 0;
+		setState(State::HomePortChecking, "Hensei:HomePortChecking");
+		while (cm->isHenseiDone(_ships, _nowIndex))
+		{
+			_nowIndex++;
+			if (_nowIndex >= _ships.size())
+			{
+				setState(State::Done, "Hensei:Done");
+				break;
+			}
+		}
+
+		resetRetryAndWainting();
+		break;
+	case ChangeHenseiAction::State::HomePortChecking:
+		if (!_waiting)
+		{
+			_waiting = true;
+			QTimer::singleShot(DELAY_TIME, this, [this, cm]()
+			{
+				// home port
+				if (cm->checkColors(
+					213, 247, 251, 155, 32
+					, 231, 114, 224, 201, 66))
+				{
+					_waiting = false;
+					setState(State::HomePortDone, "Hensei:HomePortDone");
+				}
+				else
+				{
+					tryRetry();
+				}
+			});
+		}
+		break;
+	case ChangeHenseiAction::State::HomePortDone:
+		if (!_waiting)
+		{
+			_waiting = true;
+			if (cm->isHenseiDone(_ships))
+			{
+				setState(State::Done, "Hensei:Done");
+				resetRetryAndWainting();
+			}
+			else
+			{
+				QTimer::singleShot(DELAY_TIME_CLICK, this, [this, cm]()
+				{
+					cm->moveMouseToAndClick(199, 131); // change button
+					setState(State::HenseiChecking, "Hensei:HenseiChecking");
+					resetRetryAndWainting();
+				});
+			}
+		}
+		break;
+	case ChangeHenseiAction::State::HenseiChecking:
+		if (!_waiting)
+		{
+			_waiting = true;
+			QTimer::singleShot(DELAY_TIME, this, [this, cm]()
+			{
+				// home port
+				if (cm->checkColors(
+					34, 144, 238, 213, 54
+					, 404, 208, 84, 178, 105))
+				{
+					_waiting = false;
+					setState(State::HenseiDone, "Hensei:HenseiDone");
+				}
+				else
+				{
+					tryRetry();
+				}
+			});
+		}
+		break;
+	case ChangeHenseiAction::State::HenseiDone:
+		if (!_waiting)
+		{
+			_waiting = true;
+			QTimer::singleShot(DELAY_TIME_CLICK, this, [this, cm]()
+			{
+				while (cm->isHenseiDone(_ships, _nowIndex))
+				{
+					_nowIndex++;
+					if (_nowIndex >= _ships.size())
+					{
+						setState(State::ReturnToPortChecking, "Hensei:ReturnToPortChecking");
+						resetRetryAndWainting();
+						return;
+					}
+				}
+
+				if (_nowIndex == 0)
+				{
+					cm->moveMouseToAndClick(404, 208); // change button 1
+				}
+				else if (_nowIndex == 1)
+				{
+					cm->moveMouseToAndClick(752, 216); // change button 2
+				}
+				setState(State::FindShipChecking, "Hensei:FindShipChecking");
+				resetRetryAndWainting();
+			});			
+		}
+		break;
+	case ChangeHenseiAction::State::FindShipChecking:
+		if (!_waiting)
+		{
+			_waiting = true;
+			QTimer::singleShot(DELAY_TIME, this, [this, cm]()
+			{
+				if (cm->checkColors(
+					34, 144, 238, 213, 54
+					, 770, 113, 44, 144, 144))
+				{
+					_waiting = false;
+					setState(State::FindShipDone, "Hensei:FindShipDone");
+				}
+				else
+				{
+					tryRetry();
+				}
+			});
+		}
+		break;
+	case ChangeHenseiAction::State::FindShipDone:
+		if (!_waiting)
+		{
+			_waiting = true;
+			QTimer::singleShot(DELAY_TIME_CLICK, this, [this, cm]()
+			{
+				cm->moveMouseToAndClick(435, 449); // left most button
+				setState(State::FindShipFirstPageChecking, "Hensei:FindShipFirstPageChecking");
+				resetRetryAndWainting();
+			});
+		}
+		break;
+	case ChangeHenseiAction::State::FindShipFirstPageChecking:
+		if (!_waiting)
+		{
+			_waiting = true;
+			QTimer::singleShot(DELAY_TIME, this, [this, cm]()
+			{
+				// home port
+				if (cm->checkColors(
+					34, 144, 238, 213, 54
+					, 513, 449, 30, 190, 195))
+				{
+					_waiting = false;
+					setState(State::FindShipFirstPageDone, "Hensei:FindShipFirstPageDone");
+				}
+				else
+				{
+					tryRetry();
+				}
+			});
+		}
+		break;
+	case ChangeHenseiAction::State::FindShipFirstPageDone:
+		if (!_waiting)
+		{
+			_waiting = true;
+			if (_pageList[_nowIndex] == 0)
+			{
+				cm->moveMouseToAndClick(439, 169 + _cellHeight*_posList[_nowIndex]);
+				setState(State::FindShipOKChecking, "Hensei:FindShipOKChecking");
+				resetRetryAndWainting();
+			}
+			else
+			{
+				QTimer::singleShot(DELAY_TIME_CLICK, this, [this, cm]()
+				{
+					if (_lastPage == _pageList[_nowIndex])
+					{
+						cm->moveMouseToAndClick(707, 452); // last page
+						_curPage = _lastPage;
+					}
+					else
+					{
+						cm->moveMouseToAndClick(547, 446); // second page
+						_curPage = 1;
+					}
+					setState(State::FindShipNextPageChecking, "Hensei:FindShipNextPageChecking");
+					resetRetryAndWainting();
+				});
+			}
+		}
+		break;
+	case ChangeHenseiAction::State::FindShipNextPageChecking:
+		if (!_waiting)
+		{
+			_waiting = true;
+			QTimer::singleShot(DELAY_TIME_PAGE, this, [this, cm]()
+			{
+				_waiting = false;
+				setState(State::FindShipNextPageDone, "Hensei:FindShipNextPageDone");
+				// just assume page flip is ok
+			});
+		}
+		break;
+	case ChangeHenseiAction::State::FindShipNextPageDone:
+		if (!_waiting)
+		{
+			_waiting = true;
+			if (_pageList[_nowIndex] == _curPage)
+			{
+				cm->moveMouseToAndClick(439, 169 + _cellHeight*_posList[_nowIndex]);
+				setState(State::FindShipOKChecking, "Hensei:FindShipOKChecking");
+				resetRetryAndWainting();
+			}
+			else
+			{
+				QTimer::singleShot(DELAY_TIME_CLICK, this, [this, cm]()
+				{
+					if (_curPage == 1)
+					{
+						cm->moveMouseToAndClick(579, 447); // third page
+					}
+					else
+					{
+						cm->moveMouseToAndClick(609, 446); // fourth and further
+					}
+					_curPage++;
+					setState(State::FindShipNextPageChecking, "Hensei:FindShipNextPageChecking");
+					resetRetryAndWainting();
+				});
+			}
+		}
+		break;
+	case ChangeHenseiAction::State::FindShipOKChecking:
+		if (!_waiting)
+		{
+			_waiting = true;
+			QTimer::singleShot(DELAY_TIME, this, [this, cm]()
+			{
+				// home port
+				if (cm->checkColors(
+					34, 144, 238, 213, 54
+					, 682, 432, 37, 162, 162))
+				{
+					_waiting = false;
+					setState(State::FindShipOKDone, "Hensei:FindShipOKDone");
+				}
+				else
+				{
+					tryRetry();
+				}
+			});
+		}
+		break;
+	case ChangeHenseiAction::State::FindShipOKDone:
+		if (!_waiting)
+		{
+			_waiting = true;
+			QTimer::singleShot(DELAY_TIME_CLICK, this, [this, cm]()
+			{
+				cm->moveMouseToAndClick(686, 444); // change button
+				if (_nowIndex == _ships.size()-1)
+				{
+					setState(State::ReturnToPortChecking, "Hensei:ReturnToPortChecking");
+					resetRetryAndWainting();
+				}
+				else
+				{
+					_waiting = true;
+					QTimer::singleShot(DELAY_TIME_SUPERLONG, this, [this, cm]()
+					{
+						if (cm->isHenseiDone(_ships, _nowIndex))
+						{
+							_nowIndex++;
+						}
+						else
+						{
+							qDebug() << "hensei error";
+							emit sigCheckFail();
+							cm->setToTerminate();
+						}
+						setState(State::HenseiChecking, "Hensei:HenseiChecking");
+						resetRetryAndWainting();
+					});
+				}
+			});
+		}
+		break;
+	case ChangeHenseiAction::State::ReturnToPortChecking:
+		if (!_waiting)
+		{
+			_waiting = true;
+			QTimer::singleShot(DELAY_TIME, this, [this, cm]()
+			{
+				// home port
+				if (cm->checkColors(
+					34, 144, 238, 213, 54
+					, 404, 208, 84, 178, 105))
+				{
+					_waiting = false;
+					setState(State::ReturnToPortDone, "Hensei:ReturnToPortDone");
+				}
+				else
+				{
+					tryRetry();
+				}
+			});
+		}
+		break;
+	case  ChangeHenseiAction::State::ReturnToPortDone:
+		if (!_waiting)
+		{
+			_waiting = true;
+			_expectingRequest = "/kcsapi/api_port/port";
+			QTimer::singleShot(DELAY_TIME_CLICK, this, [this, cm]()
+			{
+				cm->moveMouseToAndClick(74, 252); // port button
+				setState(State::ExpectingPort, "Hensei:ExpectingPort");
+				resetRetryAndWainting();
+			});
+		}
+		break;
+	case ChangeHenseiAction::State::ExpectingPort:
+		if (_expectingRequest == "")
+		{
+			setState(State::Done, "Hensei:Done");
+		}
+		break;
+	case ChangeHenseiAction::State::Done:
+		if (cm->isHenseiDone(_ships))
+		{
+			return true;
+		}
+		else
+		{
+			emit sigCheckFail();
+			cm->setToTerminate();
+		}
+		break;
+	default:
+		break;
 	}
-	return true;
+
+	return false;
+}
+
+void ChangeHenseiAction::setShips(int ship0, int ship1)
+{
+	_ships.append(ship0);
+	if (ship1 >= 0)
+	{
+		_ships.append(ship1);
+	}
+	int page;
+	int pos;
+	if (ControlManager::getInstance()->findPagePosByShipId(ship0, page, pos, _lastPage))
+	{
+		_pageList.append(page);
+		_posList.append(pos);
+	}
+	if (ship1 >= 0)
+	{
+		if (ControlManager::getInstance()->findPagePosByShipId(ship1, page, pos, _lastPage))
+		{
+			_pageList.append(page);
+			_posList.append(pos);
+		}
+	}
+}
+
+void ChangeHenseiAction::setState(State state, const char* str)
+{
+	_state = state;
+	ControlManager::getInstance()->setStateStr(str);
 }
 
 bool ChargeAction::action()
@@ -46,11 +420,11 @@ bool ChargeAction::action()
 		cm->moveMouseTo(400, 240);
 		if (!cm->needChargeFlagship())
 		{
-			_state = State::Done;
+			setState(State::Done, "Charge:Done");
 		}
 		else
 		{
-			_state = State::HomePortChecking;
+			setState(State::HomePortChecking, "Charge:HomePortChecking");
 		}
 		resetRetryAndWainting();
 		break;
@@ -66,7 +440,7 @@ bool ChargeAction::action()
 					, 231, 114, 224, 201, 66))
 				{
 					_waiting = false;
-					this->_state = State::HomePortDone;
+					setState(State::HomePortDone, "Charge:HomePortDone");
 				}
 				else
 				{
@@ -83,7 +457,7 @@ bool ChargeAction::action()
 			QTimer::singleShot(DELAY_TIME_CLICK, this, [this, cm]()
 			{
 				cm->moveMouseToAndClick(75, 212); // charge button
-				_state = State::NeedChargeChecking;
+				setState(State::NeedChargeChecking, "Charge:NeedChargeChecking");
 				resetRetryAndWainting();
 			});
 		}
@@ -99,7 +473,7 @@ bool ChargeAction::action()
 					, 625, 254, 113, 110, 74))
 				{
 					_waiting = false;
-					this->_state = State::NeedChargeDone;
+					setState(State::NeedChargeDone, "Charge:NeedChargeDone");
 				}
 				else
 				{
@@ -115,7 +489,7 @@ bool ChargeAction::action()
 			QTimer::singleShot(DELAY_TIME_CLICK, this, [this, cm]()
 			{
 				cm->moveMouseToAndClick(120, 167); // first ship
-				_state = State::OKToChargeChecking;
+				setState(State::OKToChargeChecking, "Charge:OKToChargeChecking");
 				resetRetryAndWainting();
 			});
 		}
@@ -131,7 +505,7 @@ bool ChargeAction::action()
 					, 625, 254, 113, 110, 74))
 				{
 					_waiting = false;
-					this->_state = State::OKToChargeDone;
+					setState(State::OKToChargeDone, "Charge:OKToChargeDone");
 				}
 				else
 				{
@@ -147,7 +521,7 @@ bool ChargeAction::action()
 			QTimer::singleShot(DELAY_TIME_CLICK, this, [this, cm]()
 			{
 				cm->moveMouseToAndClick(705, 431); // charge button
-				_state = State::FinishedChargeChecking;
+				setState(State::FinishedChargeChecking, "Charge:FinishedChargeChecking");
 				resetRetryAndWainting();
 			});
 		}
@@ -163,7 +537,7 @@ bool ChargeAction::action()
 					, 625, 254, 113, 110, 74))
 				{
 					_waiting = false;
-					this->_state = State::FinishedChargeDone;
+					setState(State::FinishedChargeDone, "Charge:FinishedChargeDone");
 				}
 				else
 				{
@@ -180,7 +554,7 @@ bool ChargeAction::action()
 			QTimer::singleShot(DELAY_TIME_CLICK, this, [this, cm]()
 			{
 				cm->moveMouseToAndClick(75, 261); // home button
-				_state = State::ExpectingPort;
+				setState(State::ExpectingPort, "Charge:ExpectingPort");
 				resetRetryAndWainting();
 			});
 		}
@@ -188,7 +562,7 @@ bool ChargeAction::action()
 	case ChargeAction::State::ExpectingPort:
 		if (_expectingRequest == "")
 		{
-			_state = State::Done;
+			setState(State::Done, "Charge:Done");
 		}
 		break;
 	case ChargeAction::State::Done:
@@ -198,6 +572,12 @@ bool ChargeAction::action()
 		break;
 	}
 	return false;
+}
+
+void ChargeAction::setState(State state, const char* str)
+{
+	_state = state;
+	ControlManager::getInstance()->setStateStr(str);
 }
 
 bool DestroyShipAction::action()
@@ -219,8 +599,8 @@ bool SortieAction::action()
 			return false;
 		}
 
-		cm->moveMouseTo(400, 240);		
-		_state = State::HomePortChecking;
+		cm->moveMouseTo(400, 240);
+		setState(State::HomePortChecking, "Sortie:HomePortChecking");
 		resetRetryAndWainting();
 
 		break;
@@ -236,7 +616,7 @@ bool SortieAction::action()
 					, 231, 114, 224, 201, 66))
 				{
 					_waiting = false;
-					this->_state = State::HomePortDone;
+					setState(State::HomePortDone, "Sortie:HomePortDone");
 				}
 				else
 				{
@@ -253,7 +633,7 @@ bool SortieAction::action()
 			QTimer::singleShot(DELAY_TIME_CLICK, this, [this, cm]()
 			{
 				cm->moveMouseToAndClick(213, 247); // sortie button
-				_state = State::SortieSelectChecking;
+				setState(State::SortieSelectChecking, "Sortie:SortieSelectChecking");
 				resetRetryAndWainting();
 			});
 		}
@@ -270,7 +650,7 @@ bool SortieAction::action()
 					, 625, 156, 88, 194, 179))
 				{
 					_waiting = false;
-					this->_state = State::SortieSelectDone;
+					setState(State::SortieSelectDone, "Sortie:SortieSelectDone");
 				}
 				else
 				{
@@ -287,7 +667,7 @@ bool SortieAction::action()
 			QTimer::singleShot(DELAY_TIME_CLICK, this, [this, cm]()
 			{
 				cm->moveMouseToAndClick(213, 247); // sortie button
-				_state = State::SelectAreaChecking;
+				setState(State::SelectAreaChecking, "Sortie:SelectAreaChecking");
 				resetRetryAndWainting();
 			});
 		}
@@ -305,7 +685,7 @@ bool SortieAction::action()
 //					, 648, 118, 118, 180, 72))
 				{
 					_waiting = false;
-					this->_state = State::SelectAreaDone;
+					setState(State::SelectAreaDone, "Sortie:SelectAreaDone");
 				}
 				else
 				{
@@ -323,7 +703,7 @@ bool SortieAction::action()
 				QTimer::singleShot(DELAY_TIME_CLICK, this, [this, cm]()
 				{
 					cm->moveMouseToAndClick(234, 443); // area 2
-					_state = State::SelectMapChecking;
+					setState(State::SelectMapChecking, "Sortie:SelectMapChecking");
 					resetRetryAndWainting();
 				});
 			}
@@ -332,7 +712,7 @@ bool SortieAction::action()
 		else if (cm->isKiraMode())
 		{
 			// skip to select map
-			_state = State::SelectMapDone;
+			setState(State::SelectMapDone, "Sortie:SelectMapDone");
 		}
 		break;
 	case SortieAction::State::SelectMapChecking:
@@ -347,7 +727,7 @@ bool SortieAction::action()
 					, 354, 370, 244, 206, 94))
 				{
 					_waiting = false;
-					this->_state = State::SelectMapDone;
+					setState(State::SelectMapDone, "Sortie:SelectMapDone");
 				}
 				else
 				{
@@ -365,7 +745,7 @@ bool SortieAction::action()
 				QTimer::singleShot(DELAY_TIME_CLICK, this, [this, cm]()
 				{
 					cm->moveMouseToAndClick(291, 350); // map 3
-					_state = State::SortieCheckChecking;
+					setState(State::SortieCheckChecking, "Sortie:SortieCheckChecking");
 					resetRetryAndWainting();
 				});
 			}
@@ -379,7 +759,7 @@ bool SortieAction::action()
 				QTimer::singleShot(DELAY_TIME_CLICK, this, [this, cm]()
 				{
 					cm->moveMouseToAndClick(285, 185); // map 1
-					_state = State::SortieCheckChecking;
+					setState(State::SortieCheckChecking, "Sortie:SortieCheckChecking");
 					resetRetryAndWainting();
 				});
 			}
@@ -397,7 +777,7 @@ bool SortieAction::action()
 					, 82, 230, 218, 196, 196))
 				{
 					_waiting = false;
-					this->_state = State::SortieCheckDone;
+					setState(State::SortieCheckDone, "Sortie:SortieCheckDone");
 				}
 				else
 				{
@@ -414,7 +794,7 @@ bool SortieAction::action()
 			QTimer::singleShot(DELAY_TIME_CLICK, this, [this, cm]()
 			{
 				cm->moveMouseToAndClick(722, 440); // ok
-				_state = State::TeamSelectChecking;
+				setState(State::TeamSelectChecking, "Sortie:TeamSelectChecking");
 				resetRetryAndWainting();
 			});
 		}
@@ -431,7 +811,7 @@ bool SortieAction::action()
 					, 551, 237, 255, 246, 242))
 				{
 					_waiting = false;
-					this->_state = State::TeamSelectDone;
+					setState(State::TeamSelectDone, "Sortie:TeamSelectDone");
 				}
 				else
 				{
@@ -448,7 +828,7 @@ bool SortieAction::action()
 			QTimer::singleShot(DELAY_TIME_CLICK, this, [this, cm]()
 			{
 				cm->moveMouseToAndClick(655, 453); // ok
-				_state = State::ExpectingMapStart;
+				setState(State::ExpectingMapStart, "Sortie:ExpectingMapStart");
 				resetRetryAndWainting();
 			});
 		}
@@ -456,7 +836,7 @@ bool SortieAction::action()
 	case SortieAction::State::ExpectingMapStart:
 		if (_expectingRequest == "")
 		{
-			_state = State::Done;
+			setState(State::Done, "Sortie:Done");
 		}
 		break;
 	case SortieAction::State::Done:
@@ -468,6 +848,12 @@ bool SortieAction::action()
 	return false;
 }
 
+void SortieAction::setState(State state, const char* str)
+{
+	_state = state;
+	ControlManager::getInstance()->setStateStr(str);
+}
+
 bool SortieAdvanceAction::action()
 {
 	auto cm = ControlManager::getInstance();
@@ -475,7 +861,7 @@ bool SortieAdvanceAction::action()
 	{
 	case SortieAdvanceAction::State::None:
 		_expectingRequest = "/kcsapi/api_port/port";
-		_state = State::ExpectingPort;
+		setState(State::ExpectingPort, "Advance:ExpectingPort");
 		break;
 	case SortieAdvanceAction::State::ExpectingPort:
 		if (!_waiting)
@@ -485,7 +871,7 @@ bool SortieAdvanceAction::action()
 			{
 				if (_expectingRequest == "")
 				{
-					_state = State::Done;
+					setState(State::Done, "Advance:Done");
 				}
 				else
 				{
@@ -504,6 +890,12 @@ bool SortieAdvanceAction::action()
 	return false;
 }
 
+void SortieAdvanceAction::setState(State state, const char* str)
+{
+	_state = state;
+	ControlManager::getInstance()->setStateStr(str);
+}
+
 bool RepeatAction::action()
 {
 	auto cm = ControlManager::getInstance();
@@ -516,7 +908,7 @@ bool RepeatAction::action()
 			{
 				cm->StartJob();
 			}
-			_state = State::Done;
+			setState(State::Done, "Repeat:Done");
 		}
 		else if (cm->isKiraMode())
 		{
@@ -524,7 +916,7 @@ bool RepeatAction::action()
 			{
 				cm->StartJob();
 			}
-			_state = State::Done;
+			setState(State::Done, "Repeat:Done");
 		}
 		break;
 	case RepeatAction::State::Done:
@@ -534,4 +926,10 @@ bool RepeatAction::action()
 		break;
 	}
 	return false;
+}
+
+void RepeatAction::setState(State state, const char* str)
+{
+	_state = state;
+	ControlManager::getInstance()->setStateStr(str);
 }

@@ -4,6 +4,7 @@
 #include <QTimer>
 #include <QObject>
 
+class ControlManager;
 class ControlAction : public QObject
 {
 	Q_OBJECT
@@ -41,13 +42,56 @@ protected:
 class ChangeHenseiAction : public ControlAction
 {
 public:
-	ChangeHenseiAction(const QList<int>){}
-	ChangeHenseiAction(int shipid, int wasteShipid = -1){ Q_UNUSED(shipid); Q_UNUSED(wasteShipid); }
+	enum class State
+	{
+		None,
+		HomePortChecking,
+		HomePortDone, // click change
+
+		HenseiChecking,
+		HenseiDone, // click change one / skip
+
+		FindShipChecking,	// cur page
+		FindShipDone,		// click leftmost
+		FindShipFirstPageChecking,
+		FindShipFirstPageDone,
+		FindShipNextPageChecking,
+		FindShipNextPageDone, // skip to
+		FindShipOKChecking,
+		FindShipOKDone, //exchange set flag
+
+		ReturnToPortChecking,
+		ReturnToPortDone,
+		ExpectingPort,
+		Done,
+	};
+	ChangeHenseiAction(QObject* parent = NULL)
+		:ControlAction(parent)
+	{
+	}
 
 	virtual bool action() override;
 
+	void setShips(int ship0, int ship1);
+	void resetCurPage()
+	{
+		_curPage = 0;
+	}
+
+
 public:
-	QList<int> _shipList;
+	QList<int> _ships;
+	QList<int> _pageList;
+	QList<int> _posList;
+	int _lastPage;
+
+	int _curPage = 0;
+	int _nowIndex = 0;
+	int _cellHeight = 28;
+
+private:
+	State _state = State::None;
+	void setState(State state, const char* str);
 };
 
 class ChargeAction : public ControlAction
@@ -75,6 +119,7 @@ public:
 
 private:
 	State _state = State::None;
+	void setState(State state, const char* str);
 };
 
 class DestroyShipAction : public ControlAction
@@ -116,6 +161,7 @@ public:
 
 private:
 	State _state = State::None;
+	void setState(State state, const char* str);
 };
 
 class SortieAdvanceAction : public ControlAction
@@ -136,6 +182,7 @@ public:
 
 private:
 	State _state = State::None;
+	void setState(State state, const char* str);
 };
 
 
@@ -156,5 +203,6 @@ public:
 
 private:
 	State _state = State::None;
+	void setState(State state, const char* str);
 };
 

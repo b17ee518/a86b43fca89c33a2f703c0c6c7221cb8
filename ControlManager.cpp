@@ -617,18 +617,22 @@ int ControlManager::getCurrentSecondshipId()
 
 void ControlManager::setState(State state, const char* str)
 {
-	_state = state;
-	setStateStr(str);
-	if (_state == State::Terminated)
+	if (_state != state)
 	{
-		QTimer::singleShot(4000, [this]()
+		_state = state;
+		if (_state == State::Terminated)
 		{
-			if (this->_state == State::Terminated)
+			MainWindow::mainWindow()->timerWindow()->playSound(TimerMainWindow::SoundIndex::Terminated);
+			QTimer::singleShot(4000, [this]()
 			{
-				setStateStr("");
-			}
-		});
+				if (this->_state == State::Terminated)
+				{
+					setStateStr("");
+				}
+			});
+		}
 	}
+	setStateStr(str);
 }
 
 void ControlManager::setStateStr(const QString& str)

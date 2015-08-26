@@ -906,17 +906,17 @@ bool RepeatAction::action()
 		{
 			if (cm->BuildNext_Fuel())
 			{
+				setState(State::Done, "Repeat:Done");
 				cm->StartJob();
 			}
-			setState(State::Done, "Repeat:Done");
 		}
 		else if (cm->isKiraMode())
 		{
 			if (cm->BuildNext_Kira())
 			{
+				setState(State::Done, "Repeat:Done");
 				cm->StartJob();
 			}
-			setState(State::Done, "Repeat:Done");
 		}
 		break;
 	case RepeatAction::State::Done:

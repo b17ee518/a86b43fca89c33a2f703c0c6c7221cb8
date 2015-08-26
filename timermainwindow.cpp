@@ -22,8 +22,9 @@ TimerMainWindow::TimerMainWindow(QWidget *parent) :
 	QString filename = QApplication::applicationDirPath();
 	filename += "/se";
 	pPlaylist->addMedia(QUrl::fromLocalFile(filename+"/expedition.mp3"));
-	pPlaylist->addMedia(QUrl::fromLocalFile(filename+"/repair.mp3"));
-	pPlaylist->addMedia(QUrl::fromLocalFile(filename+"/build.mp3"));
+	pPlaylist->addMedia(QUrl::fromLocalFile(filename + "/repair.mp3"));
+	pPlaylist->addMedia(QUrl::fromLocalFile(filename + "/build.mp3"));
+	pPlaylist->addMedia(QUrl::fromLocalFile(filename + "/terminated.mp3"));
 	pPlaylist->setCurrentIndex(0);
 	pPlaylist->setPlaybackMode(QMediaPlaylist::CurrentItemOnce);
 	pPlayer->setPlaylist(pPlaylist);
@@ -148,7 +149,7 @@ void TimerMainWindow::slotUpdateTimer()
 			qint64 dt = exptimerecord[i].desttime;
 			if (!exptimerecord[i].alarmed && dt - ct < 60000)
 			{
-				playSound(0);
+				playSound(SoundIndex::Expedition);
 				exptimerecord[i].alarmed = true;
 			}
 			bUpdated = updateDisplay(mintdiff
@@ -201,7 +202,7 @@ void TimerMainWindow::slotUpdateTimer()
 			qint64 dt = repairtimerecord[i].desttime;
 			if (!repairtimerecord[i].alarmed && dt - ct < 60000)
 			{
-				playSound(1);
+				playSound(SoundIndex::Repair);
 				repairtimerecord[i].alarmed = true;
 			}
 			bUpdated = updateDisplay(mintdiff
@@ -253,7 +254,7 @@ void TimerMainWindow::slotUpdateTimer()
 			qint64 dt = buildtimerecord[i].desttime;
 			if (!buildtimerecord[i].alarmed && dt <= ct)
 			{
-				playSound(2);
+				playSound(SoundIndex::Build);
 				buildtimerecord[i].alarmed = true;
 			}
 			bUpdated = updateDisplay(nomintdiff
@@ -508,10 +509,10 @@ bool TimerMainWindow::updateDisplay(int &mintdiff, qint64 ct, qint64 dt, qint64 
 	return bUpdated;
 }
 
-void TimerMainWindow::playSound(int i)
+void TimerMainWindow::playSound(SoundIndex i)
 {
 	MainWindow::mainWindow()->AdjustVolume(75);
-	pPlaylist->setCurrentIndex(i);
+	pPlaylist->setCurrentIndex((int)i);
 	pPlayer->play();
 //	qint64 dur = pPlayer->duration();
 	int dur = 3000;

@@ -35,6 +35,15 @@ class TimerMainWindow : public SubMainWindow
     Q_OBJECT
 
 public:
+
+	enum class SoundIndex
+	{
+		Expedition = 0,
+		Repair,
+		Build,
+		Terminated,
+	};
+
     explicit TimerMainWindow(QWidget *parent = 0);
     ~TimerMainWindow();
 
@@ -43,6 +52,7 @@ public:
     void setBuildTime(int n, qint64 destms=-1, qint64 totalms=-1, QString comment=QString(), QColor col=QColor(0xff, 0xff, 0xff));
 
 	void setTitle(const QString& title);
+	void playSound(SoundIndex i);
 
 private slots:
     void on_pbClose_clicked();
@@ -66,7 +76,6 @@ private:
 
     bool updateDisplay(int &mintdiff, qint64 ct, qint64 dt, qint64 tt, QTableWidgetItem * pRemainItem, QTableWidgetItem * pExpectedItem=0, QProgressBar * pProgress=0, bool bMinusOne=false);
 
-    void playSound(int i);
 
     void initTableItem();
 

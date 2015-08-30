@@ -1,6 +1,4 @@
-﻿void on_pbCheckLowVol_toggled(bool checked);
-void on_pbScreenshot_clicked();
-#ifndef MAINWINDOW_H
+﻿#ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
 #include <QMainWindow>
@@ -76,6 +74,8 @@ public:
 	void navigateReload();
 
 	bool isUsingIE();
+
+	void setPauseNextChanged(bool bVal);
 
 signals:
 	void sigParse(const QString &PathAndQuery, const QString &requestBody, const QString &responseBody);

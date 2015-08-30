@@ -76,9 +76,7 @@ MainWindow::MainWindow(QWidget *parent) :
 		_webView->setUrl(QUrl(QStringLiteral("about:blank")));
 		ui->webFrame_layout->addWidget(_webView);
 	}
-
-	ui->comboBoxZoom->insertSeparator(1);
-
+	
 	mwbPostInit();
 
 	ui->titleFrame->setHandlingWidget(this);
@@ -1040,6 +1038,7 @@ void MainWindow::onJobPauseNext()
 	{
 		ControlManager::getInstance()->PauseNext();
 	}
+	ui->pbPauseNext->setChecked(ControlManager::getInstance()->getPauseNextVal());
 }
 
 void MainWindow::on_pbSwitchScreenshot_toggled(bool checked)
@@ -1299,6 +1298,11 @@ void MainWindow::slotNavigateComplete2(IDispatch*, QVariant& url)
 	{
 		applyCss(_applyCssWhenLoaded);
 	}
+}
+
+void MainWindow::setPauseNextChanged(bool bVal)
+{
+	ui->pbPauseNext->setChecked(bVal);
 }
 
 QWindowsEventFilter::QWindowsEventFilter()

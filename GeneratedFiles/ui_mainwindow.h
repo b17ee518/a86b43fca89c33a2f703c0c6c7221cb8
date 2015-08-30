@@ -13,7 +13,6 @@
 #include <QtWidgets/QAction>
 #include <QtWidgets/QApplication>
 #include <QtWidgets/QButtonGroup>
-#include <QtWidgets/QComboBox>
 #include <QtWidgets/QFrame>
 #include <QtWidgets/QHBoxLayout>
 #include <QtWidgets/QHeaderView>
@@ -39,6 +38,16 @@ public:
     QPushButton *pbScreenshot;
     QSpacerItem *horizontalSpacer_9;
     QPushButton *pbSwitchScreenshot;
+    QSpacerItem *horizontalSpacer_12;
+    QPushButton *pbStartFuel;
+    QSpacerItem *horizontalSpacer_13;
+    QPushButton *pbStartKira;
+    QSpacerItem *horizontalSpacer_14;
+    QPushButton *pbPauseNext;
+    QSpacerItem *horizontalSpacer_15;
+    QPushButton *pbTerminate;
+    QSpacerItem *horizontalSpacer_16;
+    QPushButton *pbExport;
     QSpacerItem *horizontalSpacer;
     QPushButton *pbCheckLowVol;
     QSpacerItem *horizontalSpacer_10;
@@ -48,8 +57,6 @@ public:
     QPushButton *pbCheckShip;
     QPushButton *pbCheckWeapon;
     QSpacerItem *horizontalSpacer_5;
-    QComboBox *comboBoxZoom;
-    QSpacerItem *horizontalSpacer_4;
     QPushButton *pbMoveTogether;
     QSpacerItem *horizontalSpacer_7;
     QPushButton *pbCheckTransparent;
@@ -134,6 +141,77 @@ public:
 
         horizontalLayout->addWidget(pbSwitchScreenshot);
 
+        horizontalSpacer_12 = new QSpacerItem(40, 17, QSizePolicy::Fixed, QSizePolicy::Minimum);
+
+        horizontalLayout->addItem(horizontalSpacer_12);
+
+        pbStartFuel = new QPushButton(titleFrame);
+        pbStartFuel->setObjectName(QStringLiteral("pbStartFuel"));
+        sizePolicy1.setHeightForWidth(pbStartFuel->sizePolicy().hasHeightForWidth());
+        pbStartFuel->setSizePolicy(sizePolicy1);
+        pbStartFuel->setMinimumSize(QSize(20, 20));
+        pbStartFuel->setMaximumSize(QSize(20, 20));
+        pbStartFuel->setFlat(true);
+
+        horizontalLayout->addWidget(pbStartFuel);
+
+        horizontalSpacer_13 = new QSpacerItem(16, 17, QSizePolicy::Fixed, QSizePolicy::Minimum);
+
+        horizontalLayout->addItem(horizontalSpacer_13);
+
+        pbStartKira = new QPushButton(titleFrame);
+        pbStartKira->setObjectName(QStringLiteral("pbStartKira"));
+        sizePolicy1.setHeightForWidth(pbStartKira->sizePolicy().hasHeightForWidth());
+        pbStartKira->setSizePolicy(sizePolicy1);
+        pbStartKira->setMinimumSize(QSize(20, 20));
+        pbStartKira->setMaximumSize(QSize(20, 20));
+        pbStartKira->setFlat(true);
+
+        horizontalLayout->addWidget(pbStartKira);
+
+        horizontalSpacer_14 = new QSpacerItem(16, 17, QSizePolicy::Fixed, QSizePolicy::Minimum);
+
+        horizontalLayout->addItem(horizontalSpacer_14);
+
+        pbPauseNext = new QPushButton(titleFrame);
+        pbPauseNext->setObjectName(QStringLiteral("pbPauseNext"));
+        sizePolicy1.setHeightForWidth(pbPauseNext->sizePolicy().hasHeightForWidth());
+        pbPauseNext->setSizePolicy(sizePolicy1);
+        pbPauseNext->setMinimumSize(QSize(20, 20));
+        pbPauseNext->setMaximumSize(QSize(20, 20));
+        pbPauseNext->setCheckable(true);
+        pbPauseNext->setFlat(true);
+
+        horizontalLayout->addWidget(pbPauseNext);
+
+        horizontalSpacer_15 = new QSpacerItem(24, 17, QSizePolicy::Fixed, QSizePolicy::Minimum);
+
+        horizontalLayout->addItem(horizontalSpacer_15);
+
+        pbTerminate = new QPushButton(titleFrame);
+        pbTerminate->setObjectName(QStringLiteral("pbTerminate"));
+        sizePolicy1.setHeightForWidth(pbTerminate->sizePolicy().hasHeightForWidth());
+        pbTerminate->setSizePolicy(sizePolicy1);
+        pbTerminate->setMinimumSize(QSize(20, 20));
+        pbTerminate->setMaximumSize(QSize(20, 20));
+        pbTerminate->setFlat(true);
+
+        horizontalLayout->addWidget(pbTerminate);
+
+        horizontalSpacer_16 = new QSpacerItem(24, 17, QSizePolicy::Fixed, QSizePolicy::Minimum);
+
+        horizontalLayout->addItem(horizontalSpacer_16);
+
+        pbExport = new QPushButton(titleFrame);
+        pbExport->setObjectName(QStringLiteral("pbExport"));
+        sizePolicy1.setHeightForWidth(pbExport->sizePolicy().hasHeightForWidth());
+        pbExport->setSizePolicy(sizePolicy1);
+        pbExport->setMinimumSize(QSize(20, 20));
+        pbExport->setMaximumSize(QSize(20, 20));
+        pbExport->setFlat(true);
+
+        horizontalLayout->addWidget(pbExport);
+
         horizontalSpacer = new QSpacerItem(599, 17, QSizePolicy::Expanding, QSizePolicy::Minimum);
 
         horizontalLayout->addItem(horizontalSpacer);
@@ -210,19 +288,6 @@ public:
 
         horizontalLayout->addItem(horizontalSpacer_5);
 
-        comboBoxZoom = new QComboBox(titleFrame);
-        comboBoxZoom->setObjectName(QStringLiteral("comboBoxZoom"));
-        sizePolicy1.setHeightForWidth(comboBoxZoom->sizePolicy().hasHeightForWidth());
-        comboBoxZoom->setSizePolicy(sizePolicy1);
-        comboBoxZoom->setMinimumSize(QSize(60, 20));
-        comboBoxZoom->setMaximumSize(QSize(60, 20));
-
-        horizontalLayout->addWidget(comboBoxZoom);
-
-        horizontalSpacer_4 = new QSpacerItem(8, 17, QSizePolicy::Fixed, QSizePolicy::Minimum);
-
-        horizontalLayout->addItem(horizontalSpacer_4);
-
         pbMoveTogether = new QPushButton(titleFrame);
         pbMoveTogether->setObjectName(QStringLiteral("pbMoveTogether"));
         sizePolicy1.setHeightForWidth(pbMoveTogether->sizePolicy().hasHeightForWidth());
@@ -293,6 +358,11 @@ public:
         MainWindow->setCentralWidget(centralWidget);
 
         retranslateUi(MainWindow);
+        QObject::connect(pbStartFuel, SIGNAL(clicked()), MainWindow, SLOT(onDoJobFuel()));
+        QObject::connect(pbStartKira, SIGNAL(clicked()), MainWindow, SLOT(onDoJobKira()));
+        QObject::connect(pbPauseNext, SIGNAL(clicked()), MainWindow, SLOT(onJobPauseNext()));
+        QObject::connect(pbTerminate, SIGNAL(clicked()), MainWindow, SLOT(onTerminateJob()));
+        QObject::connect(pbExport, SIGNAL(clicked()), MainWindow, SLOT(onExportAllList()));
 
         QMetaObject::connectSlotsByName(MainWindow);
     } // setupUi
@@ -303,22 +373,16 @@ public:
         pbRefresh->setText(QApplication::translate("MainWindow", "\346\226\260", 0));
         pbScreenshot->setText(QApplication::translate("MainWindow", "\346\222\256", 0));
         pbSwitchScreenshot->setText(QApplication::translate("MainWindow", "\351\200\243", 0));
+        pbStartFuel->setText(QApplication::translate("MainWindow", "\347\207\203", 0));
+        pbStartKira->setText(QApplication::translate("MainWindow", "\343\202\255", 0));
+        pbPauseNext->setText(QApplication::translate("MainWindow", "\345\201\234", 0));
+        pbTerminate->setText(QApplication::translate("MainWindow", "\347\265\202", 0));
+        pbExport->setText(QApplication::translate("MainWindow", "\345\207\272", 0));
         pbCheckLowVol->setText(QApplication::translate("MainWindow", "\351\235\231", 0));
         pbCheckInfo->setText(QApplication::translate("MainWindow", "\346\203\205", 0));
         pbCheckTimer->setText(QApplication::translate("MainWindow", "\346\231\202", 0));
         pbCheckShip->setText(QApplication::translate("MainWindow", "\350\211\246", 0));
         pbCheckWeapon->setText(QApplication::translate("MainWindow", "\346\255\246", 0));
-        comboBoxZoom->clear();
-        comboBoxZoom->insertItems(0, QStringList()
-         << QApplication::translate("MainWindow", "\347\255\211\345\200\215", 0)
-         << QApplication::translate("MainWindow", "50%", 0)
-         << QApplication::translate("MainWindow", "75%", 0)
-         << QApplication::translate("MainWindow", "100%", 0)
-         << QApplication::translate("MainWindow", "125%", 0)
-         << QApplication::translate("MainWindow", "150%", 0)
-         << QApplication::translate("MainWindow", "175%", 0)
-         << QApplication::translate("MainWindow", "200%", 0)
-        );
         pbMoveTogether->setText(QApplication::translate("MainWindow", "\347\247\273", 0));
         pbCheckTransparent->setText(QApplication::translate("MainWindow", "\351\200\217", 0));
         pbMinimize->setText(QApplication::translate("MainWindow", "-", 0));

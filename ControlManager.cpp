@@ -179,7 +179,7 @@ void ControlManager::Run()
 		_actionList.removeAt(0);
 		if (_pauseNext)
 		{
-			_pauseNext = false;
+			setPauseNextVal(false);
 			if (!_actionList.empty())
 			{
 				Pause();
@@ -202,7 +202,7 @@ void ControlManager::Terminate()
 {
 	qDeleteAll(_actionList);
 	_actionList.clear();
-	_pauseNext = false;
+	setPauseNextVal(_pauseNext);
 	setState(State::Terminated, "Terminated");
 }
 
@@ -215,7 +215,7 @@ void ControlManager::PauseNext()
 {
 	if (_state == State::Started)
 	{
-		_pauseNext = true;
+		setPauseNextVal(true);
 	}
 }
 
@@ -654,5 +654,14 @@ void ControlManager::moveMouseTo(const QPoint& pt)
 {
 	QMouseEvent e(QEvent::MouseMove, pt, Qt::LeftButton, Qt::LeftButton, Qt::NoModifier);
 	QApplication::sendEvent(MainWindow::mainWindow()->getBrowserWidget(), &e);
+}
+
+void ControlManager::setPauseNextVal(bool bVal)
+{
+	if (_pauseNext != bVal)
+	{
+		_pauseNext = bVal;
+		MainWindow::mainWindow()->setPauseNextChanged(_pauseNext);
+	}
 }
 

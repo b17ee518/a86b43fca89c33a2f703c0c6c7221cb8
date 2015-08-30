@@ -126,6 +126,9 @@ public:
 	void moveMouseToAndClick(int x, int y){ moveMouseToAndClick(QPoint(x, y)); }
 	void moveMouseTo(int x, int y){ moveMouseTo(QPoint(x, y)); }
 
+	void setPauseNextVal(bool bVal);
+	bool getPauseNextVal(){ return _pauseNext; }
+
 	void waitForResponse(const QString& api);
 
 	QList<int> _todoShipids;

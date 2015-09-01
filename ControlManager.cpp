@@ -641,18 +641,23 @@ void ControlManager::setStateStr(const QString& str)
 	MainWindow::mainWindow()->timerWindow()->setTitle(str);
 }
 
-void ControlManager::moveMouseToAndClick(const QPoint& pt)
+void ControlManager::moveMouseToAndClick(float x, float y, float offsetX /*= 5*/, float offsetY /*= 3*/)
 {
-	QMouseEvent e(QEvent::MouseButtonPress, pt, Qt::LeftButton, Qt::LeftButton, Qt::NoModifier);
+	QPointF ptAdjusted = QPointF(x+randVal(-offsetX, offsetX), y+randVal(-offsetY, offsetY));
+
+	QMouseEvent e(QEvent::MouseButtonPress, ptAdjusted, Qt::LeftButton, Qt::LeftButton, Qt::NoModifier);
 	QApplication::sendEvent(MainWindow::mainWindow()->getBrowserWidget(), &e);
-	
-	QMouseEvent e2(QEvent::MouseButtonRelease, pt, Qt::LeftButton, Qt::LeftButton, Qt::NoModifier);
+
+	QMouseEvent e2(QEvent::MouseButtonRelease, ptAdjusted, Qt::LeftButton, Qt::LeftButton, Qt::NoModifier);
 	QApplication::sendEvent(MainWindow::mainWindow()->getBrowserWidget(), &e2);
+
 }
 
-void ControlManager::moveMouseTo(const QPoint& pt)
+void ControlManager::moveMouseTo(float x, float y, float offsetX /*= 5*/, float offsetY /*= 3*/)
 {
-	QMouseEvent e(QEvent::MouseMove, pt, Qt::LeftButton, Qt::LeftButton, Qt::NoModifier);
+	QPointF ptAdjusted = QPointF(x + randVal(-offsetX, offsetX), y + randVal(-offsetY, offsetY));
+
+	QMouseEvent e(QEvent::MouseMove, ptAdjusted, Qt::LeftButton, Qt::LeftButton, Qt::NoModifier);
 	QApplication::sendEvent(MainWindow::mainWindow()->getBrowserWidget(), &e);
 }
 
@@ -663,5 +668,11 @@ void ControlManager::setPauseNextVal(bool bVal)
 		_pauseNext = bVal;
 		MainWindow::mainWindow()->setPauseNextChanged(_pauseNext);
 	}
+}
+
+qreal ControlManager::randVal(qreal min, qreal max)
+{
+	qreal value = static_cast<qreal>(qrand()) * (max-min) / RAND_MAX + min;
+	return value;
 }
 

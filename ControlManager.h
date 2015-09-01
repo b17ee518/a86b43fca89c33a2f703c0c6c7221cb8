@@ -121,15 +121,15 @@ public:
 	const QString& getStateStr(){ return _stateStr; }
 
 //private:
-	void moveMouseToAndClick(const QPoint& pt);
-	void moveMouseTo(const QPoint& pt);
-	void moveMouseToAndClick(int x, int y){ moveMouseToAndClick(QPoint(x, y)); }
-	void moveMouseTo(int x, int y){ moveMouseTo(QPoint(x, y)); }
-
+	void moveMouseToAndClick(float x, float y, float offsetX = 5, float offsetY = 3);
+	void moveMouseTo(float x, float y, float offsetX = 5, float offsetY = 3);
+	
 	void setPauseNextVal(bool bVal);
 	bool getPauseNextVal(){ return _pauseNext; }
 
 	void waitForResponse(const QString& api);
+	
+	qreal randVal(qreal min, qreal max);
 
 	QList<int> _todoShipids;
 	int _toCond = 70;

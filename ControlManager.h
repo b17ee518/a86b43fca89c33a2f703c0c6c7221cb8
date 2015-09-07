@@ -80,6 +80,10 @@ public:
 	bool isShipInDock(int shipno);
 
 	bool isHenseiDone(const QList<int>& ships, int index = -1);
+	bool isFlagshipOnly();
+	bool isShipType(int shipno, int stype);
+	bool hasSlotitem(int shipno, int sitype);
+	bool noSlotitem(int shipno);
 			
 	bool flagshipSevereDamaged();
 

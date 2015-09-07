@@ -924,10 +924,6 @@ void MainWindow::onExportAllList()
 			{
 				continue;
 			}
-			if (ship.api_cond >= 80)
-			{
-				continue;
-			}
 
 			auto pmstship = pkdc->findMstShipFromShipid(ship.api_ship_id);
 			if (pmstship)
@@ -953,12 +949,13 @@ void MainWindow::onExportAllList()
 			}
 			else if (left.shiptype == right.shiptype)
 			{
+				/*
 				if (left.cond < right.cond)
 				{
 					return true;
 				}
 				else if (left.cond == right.cond)
-				{
+				{*/
 					if (left.shipid < right.shipid)
 					{
 						return true;
@@ -970,7 +967,7 @@ void MainWindow::onExportAllList()
 							return true;
 						}
 					}
-				}
+//				}
 			}
 			return false;
 		});

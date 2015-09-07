@@ -39,7 +39,15 @@ bool ControlManager::BuildNext_Kira()
 //		_actionList.append(new DestroyShipAction());
 	}
 
-	while (isShipKiraDone(_todoShipids.at(0)) || isShipInOtherTeam(_todoShipids.at(0)) || isShipInDock(_todoShipids.at(0)))
+	int togoShipId = _todoShipids.at(0);
+	while (isShipKiraDone(togoShipId) 
+		|| isShipInOtherTeam(togoShipId) 
+		|| isShipInDock(togoShipId)
+		|| hasSlotitem(togoShipId, SLOTITEMTYPE_JOURIKUTEI)
+		|| hasSlotitem(togoShipId, SLOTITEMTYPE_SONAR)
+		|| hasSlotitem(togoShipId, SLOTITEMTYPE_BAKURAI)
+		|| hasSlotitem(togoShipId, SLOTITEMTYPE_SONAR_L)
+		|| noSlotitem(togoShipId))
 	{
 		_todoShipids.removeAt(0);
 		if (_todoShipids.empty())
@@ -49,8 +57,15 @@ bool ControlManager::BuildNext_Kira()
 		}
 	}
 
+	int flagshipid = getCurrentFlagshipId();
+	int flagshipIndex = _todoShipids.indexOf(flagshipid);
+	if (flagshipIndex > 0)
+	{
+		_todoShipids.swap(flagshipIndex, 0);
+	}
+
 	auto chAction = new ChangeHenseiAction();
-	chAction->setShips(_todoShipids.at(0), shouldChangeSecondShip()?getOneWasteShipId():getCurrentSecondshipId());
+	chAction->setShips(togoShipId, shouldChangeSecondShip()?getOneWasteShipId():getCurrentSecondshipId());
 	_actionList.append(chAction);
 
 	_actionList.append(new SortieAction());
@@ -75,6 +90,19 @@ bool ControlManager::BuildNext_Fuel()
 	if (flagshipSevereDamaged())
 	{
 		setState(State::Terminated, "Terminated:Flagship");
+		return false;
+	}
+
+	if (!isFlagshipOnly())
+	{
+		setState(State::Terminated, "Terminated:More than one ship");
+		return false;
+	}
+
+	int flagshipid = getCurrentFlagshipId();
+	if (!isShipType(flagshipid, SHIPTYPE_SENSUI))
+	{
+		setState(State::Terminated, "Terminated:Ship type");
 		return false;
 	}
 
@@ -401,6 +429,100 @@ bool ControlManager::isHenseiDone(const QList<int>& ships, int index/*=-1*/)
 	else
 	{
 		return false;
+	}
+	return true;
+}
+
+bool ControlManager::isFlagshipOnly()
+{
+	KanSaveData* pksd = &KanSaveData::getInstance();
+
+	if (pksd->portdata.api_deck_port.size())
+	{
+		auto firstFleet = pksd->portdata.api_deck_port.first();
+		QList<int> nonEmptyShipList;
+		for (auto id : firstFleet.api_ship)
+		{
+			if (id >= 0)
+			{
+				nonEmptyShipList.append(id);
+			}
+		}
+		if (nonEmptyShipList.size() == 1)
+		{
+			return true;
+		}
+	}
+	return false;
+}
+
+bool ControlManager::isShipType(int shipno, int stype)
+{
+	KanDataConnector* pkdc = &KanDataConnector::getInstance();
+
+	auto pship = pkdc->findShipFromShipno(shipno);
+	if (pship)
+	{
+		auto pmstship = pkdc->findMstShipFromShipid(pship->api_ship_id);
+		if (pmstship)
+		{
+			if (pmstship->api_stype == stype)
+			{
+				return true;
+			}
+		}
+	}
+
+	return false;
+}
+
+bool ControlManager::hasSlotitem(int shipno, int sitype)
+{
+	KanDataConnector* pkdc = &KanDataConnector::getInstance();
+
+	auto pship = pkdc->findShipFromShipno(shipno);
+	if (pship)
+	{
+		for (auto slotitemid : pship->api_slot)
+		{
+			if (slotitemid >= 0)
+			{
+				auto pslotitem = pkdc->findSlotitemFromId(slotitemid);
+				if (pslotitem)
+				{
+					auto pmstslotitem = pkdc->findMstSlotItemFromSlotitemid(pslotitem->api_slotitem_id);
+					if (pmstslotitem)
+					{
+						if (pmstslotitem->api_type.count() > 2)
+						{
+							int type = pmstslotitem->api_type[2];
+							if (sitype == type)
+							{
+								return true;
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+	return false;
+}
+
+bool ControlManager::noSlotitem(int shipno)
+{
+	KanDataConnector* pkdc = &KanDataConnector::getInstance();
+
+	auto pship = pkdc->findShipFromShipno(shipno);
+	if (pship)
+	{
+		for (auto slotitemid : pship->api_slot)
+		{
+			if (slotitemid >= 0)
+			{
+				return false;
+			}
+		}
 	}
 	return true;
 }

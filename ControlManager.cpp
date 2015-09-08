@@ -8,6 +8,7 @@
 #include "kandatacalc.h"
 
 #define COL_ALLOWRANCE 3
+#define COND_DAIHATSU	80
 
 ControlManager::ControlManager()
 {
@@ -55,6 +56,7 @@ bool ControlManager::BuildNext_Kira()
 			setState(State::Terminated, "Terminated:NoShip");
 			return false;
 		}
+		togoShipId = _todoShipids.at(0);
 	}
 
 	int flagshipid = getCurrentFlagshipId();
@@ -328,14 +330,28 @@ bool ControlManager::findPagePosByShipId(int shipno, int& page, int& pos, int& l
 
 bool ControlManager::isShipKiraDone(int shipno)
 {
-	KanSaveData* pksd = &KanSaveData::getInstance();
-	for (auto ship:pksd->portdata.api_ship)
+	KanDataConnector* pkdc = &KanDataConnector::getInstance();
+	auto pship = pkdc->findShipFromShipno(shipno);
+	if (pship)
 	{
-		if (ship.api_id == shipno)
+		if (pship->api_cond >= _toCond)
 		{
-			if (ship.api_cond >= _toCond)
+			if (_toCond >= COND_DAIHATSU)
 			{
 				return true;
+			}
+
+			auto pmstship = pkdc->findMstShipFromShipid(pship->api_ship_id);
+			if (pmstship)
+			{
+				if (pmstship->api_stype == SHIPTYPE_SUIBO
+					|| pmstship->api_stype == SHIPTYPE_YOURIKU)
+				{
+					if (pship->api_cond >= COND_DAIHATSU)
+					{
+						return true;
+					}
+				}
 			}
 		}
 	}

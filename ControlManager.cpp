@@ -352,6 +352,10 @@ bool ControlManager::isShipKiraDone(int shipno)
 						return true;
 					}
 				}
+				else
+				{
+					return true;
+				}
 			}
 		}
 	}

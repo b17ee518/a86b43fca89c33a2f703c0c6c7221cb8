@@ -8,13 +8,13 @@ KLog::KLog()
 }
 
 
-void KLog::AppendLog(QFile *f, QString log)
+void KLog::AppendLog(QFile *f, const QString& log, bool bWithTimeStamp/*=true*/)
 {
 	if (f)
 	{
 		if (f->isWritable())
 		{
-			QString str = QDateTime::currentDateTime().toString("[yyyy/MM/dd HH:mm:ss]\t");
+			QString str = (bWithTimeStamp?QDateTime::currentDateTime().toString("[yyyy/MM/dd HH:mm:ss]\t"):"");
 			str += log;
 			str += "\n";
 			QTextStream outstream(f);
@@ -26,30 +26,38 @@ void KLog::AppendLog(QFile *f, QString log)
 	}
 }
 
-void KLog::LogError(QString log)
+void KLog::LogError(const QString& log)
 {
 	RecordLog("error", log);
 //	AppendLog(errorlog, log);
 }
 
-void KLog::LogAPI(QString path, QString request, QString response)
+void KLog::LogAPI(const QString& path, const QString& request, const QString& response, bool bDebug/*=false*/)
 {
 	QString str = path+"\t"+request+"\t"+response;
-	RecordLog("apilog", str);
+	RecordLog(QString("apilog")+(bDebug?"_debug":""), str);
 //	AppendLog(apilog, str);
 }
 
-void KLog::RecordLog(QString filename, QString log)
+void KLog::DeleteLog(const QString& filename)
+{
+	auto fullname = QApplication::applicationDirPath() + "/log/" + filename + ".table";
+	QFile::remove(fullname);
+}
+
+void KLog::RecordLog(const QString& filename, const QString& log, bool bWithTimeStamp/*=true*/)
 {
 	QFile * file = new QFile(QApplication::applicationDirPath() + "/log/" + filename + ".table");
 	if (file)
 	{
 		file->open(QIODevice::ReadWrite | QIODevice::Append | QIODevice::Text);
 
-		AppendLog(file, log);
+		AppendLog(file, log, bWithTimeStamp);
 
 		file->close();
 
 		delete file;
 	}
 }
+
+

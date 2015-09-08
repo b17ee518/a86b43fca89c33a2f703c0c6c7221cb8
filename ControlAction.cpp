@@ -85,7 +85,7 @@ bool ChangeHenseiAction::action()
 			{
 				QTimer::singleShot(DELAY_TIME_CLICK, this, [this, cm]()
 				{
-					cm->moveMouseToAndClick(199, 131); // change button
+					cm->moveMouseToAndClick(199, 135.5f, 23, 21.5f); // change button
 					setState(State::HenseiChecking, "Hensei:HenseiChecking");
 					resetRetryAndWainting();
 				});
@@ -294,7 +294,7 @@ bool ChangeHenseiAction::action()
 			_waiting = true;
 			QTimer::singleShot(DELAY_TIME_CLICK, this, [this, cm]()
 			{
-				cm->moveMouseToAndClick(686, 444); // change button
+				cm->moveMouseToAndClick(691, 443, 40, 12); // change button
 				if (_nowIndex == _ships.size()-1)
 				{
 					setState(State::ReturnToPortChecking, "Hensei:ReturnToPortChecking");
@@ -456,7 +456,7 @@ bool ChargeAction::action()
 			_waiting = true;
 			QTimer::singleShot(DELAY_TIME_CLICK, this, [this, cm]()
 			{
-				cm->moveMouseToAndClick(75, 212); // charge button
+				cm->moveMouseToAndClick(76.5f, 220, 26.5f, 21); // charge button
 				setState(State::NeedChargeChecking, "Charge:NeedChargeChecking");
 				resetRetryAndWainting();
 			});
@@ -520,7 +520,7 @@ bool ChargeAction::action()
 			_waiting = true;
 			QTimer::singleShot(DELAY_TIME_CLICK, this, [this, cm]()
 			{
-				cm->moveMouseToAndClick(705, 431); // charge button
+				cm->moveMouseToAndClick(702, 440.5f, 39, 9.5f); // charge button
 				setState(State::FinishedChargeChecking, "Charge:FinishedChargeChecking");
 				resetRetryAndWainting();
 			});
@@ -632,7 +632,7 @@ bool SortieAction::action()
 			_waiting = true;
 			QTimer::singleShot(DELAY_TIME_CLICK, this, [this, cm]()
 			{
-				cm->moveMouseToAndClick(213, 247); // sortie button
+				cm->moveMouseToAndClick(195.5f, 259.5f, 36.5f, 31.5f); // sortie button
 				setState(State::SortieSelectChecking, "Sortie:SortieSelectChecking");
 				resetRetryAndWainting();
 			});
@@ -666,7 +666,7 @@ bool SortieAction::action()
 			_waiting = true;
 			QTimer::singleShot(DELAY_TIME_CLICK, this, [this, cm]()
 			{
-				cm->moveMouseToAndClick(213, 247); // sortie button
+				cm->moveMouseToAndClick(236, 218.5f, 58, 47.5f); // sortie button 2
 				setState(State::SelectAreaChecking, "Sortie:SelectAreaChecking");
 				resetRetryAndWainting();
 			});
@@ -702,7 +702,7 @@ bool SortieAction::action()
 				_waiting = true;
 				QTimer::singleShot(DELAY_TIME_CLICK, this, [this, cm]()
 				{
-					cm->moveMouseToAndClick(234, 443); // area 2
+					cm->moveMouseToAndClick(235, 445, 14, 9); // area 2
 					setState(State::SelectMapChecking, "Sortie:SelectMapChecking");
 					resetRetryAndWainting();
 				});
@@ -744,7 +744,7 @@ bool SortieAction::action()
 				_waiting = true;
 				QTimer::singleShot(DELAY_TIME_CLICK, this, [this, cm]()
 				{
-					cm->moveMouseToAndClick(291, 350); // map 3
+					cm->moveMouseToAndClick(288.5f, 350, 102.5f, 36); // map 3
 					setState(State::SortieCheckChecking, "Sortie:SortieCheckChecking");
 					resetRetryAndWainting();
 				});
@@ -758,7 +758,7 @@ bool SortieAction::action()
 				_waiting = true;
 				QTimer::singleShot(DELAY_TIME_CLICK, this, [this, cm]()
 				{
-					cm->moveMouseToAndClick(285, 185); // map 1
+					cm->moveMouseToAndClick(281, 207, 100, 41); // map 1
 					setState(State::SortieCheckChecking, "Sortie:SortieCheckChecking");
 					resetRetryAndWainting();
 				});
@@ -793,7 +793,7 @@ bool SortieAction::action()
 			_waiting = true;
 			QTimer::singleShot(DELAY_TIME_CLICK, this, [this, cm]()
 			{
-				cm->moveMouseToAndClick(722, 440); // ok
+				cm->moveMouseToAndClick(688.5f, 444, 32.5f, 12); // ok kettei
 				setState(State::TeamSelectChecking, "Sortie:TeamSelectChecking");
 				resetRetryAndWainting();
 			});
@@ -827,7 +827,7 @@ bool SortieAction::action()
 			_waiting = true;
 			QTimer::singleShot(DELAY_TIME_CLICK, this, [this, cm]()
 			{
-				cm->moveMouseToAndClick(655, 453); // ok
+				cm->moveMouseToAndClick(631, 446.5f, 54, 12.5f); // ok to start
 				setState(State::ExpectingMapStart, "Sortie:ExpectingMapStart");
 				resetRetryAndWainting();
 			});
@@ -875,7 +875,7 @@ bool SortieAdvanceAction::action()
 				}
 				else
 				{
-					cm->moveMouseToAndClick(295, 238); // ok
+					cm->moveMouseToAndClick(289.5f, 239.5f, 33.5f, 18.5f); // advance
 				}
 				resetRetryAndWainting();
 			});

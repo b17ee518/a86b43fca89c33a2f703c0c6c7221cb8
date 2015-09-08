@@ -5,7 +5,9 @@
 
 #define ERRLOG(log) KLog::getInstance().LogError(log);
 #define APILOG(p, req, res) KLog::getInstance().LogAPI(p, req, res);
+#define APILOGDEBUG(p, req, res) KLog::getInstance().LogAPI(p, req, res, true);
 #define RECLOG(filename, log) KLog::getInstance().RecordLog(filename, log);
+#define RECLINE(filename, log) KLog::getInstance().RecordLog(filename, log, false);
 
 class KLog
 {
@@ -17,12 +19,13 @@ public:
         return singleton;
     }
 
-    void AppendLog(QFile * f, QString log);
+	void AppendLog(QFile * f, const QString& log, bool bWithTimeStamp=true);
 
-    void LogError(QString log);
-    void LogAPI(QString path, QString request, QString response);
+	void LogError(const QString& log);
+	void LogAPI(const QString& path, const QString& request, const QString& response, bool bDebug=false);
 
-	void RecordLog(QString filename, QString log);
+	void DeleteLog(const QString& filename);
+	void RecordLog(const QString& filename, const QString& log, bool bWithTimeStamp=true);
 
     QFile * errorlog;
     QFile * apilog;

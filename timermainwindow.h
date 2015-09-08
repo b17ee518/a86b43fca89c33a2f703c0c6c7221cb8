@@ -51,23 +51,23 @@ public:
     void setRepairTime(int n, qint64 destms=-1, qint64 totalms=-1, QString comment=QString(), QColor col=QColor(0xff, 0xff, 0xff));
     void setBuildTime(int n, qint64 destms=-1, qint64 totalms=-1, QString comment=QString(), QColor col=QColor(0xff, 0xff, 0xff));
 
+	void setAutoRepairTime(bool bOn, bool bResetIfOver = false);
+
 	void setTitle(const QString& title);
 	void playSound(SoundIndex i);
 
 private slots:
     void on_pbClose_clicked();
-
     void on_pbMinimize_clicked();
-
     void slotUpdateTimer();
-
 	void onToggleSleepMode(bool bSleep);
 
 private:
 
     qint64 currentMS();
     QString getRemainTimeStr(qint64 ct, qint64 dt);
-    QString getExpectedTimeStr(qint64 ct, qint64 dt);
+	QString getExpectedTimeStr(qint64 ct, qint64 dt);
+	QString getPassedTimeStr(qint64 ct, qint64 st);
 
     int getPercentage(qint64 tdiff, qint64 totalt);
     bool setPercentageFlag(QTableWidgetItem * pItem, int percentage, bool bYellow);
@@ -75,7 +75,6 @@ private:
     void setProgressColor(QProgressBar * pBar, qint64 tdiff, bool bYellow);
 
     bool updateDisplay(int &mintdiff, qint64 ct, qint64 dt, qint64 tt, QTableWidgetItem * pRemainItem, QTableWidgetItem * pExpectedItem=0, QProgressBar * pProgress=0, bool bMinusOne=false);
-
 
     void initTableItem();
 
@@ -93,6 +92,9 @@ private:
 
     QMediaPlayer * pPlayer;
     QMediaPlaylist * pPlaylist;
+
+	qint64 _autoRepairTimeBegin;
+	bool _autoRepairOn = false;
 };
 
 #endif // TIMERMAINWINDOW_H

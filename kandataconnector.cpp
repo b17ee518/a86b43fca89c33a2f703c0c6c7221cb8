@@ -12,6 +12,7 @@
 #include "ControlManager.h"
 
 #define DAPILOG() APILOG(pathAndQuery, requestBody, responseBody)
+#define DAPILOGDEBUG() APILOGDEBUG(pathAndQuery, requestBody, responseBody)
 
 /*
  * End points
@@ -378,6 +379,10 @@ bool KanDataConnector::Parse(QString _pathAndQuery, QString _requestBody, QStrin
 		{
 			ControlManager::getInstance()->setDoneRequest(pathAndQuery);
 		}
+	}
+	if (_outputAllLog)
+	{
+		DAPILOGDEBUG();
 	}
 
 	return false;
@@ -1338,6 +1343,49 @@ bool KanDataConnector::isShipRepairing(const kcsapi_ship2 *pship)
 	return false;
 }
 
+bool KanDataConnector::isAutoRepairing(int flagshipno/*=-1*/)
+{
+	if (flagshipno < 0)
+	{
+		KanSaveData * pksd = &KanSaveData::getInstance();
+		if (pksd->portdata.api_deck_port.size())
+		{
+			auto& shiplist = pksd->portdata.api_deck_port.at(0).api_ship;
+			if (shiplist.size())
+			{
+				flagshipno = shiplist.first();
+			}
+		}
+	}
+	auto pship = findShipFromShipno(flagshipno);
+	if (pship)
+	{
+		for (auto slotitemid : pship->api_slot)
+		{
+			if (slotitemid >= 0)
+			{
+				auto pslotitem = findSlotitemFromId(slotitemid);
+				if (pslotitem)
+				{
+					auto pmstslotitem = findMstSlotItemFromSlotitemid(pslotitem->api_slotitem_id);
+					if (pmstslotitem)
+					{
+						if (pmstslotitem->api_type.count() > 2)
+						{
+							int type = pmstslotitem->api_type[2];
+							if (type == SLOTITEMTYPE_KANSYU)
+							{
+								return true;
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+	return false;
+}
+
 bool KanDataConnector::RemoveShip(int shipno)
 {
 	for (QList<kcsapi_ship2>::iterator it=pksd->portdata.api_ship.begin();
@@ -2114,7 +2162,7 @@ QString KanDataConnector::logBattleResult(bool bWrite/*=true*/)
 
 	if (bWrite)
 	{
-		QString filename = QString("BattleResult_%1_%2").arg(maparea_id).arg(mapinfo_no);
+		QString filename = QString("Result_%1_%2").arg(maparea_id).arg(mapinfo_no);
 		RECLOG(filename, writestr);
 	}
 	return writestr;
@@ -2300,7 +2348,7 @@ void KanDataConnector::logBattleDetail(bool bCombined)
 
 	int maparea_id = pksd->nextdata.api_maparea_id;
 	int mapinfo_no = pksd->nextdata.api_mapinfo_no;
-	QString filename = QString("BattleDetail_%1_%2").arg(maparea_id).arg(mapinfo_no);
+	QString filename = QString("Detail_%1_%2").arg(maparea_id).arg(mapinfo_no);
 	RECLOG(filename, writestr);
 }
 
@@ -2424,6 +2472,11 @@ bool KanDataConnector::port_port_parse()
         updateWeaponTable();
         firstTime = false;
     }
+
+	if (isAutoRepairing())
+	{
+		MainWindow::mainWindow()->timerWindow()->setAutoRepairTime(true, true);
+	}
 
 	return true;
 }
@@ -2759,6 +2812,17 @@ bool KanDataConnector::req_hensei_change_parse()
 		}
 	}
 	updateFleetTable();
+
+	bool bAutoRepairing = false;
+	// has auto repair slotitem
+	if (lstship->size())
+	{
+		if (isAutoRepairing(lstship->at(0)))
+		{
+			bAutoRepairing = true;
+		}
+	}
+	MainWindow::mainWindow()->timerWindow()->setAutoRepairTime(bAutoRepairing);
 	return true;
 }
 
@@ -3144,6 +3208,8 @@ bool KanDataConnector::req_map_start_parse()
 
 	updateInfoTitleBattle();
 	checkWoundQuit();
+	// for serial_id
+	DAPILOGDEBUG();
 	return true;
 }
 

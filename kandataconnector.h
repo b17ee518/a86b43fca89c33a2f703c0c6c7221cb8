@@ -51,6 +51,8 @@ public:
 	kcsapi_slotitem *findSlotitemFromId(int id);
 	const kcsapi_mst_slotitem *findMstSlotItemFromSlotitemid(int slotitemid) const;
 
+	void setOutputAllLog(bool bVal){ _outputAllLog = bVal; }
+
 private:
 	void updateOverviewTable();
 	void updateMissionTable();
@@ -76,6 +78,7 @@ private:
 	void getShipChargeColors(const kcsapi_ship2 *pship, const kcsapi_mst_ship *pmstship, QColor *pcolFuel, QColor *pcolBullet);
 	QString getShipWoundStateString(const kcsapi_ship2 *pship);
 	bool isShipRepairing(const kcsapi_ship2 *pship);
+	bool isAutoRepairing(int flagshipno=-1);
 
 	void processHouraiDamages(const kcsapi_battle_hougeki* api_hougeki, QList<float>* totalfdamage, QList<float>* totaledamage, QList<float>* totalfdamage_combined, bool bCombined);
 
@@ -290,6 +293,8 @@ private:
 	QJsonObject jobj;
 	KanReqData req;
 	KanSaveData * pksd;
+
+	bool _outputAllLog = false;
 };
 
 #endif // KANDATACONNECTOR_H

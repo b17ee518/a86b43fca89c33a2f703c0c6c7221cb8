@@ -1006,11 +1006,18 @@ void MainWindow::onExportAllList()
 			delete file;
 		}
 	}
+	// export master data
+	KanSaveData::getInstance().logAllExport();
 }
 
 void MainWindow::onTerminateJob()
 {
 	ControlManager::getInstance()->Terminate();
+}
+
+void MainWindow::slotSetLogAll(bool bSet)
+{
+	KanDataConnector::getInstance().setOutputAllLog(bSet);
 }
 
 void MainWindow::onJobPauseResume()

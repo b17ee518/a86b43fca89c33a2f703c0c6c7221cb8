@@ -117,6 +117,31 @@ void TimerMainWindow::setBuildTime(int n, qint64 destms, qint64 totalms, QString
 }
 
 
+void TimerMainWindow::setAutoRepairTime(bool bOn, bool bResetIfOver/*=false*/)
+{
+	if (bOn)
+	{
+		auto ct = currentMS();
+		if (!_autoRepairOn)
+		{
+			_autoRepairTimeBegin = ct;
+			_autoRepairOn = true;
+		}
+		else if (bResetIfOver)
+		{
+			if (ct - _autoRepairTimeBegin >= 20*60*1000)
+			{
+				_autoRepairTimeBegin = ct;
+			}
+		}
+	}
+	else
+	{
+		_autoRepairOn = false;
+		setTitle(""); // may override others
+	}
+}
+
 void TimerMainWindow::setTitle(const QString& title)
 {
 	ui->lineEditTitle->setText(title);
@@ -292,6 +317,12 @@ void TimerMainWindow::slotUpdateTimer()
 	}
 	int processpercentage = getPercentage(mintdiff, 3600000);
 	MainWindow::mainWindow()->SetProgressBarPos(processpercentage, progressbarstate);
+
+	// auto repair timer
+	if (_autoRepairOn)
+	{
+		setTitle("AutoRepair: " + getPassedTimeStr(ct, _autoRepairTimeBegin));
+	}
 }
 
 qint64 TimerMainWindow::currentMS()
@@ -335,6 +366,14 @@ QString TimerMainWindow::getExpectedTimeStr(qint64 ct, qint64 dt)
 		expectedstr.sprintf("%s (%d)", expectedstr.toLocal8Bit().constData(), daydiff);
 	}
 	return expectedstr;
+}
+
+QString TimerMainWindow::getPassedTimeStr(qint64 ct, qint64 st)
+{
+	QTime passedtime = QTime::fromMSecsSinceStartOfDay(ct - st);
+	QString passedstr = passedtime.toString("HH : mm : ss");
+
+	return passedstr;
 }
 
 int TimerMainWindow::getPercentage(qint64 tdiff, qint64 totalt)

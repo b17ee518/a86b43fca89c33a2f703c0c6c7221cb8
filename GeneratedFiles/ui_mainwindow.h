@@ -48,6 +48,8 @@ public:
     QPushButton *pbTerminate;
     QSpacerItem *horizontalSpacer_16;
     QPushButton *pbExport;
+    QSpacerItem *horizontalSpacer_17;
+    QPushButton *pbLogAll;
     QSpacerItem *horizontalSpacer;
     QPushButton *pbCheckLowVol;
     QSpacerItem *horizontalSpacer_10;
@@ -212,6 +214,21 @@ public:
 
         horizontalLayout->addWidget(pbExport);
 
+        horizontalSpacer_17 = new QSpacerItem(24, 17, QSizePolicy::Fixed, QSizePolicy::Minimum);
+
+        horizontalLayout->addItem(horizontalSpacer_17);
+
+        pbLogAll = new QPushButton(titleFrame);
+        pbLogAll->setObjectName(QStringLiteral("pbLogAll"));
+        sizePolicy1.setHeightForWidth(pbLogAll->sizePolicy().hasHeightForWidth());
+        pbLogAll->setSizePolicy(sizePolicy1);
+        pbLogAll->setMinimumSize(QSize(20, 20));
+        pbLogAll->setMaximumSize(QSize(20, 20));
+        pbLogAll->setCheckable(true);
+        pbLogAll->setFlat(true);
+
+        horizontalLayout->addWidget(pbLogAll);
+
         horizontalSpacer = new QSpacerItem(599, 17, QSizePolicy::Expanding, QSizePolicy::Minimum);
 
         horizontalLayout->addItem(horizontalSpacer);
@@ -363,6 +380,7 @@ public:
         QObject::connect(pbPauseNext, SIGNAL(clicked()), MainWindow, SLOT(onJobPauseNext()));
         QObject::connect(pbTerminate, SIGNAL(clicked()), MainWindow, SLOT(onTerminateJob()));
         QObject::connect(pbExport, SIGNAL(clicked()), MainWindow, SLOT(onExportAllList()));
+        QObject::connect(pbLogAll, SIGNAL(clicked(bool)), MainWindow, SLOT(slotSetLogAll(bool)));
 
         QMetaObject::connectSlotsByName(MainWindow);
     } // setupUi
@@ -378,6 +396,7 @@ public:
         pbPauseNext->setText(QApplication::translate("MainWindow", "\345\201\234", 0));
         pbTerminate->setText(QApplication::translate("MainWindow", "\347\265\202", 0));
         pbExport->setText(QApplication::translate("MainWindow", "\345\207\272", 0));
+        pbLogAll->setText(QApplication::translate("MainWindow", "Lo", 0));
         pbCheckLowVol->setText(QApplication::translate("MainWindow", "\351\235\231", 0));
         pbCheckInfo->setText(QApplication::translate("MainWindow", "\346\203\205", 0));
         pbCheckTimer->setText(QApplication::translate("MainWindow", "\346\231\202", 0));

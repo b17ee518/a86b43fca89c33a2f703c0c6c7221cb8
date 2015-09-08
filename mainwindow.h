@@ -118,6 +118,8 @@ private slots:
 	void onExportAllList();
 	void onTerminateJob();
 
+	void slotSetLogAll(bool bSet);
+
 	void onJobPauseResume();
 	void onJobPauseNext();
 

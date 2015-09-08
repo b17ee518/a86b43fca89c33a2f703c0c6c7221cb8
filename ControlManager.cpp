@@ -66,6 +66,7 @@ bool ControlManager::BuildNext_Kira()
 		_todoShipids.swap(flagshipIndex, 0);
 	}
 
+	togoShipId = _todoShipids.at(0);
 	auto chAction = new ChangeHenseiAction();
 	chAction->setShips(togoShipId, shouldChangeSecondShip()?getOneWasteShipId():getCurrentSecondshipId());
 	_actionList.append(chAction);

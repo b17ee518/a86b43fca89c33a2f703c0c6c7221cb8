@@ -12,7 +12,7 @@ class SubMainWindow : public MainWindowBase
 public:
     explicit SubMainWindow(QWidget *parent = 0);
 
-    bool isDockingOnTop(){return m_bDockingOnTop;}
+    inline bool isDockingOnTop(){return _bDockingOnTop;}
 
 protected:
 
@@ -27,8 +27,8 @@ signals:
 public slots:
 
 private:
-    bool m_bDockingOnTop;
-    QTimer * m_pDockingCallbackTimer;
+    bool _bDockingOnTop;
+    QTimer * _pDockingCallbackTimer;
 protected slots:
     virtual void slotDockingTimerCallback();
 

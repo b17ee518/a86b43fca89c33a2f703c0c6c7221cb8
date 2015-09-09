@@ -12,23 +12,22 @@ public:
     explicit KQTitleFrame(QWidget *parent = 0);
 
     void setHandlingWidget(QWidget * pw);
-    QWidget * handlingWidget(){return m_pHandlingWidget;}
+    inline QWidget * handlingWidget(){return _pHandlingWidget;}
 
 protected:
     void stopMoving();
 
 private:
-    QWidget * m_pHandlingWidget;
+    QWidget * _pHandlingWidget = NULL;
 
-    bool m_bMoving;
-    QPoint m_lastMovingPos;
+    bool _bMoving = false;
+    QPoint _lastMovingPos;
 
-    QTimer * m_pUpdateTimer;
+    QTimer * _pUpdateTimer = NULL;
 
 protected:
     void mousePressEvent(QMouseEvent* event);
     void mouseReleaseEvent(QMouseEvent* event);
-
 
 signals:
 

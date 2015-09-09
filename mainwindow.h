@@ -25,18 +25,20 @@ public:
 	QWindowsEventFilter();
 	virtual bool nativeEventFilter(const QByteArray &eventType, void *message, long *result);
 };
-enum
+enum class ProgressBarState
 {
-	PROGRESSBARSTATE_NORMAL,
-	PROGRESSBARSTATE_PAUSED,
-	PROGRESSBARSTATE_STOPPED,
+	Normal,
+	Paused,
+	Stopped,
 };
 
-enum {
-	QWEBVIEWCSS_NORMAL,
-	QWEBVIEWCSS_TRANSPARENT,
-	//	QWEBVIEWCSS_CLEAR,
-	QWEBVIEWCSS_END,
+enum class QWebViewCSSIndex
+{
+	Invalid = -1,
+	Normal = 0,
+	Transparent,
+	//	CLEAR,
+	Max,
 };
 
 
@@ -52,17 +54,17 @@ public:
 	explicit MainWindow(QWidget *parent = 0);
 	~MainWindow();
 
-	static MainWindow * mainWindow(){return s_pMainWindow;}
-	static void setMainWindow(MainWindow * pWindow){s_pMainWindow = pWindow;}
+	static inline MainWindow * mainWindow(){return s_pMainWindow;}
+	static inline void setMainWindow(MainWindow * pWindow){s_pMainWindow = pWindow;}
     void postInit(InfoMainWindow * pInfo, TimerMainWindow * pTimer, WeaponMainWindow *pWeapon, ShipMainWindow* pShip);
-	static InfoMainWindow * infoWindow(){return s_pMainWindow->_pInfoWindow;}
-	static TimerMainWindow * timerWindow(){return s_pMainWindow->_pTimerWindow;}
-    static WeaponMainWindow * weaponWindow(){return s_pMainWindow->_pWeaponWindow;}
-	static ShipMainWindow * shipWindow(){ return s_pMainWindow->_pShipWindow; }
+	static inline InfoMainWindow * infoWindow(){return s_pMainWindow->_pInfoWindow;}
+	static inline TimerMainWindow * timerWindow(){return s_pMainWindow->_pTimerWindow;}
+    static inline WeaponMainWindow * weaponWindow(){return s_pMainWindow->_pWeaponWindow;}
+	static inline ShipMainWindow * shipWindow(){ return s_pMainWindow->_pShipWindow; }
 
 	void AdjustVolume(int vol);
 	void onSubMainWindowShowHide(bool bShow, MainWindowBase * pWindow);
-	void SetProgressBarPos(int pos, int state);
+	void SetProgressBarPos(int pos, ProgressBarState state);
 
 	void onGetNetworkReply(QNetworkReply * reply);
 
@@ -70,7 +72,7 @@ public:
 	bool isSleepMode();
 
 	QWidget* getBrowserWidget();
-	void navigateTo(QString urlString);
+	void navigateTo(const QString& urlString);
 	void navigateReload();
 
 	bool isUsingIE();
@@ -130,7 +132,7 @@ private:
 
 private:
 	void setWebSettings();
-	void applyCss(int css);
+	void applyCss(QWebViewCSSIndex css);
 	void shootScreen();
 	void setupCss();
 	void loadSettings();
@@ -144,9 +146,9 @@ private:
 	FiddlerCOM::FiddlerCOMClass * _pFiddler = NULL;
 
 	bool _bIEPageLoaded = false;
-	int _applyCssWhenLoaded = -1;
-	QString _ieCsses[QWEBVIEWCSS_END];
-	QUrl _webViewCsses[QWEBVIEWCSS_END];
+	QWebViewCSSIndex _applyCssWhenLoaded = QWebViewCSSIndex::Invalid;
+	QString _ieCsses[(int)QWebViewCSSIndex::Max];
+	QUrl _webViewCsses[(int)QWebViewCSSIndex::Max];
 	
 	InfoMainWindow * _pInfoWindow = NULL;
 	TimerMainWindow * _pTimerWindow = NULL;

@@ -83,7 +83,7 @@ public:
 	QList<int> _ships;
 	QList<int> _pageList;
 	QList<int> _posList;
-	int _lastPage;
+	int _lastPage = 0;
 
 	int _curPage = 0;
 	int _nowIndex = 0;

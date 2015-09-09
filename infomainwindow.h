@@ -18,11 +18,11 @@ public:
     explicit InfoMainWindow(QWidget *parent = 0);
     ~InfoMainWindow();
 
-    void updateOverviewTable(QList<QString> lst, QList<QColor> cols);
-    void updateMissionTable(QString buttonTitle, QList<KQRowData> rows);
-    void updateFleetTable(int n, QString buttonTitle, int colindex, bool bRed, QList<KQRowData> rows);
-    void updateRepairTable(QString buttonTitle, QList<KQRowData> rows);
-    void updateTitle(QString title, int colindex);
+    void updateOverviewTable(const QList<QString>& lst, const QList<QColor>& cols);
+    void updateMissionTable(const QString& buttonTitle, const QList<KQRowData>& rows);
+    void updateFleetTable(int n, const QString& buttonTitle, int colindex, bool bRed, const QList<KQRowData>& rows);
+    void updateRepairTable(const QString& buttonTitle, const QList<KQRowData>& rows);
+    void updateTitle(const QString& title, int colindex);
 
 private:
 
@@ -34,9 +34,9 @@ private:
 
     Ui::InfoMainWindow *ui;
 
-    QTimer * pUpdateTimer;
+    QTimer * pUpdateTimer = NULL;
 
-    KQUI_CollapsibleFrame * pFleetFrames[4];
+	KQUI_CollapsibleFrame * pFleetFrames[4];	// should be set
 
     QList<KQUI_CollapsibleFrame*> lstCollapsibleFrames;
 

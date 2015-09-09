@@ -6,7 +6,7 @@
 KQTableWidget::KQTableWidget(QWidget *parent) :
     QTableWidget(parent)
 {
-    separatorColumn = 0;
+    _separatorColumn = 0;
     setFocusPolicy(Qt::NoFocus);
     setFont(QApplication::font());
 }
@@ -44,9 +44,9 @@ void KQTableWidget::adjustSizeToWidth(int width)
     }
     else if (nowtotalwidth < width)
     {
-        if (separatorColumn >= 0)
+        if (_separatorColumn >= 0)
         {
-            this->setColumnWidth(separatorColumn, this->columnWidth(separatorColumn)+width-nowtotalwidth);
+            this->setColumnWidth(_separatorColumn, this->columnWidth(_separatorColumn)+width-nowtotalwidth);
         }
     }
     else
@@ -60,20 +60,20 @@ void KQTableWidget::adjustSizeToWidth(int width)
 
 void KQTableWidget::setSeparatorColumn(int n)
 {
-    separatorColumn = n;
+    _separatorColumn = n;
 }
 
-void KQTableWidget::updateFullTable(QList<KQRowData> rows)
+void KQTableWidget::updateFullTable(const QList<KQRowData>& rows)
 {
     setRowCount(rows.count());
     for (int i=0; i<rows.count(); i++)
     {
-        KQRowData * prd = &(rows[i]);
+        const KQRowData * prd = &(rows[i]);
 
-        QList<KQRowCellData> * pRow = prd->cells();
+        const QList<KQRowCellData> * pRow = prd->cells();
         for (int j=0; j<columnCount(); j++)
         {
-            KQRowCellData * pCell = &((*pRow)[j]);
+            const KQRowCellData * pCell = &((*pRow)[j]);
 
             QTableWidgetItem * pItem = item(i, j);
             if (!pItem)
@@ -91,7 +91,7 @@ void KQTableWidget::updateFullTable(QList<KQRowData> rows)
 
 }
 
-void KQTableWidget::updateCellNoChangeSize(int row, int column, KQRowCellData cell)
+void KQTableWidget::updateCellNoChangeSize(int row, int column, const KQRowCellData& cell)
 {
     if (rowCount() > row && columnCount() > column)
     {

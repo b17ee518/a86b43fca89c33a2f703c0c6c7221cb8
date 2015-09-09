@@ -134,72 +134,72 @@ int KanDataCalc::GetAdmiralNextLevelExp(int curExp, int curLevel)
     return 0;
 }
 
-int KanDataCalc::GetWoundState(int curHP, int maxHP)
+WoundState KanDataCalc::GetWoundState(int curHP, int maxHP)
 {
     double val = (double)curHP / (double)maxHP;
     if (val <= 0.0)
     {
-        return WOUNDSTATE_DEAD;
+        return WoundState::Dead;
     }
     else if (val <= 0.25)
     {
-        return WOUNDSTATE_BIG;
+        return WoundState::Big;
     }
     else if (val <= 0.5)
     {
-        return WOUNDSTATE_MIDDLE;
+        return WoundState::Middle;
     }
     else if (val <= 0.75)
     {
-        return WOUNDSTATE_SMALL;
+        return WoundState::Small;
     }
     else if (val < 1.0)
     {
-        return WOUNDSTATE_LITTLE;
+        return WoundState::Little;
     }
-    return WOUNDSTATE_FULL;
+    return WoundState::Full;
 }
 
-int KanDataCalc::GetChargeState(int curVal, int maxVal)
+ChargeState KanDataCalc::GetChargeState(int curVal, int maxVal)
 {
     double val = (double)curVal / (double)maxVal;
     if (val <= 0.0)
     {
-        return CHARGESTATE_EMPTY;
+        return ChargeState::Empty;
     }
     else if (val <= 0.25)
     {
-        return CHARGESTATE_BIG;
+        return ChargeState::Big;
     }
     else if (val <= 0.5)
     {
-        return CHARGESTATE_MIDDLE;
+        return ChargeState::Middle;
     }
     else if (val < 1.0)
     {
-		return CHARGESTATE_SMALL;
+		return ChargeState::Small;
     }
-    return CHARGESTATE_FULL;
+    return ChargeState::Full;
 
 }
 
-int KanDataCalc::GetCondState(int cond)
+CondState KanDataCalc::GetCondState(int cond)
 {
     if (cond < 20)
     {
-        return CONDSTATE_BIG;
+        return CondState::Big;
     }
     else if (cond < 30)
     {
-        return CONDSTATE_MIDDLE;
+        return CondState::Middle;
     }
     else if (cond < 40)
     {
-        return CONDSTATE_SMALL;
+        return CondState::Small;
     }
     else if (cond < 50)
     {
-        return CONDSTATE_NORMAL;
+        return CondState::Normal;
     }
-    return CONDSTATE_KIRA;
+    return CondState::Kira;
 }

@@ -11,11 +11,11 @@ class KanReqData
 public:
     KanReqData(){}
 
-    void ReadFromString(QString strfunc, QString reqstr);
-    QString GetItemAsString(QString item);
+    void ReadFromString(const QString& strfunc, const QString& reqstr);
+    QString GetItemAsString(const QString& item);
 
-    QString reqfunc;
-    QUrlQuery query;
+    QString _reqfunc;
+    QUrlQuery _query;
 };
 
 #endif // KANREQDATA_H

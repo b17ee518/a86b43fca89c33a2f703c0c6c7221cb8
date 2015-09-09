@@ -4,99 +4,118 @@
 #include "kandata.h"
 #include "kanreqdata.h"
 
-enum
+enum class KanBattleType
 {
-	MATERIALDATAINDEX_FUEL = 0,
-	MATERIALDATAINDEX_BULLET,
-	MATERIALDATAINDEX_STEEL,
-	MATERIALDATAINDEX_BAUXITE,
-	MATERIALDATAINDEX_INSTANTBUILD,
-	MATERIALDATAINDEX_INSTANTREPAIR,
-	MATERIALDATAINDEX_DEVELOPMENT,
-	MATERIALDATAINDEX_POWERUP,
+	Day,
+	Night,
+	DayToNight,
+	NightToDay,
+
+	Air,
+
+	Combined_Begin,
+
+	Combined_KouKu,
+	Combined_Water,
+	Combined_KouKuNight,
+	Combined_Day,
+	Combined_Night,
+	Combined_DayToNight,
 };
 
-enum 
+enum class MaterialDataIndex
 {
-	SLOTITEMTYPE_SYUHOU_S = 1,	//	小口径主砲
-	SLOTITEMTYPE_SYUHOU_M = 2,	//	中口径主砲
-	SLOTITEMTYPE_SYUHOU_L = 3,	//	大口径主砲
-	SLOTITEMTYPE_FUKUHOU = 4,	//	副砲
-	SLOTITEMTYPE_GYORAI = 5,	//	魚雷
-	SLOTITEMTYPE_KANSEN = 6,	//	艦上戦闘機
-	SLOTITEMTYPE_KANBAKU = 7,	//	艦上爆撃機
-	SLOTITEMTYPE_KANKOU = 8,	//	艦上攻撃機
-	SLOTITEMTYPE_TEISATSU = 9,	//	艦上偵察機
-	SLOTITEMTYPE_SUITEI = 10,	//	水上偵察機
-	SLOTITEMTYPE_SUIBAKU = 11,	//	水上爆撃機
-	SLOTITEMTYPE_DENTAN_S = 12,	//	小型電探
-	SLOTITEMTYPE_DENTAN_L = 13,	//	大型電探
-	SLOTITEMTYPE_SONAR = 14,	//	ソナー
-	SLOTITEMTYPE_BAKURAI = 15,	//	爆雷
-	SLOTITEMTYPE_SOUKA = 16,	//	追加装甲
-	SLOTITEMTYPE_KIKAN = 17,	//	機関部強化
-	SLOTITEMTYPE_TAIKUTAN = 18,	//	対空強化弾
-	SLOTITEMTYPE_TAIKANTAN = 19,	//	対艦強化弾
-	SLOTITEMTYPE_VT = 20,	//	VT信管
-	SLOTITEMTYPE_TAIKUKIJU = 21,	//	対空機銃
-	SLOTITEMTYPE_TOKUSEN = 22,	//	特殊潜航艇
-	SLOTITEMTYPE_OUKYU = 23,	//	応急修理要員
-	SLOTITEMTYPE_JOURIKUTEI = 24,	//	上陸用舟艇
-	SLOTITEMTYPE_OTOJAIRO = 25,	//	オートジャイロ
-	SLOTITEMTYPE_TAISENKI = 26,	//	対潜哨戒機
-	SLOTITEMTYPE_SOUKA_M = 27,	//	追加装甲(中型)
-	SLOTITEMTYPE_SOUKA_L = 28,	//	追加装甲(大型)
-	SLOTITEMTYPE_TANSYOUTOU = 29,	//	探照灯
-	SLOTITEMTYPE_YUSOU = 30,	//	簡易輸送部材
-	SLOTITEMTYPE_KANSYU = 31,	//	艦艇修理施設
-	SLOTITEMTYPE_SENSUIKANGYORAI = 32,	//	潜水艦魚雷
-	SLOTITEMTYPE_SYOUMEITAN = 33,	//	照明弾
-	SLOTITEMTYPE_SIREIBU = 34,	//	司令部施設
-	SLOTITEMTYPE_KOUKU_YOUIN = 35,	//	航空要員
-	SLOTITEMTYPE_KOUSYA = 36,	//	高射装置
-	SLOTITEMTYPE_TAICHI = 37,	//	対地装備
-	SLOTITEMTYPE_SYUHOU_L_II = 38,	//	大口径主砲（II）
-	SLOTITEMTYPE_SUIJOU_YOUIN = 39,	//	水上艦要員
-	SLOTITEMTYPE_SONAR_L = 40,	//	大型ソナー
-	SLOTITEMTYPE_HIKOUTEI_L = 41,	//	大型飛行艇
-	SLOTITEMTYPE_TANSYOUTOU_L = 42,	//	大型探照灯
-	SLOTITEMTYPE_SENTOURYOUSYOKU = 43,	//	戦闘糧食
-	SLOTITEMTYPE_HOKYUBUSHI = 44,	//	補給物資
-	SLOTITEMTYPE_DENTAN_L_II = 93,	//	大型電探（II）
+	Fuel = 0,
+	Bullet,
+	Steel,
+	Bauxite,
+	InstandBuild,
+	InstantRepair,
+	Development,
+	PowerUp,
 };
 
-enum
+enum class SlotitemType
 {
-	SHIPTYPE_KAIBOU = 1,	//	海防艦	
-	SHIPTYPE_KUCHIKU = 2,	//	駆逐艦	
-	SHIPTYPE_KEIJUN = 3,	//	軽巡洋艦	
-	SHIPTYPE_RAIJUN = 4,	//	重雷装巡洋艦	
-	SHIPTYPE_JUJUN = 5,	//	重巡洋艦	
-	SHIPTYPE_KOUJUN = 6,	//	航空巡洋艦	
-	SHIPTYPE_KEIKUBO = 7,	//	軽空母	
-	SHIPTYPE_KOUSOKUSENKAN = 8,	//	戦艦	
-	SHIPTYPE_TEISOKUSENKAN = 9,	//	戦艦	
-	SHIPTYPE_KOUSEN = 10,	//	航空戦艦	
-	SHIPTYPE_KUBO = 11,	//	正規空母	
-	SHIPTYPE_DOSENKAN = 12,	//	超弩級戦艦	
-	SHIPTYPE_SENSUI = 13,	//	潜水艦	
-	SHIPTYPE_SENBO = 14,	//	潜水空母	
-	SHIPTYPE_HOKYU = 15,	//	補給艦	
-	SHIPTYPE_SUIBO = 16,	//	水上機母艦	
-	SHIPTYPE_YOURIKU = 17,	//	揚陸艦	
-	SHIPTYPE_SOUKAKUBO = 18,	//	装甲空母	
-	SHIPTYPE_KOUSAKU = 19,	//	工作艦	
-	SHIPTYPE_SENSUIBOKAN = 20,	//	潜水母艦	
-	SHIPTYPE_RENJUN = 21,	//	練習巡洋艦	
-	SHIPTYPE_HOKYU_HAYASUI = 22,	//	補給艦	速吸
+	SyuHou_S = 1,	//	小口径主砲
+	SyuHou_M = 2,	//	中口径主砲
+	SyuHou_L = 3,	//	大口径主砲
+	FuKuHou = 4,	//	副砲
+	GyoRai = 5,	//	魚雷
+	KanSen = 6,	//	艦上戦闘機
+	KanBaKu = 7,	//	艦上爆撃機
+	KanKou = 8,	//	艦上攻撃機
+	TeiSaTsu = 9,	//	艦上偵察機
+	SuiTei = 10,	//	水上偵察機
+	SuiBaKu = 11,	//	水上爆撃機
+	DenTan_S = 12,	//	小型電探
+	DenTan_L = 13,	//	大型電探
+	Sonar = 14,	//	ソナー
+	BaKuRai = 15,	//	爆雷
+	SouKa = 16,	//	追加装甲
+	KiKan = 17,	//	機関部強化
+	TaiKuDan = 18,	//	対空強化弾
+	TaiKanDan = 19,	//	対艦強化弾
+	VT = 20,	//	VT信管
+	TaiKuKiJu = 21,	//	対空機銃
+	ToKuSen = 22,	//	特殊潜航艇
+	OuKyu = 23,	//	応急修理要員
+	JouRiKuTei = 24,	//	上陸用舟艇
+	Autogiro = 25,	//	オートジャイロ
+	TaiSenKi = 26,	//	対潜哨戒機
+	SouKa_M = 27,	//	追加装甲(中型)
+	SouKa_L = 28,	//	追加装甲(大型)
+	TanSyouTou = 29,	//	探照灯
+	YuSou = 30,	//	簡易輸送部材
+	KanSyu = 31,	//	艦艇修理施設
+	SenSuiKanGyoRai = 32,	//	潜水艦魚雷
+	SyouMeiDan = 33,	//	照明弾
+	SiReiBu = 34,	//	司令部施設
+	KouKuYouIn = 35,	//	航空要員
+	KouSya = 36,	//	高射装置
+	TaiChi = 37,	//	対地装備
+	SyuHou_L_II = 38,	//	大口径主砲（II）
+	SuiJouYouIn = 39,	//	水上艦要員
+	Sonar_L = 40,	//	大型ソナー
+	HiKouTei_L = 41,	//	大型飛行艇
+	TanSyouTou_L = 42,	//	大型探照灯
+	SenTouRyouSyoKu = 43,	//	戦闘糧食
+	HoKyuBuShi = 44,	//	補給物資
+	DenTan_L_II = 93,	//	大型電探（II）
 };
 
-enum
+enum class ShipType
 {
-	SEIKU_KAKUHO = 1,
-	SEIKU_YUSEI = 2,
-	SEIKU_KORE = 3,
-	SEIKU_SOUSITSU = 4,
+	KaiBou = 1,	//	海防艦	
+	KuChiKu = 2,	//	駆逐艦	
+	KeiJun = 3,	//	軽巡洋艦	
+	RaiJun = 4,	//	重雷装巡洋艦	
+	JuJun = 5,	//	重巡洋艦	
+	KouJun = 6,	//	航空巡洋艦	
+	KeiKuBou = 7,	//	軽空母	
+	KouSoKuSenKan = 8,	//	戦艦	
+	TeiSoKuSenKan = 9,	//	戦艦	
+	KouSen = 10,	//	航空戦艦	
+	KuBou = 11,	//	正規空母	
+	DoKyuSenKan = 12,	//	超弩級戦艦	
+	SenSui = 13,	//	潜水艦	
+	SenBou = 14,	//	潜水空母	
+	HoKyu = 15,	//	補給艦	
+	SuiBou = 16,	//	水上機母艦	
+	YouRiKu = 17,	//	揚陸艦	
+	SouKaKuBou = 18,	//	装甲空母	
+	KouSaKu = 19,	//	工作艦	
+	SenSuiBoKan = 20,	//	潜水母艦	
+	RenJun = 21,	//	練習巡洋艦	
+	HoKyu_HaYaSuI = 22,	//	補給艦	速吸
+};
+
+enum SeiKuState
+{
+	KaKuHou = 1,
+	YuSei = 2,
+	KoRe = 3,
+	SouShiTsu = 4,
 };
 
 class CreateShipSaveData
@@ -104,21 +123,27 @@ class CreateShipSaveData
 public:
 	void setValue(int fuel, int bull, int steel, int bauxite, int dev, int kdock);
 	void clearValue();
-	bool isValueSet(){ return flag > 0; }
-	bool isAll30(){ return usefuel == 30 && usebull == 30 && usesteel == 30 && usebauxite == 30; }
+	inline bool isValueSet(){ return _flag > 0; }
+	inline bool isAll30(){ 
+		return _usefuel == 30 
+			&& _usebull == 30 
+			&& _usesteel == 30 
+			&& _usebauxite == 30; 
+	}
 
-	int usefuel;
-	int usebull;
-	int usesteel;
-	int usebauxite;
-	int usedevelopment;
-	int kdockid;
-	int flag;
+	int _usefuel;
+	int _usebull;
+	int _usesteel;
+	int _usebauxite;
+	int _usedevelopment;
+	int _kdockid;
+	int _flag;
 };
 
 class KanSaveData
 {
 public:
+	// public member without _
 
 	kcsapi_port portdata;
 //    QList<kcsapi_ship> shipdata;
@@ -135,11 +160,11 @@ public:
 
 	QList<int> enemyhpdata;
 
-	int shipcountoffset;
-	int slotitemcountoffset;
-	int lastbattletype;
+	int shipcountoffset = 0;
+	int slotitemcountoffset = 0;
+	KanBattleType lastbattletype = KanBattleType::Day;
 	int lastdeckid = 0;
-	int maxslotitemid;
+	int maxslotitemid = 0;
 	bool bCombined = false;
 
 	int lastSeiku = 0;

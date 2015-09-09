@@ -5,11 +5,12 @@
 #include <QTableWidgetItem>
 #include <QPen>
 
-enum{
-    CustomTableDelegate_Left = 1,
-    CustomTableDelegate_Right = 2,
-    CustomTableDelegate_Top = 4,
-    CustomTableDelegate_Bottom = 8,
+// bit
+enum {
+	CustomTableDelegate_Left = 1,
+	CustomTableDelegate_Right = 2,
+	CustomTableDelegate_Top = 4,
+	CustomTableDelegate_Bottom = 8,
 };
 
 class CustomTableDelegate : public QStyledItemDelegate

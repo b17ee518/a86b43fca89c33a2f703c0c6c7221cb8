@@ -43,8 +43,8 @@ private:
     void markChanged();
     QString cookiesFile() const;
 
-    QString dir_;
-    bool    modified_;
-    QTimer* saveDelayTimer_;
+    QString _dir;
+    bool    _modified = false;
+    QTimer* _saveDelayTimer = NULL;
 };
 

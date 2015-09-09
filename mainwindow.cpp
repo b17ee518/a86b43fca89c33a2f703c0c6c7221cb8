@@ -273,7 +273,7 @@ void MainWindow::changeEvent(QEvent *e)
 
 void MainWindow::closeEvent(QCloseEvent *e)
 {
-	if (!ControlManager::getInstance()->isRunning())
+	if (!ControlManager::getInstance().isRunning())
 	{
 		QMessageBox * pMessageBox = new QMessageBox(
 			QMessageBox::NoIcon
@@ -298,7 +298,7 @@ void MainWindow::closeEvent(QCloseEvent *e)
 		_pFiddler->Shutdown();
 	}
 
-	ControlManager::getInstance()->Terminate();
+	ControlManager::getInstance().Terminate();
 
 	MainWindowBase::closeEvent(e);
 
@@ -467,7 +467,7 @@ void MainWindow::on_pbCheckTransparent_toggled(bool checked)
 			}
 		}
 
-		applyCss(QWEBVIEWCSS_TRANSPARENT);
+		applyCss(QWebViewCSSIndex::Transparent);
 	}
 	else
 	{
@@ -484,7 +484,7 @@ void MainWindow::on_pbCheckTransparent_toggled(bool checked)
 			s_listpair.clear();
 		}
 
-		applyCss(QWEBVIEWCSS_NORMAL);
+		applyCss(QWebViewCSSIndex::Normal);
 	}
 
 }
@@ -586,7 +586,7 @@ QWidget* MainWindow::getBrowserWidget()
 	return _webView;
 }
 
-void MainWindow::navigateTo(QString urlString)
+void MainWindow::navigateTo(const QString& urlString)
 {
 	if (_bUseIE)
 	{
@@ -788,7 +788,7 @@ void MainWindow::showEvent(QShowEvent *event)
 	}
 }
 
-void MainWindow::SetProgressBarPos(int pos, int state)
+void MainWindow::SetProgressBarPos(int pos, ProgressBarState state)
 {
 	if (_pTaskbarButton)
 	{
@@ -796,13 +796,13 @@ void MainWindow::SetProgressBarPos(int pos, int state)
 		_pTaskbarButton->progress()->setValue(pos);
 		switch (state)
 		{
-		case PROGRESSBARSTATE_NORMAL:
+		case ProgressBarState::Normal:
 			if (pProgress->isPaused() || pProgress->isStopped())
 			{
 				pProgress->resume();
 			}
 			break;
-		case PROGRESSBARSTATE_PAUSED:
+		case ProgressBarState::Paused:
 			if (pProgress->isStopped())
 			{
 				pProgress->resume();
@@ -812,7 +812,7 @@ void MainWindow::SetProgressBarPos(int pos, int state)
 				pProgress->setPaused(true);
 			}
 			break;
-		case PROGRESSBARSTATE_STOPPED:
+		case ProgressBarState::Stopped:
 			if (pProgress->isPaused())
 			{
 				pProgress->resume();
@@ -885,20 +885,22 @@ void MainWindow::onPanic()
 
 void MainWindow::onDoJobFuel()
 {
-	ControlManager::getInstance()->Terminate();
+	auto& cm = ControlManager::getInstance();
+	cm.Terminate();
 
-	ControlManager::getInstance()->BuildNext_Fuel();
-	ControlManager::getInstance()->StartJob();
+	cm.BuildNext_Fuel();
+	cm.StartJob();
 }
 
 
 void MainWindow::onDoJobKira()
 {
-	ControlManager::getInstance()->Terminate();
+	auto& cm = ControlManager::getInstance();
+	cm.Terminate();
 
-	ControlManager::getInstance()->LoadToDoShipList_Kira();
-	ControlManager::getInstance()->BuildNext_Kira();
-	ControlManager::getInstance()->StartJob();
+	cm.LoadToDoShipList_Kira();
+	cm.BuildNext_Kira();
+	cm.StartJob();
 
 }
 
@@ -918,7 +920,7 @@ void MainWindow::onExportAllList()
 	QList<ExportInfo> infos;
 	if (pksd->portdata.api_ship.size())
 	{
-		for (auto ship:pksd->portdata.api_ship)
+		for (auto& ship:pksd->portdata.api_ship)
 		{
 			if (ship.api_lv < 10)
 			{
@@ -979,7 +981,7 @@ void MainWindow::onExportAllList()
 			if (file->open(QIODevice::WriteOnly | QIODevice::Text))
 			{
 				int lastShipType = -1;
-				for (auto info:infos)
+				for (auto& info:infos)
 				{
 					QString str;
 					if (lastShipType >= 0 && lastShipType != info.shiptype)
@@ -1012,7 +1014,7 @@ void MainWindow::onExportAllList()
 
 void MainWindow::onTerminateJob()
 {
-	ControlManager::getInstance()->Terminate();
+	ControlManager::getInstance().Terminate();
 }
 
 void MainWindow::slotSetLogAll(bool bSet)
@@ -1022,27 +1024,27 @@ void MainWindow::slotSetLogAll(bool bSet)
 
 void MainWindow::onJobPauseResume()
 {
-	if (ControlManager::getInstance()->isPaused())
+	if (ControlManager::getInstance().isPaused())
 	{
-		ControlManager::getInstance()->Resume();
+		ControlManager::getInstance().Resume();
 	}
 	else
 	{
-		ControlManager::getInstance()->Pause();
+		ControlManager::getInstance().Pause();
 	}
 }
 
 void MainWindow::onJobPauseNext()
 {
-	if (ControlManager::getInstance()->isPaused())
+	if (ControlManager::getInstance().isPaused())
 	{
-		ControlManager::getInstance()->Resume();
+		ControlManager::getInstance().Resume();
 	}
 	else
 	{
-		ControlManager::getInstance()->PauseNext();
+		ControlManager::getInstance().PauseNext();
 	}
-	ui->pbPauseNext->setChecked(ControlManager::getInstance()->getPauseNextVal());
+	ui->pbPauseNext->setChecked(ControlManager::getInstance().getPauseNextVal());
 }
 
 void MainWindow::on_pbSwitchScreenshot_toggled(bool checked)
@@ -1062,7 +1064,7 @@ void MainWindow::shootScreen()
 {
 	if (ui->pbCheckTransparent->isChecked())
 	{
-		applyCss(QWEBVIEWCSS_NORMAL);
+		applyCss(QWebViewCSSIndex::Normal);
 	}
 	QPixmap pixmap = QPixmap::grabWidget(getBrowserWidget());
 
@@ -1074,7 +1076,7 @@ void MainWindow::shootScreen()
 	pixmap.save(filename, "PNG");
 	if (ui->pbCheckTransparent->isChecked())
 	{
-		applyCss(QWEBVIEWCSS_TRANSPARENT);
+		applyCss(QWebViewCSSIndex::Transparent);
 	}
 }
 
@@ -1094,7 +1096,7 @@ body {
 	z-index:1
 }
 */
-	_ieCsses[QWEBVIEWCSS_NORMAL] = "\
+	_ieCsses[(int)QWebViewCSSIndex::Normal] = "\
 								body {\
 									margin:0;\
 									overflow:hidden;\
@@ -1105,7 +1107,8 @@ body {
 									left:-50px;\
 									z-index:1\
 								 }";
-	_webViewCsses[QWEBVIEWCSS_NORMAL] = (QUrl("data:text/css;charset=utf-8;base64,Ym9keSB7DQoJbWFyZ2luOjA7DQoJb3ZlcmZsb3c6aGlkZGVuDQp9DQoNCiNnYW1lX2ZyYW1lIHsNCglwb3NpdGlvbjpmaXhlZDsNCgl0b3A6LTE2cHg7DQoJbGVmdDotNTBweDsNCgl6LWluZGV4OjENCn0="));
+	_webViewCsses[(int)QWebViewCSSIndex::Normal] = 
+		(QUrl("data:text/css;charset=utf-8;base64,Ym9keSB7DQoJbWFyZ2luOjA7DQoJb3ZlcmZsb3c6aGlkZGVuDQp9DQoNCiNnYW1lX2ZyYW1lIHsNCglwb3NpdGlvbjpmaXhlZDsNCgl0b3A6LTE2cHg7DQoJbGVmdDotNTBweDsNCgl6LWluZGV4OjENCn0="));
 	/*
 body {
 	margin:0;
@@ -1120,7 +1123,7 @@ body {
 	z-index:1;
 }
 */
-//	csses[QWEBVIEWCSS_TRANSPARENT] = QUrl("data:text/css;charset=utf-8;base64,Ym9keSB7DQoJbWFyZ2luOjA7DQoJb3ZlcmZsb3c6aGlkZGVuOw0KCW9wYWNpdHk6IDAuNDsNCn0NCg0KI2dhbWVfZnJhbWUgew0KCXBvc2l0aW9uOmZpeGVkOw0KCXRvcDotMTZweDsNCglsZWZ0Oi01MHB4Ow0KCXotaW5kZXg6MTsNCn0=");
+//	csses[QWebViewCSS::TRANSPARENT] = QUrl("data:text/css;charset=utf-8;base64,Ym9keSB7DQoJbWFyZ2luOjA7DQoJb3ZlcmZsb3c6aGlkZGVuOw0KCW9wYWNpdHk6IDAuNDsNCn0NCg0KI2dhbWVfZnJhbWUgew0KCXBvc2l0aW9uOmZpeGVkOw0KCXRvcDotMTZweDsNCglsZWZ0Oi01MHB4Ow0KCXotaW5kZXg6MTsNCn0=");
 
 	/*
 	body {
@@ -1136,10 +1139,11 @@ body {
 	z-index:1;
 	}
 	*/
-	_webViewCsses[QWEBVIEWCSS_TRANSPARENT] = QUrl("data:text/css;charset=utf-8;base64,Ym9keSB7DQoJbWFyZ2luOjA7DQoJb3ZlcmZsb3c6aGlkZGVuOw0KCW9wYWNpdHk6IDAuMjsNCn0NCg0KI2dhbWVfZnJhbWUgew0KCXBvc2l0aW9uOmZpeGVkOw0KCXRvcDotMTZweDsNCglsZWZ0Oi01MHB4Ow0KCXotaW5kZXg6MTsNCn0=");
+	_webViewCsses[(int)QWebViewCSSIndex::Transparent] = 
+		QUrl("data:text/css;charset=utf-8;base64,Ym9keSB7DQoJbWFyZ2luOjA7DQoJb3ZlcmZsb3c6aGlkZGVuOw0KCW9wYWNpdHk6IDAuMjsNCn0NCg0KI2dhbWVfZnJhbWUgew0KCXBvc2l0aW9uOmZpeGVkOw0KCXRvcDotMTZweDsNCglsZWZ0Oi01MHB4Ow0KCXotaW5kZXg6MTsNCn0=");
 
 	// do not set opacity
-	_ieCsses[QWEBVIEWCSS_TRANSPARENT] = "\
+	_ieCsses[(int)QWebViewCSSIndex::Transparent] = "\
 										body {\
 											margin:0;\
 											overflow:visible;\
@@ -1152,7 +1156,7 @@ body {
 										}\
 										";
 	
-	applyCss(QWEBVIEWCSS_NORMAL);
+	applyCss(QWebViewCSSIndex::Normal);
 }
 
 void MainWindow::loadSettings()
@@ -1231,9 +1235,9 @@ void MainWindow::rebuildIE(bool bNavigate)
 	}
 }
 
-void MainWindow::applyCss(int css)
+void MainWindow::applyCss(QWebViewCSSIndex css)
 {
-	if (css < 0 || css >= QWEBVIEWCSS_END)
+	if (css < QWebViewCSSIndex::Normal || css >= QWebViewCSSIndex::Max)
 	{
 		return;
 	}
@@ -1263,13 +1267,13 @@ void MainWindow::applyCss(int css)
 			return;
 		}
 
-		styleSheetObj->dynamicCall("setCssText(QString)", _ieCsses[css]);
-		_applyCssWhenLoaded = -1;
+		styleSheetObj->dynamicCall("setCssText(QString)", _ieCsses[(int)css]);
+		_applyCssWhenLoaded = QWebViewCSSIndex::Invalid;
 		delete htmlDocObj;
 	}
 	else
 	{
-		_webView->page()->settings()->setUserStyleSheetUrl(_webViewCsses[css]);
+		_webView->page()->settings()->setUserStyleSheetUrl(_webViewCsses[(int)css]);
 	}
 }
 
@@ -1280,7 +1284,7 @@ void MainWindow::slotScreenshotTimeout()
 
 void MainWindow::slotJobtTimeout()
 {
-	ControlManager::getInstance()->Run();
+	ControlManager::getInstance().Run();
 }
 
 void MainWindow::on_pbCheckLowVol_toggled(bool checked)
@@ -1295,10 +1299,10 @@ void MainWindow::slotNavigateComplete2(IDispatch*, QVariant& url)
 	QString urlStr = url.toString();
 	if (urlStr.contains(_gameUrlId))
 	{
-		applyCss(QWEBVIEWCSS_TRANSPARENT);
-		applyCss(QWEBVIEWCSS_NORMAL);
+		applyCss(QWebViewCSSIndex::Transparent);
+		applyCss(QWebViewCSSIndex::Normal);
 	}
-	if (_applyCssWhenLoaded >= 0)
+	if (_applyCssWhenLoaded > QWebViewCSSIndex::Invalid)
 	{
 		applyCss(_applyCssWhenLoaded);
 	}

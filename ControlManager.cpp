@@ -44,10 +44,10 @@ bool ControlManager::BuildNext_Kira()
 	while (isShipKiraDone(togoShipId) 
 		|| isShipInOtherTeam(togoShipId) 
 		|| isShipInDock(togoShipId)
-		|| hasSlotitem(togoShipId, SLOTITEMTYPE_JOURIKUTEI)
-		|| hasSlotitem(togoShipId, SLOTITEMTYPE_SONAR)
-		|| hasSlotitem(togoShipId, SLOTITEMTYPE_BAKURAI)
-		|| hasSlotitem(togoShipId, SLOTITEMTYPE_SONAR_L)
+		|| hasSlotitem(togoShipId, SlotitemType::JouRiKuTei)
+		|| hasSlotitem(togoShipId, SlotitemType::Sonar)
+		|| hasSlotitem(togoShipId, SlotitemType::BaKuRai)
+		|| hasSlotitem(togoShipId, SlotitemType::Sonar_L)
 		|| noSlotitem(togoShipId))
 	{
 		_todoShipids.removeAt(0);
@@ -103,7 +103,7 @@ bool ControlManager::BuildNext_Fuel()
 	}
 
 	int flagshipid = getCurrentFlagshipId();
-	if (!isShipType(flagshipid, SHIPTYPE_SENSUI))
+	if (!isShipType(flagshipid, ShipType::SenSui))
 	{
 		setState(State::Terminated, "Terminated:Ship type");
 		return false;
@@ -262,7 +262,7 @@ int ControlManager::getOneWasteShipId()
 {
 	KanSaveData* pksd = &KanSaveData::getInstance();
 	KanDataConnector* pkdc = &KanDataConnector::getInstance();
-	for (auto ship: pksd->portdata.api_ship)
+	for (auto& ship: pksd->portdata.api_ship)
 	{
 		if (ship.api_lv == 1
 			&& ship.api_locked == false
@@ -275,7 +275,7 @@ int ControlManager::getOneWasteShipId()
 			{
 				continue;
 			}
-			if (pmstship->api_stype == SHIPTYPE_KUCHIKU)
+			if (pmstship->api_stype == (int)ShipType::KuChiKu)
 			{
 				if (ship.api_fuel == pmstship->api_fuel_max
 					&& ship.api_bull == pmstship->api_bull_max)
@@ -303,7 +303,7 @@ bool ControlManager::isShipFull()
 bool ControlManager::findPagePosByShipId(int shipno, int& page, int& pos, int& lastPage)
 {
 	KanSaveData* pksd = &KanSaveData::getInstance();
-	QList<kcsapi_ship2> ships = pksd->portdata.api_ship;
+	QList<kcsapi_ship2> ships = pksd->portdata.api_ship;	// copy to sort
 	page = -1;
 	pos = -1;
 	lastPage = 0;
@@ -345,8 +345,8 @@ bool ControlManager::isShipKiraDone(int shipno)
 			auto pmstship = pkdc->findMstShipFromShipid(pship->api_ship_id);
 			if (pmstship)
 			{
-				if (pmstship->api_stype == SHIPTYPE_SUIBO
-					|| pmstship->api_stype == SHIPTYPE_YOURIKU)
+				if (pmstship->api_stype == (int)ShipType::SuiBou
+					|| pmstship->api_stype == (int)ShipType::YouRiKu)
 				{
 					if (pship->api_cond >= COND_DAIHATSU)
 					{
@@ -367,7 +367,7 @@ bool ControlManager::isShipInOtherTeam(int shipno)
 {
 	KanSaveData* pksd = &KanSaveData::getInstance();
 	bool bFirst = true;
-	for (auto deck : pksd->portdata.api_deck_port)
+	for (auto& deck : pksd->portdata.api_deck_port)
 	{
 		if (bFirst)
 		{
@@ -389,7 +389,7 @@ bool ControlManager::isShipInOtherTeam(int shipno)
 bool ControlManager::isShipInDock(int shipno)
 {
 	KanSaveData* pksd = &KanSaveData::getInstance();
-	for (auto ndock : pksd->portdata.api_ndock)
+	for (auto& ndock : pksd->portdata.api_ndock)
 	{
 		if (ndock.api_ship_id == shipno)
 		{
@@ -405,7 +405,7 @@ bool ControlManager::isHenseiDone(const QList<int>& ships, int index/*=-1*/)
 
 	if (pksd->portdata.api_deck_port.size())
 	{
-		auto firstFleet = pksd->portdata.api_deck_port.first();
+		auto& firstFleet = pksd->portdata.api_deck_port.first();
 		QList<int> nonEmptyShipList;
 		for (auto id:firstFleet.api_ship)
 		{
@@ -460,7 +460,7 @@ bool ControlManager::isFlagshipOnly()
 
 	if (pksd->portdata.api_deck_port.size())
 	{
-		auto firstFleet = pksd->portdata.api_deck_port.first();
+		auto& firstFleet = pksd->portdata.api_deck_port.first();
 		QList<int> nonEmptyShipList;
 		for (auto id : firstFleet.api_ship)
 		{
@@ -477,7 +477,7 @@ bool ControlManager::isFlagshipOnly()
 	return false;
 }
 
-bool ControlManager::isShipType(int shipno, int stype)
+bool ControlManager::isShipType(int shipno, ShipType stype)
 {
 	KanDataConnector* pkdc = &KanDataConnector::getInstance();
 
@@ -487,7 +487,7 @@ bool ControlManager::isShipType(int shipno, int stype)
 		auto pmstship = pkdc->findMstShipFromShipid(pship->api_ship_id);
 		if (pmstship)
 		{
-			if (pmstship->api_stype == stype)
+			if (pmstship->api_stype == (int)stype)
 			{
 				return true;
 			}
@@ -497,37 +497,9 @@ bool ControlManager::isShipType(int shipno, int stype)
 	return false;
 }
 
-bool ControlManager::hasSlotitem(int shipno, int sitype)
+bool ControlManager::hasSlotitem(int shipno, SlotitemType sitype)
 {
-	KanDataConnector* pkdc = &KanDataConnector::getInstance();
-
-	auto pship = pkdc->findShipFromShipno(shipno);
-	if (pship)
-	{
-		for (auto slotitemid : pship->api_slot)
-		{
-			if (slotitemid >= 0)
-			{
-				auto pslotitem = pkdc->findSlotitemFromId(slotitemid);
-				if (pslotitem)
-				{
-					auto pmstslotitem = pkdc->findMstSlotItemFromSlotitemid(pslotitem->api_slotitem_id);
-					if (pmstslotitem)
-					{
-						if (pmstslotitem->api_type.count() > 2)
-						{
-							int type = pmstslotitem->api_type[2];
-							if (sitype == type)
-							{
-								return true;
-							}
-						}
-					}
-				}
-			}
-		}
-	}
-	return false;
+	return KanDataConnector::getInstance().isShipHasSlotitem(shipno, sitype);
 }
 
 bool ControlManager::noSlotitem(int shipno)
@@ -560,7 +532,7 @@ bool ControlManager::flagshipSevereDamaged()
 
 	if (pksd->portdata.api_deck_port.size())
 	{
-		auto firstFleet = pksd->portdata.api_deck_port.first();
+		auto& firstFleet = pksd->portdata.api_deck_port.first();
 		if (firstFleet.api_ship.size())
 		{
 			int shipno = firstFleet.api_ship.first();
@@ -578,7 +550,7 @@ bool ControlManager::flagshipSevereDamaged()
 			}
 
 			// first ship found
-			if (KanDataCalc::GetWoundState(pship->api_nowhp, pship->api_maxhp) < WOUNDSTATE_BIG)
+			if (KanDataCalc::GetWoundState(pship->api_nowhp, pship->api_maxhp) < WoundState::Big)
 			{
 				return false;
 			}
@@ -595,7 +567,7 @@ bool ControlManager::checkColors(const QList<CheckColor>& checklist)
 	}
 	auto w = MainWindow::mainWindow()->getBrowserWidget();
 	auto image = w->grab().toImage();
-	for (auto item:checklist)
+	for (auto& item:checklist)
 	{
 		auto col = image.pixel(item._pt);
 		int r = qRed(col);
@@ -628,7 +600,7 @@ bool ControlManager::shouldChangeSecondShip()
 
 	if (pksd->portdata.api_deck_port.size())
 	{
-		auto firstFleet = pksd->portdata.api_deck_port.first();
+		auto& firstFleet = pksd->portdata.api_deck_port.first();
 
 		QList<int> nonEmptyShipList;
 		for (auto id : firstFleet.api_ship)
@@ -685,7 +657,7 @@ bool ControlManager::needChargeFlagship()
 
 	if (pksd->portdata.api_deck_port.size())
 	{
-		auto firstFleet = pksd->portdata.api_deck_port.first();
+		auto& firstFleet = pksd->portdata.api_deck_port.first();
 		if (firstFleet.api_ship.size())
 		{
 			int shipno = firstFleet.api_ship.first();
@@ -726,7 +698,7 @@ int ControlManager::getCurrentFlagshipId()
 
 	if (pksd->portdata.api_deck_port.size())
 	{
-		auto firstFleet = pksd->portdata.api_deck_port.first();
+		auto& firstFleet = pksd->portdata.api_deck_port.first();
 		if (firstFleet.api_ship.size())
 		{
 			int shipno = firstFleet.api_ship.first();
@@ -747,7 +719,7 @@ int ControlManager::getCurrentSecondshipId()
 
 	if (pksd->portdata.api_deck_port.size())
 	{
-		auto firstFleet = pksd->portdata.api_deck_port.first();
+		auto& firstFleet = pksd->portdata.api_deck_port.first();
 		if (firstFleet.api_ship.size() > 1)
 		{
 			int shipno = firstFleet.api_ship.at(1);

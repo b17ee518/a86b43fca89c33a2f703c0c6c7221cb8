@@ -12,8 +12,8 @@ public:
     void init(int useport);
 
 private:
-    QNetworkProxy m_proxyhttp;
-    QNetworkProxy m_proxyhttps;
+    QNetworkProxy _proxyhttp;
+    QNetworkProxy _proxyhttps;
 };
 
 #endif // QNETWORKPROXYFACTORYSET_H

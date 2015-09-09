@@ -109,16 +109,16 @@ KanSaveData::KanSaveData()
 
 void CreateShipSaveData::setValue(int fuel, int bull, int steel, int bauxite, int dev, int kdock)
 {
-	usefuel = fuel;
-	usebull = bull;
-	usesteel = steel;
-	usebauxite = bauxite;
-	usedevelopment = dev;
-	kdockid = kdock;
-	flag = 1;
+	_usefuel = fuel;
+	_usebull = bull;
+	_usesteel = steel;
+	_usebauxite = bauxite;
+	_usedevelopment = dev;
+	_kdockid = kdock;
+	_flag = 1;
 }
 
 void CreateShipSaveData::clearValue()
 {
-	flag = 0;
+	_flag = 0;
 }

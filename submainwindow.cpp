@@ -5,10 +5,10 @@
 SubMainWindow::SubMainWindow(QWidget *parent) :
 	MainWindowBase(parent)
 {
-	m_bDockingOnTop = false;
+	_bDockingOnTop = false;
 
-	m_pDockingCallbackTimer = new QTimer(this);
-	connect(m_pDockingCallbackTimer, SIGNAL(timeout()), this, SLOT(slotDockingTimerCallback()));
+	_pDockingCallbackTimer = new QTimer(this);
+	connect(_pDockingCallbackTimer, SIGNAL(timeout()), this, SLOT(slotDockingTimerCallback()));
 }
 
 void SubMainWindow::showEvent(QShowEvent *event)
@@ -27,10 +27,10 @@ void SubMainWindow::moveEvent(QMoveEvent *event)
 {
 	if (y() == 0)
 	{
-		if (!m_bDockingOnTop)
+		if (!_bDockingOnTop)
 		{
-			m_bDockingOnTop = true;
-			m_pDockingCallbackTimer->start(16);
+			_bDockingOnTop = true;
+			_pDockingCallbackTimer->start(16);
 			setWindowFlags(windowFlags() | Qt::WindowStaysOnTopHint);
 			show();
 
@@ -38,10 +38,10 @@ void SubMainWindow::moveEvent(QMoveEvent *event)
 	}
 	else if (y() > 20)
 	{
-		if (m_bDockingOnTop)
+		if (_bDockingOnTop)
 		{
-			m_bDockingOnTop = false;
-			m_pDockingCallbackTimer->stop();
+			_bDockingOnTop = false;
+			_pDockingCallbackTimer->stop();
 			setWindowFlags((windowFlags() & ~Qt::WindowStaysOnTopHint) | Qt::WindowStaysOnBottomHint);
 			show();
 			setWindowFlags(windowFlags() & ~Qt::WindowStaysOnBottomHint);

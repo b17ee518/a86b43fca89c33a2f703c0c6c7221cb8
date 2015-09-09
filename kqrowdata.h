@@ -9,20 +9,20 @@ class KQRowCellData
 {
 public:
     explicit KQRowCellData();
-    explicit KQRowCellData(QString str);
-    explicit KQRowCellData(QString str, QColor col);
-    explicit KQRowCellData(QString str, QString tooltip, QColor col);
+    explicit KQRowCellData(const QString& str);
+    explicit KQRowCellData(const QString& str, const QColor& col);
+    explicit KQRowCellData(const QString& str, const QString& tooltip, const QColor& col);
 
 public:
-    void setValue(QString str, QString tooltip, QColor col);
-    QString cellStr(){return m_str;}
-    QString cellToolTip(){return m_tooltip;}
-    QColor cellCol(){return m_col;}
+    void setValue(const QString& str, const QString& tooltip, const QColor& col);
+    inline const QString& cellStr() const {return _str;}
+    inline const QString& cellToolTip() const {return _tooltip;}
+    inline const QColor& cellCol() const {return _col;}
 
 private:
-    QString m_str;
-    QString m_tooltip;
-    QColor m_col;
+    QString _str;
+    QString _tooltip;
+    QColor _col;
 };
 
 class KQRowData
@@ -30,12 +30,12 @@ class KQRowData
 public:
     explicit KQRowData();
 
-    void appendCell(KQRowCellData &celldata);
+    void appendCell(const KQRowCellData &celldata);
     void clearCells();
-    QList<KQRowCellData> * cells(){return &m_cells;}
+    inline const QList<KQRowCellData> * cells() const {return &_cells;}
 
 private:
-    QList<KQRowCellData> m_cells;
+    QList<KQRowCellData> _cells;
 
 };
 

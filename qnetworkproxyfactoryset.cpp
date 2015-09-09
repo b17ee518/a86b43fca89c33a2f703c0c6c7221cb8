@@ -7,12 +7,12 @@ QList<QNetworkProxy> QNetworkProxyFactorySet::queryProxy(const QNetworkProxyQuer
     QString str = query.url().toString();
     if (str.startsWith("http://"))
     {
-        return lst << m_proxyhttp;
+        return lst << _proxyhttp;
     }
 
     if (str.startsWith("https://"))
     {
-        return lst << m_proxyhttps;
+        return lst << _proxyhttps;
     }
 
     return lst<<QNetworkProxy::NoProxy;
@@ -20,11 +20,11 @@ QList<QNetworkProxy> QNetworkProxyFactorySet::queryProxy(const QNetworkProxyQuer
 
 void QNetworkProxyFactorySet::init(int useport)
 {
-    m_proxyhttp.setType(QNetworkProxy::HttpProxy);
-    m_proxyhttp.setHostName("127.0.0.1");
-    m_proxyhttp.setPort(useport);
+    _proxyhttp.setType(QNetworkProxy::HttpProxy);
+    _proxyhttp.setHostName("127.0.0.1");
+    _proxyhttp.setPort(useport);
 
-    m_proxyhttps.setType(QNetworkProxy::HttpProxy);
-    m_proxyhttps.setHostName("127.0.0.1");
-    m_proxyhttps.setPort(useport);
+    _proxyhttps.setType(QNetworkProxy::HttpProxy);
+    _proxyhttps.setHostName("127.0.0.1");
+    _proxyhttps.setPort(useport);
 }

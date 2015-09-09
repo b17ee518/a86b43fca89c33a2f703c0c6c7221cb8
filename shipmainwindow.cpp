@@ -19,9 +19,9 @@
 ShipMainWindow::ShipMainWindow(QWidget *parent)
 : SubMainWindow(parent)
 , ui(new Ui::ShipMainWindow)
-, needRebuildTable(true)
-, lastToggledId(-1)
-, doNotRecordLast(false)
+, _needRebuildTable(true)
+, _lastToggledId(-1)
+, _doNotRecordLast(false)
 {
 	ui->setupUi(this);
 	mwbPostInit();
@@ -29,11 +29,10 @@ ShipMainWindow::ShipMainWindow(QWidget *parent)
 
 	connect(ui->lineEditTitle, SIGNAL(textChanged(QString)), this, SLOT(slotTextChanged(QString)));
 
-	pUpdateTimer = new QTimer(this);
-	connect(pUpdateTimer, SIGNAL(timeout()), this, SLOT(slotUpdateTimer()));
-	pUpdateTimer->start(SHIP_UPDATETIMER_INTERVAL);
+	_pUpdateTimer = new QTimer(this);
+	connect(_pUpdateTimer, SIGNAL(timeout()), this, SLOT(slotUpdateTimer()));
+	_pUpdateTimer->start(SHIP_UPDATETIMER_INTERVAL);
 	connect(MainWindow::mainWindow(), SIGNAL(sigToggleSleepMode(bool)), this, SLOT(onToggleSleepMode(bool)));
-
 }
 
 ShipMainWindow::~ShipMainWindow()
@@ -43,16 +42,16 @@ ShipMainWindow::~ShipMainWindow()
 
 void ShipMainWindow::clearShipData()
 {
-    shipGroupList.clear();
-	needRebuildTable = true;
+    _shipGroupList.clear();
+	_needRebuildTable = true;
 }
 
-void ShipMainWindow::addShipData(int stype, QString stypename, int team, bool bExpedition, QString name, int lv, int cond, bool bNeedCharge, bool bNeedRepair, int drumCount, int sortnum, int shipid)
+void ShipMainWindow::addShipData(int stype, const QString& stypename, int team, bool bExpedition, const QString& name, int lv, int cond, bool bNeedCharge, bool bNeedRepair, int drumCount, int sortnum, int shipid)
 {
     UIShipData data;
     data.setData(team, bExpedition, name, lv, cond, bNeedCharge, bNeedRepair, drumCount, sortnum, shipid);
     bool bDone = false;
-    for (QList<UIShipGroupData>::iterator it=shipGroupList.begin(); it!=shipGroupList.end(); ++it)
+    for (QList<UIShipGroupData>::iterator it=_shipGroupList.begin(); it!=_shipGroupList.end(); ++it)
     {
         if (it->stype == stype)
         {
@@ -66,9 +65,9 @@ void ShipMainWindow::addShipData(int stype, QString stypename, int team, bool bE
         UIShipGroupData group;
         group.setMetaData(stype, stypename);
         group.ships.push_back(data);
-        shipGroupList.push_back(group);
+        _shipGroupList.push_back(group);
 	}
-	needRebuildTable = true;
+	_needRebuildTable = true;
 }
 
 bool UIShipGroupData::higherThan(const UIShipGroupData& left, const UIShipGroupData& right)
@@ -99,8 +98,8 @@ bool UIShipData::higherThan(const UIShipData& left, const UIShipData& right)
 
 void ShipMainWindow::buildTable()
 {
-	doNotRecordLast = true;
-	if (!isVisible() || !needRebuildTable)
+	_doNotRecordLast = true;
+	if (!isVisible() || !_needRebuildTable)
 	{
 		return;
 	}
@@ -110,7 +109,7 @@ void ShipMainWindow::buildTable()
 	KanDataConnector * pkdc = &KanDataConnector::getInstance();
 	KanSaveData * pksd = &KanSaveData::getInstance();
 
-	foreach (auto ship, pksd->portdata.api_ship)
+	foreach (auto& ship, pksd->portdata.api_ship)
 	{
 		auto pmstship = pkdc->findMstShipFromShipid(ship.api_ship_id);
 		QString shiptypename = pkdc->findMstShipTypeNameFromSType(pmstship->api_stype);
@@ -120,7 +119,7 @@ void ShipMainWindow::buildTable()
 		bool bNeedRepair = false;
 		int drumcount = 0;
 		
-		foreach (auto deck, pksd->portdata.api_deck_port)
+		foreach (auto& deck, pksd->portdata.api_deck_port)
 		{
 			foreach (auto shipno, deck.api_ship)
 			{
@@ -158,7 +157,7 @@ void ShipMainWindow::buildTable()
 							int type = pmstslotitem->api_type[2];
 							
 							// drum
-							if (type == SLOTITEMTYPE_YUSOU)
+							if (type == (int)SlotitemType::YuSou)
 							{
 								drumcount++;
 							}
@@ -172,21 +171,21 @@ void ShipMainWindow::buildTable()
 	}
 	//
 
-	qSort(shipGroupList.begin(), shipGroupList.end(), UIShipGroupData::higherThan);
-	int shiptypecount = shipGroupList.count();
+	qSort(_shipGroupList.begin(), _shipGroupList.end(), UIShipGroupData::higherThan);
+	int shiptypecount = _shipGroupList.count();
 	for (int i = 0; i < shiptypecount; i++)
 	{
-		qSort(shipGroupList[i].ships.begin(), shipGroupList[i].ships.end(), UIShipData::higherThan);
+		qSort(_shipGroupList[i].ships.begin(), _shipGroupList[i].ships.end(), UIShipData::higherThan);
 	}
 
-	for (QList<KQUI_CollapsibleFrame*>::iterator it = lstCollapsibleFrames.begin(); it != lstCollapsibleFrames.end(); ++it)
+	for (QList<KQUI_CollapsibleFrame*>::iterator it = _lstCollapsibleFrames.begin(); it != _lstCollapsibleFrames.end(); ++it)
 	{
 		delete *it;
 	}
-	lstCollapsibleFrames.clear();
+	_lstCollapsibleFrames.clear();
 
     int count = 0;
-    foreach (auto item, shipGroupList)
+    foreach (auto& item, _shipGroupList)
     {
         if (item.ships.size())
         {
@@ -194,24 +193,24 @@ void ShipMainWindow::buildTable()
             count++;
         }
 	}
-	needRebuildTable = false;
-	doNotRecordLast = false;
+	_needRebuildTable = false;
+	_doNotRecordLast = false;
 
 	if (!ui->lineEditTitle->text().isEmpty())
 	{
 		slotTextChanged(ui->lineEditTitle->text());
 	}
 
-	if (lastToggledId >= 0)
+	if (_lastToggledId >= 0)
 	{
-		foreach(auto pFrame, lstCollapsibleFrames)
+		foreach(auto pFrame, _lstCollapsibleFrames)
 		{
 			auto prop = pFrame->pushButton()->property(QPROPERTY_SLOTITEMID);
 			if (prop.isValid())
 			{
 				bool bOk;
 				int id = prop.toInt(&bOk);
-				if (bOk && id == lastToggledId)
+				if (bOk && id == _lastToggledId)
 				{
 					QApplication::processEvents();
 					ui->scrollArea->ensureWidgetVisible(pFrame);
@@ -224,7 +223,7 @@ void ShipMainWindow::buildTable()
 void ShipMainWindow::slotSetVisible(bool bValue)
 {
 	setVisible(bValue);
-	if (bValue && needRebuildTable)
+	if (bValue && _needRebuildTable)
 	{
 		buildTable();
 	}
@@ -252,7 +251,7 @@ void ShipMainWindow::buildSingleTable(const UIShipGroupData& groupData)
 
 
     ui->verticalLayout->addWidget(pFrame);
-    lstCollapsibleFrames.push_back(pFrame);
+    _lstCollapsibleFrames.push_back(pFrame);
 
     setShipColumnFormat(pFrame);
 
@@ -359,7 +358,7 @@ void ShipMainWindow::buildSingleTable(const UIShipGroupData& groupData)
 
     pFrame->tableWidget()->updateFullTable(rows);
 
-	if (checkedIdList.contains(groupData.stype))
+	if (_checkedIdList.contains(groupData.stype))
 	{
 		pFrame->pushButton()->setChecked(true);
 	}
@@ -385,7 +384,7 @@ void ShipMainWindow::setShipColumnFormat(KQUI_CollapsibleFrame *pFrame)
     pTableWidget->setSeparatorColumn(2);
 }
 
-QColor ShipMainWindow::getMainColor(UIShipData ship)
+QColor ShipMainWindow::getMainColor(const UIShipData& ship)
 {
 	if (ship.bNeedCharge || ship.bNeedRepair)
 	{
@@ -398,9 +397,9 @@ QColor ShipMainWindow::getMainColor(UIShipData ship)
 	return getCondColor(ship);
 }
 
-QColor ShipMainWindow::getCondColor(UIShipData ship, bool* pbKira)
+QColor ShipMainWindow::getCondColor(const UIShipData& ship, bool* pbKira/*=NULL*/)
 {
-	int condstate = KanDataCalc::GetCondState(ship.cond);
+	CondState condstate = KanDataCalc::GetCondState(ship.cond);
 	QColor col;
 	if (pbKira)
 	{
@@ -408,19 +407,19 @@ QColor ShipMainWindow::getCondColor(UIShipData ship, bool* pbKira)
 	}
 	switch (condstate)
 	{
-	case CONDSTATE_NORMAL:
+	case CondState::Normal:
 		col = QColor(255, 255, 255);
 		break;
-	case CONDSTATE_SMALL:
+	case CondState::Small:
 		col = QColor(192, 192, 192);
 		break;
-	case CONDSTATE_MIDDLE:
+	case CondState::Middle:
 		col = QColor(255, 153, 0);
 		break;
-	case CONDSTATE_BIG:
+	case CondState::Big:
 		col = QColor(255, 0, 0);
 		break;
-	case CONDSTATE_KIRA:
+	case CondState::Kira:
 		col = QColor(255, 255, 0);
 		if (pbKira)
 		{
@@ -484,38 +483,38 @@ void ShipMainWindow::slotToggled(bool bValue)
 		int id = propid.toInt(&bOk);
 		if (bOk)
 		{
-			if (!doNotRecordLast)
+			if (!_doNotRecordLast)
 			{
-				lastToggledId = id;
+				_lastToggledId = id;
 			}
 			if (bValue)
 			{
-				if (!checkedIdList.contains(id))
+				if (!_checkedIdList.contains(id))
 				{
-					checkedIdList.push_back(id);
+					_checkedIdList.push_back(id);
 				}
 			}
 			else
 			{ 
-				checkedIdList.removeAll(id);
+				_checkedIdList.removeAll(id);
 			}
 		}
 	}
 }
 
 
-void ShipMainWindow::slotTextChanged(QString text)
+void ShipMainWindow::slotTextChanged(const QString& text)
 {
 	if (text.isEmpty())
 	{
-		foreach(auto pFrame, lstCollapsibleFrames)
+		foreach(auto pFrame, _lstCollapsibleFrames)
 		{
 			pFrame->setVisible(true);
 		}
 	}
 	else
 	{
-		foreach(auto pFrame, lstCollapsibleFrames)
+		foreach(auto pFrame, _lstCollapsibleFrames)
 		{
 			pFrame->setVisible(false);
 			if (pFrame->pushButton()->text().contains(text, Qt::CaseInsensitive))
@@ -528,10 +527,10 @@ void ShipMainWindow::slotTextChanged(QString text)
 				int rowcount = table->rowCount();
 				for (int i = 0; i < rowcount; i++)
 				{
-					auto item = table->item(i, 1);
-					if (item)
+					auto pitem = table->item(i, 1);
+					if (pitem)
 					{
-						if (item->text().contains(text, Qt::CaseInsensitive))
+						if (pitem->text().contains(text, Qt::CaseInsensitive))
 						{
 							pFrame->setVisible(true);
 						}
@@ -546,11 +545,11 @@ void ShipMainWindow::onToggleSleepMode(bool bSleep)
 {
 	if (bSleep)
 	{
-		pUpdateTimer->stop();
+		_pUpdateTimer->stop();
 	}
 	else
 	{
-		pUpdateTimer->start(SHIP_UPDATETIMER_INTERVAL);
+		_pUpdateTimer->start(SHIP_UPDATETIMER_INTERVAL);
 	}
 }
 

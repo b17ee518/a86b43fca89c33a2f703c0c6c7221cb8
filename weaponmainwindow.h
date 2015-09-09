@@ -58,10 +58,17 @@ public:
     explicit WeaponMainWindow(QWidget *parent = 0);
     ~WeaponMainWindow();
 
-    void updateWeaponTable(QList<QString> lst, QList<QColor> cols);
+    void updateWeaponTable(const QList<QString>& lst, const QList<QColor>& cols);
 
     void clearWeaponData();
-	void addWeaponData(int slotitemId, QString itemname, int rare, bool bLocked, int level, int alv, QString shipname, int shiplv);
+	void addWeaponData(int slotitemId, 
+		const QString& itemname,
+		int rare,
+		bool bLocked,
+		int level, 
+		int alv, 
+		const QString& shipname,
+		int shiplv);
 
 	void buildTable();
 
@@ -73,23 +80,23 @@ private:
 
     Ui::WeaponMainWindow *ui;
 
-    QTimer * pUpdateTimer;
+    QTimer * _pUpdateTimer = NULL;
 
-    QList<KQUI_CollapsibleFrame*> lstCollapsibleFrames;
+    QList<KQUI_CollapsibleFrame*> _lstCollapsibleFrames;
 
-    QList<UIWeaponGroupData> weaponGroupList;
+    QList<UIWeaponGroupData> _weaponGroupList;
 
-	bool needRebuildTable;
-	int lastToggledId;
+	bool _needRebuildTable = true;
+	int _lastToggledId = 0;
 
-	bool doNotRecordLast;
-	QList<int> checkedIdList;
+	bool _doNotRecordLast = false;
+	QList<int> _checkedIdList;
 
 public slots:
     void slotOnTableSizeChanged();
 	void slotSetVisible(bool bValue);
 	void slotToggled(bool bValue);
-	void slotTextChanged(QString text);
+	void slotTextChanged(const QString& text);
 
 	void onToggleSleepMode(bool bSleep);
 

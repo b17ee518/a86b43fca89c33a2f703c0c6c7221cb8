@@ -19,15 +19,15 @@ public:
     void adjustSizeToWidth(int width);
     void setSeparatorColumn(int n);
 
-    void updateFullTable(QList<KQRowData> rows);
-    void updateCellNoChangeSize(int row, int column, KQRowCellData cell);
+    void updateFullTable(const QList<KQRowData>& rows);
+    void updateCellNoChangeSize(int row, int column, const KQRowCellData& cell);
 
 signals:
 
     void sigTableSizeChanged();
 
 private:
-    int separatorColumn;
+    int _separatorColumn;
 
 };
 

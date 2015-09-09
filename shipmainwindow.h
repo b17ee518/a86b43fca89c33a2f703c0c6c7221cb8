@@ -14,7 +14,16 @@ class UIShipData{
 public:
 	UIShipData(){}
 
-    void setData(int team, bool bExpedition, QString name, int lv, int cond, bool bNeedCharge, bool bNeedRepair, int drumCount, int sortnum, int shipid)
+    void setData(int team,
+		bool bExpedition, 
+		const QString& name, 
+		int lv, 
+		int cond, 
+		bool bNeedCharge,
+		bool bNeedRepair, 
+		int drumCount, 
+		int sortnum, 
+		int shipid)
     {
 		this->team = team;
 		this->bExpedition = bExpedition;
@@ -45,7 +54,7 @@ class UIShipGroupData{
 public:
 	UIShipGroupData(){}
 
-    void setMetaData(int stype, QString stypename)
+    void setMetaData(int stype, const QString& stypename)
     {
 		this->stype = stype;
 		this->stypename = stypename;
@@ -67,10 +76,21 @@ public:
     explicit ShipMainWindow(QWidget *parent = 0);
     ~ShipMainWindow();
 
-    void updateShipTable(QList<QString> lst, QList<QColor> cols);
+    void updateShipTable(const QList<QString>& lst, const QList<QColor>& cols);
 
     void clearShipData();
-	void addShipData(int stype, QString stypename, int team, bool bExpedition, QString name, int lv, int cond, bool bNeedCharge, bool bNeedRepair, int drumCount, int sortnum, int shipid);
+	void addShipData(int stype, 
+		const QString& stypename,
+		int team, 
+		bool bExpedition, 
+		const QString& name,
+		int lv, 
+		int cond, 
+		bool bNeedCharge,
+		bool bNeedRepair, 
+		int drumCount,
+		int sortnum,
+		int shipid);
 	
 	void buildTable();
 
@@ -79,30 +99,30 @@ private:
     void buildSingleTable(const UIShipGroupData& groupData);
     void setShipColumnFormat(KQUI_CollapsibleFrame* pFrame);
 
-	QColor getMainColor(UIShipData ship);
-	QColor getCondColor(UIShipData ship, bool* pbKira=NULL);
+	QColor getMainColor(const UIShipData& ship);
+	QColor getCondColor(const UIShipData& ship, bool* pbKira=NULL);
 
 	void setButtonColor(KQUI_CollapsibleFrame* pFrame, int colindex, bool bRed);
 
     Ui::ShipMainWindow *ui;
 
-    QTimer * pUpdateTimer;
+    QTimer * _pUpdateTimer = NULL;
 
-    QList<KQUI_CollapsibleFrame*> lstCollapsibleFrames;
+    QList<KQUI_CollapsibleFrame*> _lstCollapsibleFrames;
 
-    QList<UIShipGroupData> shipGroupList;
+    QList<UIShipGroupData> _shipGroupList;
 
-	bool needRebuildTable;
-	int lastToggledId;
+	bool _needRebuildTable = true;
+	int _lastToggledId = 0;
 
-	bool doNotRecordLast;
-	QList<int> checkedIdList;
+	bool _doNotRecordLast = false;
+	QList<int> _checkedIdList;
 
 public slots:
     void slotOnTableSizeChanged();
 	void slotSetVisible(bool bValue);
 	void slotToggled(bool bValue);
-	void slotTextChanged(QString text);
+	void slotTextChanged(const QString& text);
 
 	void onToggleSleepMode(bool bSleep);
 

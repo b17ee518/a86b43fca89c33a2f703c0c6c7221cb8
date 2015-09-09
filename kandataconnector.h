@@ -6,26 +6,7 @@
 #include "kandata.h"
 #include "kanreqdata.h"
 #include "kansavedata.h"
-
-enum
-{
-	KANBATTLETYPE_DAY,
-	KANBATTLETYPE_NIGHT,
-	KANBATTLETYPE_DAYTONIGHT,
-	KANBATTLETYPE_NIGHTTODAY,
-
-	KANBATTLETYPE_AIR,
-
-	KANBATTLETYPE_COMBINED_BEGIN,
-
-	KANBATTLETYPE_COMBINED_KOUKU,
-	KANBATTLETYPE_COMBINED_WATER,
-	KANBATTLETYPE_COMBINED_KOUKUNIGHT,
-	KANBATTLETYPE_COMBINED_DAY,
-	KANBATTLETYPE_COMBINED_NIGHT,
-	KANBATTLETYPE_COMBINED_DAYTONIGHT,
-};
-
+#include "kandatacalc.h"
 
 #define PARSEFLAG_NORMAL 0x00
 #define PARSEFLAG_IGNORE 0x01
@@ -42,7 +23,7 @@ public:
 	}
 
 public:
-	bool Parse(QString pathAndQuery, QString requestBody, QString responseBody);
+	bool Parse(const QString& pathAndQuery, const QString& requestBody, const QString& responseBody);
 	
 	kcsapi_ship2 *findShipFromShipno(int shipno);
 	const kcsapi_mst_ship *findMstShipFromShipid(int shipid) const;
@@ -50,6 +31,8 @@ public:
 	const Api_Mst_Mission *findMstMissionFromMissionid(int missionid) const;
 	kcsapi_slotitem *findSlotitemFromId(int id);
 	const kcsapi_mst_slotitem *findMstSlotItemFromSlotitemid(int slotitemid) const;
+	bool isShipHasSlotitem(kcsapi_ship2* pship, SlotitemType sitype);
+	bool isShipHasSlotitem(int shipno, SlotitemType sitype){ return isShipHasSlotitem(findShipFromShipno(shipno), sitype); }
 
 	void setOutputAllLog(bool bVal){ _outputAllLog = bVal; }
 
@@ -72,9 +55,9 @@ private:
 	void logCreateItemResult(int slotitemid, int fuel, int bull, int steel, int bauxite);
 	QString getFormationStr(int formation);
 
-	QList<int> updateBattle(const kcsapi_battle &api_battle, int type);
+	QList<int> updateBattle(const kcsapi_battle &api_battle, KanBattleType type);
 
-	void getShipColors(const kcsapi_ship2 *pship, QColor *pcolCond=0, QColor *pcolWound=0, int* pcondstate=0, int* pwoundstate=0);
+	void getShipColors(const kcsapi_ship2 *pship, QColor *pcolCond=0, QColor *pcolWound=0, CondState* pcondstate=0, WoundState* pwoundstate=0);
 	void getShipChargeColors(const kcsapi_ship2 *pship, const kcsapi_mst_ship *pmstship, QColor *pcolFuel, QColor *pcolBullet);
 	QString getShipWoundStateString(const kcsapi_ship2 *pship);
 	bool isShipRepairing(const kcsapi_ship2 *pship);
@@ -279,20 +262,20 @@ private:
 	int req_kaisou_slotset_ex_flag;
 
 private:
-	QColor colWhite;
-	QColor colGray;
-	QColor colOrange;
-	QColor colYellow;
-	QColor colRed;
-	QColor colBlue;
+	QColor _colWhite;
+	QColor _colGray;
+	QColor _colOrange;
+	QColor _colYellow;
+	QColor _colRed;
+	QColor _colBlue;
 
-	QString pathAndQuery;
-	QString requestBody;
-	QString responseBody;
-	QJsonDocument jdoc;
-	QJsonObject jobj;
-	KanReqData req;
-	KanSaveData * pksd;
+	QString _pathAndQuery;
+	QString _requestBody;
+	QString _responseBody;
+	QJsonDocument _jdoc;
+	QJsonObject _jobj;
+	KanReqData _req;
+	KanSaveData * pksd = NULL;
 
 	bool _outputAllLog = false;
 };

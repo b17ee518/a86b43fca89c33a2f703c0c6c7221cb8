@@ -16,39 +16,39 @@ TimerMainWindow::TimerMainWindow(QWidget *parent) :
 	mwbPostInit();
 	ui->titleFrame->setHandlingWidget(this);
 
-	pPlayer = new QMediaPlayer();
-	pPlaylist = new QMediaPlaylist(pPlayer);
+	_pPlayer = new QMediaPlayer();
+	_pPlaylist = new QMediaPlaylist(_pPlayer);
 
 	QString filename = QApplication::applicationDirPath();
 	filename += "/se";
-	pPlaylist->addMedia(QUrl::fromLocalFile(filename+"/expedition.mp3"));
-	pPlaylist->addMedia(QUrl::fromLocalFile(filename + "/repair.mp3"));
-	pPlaylist->addMedia(QUrl::fromLocalFile(filename + "/build.mp3"));
-	pPlaylist->addMedia(QUrl::fromLocalFile(filename + "/terminated.mp3"));
-	pPlaylist->setCurrentIndex(0);
-	pPlaylist->setPlaybackMode(QMediaPlaylist::CurrentItemOnce);
-	pPlayer->setPlaylist(pPlaylist);
+	_pPlaylist->addMedia(QUrl::fromLocalFile(filename+"/expedition.mp3"));
+	_pPlaylist->addMedia(QUrl::fromLocalFile(filename + "/repair.mp3"));
+	_pPlaylist->addMedia(QUrl::fromLocalFile(filename + "/build.mp3"));
+	_pPlaylist->addMedia(QUrl::fromLocalFile(filename + "/terminated.mp3"));
+	_pPlaylist->setCurrentIndex(0);
+	_pPlaylist->setPlaybackMode(QMediaPlaylist::CurrentItemOnce);
+	_pPlayer->setPlaylist(_pPlaylist);
 
-	pPlayer->setVolume(100);
+	_pPlayer->setVolume(100);
 
-	progressExpUs[0] = ui->progressExp1u;
-	progressExpUs[1] = ui->progressExp2u;
-	progressExpUs[2] = ui->progressExp3u;
+	_progressExpUs[0] = ui->progressExp1u;
+	_progressExpUs[1] = ui->progressExp2u;
+	_progressExpUs[2] = ui->progressExp3u;
 
-	progressRepairUs[0] = ui->progressRepair1u;
-	progressRepairUs[1] = ui->progressRepair2u;
-	progressRepairUs[2] = ui->progressRepair3u;
-	progressRepairUs[3] = ui->progressRepair4u;
+	_progressRepairUs[0] = ui->progressRepair1u;
+	_progressRepairUs[1] = ui->progressRepair2u;
+	_progressRepairUs[2] = ui->progressRepair3u;
+	_progressRepairUs[3] = ui->progressRepair4u;
 
-	lstTables.append(ui->expeditionTable);
-	lstTables.append(ui->repairTable);
-	lstTables.append(ui->buildTable);
+	_lstTables.append(ui->expeditionTable);
+	_lstTables.append(ui->repairTable);
+	_lstTables.append(ui->buildTable);
 
 	initTableItem();
 
-	pUpdateTimer = new QTimer(this);
-	connect(pUpdateTimer, SIGNAL(timeout()), this, SLOT(slotUpdateTimer()));
-	pUpdateTimer->start(TIMER_UPDATETIMER_INTERVAL);
+	_pUpdateTimer = new QTimer(this);
+	connect(_pUpdateTimer, SIGNAL(timeout()), this, SLOT(slotUpdateTimer()));
+	_pUpdateTimer->start(TIMER_UPDATETIMER_INTERVAL);
 	connect(MainWindow::mainWindow(), SIGNAL(sigToggleSleepMode(bool)), this, SLOT(onToggleSleepMode(bool)));
 
 	this->adjustSize();
@@ -61,9 +61,9 @@ TimerMainWindow::~TimerMainWindow()
 	delete ui;
 }
 
-void TimerMainWindow::setExpeditionTime(int n, qint64 destms, qint64 totalms, QString comment, QColor col)
+void TimerMainWindow::setExpeditionTime(int n, qint64 destms/*=-1*/, qint64 totalms/*=-1*/, const QString& comment/*=QString()*/, const QColor& col/*=QColor(0xff, 0xff, 0xff)*/)
 {
-	exptimerecord[n].setValue(destms, totalms, comment, destms-currentMS()<60000);
+	_exptimerecord[n].setValue(destms, totalms, comment, destms-currentMS()<60000);
 	QTableWidgetItem * pItem = ui->expeditionTable->item(n*2+1, 1);
 	if (destms < 0)
 	{
@@ -85,9 +85,9 @@ void TimerMainWindow::setExpeditionTime(int n, qint64 destms, qint64 totalms, QS
 	}
 }
 
-void TimerMainWindow::setRepairTime(int n, qint64 destms, qint64 totalms, QString comment, QColor col)
+void TimerMainWindow::setRepairTime(int n, qint64 destms/*=-1*/, qint64 totalms/*=-1*/, const QString& comment/*=QString()*/, const QColor& col/*=QColor(0xff, 0xff, 0xff)*/)
 {
-	repairtimerecord[n].setValue(destms, totalms, comment, destms-currentMS()<60000);
+	_repairtimerecord[n].setValue(destms, totalms, comment, destms-currentMS()<60000);
 	QTableWidgetItem * pItem = ui->repairTable->item(n*2+1, 1);
 	if (destms < 0)
 	{
@@ -100,9 +100,9 @@ void TimerMainWindow::setRepairTime(int n, qint64 destms, qint64 totalms, QStrin
 	}
 }
 
-void TimerMainWindow::setBuildTime(int n, qint64 destms, qint64 totalms, QString comment, QColor col)
+void TimerMainWindow::setBuildTime(int n, qint64 destms/*=-1*/, qint64 totalms/*=-1*/, const QString& comment/*=QString()*/, const QColor& col/*=QColor(0xff, 0xff, 0xff)*/)
 {
-	buildtimerecord[n].setValue(destms, totalms, comment);
+	_buildtimerecord[n].setValue(destms, totalms, comment);
 	QTableWidgetItem * pNameItem = ui->buildTable->item(n, 2);
 	if (destms < 0)
 	{
@@ -163,39 +163,39 @@ void TimerMainWindow::slotUpdateTimer()
 	qint64 ct = currentMS();
 
 	int mintdiff = 3600000;
-	int progressbarstate = PROGRESSBARSTATE_NORMAL;
+	ProgressBarState progressbarstate = ProgressBarState::Normal;
 
 	// exp
 	for (int i=0; i<3; i++)
 	{
 		bool bUpdated = false;
-		if (exptimerecord[i].desttime >= 0)
+		if (_exptimerecord[i].desttime >= 0)
 		{
-			qint64 dt = exptimerecord[i].desttime;
-			if (!exptimerecord[i].alarmed && dt - ct < 60000)
+			qint64 dt = _exptimerecord[i].desttime;
+			if (!_exptimerecord[i].alarmed && dt - ct < 60000)
 			{
 				playSound(SoundIndex::Expedition);
-				exptimerecord[i].alarmed = true;
+				_exptimerecord[i].alarmed = true;
 			}
 			bUpdated = updateDisplay(mintdiff
 						  , ct
 						  , dt
-						  , exptimerecord[i].totaltime
+						  , _exptimerecord[i].totaltime
 						  , ui->expeditionTable->item(i*2, 1)
 						  , ui->expeditionTable->item(i*2, 2)
-						  , progressExpUs[i]
+						  , _progressExpUs[i]
 						  , true
 						  );
 			if (mintdiff <= 0)
 			{
-				progressbarstate = PROGRESSBARSTATE_STOPPED;
+				progressbarstate = ProgressBarState::Stopped;
 			}
 
 
 		}
-		else if (exptimerecord[i].desttime == -1)
+		else if (_exptimerecord[i].desttime == -1)
 		{
-			exptimerecord[i].desttime = -2;
+			_exptimerecord[i].desttime = -2;
 			bUpdated = true;
 			updateDisplay(mintdiff
 						  ,- 1
@@ -203,7 +203,7 @@ void TimerMainWindow::slotUpdateTimer()
 						  , 0
 						  , ui->expeditionTable->item(i*2, 1)
 						  , ui->expeditionTable->item(i*2, 2)
-						  , progressExpUs[i]
+						  , _progressExpUs[i]
 						  , true
 						  );
 		}
@@ -222,31 +222,31 @@ void TimerMainWindow::slotUpdateTimer()
 	for (int i=0; i<4; i++)
 	{
 		bool bUpdated = false;
-		if (repairtimerecord[i].desttime >= 0)
+		if (_repairtimerecord[i].desttime >= 0)
 		{
-			qint64 dt = repairtimerecord[i].desttime;
-			if (!repairtimerecord[i].alarmed && dt - ct < 60000)
+			qint64 dt = _repairtimerecord[i].desttime;
+			if (!_repairtimerecord[i].alarmed && dt - ct < 60000)
 			{
 				playSound(SoundIndex::Repair);
-				repairtimerecord[i].alarmed = true;
+				_repairtimerecord[i].alarmed = true;
 			}
 			bUpdated = updateDisplay(mintdiff
 						  , ct
 						  , dt
-						  , repairtimerecord[i].totaltime
+						  , _repairtimerecord[i].totaltime
 						  , ui->repairTable->item(i*2, 1)
 						  , ui->repairTable->item(i*2, 2)
-						  , progressRepairUs[i]
+						  , _progressRepairUs[i]
 						  , true
 						  );
-			if (mintdiff <= 0 && !progressbarstate)
+			if (mintdiff <= 0 && progressbarstate == ProgressBarState::Normal)
 			{
-				progressbarstate = PROGRESSBARSTATE_PAUSED;
+				progressbarstate = ProgressBarState::Paused;
 			}
 		}
-		else if (repairtimerecord[i].desttime == -1)
+		else if (_repairtimerecord[i].desttime == -1)
 		{
-			repairtimerecord[i].desttime = -2;
+			_repairtimerecord[i].desttime = -2;
 			bUpdated = true;
 			updateDisplay(mintdiff
 						  , -1
@@ -254,7 +254,7 @@ void TimerMainWindow::slotUpdateTimer()
 						  , 0
 						  , ui->repairTable->item(i*2, 1)
 						  , ui->repairTable->item(i*2, 2)
-						  , progressRepairUs[i]
+						  , _progressRepairUs[i]
 						  , true
 						  );
 		}
@@ -274,24 +274,24 @@ void TimerMainWindow::slotUpdateTimer()
 	for (int i=0; i<2; i++)
 	{
 		bool bUpdated = false;
-		if (buildtimerecord[i].desttime >= 0)
+		if (_buildtimerecord[i].desttime >= 0)
 		{
-			qint64 dt = buildtimerecord[i].desttime;
-			if (!buildtimerecord[i].alarmed && dt <= ct)
+			qint64 dt = _buildtimerecord[i].desttime;
+			if (!_buildtimerecord[i].alarmed && dt <= ct)
 			{
 				playSound(SoundIndex::Build);
-				buildtimerecord[i].alarmed = true;
+				_buildtimerecord[i].alarmed = true;
 			}
 			bUpdated = updateDisplay(nomintdiff
 						  , ct
 						  , dt
-						  , buildtimerecord[i].totaltime
+						  , _buildtimerecord[i].totaltime
 						  , ui->buildTable->item(i, 1)
 						  );
 		}
-		else if (buildtimerecord[i].desttime == -1)
+		else if (_buildtimerecord[i].desttime == -1)
 		{
-			buildtimerecord[i].desttime = -2;
+			_buildtimerecord[i].desttime = -2;
 			bUpdated = true;
 			updateDisplay(nomintdiff
 						  , -1
@@ -551,8 +551,8 @@ bool TimerMainWindow::updateDisplay(int &mintdiff, qint64 ct, qint64 dt, qint64 
 void TimerMainWindow::playSound(SoundIndex i)
 {
 	MainWindow::mainWindow()->AdjustVolume(75);
-	pPlaylist->setCurrentIndex((int)i);
-	pPlayer->play();
+	_pPlaylist->setCurrentIndex((int)i);
+	_pPlayer->play();
 //	qint64 dur = pPlayer->duration();
 	int dur = 3000;
 	QTimer::singleShot(dur, MainWindow::mainWindow(), SLOT(slotSoundEnded()));
@@ -561,7 +561,7 @@ void TimerMainWindow::playSound(SoundIndex i)
 void TimerMainWindow::initTableItem()
 {
 	QTableWidget * pTable;
-	foreach(pTable, lstTables)
+	foreach(pTable, _lstTables)
 	{
 		pTable->setFont(QApplication::font());
 		pTable->horizontalHeader()->hide();
@@ -587,10 +587,10 @@ void TimerMainWindow::initTableItem()
 
 	for (int i=0; i<3; i++)
 	{
-		progressExpUs[i]->setUserData(Qt::UserRole, (QObjectUserData*)-1);
-		progressRepairUs[i]->setUserData(Qt::UserRole, (QObjectUserData*)-1);
+		_progressExpUs[i]->setUserData(Qt::UserRole, (QObjectUserData*)-1);
+		_progressRepairUs[i]->setUserData(Qt::UserRole, (QObjectUserData*)-1);
 	}
-	progressRepairUs[3]->setUserData(Qt::UserRole, (QObjectUserData*)-1);
+	_progressRepairUs[3]->setUserData(Qt::UserRole, (QObjectUserData*)-1);
 
 
 	ui->expeditionTable->setSpan(0, 0, 2, 1);
@@ -653,10 +653,10 @@ void TimerMainWindow::onToggleSleepMode(bool bSleep)
 {
 	if (bSleep)
 	{
-		pUpdateTimer->stop();
+		_pUpdateTimer->stop();
 	}
 	else
 	{
-		pUpdateTimer->start(TIMER_UPDATETIMER_INTERVAL);
+		_pUpdateTimer->start(TIMER_UPDATETIMER_INTERVAL);
 	}
 }

@@ -21,7 +21,7 @@ KQTime::KQTime(int h, int m, int s, int ms)
 
 bool KQTime::isValid() const
 {
-    return mds > NullTime;
+    return _mds > NullTime;
 }
 
 
@@ -67,22 +67,22 @@ QString KQTime::toString() const
 bool KQTime::setHMS(int h, int m, int s, int ms)
 {
 #if defined(Q_OS_WINCE)
-    startTick = NullTime;
+    _startTick = NullTime;
 #endif
     if (!isValid(h,m,s,ms)) {
-        mds = NullTime;                // make this invalid
+        _mds = NullTime;                // make this invalid
         return false;
     }
-    mds = (h*SECS_PER_HOUR + m*SECS_PER_MIN + s)*1000 + ms;
+    _mds = (h*SECS_PER_HOUR + m*SECS_PER_MIN + s)*1000 + ms;
     return true;
 }
 
 bool KQTime::setTotalMS(qint64 ms)
 {
-    mds = ms;
+    _mds = ms;
     if (!isValid())
     {
-        mds = NullTime;
+        _mds = NullTime;
         return false;
     }
     return true;
@@ -92,11 +92,11 @@ KQTime KQTime::addMSecs(qint64 ms) const
 {
     KQTime t;
     if (isValid()) {
-        t.mds = (ds() + ms);
+        t._mds = (ds() + ms);
     }
 #if defined(Q_OS_WINCE)
-    if (startTick > NullTime)
-        t.startTick = (startTick + ms);
+    if (_startTick > NullTime)
+        t._startTick = (_startTick + ms);
 #endif
     return t;
 }
@@ -107,8 +107,8 @@ qint64 KQTime::msecsTo(const KQTime &t) const
         return 0;
 #if defined(Q_OS_WINCE)
     // GetLocalTime() for Windows CE has no milliseconds resolution
-    if (t.startTick > NullTime && startTick > NullTime)
-        return t.startTick - startTick;
+    if (t._startTick > NullTime && _startTick > NullTime)
+        return t._startTick - _startTick;
     else
 #endif
         return t.ds() - ds();

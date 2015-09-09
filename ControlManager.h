@@ -2,6 +2,7 @@
 #include <QPoint>
 #include <QList>
 #include "ControlAction.h"
+#include "kansavedata.h"
 
 class ControlManager
 {
@@ -40,7 +41,10 @@ public:
 	};
 
 public:
-	static ControlManager* getInstance() { static ControlManager instance; return &instance; }
+	static ControlManager& getInstance() { 
+		static ControlManager instance; 
+		return instance; 
+	}
 	
 private:
 	ControlManager();
@@ -81,8 +85,8 @@ public:
 
 	bool isHenseiDone(const QList<int>& ships, int index = -1);
 	bool isFlagshipOnly();
-	bool isShipType(int shipno, int stype);
-	bool hasSlotitem(int shipno, int sitype);
+	bool isShipType(int shipno, ShipType stype);
+	bool hasSlotitem(int shipno, SlotitemType sitype);
 	bool noSlotitem(int shipno);
 			
 	bool flagshipSevereDamaged();
@@ -116,20 +120,20 @@ public:
 		return checkColors(lst);
 	}
 
-	bool isKiraMode(){ return _target == SortieTarget::Kira; }
-	bool isFuelMode(){ return _target == SortieTarget::Fuel; }
+	inline bool isKiraMode(){ return _target == SortieTarget::Kira; }
+	inline bool isFuelMode(){ return _target == SortieTarget::Fuel; }
 
 	void setState(State state, const char* str);
 
 	void setStateStr(const QString& str);
-	const QString& getStateStr(){ return _stateStr; }
+	inline const QString& getStateStr(){ return _stateStr; }
 
 //private:
 	void moveMouseToAndClick(float x, float y, float offsetX = 5, float offsetY = 3);
 	void moveMouseTo(float x, float y, float offsetX = 5, float offsetY = 3);
 	
 	void setPauseNextVal(bool bVal);
-	bool getPauseNextVal(){ return _pauseNext; }
+	inline bool getPauseNextVal(){ return _pauseNext; }
 
 	void waitForResponse(const QString& api);
 	

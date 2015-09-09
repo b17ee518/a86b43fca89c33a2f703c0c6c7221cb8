@@ -68,22 +68,22 @@ QDataStream &operator>>(QDataStream &st, QList<QNetworkCookie> &dest)
 
 
 CookieJar::CookieJar(QObject *parent)
-    : QNetworkCookieJar(parent), saveDelayTimer_(new QTimer(parent))
+    : QNetworkCookieJar(parent), _saveDelayTimer(new QTimer(parent))
 {
     qRegisterMetaTypeStreamOperators<QList<QNetworkCookie> >("QList<QNetworkCookie>");
-    saveDelayTimer_->setInterval(INTERVAL);
-    saveDelayTimer_->setSingleShot(true);
-    connect(saveDelayTimer_, SIGNAL(timeout()), SLOT(autoSave()));
+    _saveDelayTimer->setInterval(INTERVAL);
+    _saveDelayTimer->setSingleShot(true);
+    connect(_saveDelayTimer, SIGNAL(timeout()), SLOT(autoSave()));
 
     QSettings settings(QSettings::IniFormat, QSettings::UserScope, "KanPlayProj", "KanPlay");
-    dir_ = QFileInfo(settings.fileName()).dir().path();
+    _dir = QFileInfo(settings.fileName()).dir().path();
     settings.remove(QLatin1String("cookies")); // remove old version.
     load();
 }
 
 CookieJar::~CookieJar()
 {
-    saveDelayTimer_->stop();
+    _saveDelayTimer->stop();
     save();
 }
 
@@ -135,7 +135,7 @@ void CookieJar::save()
     }
     QSettings cookieSettings(cookiesFile(), QSettings::IniFormat);
     cookieSettings.setValue(QLatin1String("cookies"), QVariant::fromValue<QList<QNetworkCookie> >(cookies));
-    modified_ = false;
+    _modified = false;
 }
 
 void CookieJar::load()
@@ -158,7 +158,7 @@ void CookieJar::deleteAll()
 
 void CookieJar::autoSave()
 {
-    if (!modified_) { 
+    if (!_modified) { 
         return; 
     }
     save();
@@ -185,15 +185,15 @@ void CookieJar::removeExpiredCookies()
 
 void CookieJar::markChanged()
 {
-    if (saveDelayTimer_->isActive()) {
-        saveDelayTimer_->stop();
+    if (_saveDelayTimer->isActive()) {
+        _saveDelayTimer->stop();
     }
-    modified_ = true;
-    saveDelayTimer_->start();
+    _modified = true;
+    _saveDelayTimer->start();
 }
 
 QString CookieJar::cookiesFile() const 
 {
-    QString filename = QDir(dir_).filePath(QLatin1String("cookies.ini"));
+    QString filename = QDir(_dir).filePath(QLatin1String("cookies.ini"));
     return filename;
 }

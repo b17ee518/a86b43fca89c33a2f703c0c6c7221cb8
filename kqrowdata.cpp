@@ -4,14 +4,14 @@ KQRowData::KQRowData()
 {
 }
 
-void KQRowData::appendCell(KQRowCellData &celldata)
+void KQRowData::appendCell(const KQRowCellData &celldata)
 {
-    m_cells.append(celldata);
+    _cells.append(celldata);
 }
 
 void KQRowData::clearCells()
 {
-    m_cells.clear();
+    _cells.clear();
 }
 
 
@@ -20,24 +20,24 @@ KQRowCellData::KQRowCellData()
 
 }
 
-KQRowCellData::KQRowCellData(QString str)
+KQRowCellData::KQRowCellData(const QString& str)
 {
     setValue(str, "", QColor(255, 255, 255));
 }
 
-KQRowCellData::KQRowCellData(QString str, QColor col)
+KQRowCellData::KQRowCellData(const QString& str, const QColor& col)
 {
     setValue(str, "", col);
 }
 
-KQRowCellData::KQRowCellData(QString str, QString tooltip, QColor col)
+KQRowCellData::KQRowCellData(const QString& str, const QString& tooltip, const QColor& col)
 {
     setValue(str, tooltip, col);
 }
 
-void KQRowCellData::setValue(QString str, QString tooltip, QColor col)
+void KQRowCellData::setValue(const QString& str, const QString& tooltip, const QColor& col)
 {
-    m_str = str;
-    m_tooltip = tooltip;
-    m_col = col;
+    _str = str;
+    _tooltip = tooltip;
+    _col = col;
 }

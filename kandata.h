@@ -97,8 +97,8 @@ public:
 	virtual bool ReadFromJObj(const QJsonObject &jobj) = 0;
 
 protected:
-	QJsonArray jarray;
-	bool bParseRet = false;
+	QJsonArray _jarray;
+	bool _bParseRet = false;
 };
 
 class kcsapi_basic : public KAPIBaseData
@@ -1726,14 +1726,6 @@ public:
 	QList<int> api_after_material;
 	int api_voice_id;
 	kcsapi_slotitem api_after_slot;
-};
-
-class KanData
-{
-public:
-	KanData();
-
-private:
 };
 
 #endif // KANDATA_H

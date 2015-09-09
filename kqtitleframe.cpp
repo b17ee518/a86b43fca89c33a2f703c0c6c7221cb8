@@ -4,32 +4,32 @@
 KQTitleFrame::KQTitleFrame(QWidget *parent) :
     QFrame(parent)
 {
-    m_bMoving = false;
-    m_pHandlingWidget = 0;
+    _bMoving = false;
+    _pHandlingWidget = 0;
 
-    m_pUpdateTimer = new QTimer(this);
-    connect(m_pUpdateTimer, SIGNAL(timeout()), this, SLOT(slotUpdateTimer()));
+    _pUpdateTimer = new QTimer(this);
+    connect(_pUpdateTimer, SIGNAL(timeout()), this, SLOT(slotUpdateTimer()));
 
 //    this->setStyleSheet("background-color: rgb(45, 45, 48);");
 }
 
 void KQTitleFrame::setHandlingWidget(QWidget *pw)
 {
-    m_pHandlingWidget = pw;
+    _pHandlingWidget = pw;
 }
 
 void KQTitleFrame::stopMoving()
 {
-    m_bMoving = false;
+    _bMoving = false;
 }
 
 void KQTitleFrame::mousePressEvent(QMouseEvent *event)
 {
     if (event->button() == Qt::LeftButton)
     {
-        m_bMoving = true;
-        m_lastMovingPos = QCursor::pos();
-        m_pUpdateTimer->start(16);
+        _bMoving = true;
+        _lastMovingPos = QCursor::pos();
+        _pUpdateTimer->start(16);
     }
     QFrame::mousePressEvent(event);
 
@@ -37,9 +37,9 @@ void KQTitleFrame::mousePressEvent(QMouseEvent *event)
 
 void KQTitleFrame::mouseReleaseEvent(QMouseEvent *event)
 {
-    if (m_bMoving && event->button() == Qt::LeftButton)
+    if (_bMoving && event->button() == Qt::LeftButton)
     {
-        m_bMoving = false;
+        _bMoving = false;
     }
     QFrame::mouseReleaseEvent(event);
 }
@@ -48,15 +48,15 @@ void KQTitleFrame::slotUpdateTimer()
 {
     if (!QApplication::mouseButtons().testFlag(Qt::LeftButton))
     {
-        m_bMoving = false;
+        _bMoving = false;
     }
-    if (!m_bMoving)
+    if (!_bMoving)
     {
-        m_pUpdateTimer->stop();
+        _pUpdateTimer->stop();
         return;
     }
     QPoint newpos = QCursor::pos();
-    m_pHandlingWidget->move(m_pHandlingWidget->pos()+newpos-m_lastMovingPos);
-    m_lastMovingPos = newpos;
+    _pHandlingWidget->move(_pHandlingWidget->pos()+newpos-_lastMovingPos);
+    _lastMovingPos = newpos;
     QCursor::pos();
 }

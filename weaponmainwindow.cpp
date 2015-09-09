@@ -18,9 +18,9 @@
 WeaponMainWindow::WeaponMainWindow(QWidget *parent)
 : SubMainWindow(parent)
 , ui(new Ui::WeaponMainWindow)
-, needRebuildTable(true)
-, lastToggledId(-1)
-, doNotRecordLast(false)
+, _needRebuildTable(true)
+, _lastToggledId(-1)
+, _doNotRecordLast(false)
 {
 	ui->setupUi(this);
 	mwbPostInit();
@@ -28,9 +28,9 @@ WeaponMainWindow::WeaponMainWindow(QWidget *parent)
 
 	connect(ui->lineEditTitle, SIGNAL(textChanged(QString)), this, SLOT(slotTextChanged(QString)));
 
-	pUpdateTimer = new QTimer(this);
-	connect(pUpdateTimer, SIGNAL(timeout()), this, SLOT(slotUpdateTimer()));
-	pUpdateTimer->start(WEAPON_UPDATETIMER_INTERVAL);
+	_pUpdateTimer = new QTimer(this);
+	connect(_pUpdateTimer, SIGNAL(timeout()), this, SLOT(slotUpdateTimer()));
+	_pUpdateTimer->start(WEAPON_UPDATETIMER_INTERVAL);
 	connect(MainWindow::mainWindow(), SIGNAL(sigToggleSleepMode(bool)), this, SLOT(onToggleSleepMode(bool)));
 
 }
@@ -42,16 +42,16 @@ WeaponMainWindow::~WeaponMainWindow()
 
 void WeaponMainWindow::clearWeaponData()
 {
-    weaponGroupList.clear();
-	needRebuildTable = true;
+    _weaponGroupList.clear();
+	_needRebuildTable = true;
 }
 
-void WeaponMainWindow::addWeaponData(int slotitemId, QString itemname, int rare, bool bLocked, int level, int alv, QString shipname, int shiplv)
+void WeaponMainWindow::addWeaponData(int slotitemId, const QString& itemname, int rare, bool bLocked, int level, int alv, const QString& shipname, int shiplv)
 {
     UIWeaponData data;
     data.setData(bLocked, level, shipname, shiplv, alv);
     bool bDone = false;
-    for (QList<UIWeaponGroupData>::iterator it=weaponGroupList.begin(); it!=weaponGroupList.end(); ++it)
+    for (QList<UIWeaponGroupData>::iterator it=_weaponGroupList.begin(); it!=_weaponGroupList.end(); ++it)
     {
         if (it->id == slotitemId)
         {
@@ -65,9 +65,9 @@ void WeaponMainWindow::addWeaponData(int slotitemId, QString itemname, int rare,
         UIWeaponGroupData group;
         group.setMetaData(slotitemId, itemname, rare);
         group.weapons.push_back(data);
-        weaponGroupList.push_back(group);
+        _weaponGroupList.push_back(group);
 	}
-	needRebuildTable = true;
+	_needRebuildTable = true;
 }
 
 bool UIWeaponGroupData::higherThan(const UIWeaponGroupData& left, const UIWeaponGroupData& right)
@@ -85,8 +85,8 @@ bool UIWeaponGroupData::higherThan(const UIWeaponGroupData& left, const UIWeapon
 
 void WeaponMainWindow::buildTable()
 {
-	doNotRecordLast = true;
-	if (!isVisible() || !needRebuildTable)
+	_doNotRecordLast = true;
+	if (!isVisible() || !_needRebuildTable)
 	{
 		return;
 	}
@@ -102,13 +102,13 @@ void WeaponMainWindow::buildTable()
 		int level = v.api_level;
 		int alv = v.api_alv;
 		int slotitemId = v.api_slotitem_id;
-		auto slotitem = pkdc->findMstSlotItemFromSlotitemid(slotitemId);
+		auto pslotitem = pkdc->findMstSlotItemFromSlotitemid(slotitemId);
 		QString itemname;
 		int rare = 0;
-		if (slotitem)
+		if (pslotitem)
 		{
-			itemname = slotitem->api_name;
-			rare = slotitem->api_rare;
+			itemname = pslotitem->api_name;
+			rare = pslotitem->api_rare;
 		}
 		QString shipname;
 		int shipid = -1;
@@ -131,10 +131,10 @@ void WeaponMainWindow::buildTable()
 		}
 		if (shipid >= 0)
 		{
-			auto mstship = pkdc->findMstShipFromShipid(shipid);
-			if (mstship)
+			auto pmstship = pkdc->findMstShipFromShipid(shipid);
+			if (pmstship)
 			{
-				shipname = mstship->api_name;
+				shipname = pmstship->api_name;
 			}
 		}
 
@@ -142,16 +142,16 @@ void WeaponMainWindow::buildTable()
 	}
 	//
 
-	qSort(weaponGroupList.begin(), weaponGroupList.end(), UIWeaponGroupData::higherThan);
+	qSort(_weaponGroupList.begin(), _weaponGroupList.end(), UIWeaponGroupData::higherThan);
 
-	for (QList<KQUI_CollapsibleFrame*>::iterator it = lstCollapsibleFrames.begin(); it != lstCollapsibleFrames.end(); ++it)
+	for (QList<KQUI_CollapsibleFrame*>::iterator it = _lstCollapsibleFrames.begin(); it != _lstCollapsibleFrames.end(); ++it)
 	{
 		delete *it;
 	}
-	lstCollapsibleFrames.clear();
+	_lstCollapsibleFrames.clear();
 
     int count = 0;
-    foreach (auto item, weaponGroupList)
+    foreach (auto& item, _weaponGroupList)
     {
         if (item.weapons.size())
         {
@@ -159,24 +159,24 @@ void WeaponMainWindow::buildTable()
             count++;
         }
 	}
-	needRebuildTable = false;
-	doNotRecordLast = false;
+	_needRebuildTable = false;
+	_doNotRecordLast = false;
 
 	if (!ui->lineEditTitle->text().isEmpty())
 	{
 		slotTextChanged(ui->lineEditTitle->text());
 	}
 
-	if (lastToggledId >= 0)
+	if (_lastToggledId >= 0)
 	{
-		foreach(auto pFrame, lstCollapsibleFrames)
+		foreach(auto pFrame, _lstCollapsibleFrames)
 		{
 			auto prop = pFrame->pushButton()->property(QPROPERTY_SLOTITEMID);
 			if (prop.isValid())
 			{
 				bool bOk;
 				int id = prop.toInt(&bOk);
-				if (bOk && id == lastToggledId)
+				if (bOk && id == _lastToggledId)
 				{
 					QApplication::processEvents();
 					ui->scrollArea->ensureWidgetVisible(pFrame);
@@ -189,7 +189,7 @@ void WeaponMainWindow::buildTable()
 void WeaponMainWindow::slotSetVisible(bool bValue)
 {
 	setVisible(bValue);
-	if (bValue && needRebuildTable)
+	if (bValue && _needRebuildTable)
 	{
 		buildTable();
 	}
@@ -217,7 +217,7 @@ void WeaponMainWindow::buildSingleTable(const UIWeaponGroupData& groupData)
 
 
     ui->verticalLayout->addWidget(pFrame);
-    lstCollapsibleFrames.push_back(pFrame);
+    _lstCollapsibleFrames.push_back(pFrame);
 
     setWeaponColumnFormat(pFrame);
 
@@ -307,7 +307,7 @@ void WeaponMainWindow::buildSingleTable(const UIWeaponGroupData& groupData)
 
     pFrame->tableWidget()->updateFullTable(rows);
 
-	if (checkedIdList.contains(groupData.id))
+	if (_checkedIdList.contains(groupData.id))
 	{
 		pFrame->pushButton()->setChecked(true);
 	}
@@ -385,20 +385,20 @@ void WeaponMainWindow::slotToggled(bool bValue)
 		int id = propid.toInt(&bOk);
 		if (bOk)
 		{
-			if (!doNotRecordLast)
+			if (!_doNotRecordLast)
 			{
-				lastToggledId = id;
+				_lastToggledId = id;
 			}
 			if (bValue)
 			{
-				if (!checkedIdList.contains(id))
+				if (!_checkedIdList.contains(id))
 				{
-					checkedIdList.push_back(id);
+					_checkedIdList.push_back(id);
 				}
 			}
 			else
 			{ 
-				checkedIdList.removeAll(id);
+				_checkedIdList.removeAll(id);
 			}
 		}
 	}
@@ -480,18 +480,18 @@ void WeaponMainWindow::setButtonColor(KQUI_CollapsibleFrame* pFrame, int colinde
 	pFrame->pushButton()->setStyleSheet(stylesheet_a[colindex] + stylesheet_b[bRed ? 1 : 0]);
 }
 
-void WeaponMainWindow::slotTextChanged(QString text)
+void WeaponMainWindow::slotTextChanged(const QString& text)
 {
 	if (text.isEmpty())
 	{
-		foreach(auto pFrame, lstCollapsibleFrames)
+		foreach(auto pFrame, _lstCollapsibleFrames)
 		{
 			pFrame->setVisible(true);
 		}
 	}
 	else
 	{
-		foreach(auto pFrame, lstCollapsibleFrames)
+		foreach(auto pFrame, _lstCollapsibleFrames)
 		{
 			if (pFrame->pushButton()->text().contains(text, Qt::CaseInsensitive))
 			{
@@ -509,10 +509,10 @@ void WeaponMainWindow::onToggleSleepMode(bool bSleep)
 {
 	if (bSleep)
 	{
-		pUpdateTimer->stop();
+		_pUpdateTimer->stop();
 	}
 	else
 	{
-		pUpdateTimer->start(WEAPON_UPDATETIMER_INTERVAL);
+		_pUpdateTimer->start(WEAPON_UPDATETIMER_INTERVAL);
 	}
 }

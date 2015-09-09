@@ -41,19 +41,19 @@ void CustomTableDelegate::paint(QPainter* painter, const QStyleOptionViewItem& o
         flag = d%100;
     }
 
-    if (flag & CustomTableDelegate_Top)
+	if (flag & CustomTableDelegate_Top)
     {
         painter->drawLine(option.rect.topLeft(), option.rect.topRight());
     }
-    if (flag & CustomTableDelegate_Bottom)
+	if (flag & CustomTableDelegate_Bottom)
     {
         painter->drawLine(option.rect.bottomLeft(), option.rect.bottomRight());
     }
-    if (flag & CustomTableDelegate_Left)
+	if (flag & CustomTableDelegate_Left)
     {
         painter->drawLine(option.rect.topLeft(), option.rect.bottomLeft());
     }
-    if (flag & CustomTableDelegate_Right)
+	if (flag & CustomTableDelegate_Right)
     {
         painter->drawLine(option.rect.topRight(), option.rect.bottomRight());
     }

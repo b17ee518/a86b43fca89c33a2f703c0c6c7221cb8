@@ -59,7 +59,7 @@ InfoMainWindow::~InfoMainWindow()
 	delete ui;
 }
 
-void InfoMainWindow::updateOverviewTable(QList<QString> lst, QList<QColor> cols)
+void InfoMainWindow::updateOverviewTable(const QList<QString>& lst, const QList<QColor>& cols)
 {
 	if (lst.count() == 6 && cols.count() == 6)
 	{
@@ -75,13 +75,13 @@ void InfoMainWindow::updateOverviewTable(QList<QString> lst, QList<QColor> cols)
 	}
 }
 
-void InfoMainWindow::updateMissionTable(QString buttonTitle, QList<KQRowData> rows)
+void InfoMainWindow::updateMissionTable(const QString& buttonTitle, const QList<KQRowData>& rows)
 {
 	ui->missionFrame->pushButton()->setText(buttonTitle);
 	ui->missionFrame->tableWidget()->updateFullTable(rows);
 }
 
-void InfoMainWindow::updateFleetTable(int n, QString buttonTitle, int colindex, bool bRed, QList<KQRowData> rows)
+void InfoMainWindow::updateFleetTable(int n, const QString& buttonTitle, int colindex, bool bRed, const QList<KQRowData>& rows)
 {
 	static QString stylesheet_a[] =
 	{
@@ -163,13 +163,13 @@ void InfoMainWindow::updateFleetTable(int n, QString buttonTitle, int colindex, 
 	pFleetFrames[n]->pushButton()->setStyleSheet(stylesheet_a[colindex]+stylesheet_b[bRed?1:0]);
 }
 
-void InfoMainWindow::updateRepairTable(QString buttonTitle, QList<KQRowData> rows)
+void InfoMainWindow::updateRepairTable(const QString& buttonTitle, const QList<KQRowData>& rows)
 {
 	ui->repairFrame->pushButton()->setText(buttonTitle);
 	ui->repairFrame->tableWidget()->updateFullTable(rows);
 }
 
-void InfoMainWindow::updateTitle(QString title, int colindex)
+void InfoMainWindow::updateTitle(const QString& title, int colindex)
 {
 	static QString stylesheet[] =
 	{

@@ -18,9 +18,9 @@
 	}
 
 #define _AIREAD(name)   \
-	jarray=jobj[#name].toArray();\
+	_jarray=jobj[#name].toArray();\
 	name.clear();\
-	foreach(const QJsonValue &v, jarray)\
+	foreach(const QJsonValue &v, _jarray)\
 	{\
 		int val = 0;\
 		if (v.isString())\
@@ -34,17 +34,17 @@
 		name.append(val);\
 	}
 #define _AFREAD(name)   \
-	jarray=jobj[#name].toArray();\
+	_jarray=jobj[#name].toArray();\
 	name.clear();\
-	foreach(const QJsonValue &v, jarray)\
+	foreach(const QJsonValue &v, _jarray)\
 	{\
 		name.append(v.toDouble());\
 	}
 
 #define _AAIREAD(name) \
-	jarray = jobj[#name].toArray();\
+	_jarray = jobj[#name].toArray();\
 	name.clear();\
-	foreach(const QJsonValue &v, jarray)\
+	foreach(const QJsonValue &v, _jarray)\
 	{\
 	if (v.isArray())\
 		{\
@@ -64,9 +64,9 @@
 		}\
 	}
 #define _AAFREAD(name) \
-	jarray = jobj[#name].toArray();\
+	_jarray = jobj[#name].toArray();\
 	name.clear();\
-	foreach(const QJsonValue &v, jarray)\
+	foreach(const QJsonValue &v, _jarray)\
 	{\
 	if (v.isArray())\
 		{\
@@ -87,25 +87,25 @@
 	}
 
 #define _ASREAD(name)   \
-	jarray=jobj[#name].toArray();\
+	_jarray=jobj[#name].toArray();\
 	name.clear();\
-	foreach(const QJsonValue &v, jarray)\
+	foreach(const QJsonValue &v, _jarray)\
 	{\
 		name.append(v.toString());\
 	}
 
 #define _ALREAD(name)   \
-	jarray=jobj[#name].toArray();\
+	_jarray=jobj[#name].toArray();\
 	name.clear();\
-	foreach(const QJsonValue &v, jarray)\
+	foreach(const QJsonValue &v, _jarray)\
 	{\
 		name.append((qint64)v.toDouble());\
 	}
 
 #define _ACREAD(name, c)   \
-	jarray=jobj[#name].toArray();\
+	_jarray=jobj[#name].toArray();\
 	name.clear();\
-	foreach(const QJsonValue &v, jarray)\
+	foreach(const QJsonValue &v, _jarray)\
 	{\
 		c tc;\
 		tc.ReadFromJObj(v.toObject());\
@@ -115,10 +115,6 @@
 #define _CREAD(name, c)\
 	name.ReadFromJObj(jobj[#name].toObject());
 
-
-KanData::KanData()
-{
-}
 /*
  * Replace \ and "
  *
@@ -198,7 +194,7 @@ bool kcsapi_basic::ReadFromJObj(const QJsonObject &jobj)
 
 //    qDebug(api_comment.toUtf8());
 
-	return bParseRet;
+	return _bParseRet;
 }
 
 
@@ -209,7 +205,7 @@ bool kcsapi_battleresult_enemyinfo::ReadFromJObj(const QJsonObject &jobj)
 	_SREAD(api_rank);
 	_SREAD(api_deck_name);
 
-	return bParseRet;
+	return _bParseRet;
 }
 
 
@@ -220,7 +216,7 @@ bool kcsapi_battleresult_getship::ReadFromJObj(const QJsonObject &jobj)
 	_SREAD(api_ship_name);
 	_SREAD(api_ship_getmes);
 
-	return bParseRet;
+	return _bParseRet;
 }
 
 bool kcsapi_battleresult_escape::ReadFromJObj(const QJsonObject &jobj)
@@ -228,7 +224,7 @@ bool kcsapi_battleresult_escape::ReadFromJObj(const QJsonObject &jobj)
 	_AIREAD(api_escape_idx);
 	_AIREAD(api_tow_idx);
 
-	return bParseRet;
+	return _bParseRet;
 }
 
 
@@ -263,7 +259,7 @@ bool kcsapi_battleresult::ReadFromJObj(const QJsonObject &jobj)
 	_IREAD(api_escape_flag);
 	_CREAD(api_escape, kcsapi_battleresult_escape);
 
-	return bParseRet;
+	return _bParseRet;
 
 }
 
@@ -276,7 +272,7 @@ bool kcsapi_slotitem::ReadFromJObj(const QJsonObject &jobj)
 	_IREAD(api_level);
 	_IREAD(api_alv);
 
-	return bParseRet;
+	return _bParseRet;
 
 }
 
@@ -300,7 +296,7 @@ bool kcsapi_charge_ship::ReadFromJObj(const QJsonObject &jobj)
 	_IREAD(api_bull);
 	_AIREAD(api_onslot);
 
-	return bParseRet;
+	return _bParseRet;
 
 }
 
@@ -311,7 +307,7 @@ bool kcsapi_charge::ReadFromJObj(const QJsonObject &jobj)
 	_AIREAD(api_material);
 	_IREAD(api_use_bou);
 
-	return bParseRet;
+	return _bParseRet;
 
 }
 
@@ -327,7 +323,7 @@ bool kcsapi_createitem::ReadFromJObj(const QJsonObject &jobj)
 	_IREAD(api_type3);
 	_AIREAD(api_unsetslot);
 
-	return bParseRet;
+	return _bParseRet;
 
 }
 
@@ -342,7 +338,7 @@ bool kcsapi_deck::ReadFromJObj(const QJsonObject &jobj)
 	_SREAD(api_flagship);
 	_AIREAD(api_ship);
 
-	return bParseRet;
+	return _bParseRet;
 
 }
 
@@ -351,7 +347,7 @@ bool kcsapi_destroyitem2::ReadFromJObj(const QJsonObject &jobj)
 {
 	_AIREAD(api_get_material);
 
-	return bParseRet;
+	return _bParseRet;
 
 }
 
@@ -360,7 +356,7 @@ bool kcsapi_destroyship::ReadFromJObj(const QJsonObject &jobj)
 {
 	_AIREAD(api_material);
 
-	return bParseRet;
+	return _bParseRet;
 
 }
 
@@ -379,7 +375,7 @@ bool kcsapi_kdock::ReadFromJObj(const QJsonObject &jobj)
 	_IREAD(api_item4);
 	_IREAD(api_item5);
 
-	return bParseRet;
+	return _bParseRet;
 
 }
 
@@ -418,7 +414,7 @@ bool kcsapi_ship2::ReadFromJObj(const QJsonObject &jobj)
 	_IREAD(api_sally_area);
 	_IREAD(api_slot_ex);
 
-	return bParseRet;
+	return _bParseRet;
 
 }
 
@@ -552,7 +548,7 @@ bool kcsapi_kdock_getship::ReadFromJObj(const QJsonObject &jobj)
 	_CREAD(api_ship, kcsapi_ship2);
 	_ACREAD(api_slotitem, kcsapi_slotitem);
 
-	return bParseRet;
+	return _bParseRet;
 
 }
 
@@ -563,7 +559,7 @@ bool kcsapi_material::ReadFromJObj(const QJsonObject &jobj)
 	_IREAD(api_id);
 	_IREAD(api_value);
 
-	return bParseRet;
+	return _bParseRet;
 
 }
 
@@ -624,7 +620,7 @@ bool kcsapi_mst_ship::ReadFromJObj(const QJsonObject &jobj)
 	_IREAD(api_bull_max);
 	_IREAD(api_voicef);
 
-	return bParseRet;
+	return _bParseRet;
 
 }
 
@@ -658,7 +654,7 @@ bool kcsapi_mst_slotitem::ReadFromJObj(const QJsonObject &jobj)
 	_SREAD(api_info);
 	_SREAD(api_usebull);
 
-	return bParseRet;
+	return _bParseRet;
 
 }
 
@@ -669,7 +665,7 @@ bool kcsapi_mst_slotitem_equiptype::ReadFromJObj(const QJsonObject &jobj)
 	_SREAD(api_name);
 	_IREAD(api_show_flg);
 
-	return bParseRet;
+	return _bParseRet;
 
 }
 
@@ -682,7 +678,7 @@ bool kcsapi_mst_stype::ReadFromJObj(const QJsonObject &jobj)
 	_IREAD(api_scnt);
 	_IREAD(api_kcnt);
 
-	return bParseRet;
+	return _bParseRet;
 
 }
 
@@ -696,7 +692,7 @@ bool kcsapi_mst_useitem::ReadFromJObj(const QJsonObject &jobj)
 	_ASREAD(api_description);
 	_IREAD(api_price);
 
-	return bParseRet;
+	return _bParseRet;
 
 }
 
@@ -714,7 +710,7 @@ bool kcsapi_ndock::ReadFromJObj(const QJsonObject &jobj)
 	_IREAD(api_item3);
 	_IREAD(api_item4);
 
-	return bParseRet;
+	return _bParseRet;
 
 }
 
@@ -727,7 +723,7 @@ bool kcsapi_port::ReadFromJObj(const QJsonObject &jobj)
 	_ACREAD(api_ship, kcsapi_ship2);
 	_CREAD(api_basic, kcsapi_basic);
 
-	return bParseRet;
+	return _bParseRet;
 
 }
 
@@ -738,7 +734,7 @@ bool kcsapi_powerup::ReadFromJObj(const QJsonObject &jobj)
 	_CREAD(api_ship, kcsapi_ship2);
 	_ACREAD(api_deck, kcsapi_deck);
 
-	return bParseRet;
+	return _bParseRet;
 
 }
 
@@ -755,7 +751,7 @@ bool kcsapi_quest::ReadFromJObj(const QJsonObject &jobj)
 	_IREAD(api_bonus_flag);
 	_IREAD(api_progress_flag);
 
-	return bParseRet;
+	return _bParseRet;
 
 }
 
@@ -768,7 +764,7 @@ bool kcsapi_questlist::ReadFromJObj(const QJsonObject &jobj)
 	_ACREAD(api_list, kcsapi_quest);
 	_IREAD(api_exec_count);
 
-	return bParseRet;
+	return _bParseRet;
 
 }
 
@@ -831,7 +827,7 @@ bool kcsapi_ship::ReadFromJObj(const QJsonObject &jobj)
 	_IREAD(api_use_bull);
 	_IREAD(api_voicef);
 
-	return bParseRet;
+	return _bParseRet;
 
 }
 
@@ -841,7 +837,7 @@ bool kcsapi_ship3::ReadFromJObj(const QJsonObject &jobj)
 	_ACREAD(api_ship_data, kcsapi_ship2);
 	_ACREAD(api_deck_data, kcsapi_deck);
 
-	return bParseRet;
+	return _bParseRet;
 
 }
 
@@ -850,7 +846,7 @@ bool kcsapi_ship_deck::ReadFromJObj(const QJsonObject &jobj)
 	_ACREAD(api_ship_data, kcsapi_ship2);
 	_ACREAD(api_deck_data, kcsapi_deck);
 
-	return bParseRet;
+	return _bParseRet;
 
 }
 
@@ -894,7 +890,7 @@ bool kcsapi_slot_data::ReadFromJObj(const QJsonObject &jobj)
 	_AIREAD(api_slottype35);
 	_AIREAD(api_slottype36);
 
-	return bParseRet;
+	return _bParseRet;
 }
 
 
@@ -920,7 +916,7 @@ bool kcsapi_start2::ReadFromJObj(const QJsonObject &jobj)
 	_ACREAD(api_mst_mission, Api_Mst_Mission);
 	_CREAD(api_mst_const, Api_Mst_Const);
 	_ACREAD(api_mst_shipupgrade, Api_Mst_Shipupgrade);
-	return bParseRet;
+	return _bParseRet;
 
 
 }
@@ -938,7 +934,7 @@ bool kcsapi_useitem::ReadFromJObj(const QJsonObject &jobj)
 	_IREAD(api_price);
 	_IREAD(api_count);
 
-	return bParseRet;
+	return _bParseRet;
 
 }
 
@@ -999,7 +995,7 @@ bool Api_Mst_Ship::ReadFromJObj(const QJsonObject &jobj)
 	_IREAD(api_fuel_max);
 	_IREAD(api_bull_max);
 	_IREAD(api_voicef);
-	return bParseRet;
+	return _bParseRet;
 }
 
 
@@ -1025,7 +1021,7 @@ bool Api_Mst_Shipgraph::ReadFromJObj(const QJsonObject &jobj)
 	_AIREAD(api_weda);
 	_AIREAD(api_wedb);
 
-	return bParseRet;
+	return _bParseRet;
 }
 
 
@@ -1063,7 +1059,7 @@ bool Api_Equip_Type::ReadFromJObj(const QJsonObject &jobj)
 	_IREAD(_30);
 	_IREAD(_31);
 
-	return bParseRet;
+	return _bParseRet;
 }
 
 
@@ -1076,7 +1072,7 @@ bool Api_Mst_Stype::ReadFromJObj(const QJsonObject &jobj)
 	_IREAD(api_scnt);
 	_IREAD(api_kcnt);
 	_CREAD(api_equip_type, Api_Equip_Type);
-	return bParseRet;
+	return _bParseRet;
 }
 
 
@@ -1109,7 +1105,7 @@ bool Api_Mst_Slotitem::ReadFromJObj(const QJsonObject &jobj)
 	_AIREAD(api_broken);
 	_SREAD(api_info);
 	_SREAD(api_usebull);
-	return bParseRet;
+	return _bParseRet;
 }
 
 
@@ -1120,7 +1116,7 @@ bool Api_Mst_Slotitemgraph::ReadFromJObj(const QJsonObject &jobj)
 	_IREAD(api_sortno);
 	_SREAD(api_filename);
 	_SREAD(api_version);
-	return bParseRet;
+	return _bParseRet;
 }
 
 
@@ -1135,7 +1131,7 @@ bool Api_Mst_Furniture::ReadFromJObj(const QJsonObject &jobj)
 	_IREAD(api_rarity);
 	_IREAD(api_price);
 	_IREAD(api_saleflg);
-	return bParseRet;
+	return _bParseRet;
 }
 
 
@@ -1147,7 +1143,7 @@ bool Api_Mst_Furnituregraph::ReadFromJObj(const QJsonObject &jobj)
 	_IREAD(api_no);
 	_SREAD(api_filename);
 	_SREAD(api_version);
-	return bParseRet;
+	return _bParseRet;
 }
 
 
@@ -1160,7 +1156,7 @@ bool Api_Mst_Useitem::ReadFromJObj(const QJsonObject &jobj)
 	_SREAD(api_name);
 	_ASREAD(api_description);
 	_IREAD(api_price);
-	return bParseRet;
+	return _bParseRet;
 }
 
 
@@ -1173,7 +1169,7 @@ bool Api_Mst_Payitem::ReadFromJObj(const QJsonObject &jobj)
 	_SREAD(api_description);
 	_AIREAD(api_item);
 	_IREAD(api_price);
-	return bParseRet;
+	return _bParseRet;
 }
 
 
@@ -1183,7 +1179,7 @@ bool Api_Mst_Maparea::ReadFromJObj(const QJsonObject &jobj)
 	_IREAD(api_id);
 	_SREAD(api_name);
 	_IREAD(api_type);
-	return bParseRet;
+	return _bParseRet;
 }
 
 
@@ -1200,7 +1196,7 @@ bool Api_Mst_Mapinfo::ReadFromJObj(const QJsonObject &jobj)
 	_AIREAD(api_item);
 	_IREAD(api_max_maphp);
 	_IREAD(api_required_defeat_count);
-	return bParseRet;
+	return _bParseRet;
 }
 
 
@@ -1212,7 +1208,7 @@ bool Api_Mst_Mapbgm::ReadFromJObj(const QJsonObject &jobj)
 	_IREAD(api_no);
 	_AIREAD(api_map_bgm);
 	_AIREAD(api_boss_bgm);
-	return bParseRet;
+	return _bParseRet;
 }
 
 
@@ -1225,7 +1221,7 @@ bool Api_Mst_Mapcell::ReadFromJObj(const QJsonObject &jobj)
 	_IREAD(api_id);
 	_IREAD(api_no);
 	_IREAD(api_color_no);
-	return bParseRet;
+	return _bParseRet;
 }
 
 
@@ -1242,7 +1238,7 @@ bool Api_Mst_Mission::ReadFromJObj(const QJsonObject &jobj)
 	_FREAD(api_use_bull);
 	_AIREAD(api_win_item1);
 	_AIREAD(api_win_item2);
-	return bParseRet;
+	return _bParseRet;
 }
 
 
@@ -1255,7 +1251,7 @@ bool Api_Mst_Shipupgrade::ReadFromJObj(const QJsonObject &jobj)
 	_IREAD(api_upgrade_level);
 	_IREAD(api_drawing_count);
 	_IREAD(api_sortno);
-	return bParseRet;
+	return _bParseRet;
 }
 
 
@@ -1264,7 +1260,7 @@ bool Api_Mst_Item_Shop::ReadFromJObj(const QJsonObject &jobj)
 
 	_AIREAD(api_cabinet_1);
 	_AIREAD(api_cabinet_2);
-	return bParseRet;
+	return _bParseRet;
 }
 
 
@@ -1272,7 +1268,7 @@ bool Api_Mst_Const::ReadFromJObj(const QJsonObject &jobj)
 {
 
 	_CREAD(api_boko_max_ships, Api_Boko_Max_Ships);
-	return bParseRet;
+	return _bParseRet;
 }
 
 
@@ -1281,7 +1277,7 @@ bool Api_Boko_Max_Ships::ReadFromJObj(const QJsonObject &jobj)
 
 	_SREAD(api_string_value);
 	_IREAD(api_int_value);
-	return bParseRet;
+	return _bParseRet;
 }
 
 
@@ -1290,7 +1286,7 @@ bool kcsapi_next_enemy::ReadFromJObj(const QJsonObject &jobj)
 	_IREAD(api_enemy_id);
 	_IREAD(api_result);
 	_SREAD(api_result_str);
-	return bParseRet;
+	return _bParseRet;
 }
 
 
@@ -1311,7 +1307,7 @@ bool kcsapi_next::ReadFromJObj(const QJsonObject &jobj)
 //    int api_comment_kind;
 //    int api_production_kind;
 	_CREAD(api_enemy, kcsapi_next_enemy);
-	return bParseRet;
+	return _bParseRet;
 }
 
 
@@ -1319,7 +1315,7 @@ bool kcsapi_mission_start::ReadFromJObj(const QJsonObject &jobj)
 {
 	_LREAD(api_complatetime);
 	_SREAD(api_complatetime_str);
-	return bParseRet;
+	return _bParseRet;
 }
 
 bool kcsapi_battle_kouku_stage1::ReadFromJObj(const QJsonObject &jobj)
@@ -1330,7 +1326,7 @@ bool kcsapi_battle_kouku_stage1::ReadFromJObj(const QJsonObject &jobj)
 	_IREAD(api_e_lostcount);
 	_IREAD(api_disp_seiku);
 	_AIREAD(api_touch_plane);
-	return bParseRet;
+	return _bParseRet;
 }
 
 bool kcsapi_battle_kouku_stage2::ReadFromJObj(const QJsonObject &jobj)
@@ -1339,7 +1335,7 @@ bool kcsapi_battle_kouku_stage2::ReadFromJObj(const QJsonObject &jobj)
 	_IREAD(api_f_lostcount);
 	_IREAD(api_e_count);
 	_IREAD(api_e_lostcount);
-	return bParseRet;
+	return _bParseRet;
 }
 
 bool kcsapi_battle_kouku_stage3::ReadFromJObj(const QJsonObject &jobj)
@@ -1353,7 +1349,7 @@ bool kcsapi_battle_kouku_stage3::ReadFromJObj(const QJsonObject &jobj)
 	_AFREAD(api_fdam);
 	_AFREAD(api_edam);
 
-	return bParseRet;
+	return _bParseRet;
 }
 
 bool kcsapi_battle_kouku::ReadFromJObj(const QJsonObject &jobj)
@@ -1365,7 +1361,7 @@ bool kcsapi_battle_kouku::ReadFromJObj(const QJsonObject &jobj)
 	// combined
 	_CREAD(api_stage3_combined, kcsapi_battle_kouku_stage3);
 
-	return bParseRet;
+	return _bParseRet;
 }
 
 bool kcsapi_battle_support_info::ReadFromJObj(const QJsonObject &jobj)
@@ -1373,7 +1369,7 @@ bool kcsapi_battle_support_info::ReadFromJObj(const QJsonObject &jobj)
 	_CREAD(api_support_airatack, kcsapi_battle_support_airatack);
 	_CREAD(api_support_hourai, kcsapi_battle_support_hourai);
 
-	return bParseRet;
+	return _bParseRet;
 }
 
 bool kcsapi_battle_opening_atack::ReadFromJObj(const QJsonObject &jobj)
@@ -1387,7 +1383,7 @@ bool kcsapi_battle_opening_atack::ReadFromJObj(const QJsonObject &jobj)
 	_AIREAD(api_fcl);
 	_AIREAD(api_ecl);
 
-	return bParseRet;
+	return _bParseRet;
 }
 
 bool kcsapi_battle_hougeki::ReadFromJObj(const QJsonObject &jobj)
@@ -1403,7 +1399,7 @@ bool kcsapi_battle_hougeki::ReadFromJObj(const QJsonObject &jobj)
 
 	_AAFREAD(api_damage);
 
-	return bParseRet;
+	return _bParseRet;
 }
 
 bool kcsapi_battle_raigeki::ReadFromJObj(const QJsonObject &jobj)
@@ -1417,7 +1413,7 @@ bool kcsapi_battle_raigeki::ReadFromJObj(const QJsonObject &jobj)
 	_AIREAD(api_fcl);
 	_AIREAD(api_ecl);
 
-	return bParseRet;
+	return _bParseRet;
 }
 
 bool kcsapi_battle::ReadFromJObj(const QJsonObject &jobj)
@@ -1471,7 +1467,7 @@ bool kcsapi_battle::ReadFromJObj(const QJsonObject &jobj)
 	// midnight
 	_CREAD(api_hougeki, kcsapi_battle_hougeki); //midnight
 	
-	return bParseRet;
+	return _bParseRet;
 }
 
 bool kcsapi_battle_support_airatack_stage1::ReadFromJObj(const QJsonObject &jobj)
@@ -1481,7 +1477,7 @@ bool kcsapi_battle_support_airatack_stage1::ReadFromJObj(const QJsonObject &jobj
 	_IREAD(api_e_count);
 	_IREAD(api_e_lostcount);
 
-	return bParseRet;
+	return _bParseRet;
 }
 
 bool kcsapi_battle_support_airatack_stage2::ReadFromJObj(const QJsonObject &jobj)
@@ -1489,7 +1485,7 @@ bool kcsapi_battle_support_airatack_stage2::ReadFromJObj(const QJsonObject &jobj
 	_IREAD(api_f_count);
 	_IREAD(api_f_lostcount);
 
-	return bParseRet;
+	return _bParseRet;
 }
 
 bool kcsapi_battle_support_airatack_stage3::ReadFromJObj(const QJsonObject &jobj)
@@ -1499,7 +1495,7 @@ bool kcsapi_battle_support_airatack_stage3::ReadFromJObj(const QJsonObject &jobj
 	_AIREAD(api_ecl_flag);
 	_AFREAD(api_edam);
 
-	return bParseRet;
+	return _bParseRet;
 }
 
 bool kcsapi_battle_support_airatack::ReadFromJObj(const QJsonObject &jobj)
@@ -1513,7 +1509,7 @@ bool kcsapi_battle_support_airatack::ReadFromJObj(const QJsonObject &jobj)
 	_CREAD(api_stage2, kcsapi_battle_support_airatack_stage2);
 	_CREAD(api_stage3, kcsapi_battle_support_airatack_stage3);
 
-	return bParseRet;
+	return _bParseRet;
 }
 
 
@@ -1525,7 +1521,7 @@ bool kcsapi_battle_support_hourai::ReadFromJObj(const QJsonObject &jobj)
 	_AIREAD(api_cl_list);
 	_AFREAD(api_damage);
 
-	return bParseRet;
+	return _bParseRet;
 }
 
 bool kcsapi_clearitemget_bounus_item::ReadFromJObj(const QJsonObject &jobj)
@@ -1533,7 +1529,7 @@ bool kcsapi_clearitemget_bounus_item::ReadFromJObj(const QJsonObject &jobj)
 	_IREAD(api_id);
 	_SREAD(api_name);
 
-	return bParseRet;
+	return _bParseRet;
 }
 
 bool kcsapi_clearitemget_bounus::ReadFromJObj(const QJsonObject &jobj)
@@ -1543,7 +1539,7 @@ bool kcsapi_clearitemget_bounus::ReadFromJObj(const QJsonObject &jobj)
 	// check
 	_CREAD(api_item, kcsapi_clearitemget_bounus_item);
 
-	return bParseRet;
+	return _bParseRet;
 }
 
 bool kcsapi_clearitemget::ReadFromJObj(const QJsonObject &jobj)
@@ -1552,7 +1548,7 @@ bool kcsapi_clearitemget::ReadFromJObj(const QJsonObject &jobj)
 	_IREAD(api_bounus_count);
 	_ACREAD(api_bounus, kcsapi_clearitemget_bounus);
 
-	return bParseRet;
+	return _bParseRet;
 }
 
 bool kcsapi_practice_enemyinfo_deck_ships::ReadFromJObj(const QJsonObject &jobj)
@@ -1561,13 +1557,13 @@ bool kcsapi_practice_enemyinfo_deck_ships::ReadFromJObj(const QJsonObject &jobj)
 	_IREAD(api_shipid);
 	_IREAD(api_level);
 	_IREAD(api_star);
-	return bParseRet;
+	return _bParseRet;
 }
 
 bool kcsapi_practice_enemyinfo_deck::ReadFromJObj(const QJsonObject &jobj)
 {
 	_ACREAD(api_ships, kcsapi_practice_enemyinfo_deck_ships);
-	return bParseRet;
+	return _bParseRet;
 }
 
 bool kcsapi_practice_enemyinfo::ReadFromJObj(const QJsonObject &jobj)
@@ -1588,21 +1584,21 @@ bool kcsapi_practice_enemyinfo::ReadFromJObj(const QJsonObject &jobj)
 	_SREAD(api_deckname_id);
 	_CREAD(api_deck, kcsapi_practice_enemyinfo_deck);
 
-	return bParseRet;
+	return _bParseRet;
 }
 
 bool kcsapi_hensei_lock::ReadFromJObj(const QJsonObject &jobj)
 {
 	_IREAD(api_locked);
 
-	return bParseRet;
+	return _bParseRet;
 }
 
 bool kcsapi_kaisou_lock::ReadFromJObj(const QJsonObject &jobj)
 {
 	_IREAD(api_locked);
 
-	return bParseRet;
+	return _bParseRet;
 }
 
 bool kcsapi_remodel_slot::ReadFromJObj(const QJsonObject &jobj)
@@ -1613,5 +1609,5 @@ bool kcsapi_remodel_slot::ReadFromJObj(const QJsonObject &jobj)
 	_IREAD(api_voice_id);
 	_CREAD(api_after_slot, kcsapi_slotitem);
 
-	return bParseRet;
+	return _bParseRet;
 }

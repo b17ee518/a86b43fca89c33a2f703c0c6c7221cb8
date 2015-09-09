@@ -20,7 +20,12 @@ class TimeRecord
 public:
 	TimeRecord(){}
 
-    void setValue(qint64 dtime, qint64 ttime, QString cmt, bool bAlarm=false){desttime=dtime; totaltime=ttime; comment=cmt; alarmed=bAlarm;}
+    void setValue(qint64 dtime, qint64 ttime, QString cmt, bool bAlarm=false)
+	{
+		desttime=dtime; 
+		totaltime=ttime; 
+		comment=cmt; alarmed=bAlarm;
+	}
 	void clear(){ desttime = -1; totaltime = 0; alarmed = false; }
 
 
@@ -47,9 +52,12 @@ public:
     explicit TimerMainWindow(QWidget *parent = 0);
     ~TimerMainWindow();
 
-    void setExpeditionTime(int n, qint64 destms=-1, qint64 totalms=-1, QString comment=QString(), QColor col=QColor(0xff, 0xff, 0xff));
-    void setRepairTime(int n, qint64 destms=-1, qint64 totalms=-1, QString comment=QString(), QColor col=QColor(0xff, 0xff, 0xff));
-    void setBuildTime(int n, qint64 destms=-1, qint64 totalms=-1, QString comment=QString(), QColor col=QColor(0xff, 0xff, 0xff));
+    void setExpeditionTime(int n, qint64 destms=-1, qint64 totalms=-1, 
+		const QString& comment=QString(), const QColor& col=QColor(0xff, 0xff, 0xff));
+    void setRepairTime(int n, qint64 destms=-1, qint64 totalms=-1, 
+		const QString& comment=QString(), const QColor& col=QColor(0xff, 0xff, 0xff));
+    void setBuildTime(int n, qint64 destms=-1, qint64 totalms=-1, 
+		const QString& comment=QString(), const QColor& col=QColor(0xff, 0xff, 0xff));
 
 	void setAutoRepairTime(bool bOn, bool bResetIfOver = false);
 
@@ -74,26 +82,28 @@ private:
     bool isYellow(qint64 difftime);
     void setProgressColor(QProgressBar * pBar, qint64 tdiff, bool bYellow);
 
-    bool updateDisplay(int &mintdiff, qint64 ct, qint64 dt, qint64 tt, QTableWidgetItem * pRemainItem, QTableWidgetItem * pExpectedItem=0, QProgressBar * pProgress=0, bool bMinusOne=false);
+    bool updateDisplay(int &mintdiff, qint64 ct, qint64 dt, qint64 tt, 
+		QTableWidgetItem * pRemainItem, QTableWidgetItem * pExpectedItem=0, 
+		QProgressBar * pProgress=0, bool bMinusOne=false);
 
     void initTableItem();
 
     Ui::TimerMainWindow *ui;
-    QList<QTableWidget *> lstTables;
+    QList<QTableWidget *> _lstTables;
 
-    TimeRecord exptimerecord[3];
-    TimeRecord repairtimerecord[4];
-    TimeRecord buildtimerecord[2];
+    TimeRecord _exptimerecord[3];
+    TimeRecord _repairtimerecord[4];
+    TimeRecord _buildtimerecord[2];
 
-    QTimer * pUpdateTimer;
+    QTimer * _pUpdateTimer = NULL;
 
-    QProgressBar * progressExpUs[3];
-    QProgressBar * progressRepairUs[4];
+    QProgressBar * _progressExpUs[3];
+    QProgressBar * _progressRepairUs[4];
 
-    QMediaPlayer * pPlayer;
-    QMediaPlaylist * pPlaylist;
+    QMediaPlayer * _pPlayer = NULL;
+    QMediaPlaylist * _pPlaylist = NULL;
 
-	qint64 _autoRepairTimeBegin;
+	qint64 _autoRepairTimeBegin = 0;
 	bool _autoRepairOn = false;
 };
 

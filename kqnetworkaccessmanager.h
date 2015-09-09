@@ -13,7 +13,6 @@ public:
 
 protected:
     virtual QNetworkReply * createRequest(Operation op, const QNetworkRequest &request, QIODevice *outgoingData);
-	QString requestBody;
 
 signals:
 

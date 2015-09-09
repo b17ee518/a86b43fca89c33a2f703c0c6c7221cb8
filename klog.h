@@ -26,10 +26,6 @@ public:
 
 	void DeleteLog(const QString& filename);
 	void RecordLog(const QString& filename, const QString& log, bool bWithTimeStamp=true);
-
-    QFile * errorlog;
-    QFile * apilog;
-
 };
 
 #endif // KLOG_H

@@ -3,32 +3,32 @@
 
 #include <QString>
 
-enum
+enum class WoundState
 {
-    WOUNDSTATE_FULL,
-    WOUNDSTATE_LITTLE,
-    WOUNDSTATE_SMALL,
-    WOUNDSTATE_MIDDLE,
-    WOUNDSTATE_BIG,
-    WOUNDSTATE_DEAD,
+    Full,
+    Little,
+    Small,
+    Middle,
+    Big,
+    Dead,
 };
 
-enum
+enum class ChargeState
 {
-    CHARGESTATE_FULL,
-    CHARGESTATE_SMALL,  //50%up
-    CHARGESTATE_MIDDLE, //
-    CHARGESTATE_BIG,
-    CHARGESTATE_EMPTY,
+    Full,
+    Small,  //50%up
+    Middle, //
+    Big,
+    Empty,
 };
 
-enum
+enum class CondState
 {
-	CONDSTATE_KIRA,
-    CONDSTATE_NORMAL,
-    CONDSTATE_SMALL,
-    CONDSTATE_MIDDLE,
-    CONDSTATE_BIG,
+	Kira,
+    Normal,
+    Small,
+    Middle,
+    Big,
 };
 
 class KanDataCalc
@@ -36,9 +36,9 @@ class KanDataCalc
 public:
 
     static int GetAdmiralNextLevelExp(int curExp, int curLevel);
-    static int GetWoundState(int curHP, int maxHP);
-    static int GetChargeState(int curVal, int maxVal);
-    static int GetCondState(int cond);
+    static WoundState GetWoundState(int curHP, int maxHP);
+    static ChargeState GetChargeState(int curVal, int maxVal);
+    static CondState GetCondState(int cond);
 };
 
 #endif // KANDATACALC_H

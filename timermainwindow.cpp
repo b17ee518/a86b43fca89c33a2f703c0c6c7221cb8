@@ -122,17 +122,20 @@ void TimerMainWindow::setAutoRepairTime(bool bOn, bool bResetIfOver/*=false*/)
 	if (bOn)
 	{
 		auto ct = currentMS();
-		if (!_autoRepairOn)
-		{
-			_autoRepairTimeBegin = ct;
-			_autoRepairOn = true;
-		}
-		else if (bResetIfOver)
+		_autoRepairOn = true;
+
+		if (bResetIfOver)
 		{
 			if (ct - _autoRepairTimeBegin >= 20*60*1000)
 			{
 				_autoRepairTimeBegin = ct;
 			}
+		}
+		else
+		{
+			_autoRepairTimeBegin = ct;
+			_autoRepairOn = true;
+			// hensei changed or started
 		}
 	}
 	else

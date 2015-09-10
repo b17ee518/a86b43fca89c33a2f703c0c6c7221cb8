@@ -2879,16 +2879,20 @@ bool KanDataConnector::req_hensei_change_parse()
 	}
 	updateFleetTable();
 
-	bool bAutoRepairing = false;
-	// has auto repair slotitem
-	if (lstship->size())
+	// assume only fleet 1
+	if (team == 1)
 	{
-		if (isAutoRepairing(lstship->at(0)))
+		bool bAutoRepairing = false;
+		// has auto repair slotitem
+		if (lstship->size())
 		{
-			bAutoRepairing = true;
+			if (isAutoRepairing(lstship->at(0)))
+			{
+				bAutoRepairing = true;
+			}
 		}
+		MainWindow::mainWindow()->timerWindow()->setAutoRepairTime(bAutoRepairing);
 	}
-	MainWindow::mainWindow()->timerWindow()->setAutoRepairTime(bAutoRepairing);
 	return true;
 }
 

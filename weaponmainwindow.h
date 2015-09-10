@@ -34,10 +34,11 @@ class UIWeaponGroupData{
 public:
     UIWeaponGroupData(){}
 
-    void setMetaData(int id, QString name, int rare)
+    void setMetaData(int id, QString name, int type, int rare)
     {
         this->id = id;
         this->name = name;
+		this->type = type;
         this->rare = rare;
     }
 
@@ -46,6 +47,7 @@ public:
     int id = 0;
     QString name;
     int rare = 0;
+	int type = 0;
 
     QList<UIWeaponData> weapons;
 };
@@ -63,6 +65,7 @@ public:
     void clearWeaponData();
 	void addWeaponData(int slotitemId, 
 		const QString& itemname,
+		int type,
 		int rare,
 		bool bLocked,
 		int level, 

@@ -588,7 +588,8 @@ void KanDataConnector::updateFleetTable()
 
 		bool bCondDown = false;
 
-		int alltaikyu=0;
+		int alltaiku=0;
+		int alltaikubonus = 0;
 		int alllv=0;
 		int flagshipLv = 0;
 		int allsakuteki = 0;
@@ -677,7 +678,8 @@ void KanDataConnector::updateFleetTable()
 				}				
 			}
 			
-			int taikyu = 0;
+			int taiku = 0;
+			int taikubonus = 0;
 
 			QList<int> slotitems = pship->api_slot;
 			slotitems.append(pship->api_slot_ex);
@@ -698,13 +700,58 @@ void KanDataConnector::updateFleetTable()
 								// ok to cast even if not exist
 								SlotitemType type = static_cast<SlotitemType>(pmstslotitem->api_type[2]);
 								
-								// taikyu
+								// taiku
 								if (type == SlotitemType::KanSen
 									|| type == SlotitemType::KanBaKu
 									|| type == SlotitemType::KanKou
 									|| type == SlotitemType::SuiBaKu)
 								{
-									taikyu += (int)(pmstslotitem->api_tyku*sqrt((double)pship->api_onslot[i]));
+									taiku += (int)(pmstslotitem->api_tyku*sqrt((double)pship->api_onslot[i]));
+									// bonus
+									int alv = v.api_alv;
+									if (type == SlotitemType::KanSen)
+									{
+										switch (alv)
+										{
+										case 1:
+											taikubonus += 1;
+											break;
+										case 2:
+											taikubonus += 4;
+											break;
+										case 3:
+											taikubonus += 6;
+											break;
+										case 4:
+											taikubonus += 11;
+											break;
+										case 5:
+											taikubonus += 16;
+											break;
+										case 6:
+											taikubonus += 17;
+											break;
+										case 7:
+											taikubonus += 25;
+											break;
+										default:
+											break;
+										}
+									}
+									else if (type == SlotitemType::KanKou || type == SlotitemType::KanBaKu)
+									{
+										if (alv >= 7)
+										{
+											taikubonus += 3;
+										}
+									}
+									else if (type == SlotitemType::SuiBaKu)
+									{
+										if (alv >= 7)
+										{
+											taikubonus += 9;
+										}
+									}
 								}
 
 								// drum
@@ -777,7 +824,8 @@ void KanDataConnector::updateFleetTable()
 					drumedshipcount++;
 				}
 			}
-			alltaikyu += taikyu;
+			alltaiku += taiku;
+			alltaikubonus += taikubonus;
 			alllv += pship->api_lv;
 			if (flagshipLv <= 0)
 			{
@@ -858,7 +906,13 @@ void KanDataConnector::updateFleetTable()
 			colindex = 1;
 		}
 
-		QString strtitle = QString::fromLocal8Bit("%1 (Lv計:%2 制空:%3 索敵:%4[%5])").arg(v.api_name).arg(alllv).arg(alltaikyu).arg(allsakuteki).arg((int)allsakuteki_sp);
+		QString strtitle = QString::fromLocal8Bit("%1 (Lv計:%2 制空:%3[%4] 索敵:%5[%6])")
+			.arg(v.api_name)
+			.arg(alllv)
+			.arg(alltaiku)
+			.arg(alltaiku+alltaikubonus)
+			.arg(allsakuteki)
+			.arg((int)allsakuteki_sp);
 		MainWindow::infoWindow()->updateFleetTable(v.api_id-1, strtitle, colindex, bRed, rows);
 	}
 

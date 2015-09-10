@@ -46,7 +46,7 @@ void WeaponMainWindow::clearWeaponData()
 	_needRebuildTable = true;
 }
 
-void WeaponMainWindow::addWeaponData(int slotitemId, const QString& itemname, int rare, bool bLocked, int level, int alv, const QString& shipname, int shiplv)
+void WeaponMainWindow::addWeaponData(int slotitemId, const QString& itemname, int type, int rare, bool bLocked, int level, int alv, const QString& shipname, int shiplv)
 {
     UIWeaponData data;
     data.setData(bLocked, level, shipname, shiplv, alv);
@@ -63,7 +63,7 @@ void WeaponMainWindow::addWeaponData(int slotitemId, const QString& itemname, in
     if (!bDone)
     {
         UIWeaponGroupData group;
-        group.setMetaData(slotitemId, itemname, rare);
+        group.setMetaData(slotitemId, itemname, type, rare);
         group.weapons.push_back(data);
         _weaponGroupList.push_back(group);
 	}
@@ -72,13 +72,23 @@ void WeaponMainWindow::addWeaponData(int slotitemId, const QString& itemname, in
 
 bool UIWeaponGroupData::higherThan(const UIWeaponGroupData& left, const UIWeaponGroupData& right)
 {
-	if (left.rare > right.rare)
+	if (left.type < right.type)
 	{
 		return true;
 	}
-	if (left.id > right.id)
+	if (left.type == right.type)
 	{
-		return true;
+		if (left.rare > right.rare)
+		{
+			return true;
+		}
+		if (left.rare == right.rare)
+		{
+			if (left.id > right.id)
+			{
+				return true;
+			}
+		}
 	}
 	return false;
 }
@@ -105,10 +115,19 @@ void WeaponMainWindow::buildTable()
 		auto pslotitem = pkdc->findMstSlotItemFromSlotitemid(slotitemId);
 		QString itemname;
 		int rare = 0;
+		int type = 0;
 		if (pslotitem)
 		{
 			itemname = pslotitem->api_name;
 			rare = pslotitem->api_rare;
+			auto pmstslotitem = pkdc->findMstSlotItemFromSlotitemid(slotitemId);
+			if (pmstslotitem)
+			{
+				if (pmstslotitem->api_type.count() > 2)
+				{
+					type = pmstslotitem->api_type[2];
+				}
+			}
 		}
 		QString shipname;
 		int shipid = -1;
@@ -138,7 +157,7 @@ void WeaponMainWindow::buildTable()
 			}
 		}
 
-		MainWindow::weaponWindow()->addWeaponData(slotitemId, itemname, rare, bLocked, level, alv, shipname, shiplv);
+		MainWindow::weaponWindow()->addWeaponData(slotitemId, itemname, type, rare, bLocked, level, alv, shipname, shiplv);
 	}
 	//
 
@@ -229,6 +248,7 @@ void WeaponMainWindow::buildSingleTable(const UIWeaponGroupData& groupData)
     QColor colWhite = QColor(255, 255, 255);
     QColor colYellow = QColor(255, 255, 0);
     QColor colRed = QColor(255, 0, 0);
+	QColor colAqua = QColor(153, 255, 255);
 
 	int colindex = COLINDEX_NORMAL;
 	bool bRed = false;
@@ -251,9 +271,27 @@ void WeaponMainWindow::buildSingleTable(const UIWeaponGroupData& groupData)
 				}
 			}
 		}
-        KQRowData rd;
-		rd.appendCell(KQRowCellData(QString::fromLocal8Bit("星%1").arg(it.level), it.level > 0 ? colYellow : colWhite));
-		rd.appendCell(KQRowCellData(QString::fromLocal8Bit("熟%1").arg(it.alv), it.alv > 0 ? colYellow : colWhite));
+		KQRowData rd;
+		QColor colLevel = colWhite;
+		if (it.level >= 4)
+		{
+			colLevel = colYellow;
+		}
+		else if (it.level > 0)
+		{
+			colLevel = colAqua;
+		}
+		rd.appendCell(KQRowCellData(QString::fromLocal8Bit("星%1").arg(it.level), colLevel));
+		QColor colAlv = colWhite;
+		if (it.alv >= 7)
+		{
+			colAlv = colYellow;
+		}
+		else if (it.alv > 0)
+		{
+			colAlv = colAqua;
+		}
+		rd.appendCell(KQRowCellData(QString::fromLocal8Bit("熟%1").arg(it.alv), colAlv));
         rd.appendCell(KQRowCellData(it.shipname));
         rd.appendCell(KQRowCellData(QString::fromLocal8Bit("Lv.%1").arg(it.shiplv)));
         if (it.bLocked)

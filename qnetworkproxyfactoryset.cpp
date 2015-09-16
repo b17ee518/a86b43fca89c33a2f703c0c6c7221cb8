@@ -10,9 +10,9 @@ QList<QNetworkProxy> QNetworkProxyFactorySet::queryProxy(const QNetworkProxyQuer
         return lst << _proxyhttp;
     }
 
-    if (str.startsWith("https://"))
+    if (str.startsWith("https://") || str.endsWith(":443"))
     {
-        return lst << _proxyhttps;
+		return lst << _proxyhttps;
     }
 
     return lst<<QNetworkProxy::NoProxy;

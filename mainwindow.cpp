@@ -637,6 +637,11 @@ void MainWindow::setWebSettings()
 	{
 		_pFiddler = new FiddlerCOM::FiddlerCOMClass(this);
 
+		loadCertKey();
+		_pFiddler->SetupCertificate(_certStr, _keyStr);
+		_pFiddler->InstallCertificate(_certStr, _keyStr);
+		saveCertKey();
+		
 		connect(
 			_pFiddler,
 			SIGNAL(exception(int, const QString &, const QString &, const QString &)),
@@ -1233,6 +1238,20 @@ void MainWindow::rebuildIE(bool bNavigate)
 	{
 		navigateTo(_gameUrl);
 	}
+}
+
+void MainWindow::loadCertKey()
+{
+	QSettings settings("h5nc", "KanPlay");
+	_certStr = settings.value("CertStr", "").toString();
+	_keyStr = settings.value("KeyStr", "").toString();
+}
+
+void MainWindow::saveCertKey()
+{
+	QSettings settings("h5nc", "KanPlay");
+	settings.setValue("CertStr", _certStr);
+	settings.setValue("KeyStr", _keyStr);
 }
 
 void MainWindow::applyCss(QWebViewCSSIndex css)

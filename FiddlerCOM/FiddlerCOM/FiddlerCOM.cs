@@ -31,6 +31,13 @@ namespace FiddlerCOMNS
         void Startup(int iListenPort, bool bRegisterAsSystemProxy, bool bDecryptSSL);
         [ComVisible(true)]
         void Shutdown();
+
+        [ComVisible(true)]
+        void SetupCertificate(string certStr, string keyStr);
+        [ComVisible(true)]
+        bool InstallCertificate(ref string certStr, ref string keyStr);
+        [ComVisible(true)]
+        bool UninstallCertificate(ref string certStr, ref string keyStr);
     }
 
     [ComVisible(true)]
@@ -40,13 +47,58 @@ namespace FiddlerCOMNS
         public FiddlerCOMClass()
         {
         }
+        ~FiddlerCOMClass()
+        {
+        }
 
-        private OnNotificationFunc m_OnNotificationFunc;
-        private BeforeRequestFunc m_BeforeRequestFunc;
-        private BeforeResponseFunc m_BeforeResponseFunc;
-        private OnLogStringFunc m_OnLogStringFunc;
-        private AfterSessionCompleteFunc m_AfterSessionCompleteFunc;
+        private OnNotificationFunc _onNotificationFunc;
+        private BeforeRequestFunc _beforeRequestFunc;
+        private BeforeResponseFunc _beforeResponseFunc;
+        private OnLogStringFunc _onLogStringFunc;
+        private AfterSessionCompleteFunc _afterSessionCompleteFunc;
 
+        // first setup
+        [System.Runtime.InteropServices.ComVisible(true)]
+        public void SetupCertificate(string certStr, string keyStr)
+        {
+            if (!string.IsNullOrEmpty(certStr) && !string.IsNullOrEmpty(keyStr))
+            {
+                FiddlerApplication.Prefs.SetStringPref("fiddler.certmaker.bc.cert", certStr);
+                FiddlerApplication.Prefs.SetStringPref("fiddler.certmaker.bc.key", keyStr);
+            }
+        }
+
+        // then install
+        [System.Runtime.InteropServices.ComVisible(true)]
+        public bool InstallCertificate(ref string certStr, ref string keyStr)
+        {
+            if (!CertMaker.rootCertExists())
+            {
+                if (!CertMaker.createRootCert())
+                    return false;
+
+                if (!CertMaker.trustRootCert())
+                    return false;
+            }
+
+            certStr = FiddlerApplication.Prefs.GetStringPref("fiddler.certmaker.bc.cert", null);
+            keyStr = FiddlerApplication.Prefs.GetStringPref("fiddler.certmaker.bc.key", null);
+            return true;
+        }
+
+        // should never be used?
+        [System.Runtime.InteropServices.ComVisible(true)]
+        public bool UninstallCertificate(ref string certStr, ref string keyStr)
+        {
+            if (CertMaker.rootCertExists())
+            {
+                if (!CertMaker.removeFiddlerGeneratedCerts(true))
+                    return false;
+            }
+            certStr = null;
+            keyStr = null;
+            return true;
+        }
 
         [System.Runtime.InteropServices.ComVisible(true)]
         public void Startup(int iListenPort, bool bRegisterAsSystemProxy, bool bDecryptSSL)
@@ -94,37 +146,37 @@ namespace FiddlerCOMNS
         public void SetOnNotification(int f)
         {
             Fiddler.FiddlerApplication.OnNotification += FiddlerApplication_OnNotification;
-            m_OnNotificationFunc = (OnNotificationFunc)Marshal.GetDelegateForFunctionPointer((IntPtr)f, typeof(OnNotificationFunc));
+            _onNotificationFunc = (OnNotificationFunc)Marshal.GetDelegateForFunctionPointer((IntPtr)f, typeof(OnNotificationFunc));
         }
         [System.Runtime.InteropServices.ComVisible(true)]
         public void SetBeforeResponse(int f)
         {
             Fiddler.FiddlerApplication.BeforeResponse += FiddlerApplication_BeforeResponse;
-            m_BeforeResponseFunc = (BeforeResponseFunc)Marshal.GetDelegateForFunctionPointer((IntPtr)f, typeof(BeforeResponseFunc));
+            _beforeResponseFunc = (BeforeResponseFunc)Marshal.GetDelegateForFunctionPointer((IntPtr)f, typeof(BeforeResponseFunc));
         }
         [System.Runtime.InteropServices.ComVisible(true)]
         public void SetBeforeRequest(int f)
         {
             Fiddler.FiddlerApplication.BeforeRequest += FiddlerApplication_BeforeRequest;
-            m_BeforeRequestFunc = (BeforeRequestFunc)Marshal.GetDelegateForFunctionPointer((IntPtr)f, typeof(BeforeRequestFunc));
+            _beforeRequestFunc = (BeforeRequestFunc)Marshal.GetDelegateForFunctionPointer((IntPtr)f, typeof(BeforeRequestFunc));
         }
         [System.Runtime.InteropServices.ComVisible(true)]
         public void SetOnLogString(int f)
         {
             Fiddler.FiddlerApplication.Log.OnLogString += FiddlerApplication_OnLogString;
-            m_OnLogStringFunc = (OnLogStringFunc)Marshal.GetDelegateForFunctionPointer((IntPtr)f, typeof(OnLogStringFunc));
+            _onLogStringFunc = (OnLogStringFunc)Marshal.GetDelegateForFunctionPointer((IntPtr)f, typeof(OnLogStringFunc));
         }
         [System.Runtime.InteropServices.ComVisible(true)]
         public void SetAfterSessionComplete(int f)
         {
             Fiddler.FiddlerApplication.AfterSessionComplete += FiddlerApplication_AfterSessionComplete;
-            m_AfterSessionCompleteFunc = (AfterSessionCompleteFunc)Marshal.GetDelegateForFunctionPointer((IntPtr)f, typeof(AfterSessionCompleteFunc));
+            _afterSessionCompleteFunc = (AfterSessionCompleteFunc)Marshal.GetDelegateForFunctionPointer((IntPtr)f, typeof(AfterSessionCompleteFunc));
         }
 
         [System.Runtime.InteropServices.ComVisible(false)]
         private void FiddlerApplication_BeforeRequest(Fiddler.Session oSession)
         {
-            m_BeforeRequestFunc(
+            _beforeRequestFunc(
                 oSession.id,
                 oSession.fullUrl,
                 oSession.GetRequestBodyAsString()
@@ -134,7 +186,7 @@ namespace FiddlerCOMNS
         [System.Runtime.InteropServices.ComVisible(false)]
         private void FiddlerApplication_BeforeResponse(Fiddler.Session oSession)
         {
-            m_BeforeResponseFunc(
+            _beforeResponseFunc(
                 oSession.id,
                 oSession.oResponse.MIMEType,
                 oSession.responseCode,
@@ -146,7 +198,7 @@ namespace FiddlerCOMNS
         [System.Runtime.InteropServices.ComVisible(false)]
         private void FiddlerApplication_OnLogString(object sender, Fiddler.LogEventArgs e)
         {
-            m_OnLogStringFunc(
+            _onLogStringFunc(
                 e.LogString
                 );
         }
@@ -154,14 +206,14 @@ namespace FiddlerCOMNS
 
         private void FiddlerApplication_OnNotification(object sender, Fiddler.NotificationEventArgs e)
         {
-            m_OnNotificationFunc(
+            _onNotificationFunc(
                 e.NotifyString
                 );
         }
         [System.Runtime.InteropServices.ComVisible(false)]
         private void FiddlerApplication_AfterSessionComplete(Fiddler.Session oSession)
         {
-            m_AfterSessionCompleteFunc(
+            _afterSessionCompleteFunc(
                 oSession.id,
                 oSession.oResponse.MIMEType,
                 oSession.responseCode,

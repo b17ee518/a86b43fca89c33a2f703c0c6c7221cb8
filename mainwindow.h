@@ -138,6 +138,9 @@ private:
 	void loadSettings();
 	void rebuildIE(bool bNavigate);
 
+	void loadCertKey();
+	void saveCertKey();
+
 private:
 	Ui::MainWindow *ui;
 
@@ -178,6 +181,9 @@ private:
 	bool _bUseIE = false;
 	QString _gameUrl;
 	QString _gameUrlId;
+
+	QString _certStr;
+	QString _keyStr;
 };
 
 

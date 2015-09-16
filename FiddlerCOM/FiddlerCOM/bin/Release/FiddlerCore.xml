@@ -4195,11 +4195,6 @@
             </summary>
             <returns>Returns TRUE if response bytes were leaked, false otherwise (e.g. write error). THROWS if "fiddler.network.streaming.abortifclientaborts" is TRUE</returns>
         </member>
-        <member name="M:Fiddler.ServerChatter._PoisonPipe">
-            <summary>
-            Mark this connection as non-reusable
-            </summary>
-        </member>
         <member name="P:Fiddler.ServerChatter._PeekDownloadProgress">
             <summary>
             Peek at number of bytes downloaded thus far.
@@ -6133,16 +6128,7 @@
             Removes HTTP chunked encoding from the data in writeData and returns the resulting array.
             </summary>
             <param name="writeData">Some chunked data</param>
-            <returns>Unchunked data. Throws InvalidDataException on data format errors.</returns>
-        </member>
-        <member name="M:Fiddler.Utilities.doUnchunk(System.Byte[],Fiddler.Session,System.Boolean)">
-            <summary>
-            Removes HTTP chunked encoding from the data in writeData and returns the resulting array.
-            </summary>
-            <param name="writeData">Array to unchunk</param>
-            <param name="oS">Optional Session (for UI error messages)</param>
-            <param name="bNoUI">TRUE to suppress error messages, FALSE to show alert boxes</param>
-            <returns>Unchunked data. Throws InvalidDataException on data format errors.</returns>
+            <returns>Unchunked data. Warning: Throws on data format errors</returns>
         </member>
         <member name="M:Fiddler.Utilities.arrayContainsNonText(System.Byte[])">
             <summary>
@@ -6159,7 +6145,7 @@
             <param name="sCE">Content-Encoding</param>
             <returns>TRUE if any encoding is known to be unsupported</returns>
         </member>
-        <member name="M:Fiddler.Utilities._DecodeInOrder(System.String,System.Boolean,System.Byte[]@,System.Boolean)">
+        <member name="M:Fiddler.Utilities._DecodeInOrder(System.String,System.Boolean,System.Byte[]@)">
             <summary>
             Removes one or more encodings in the proper order to reconstruct the unencoded body.
             If removing Transfer-Encoding and Content-Encoding, ALWAYS remove Transfer-Encoding first.
@@ -6171,7 +6157,7 @@
         </member>
         <member name="M:Fiddler.Utilities.utilDecodeHTTPBody(Fiddler.HTTPHeaders,System.Byte[]@)">
             <summary>
-            Remove all encodings from arrBody, based on those specified in the supplied HTTP headers; DOES NOT MODIFY HEADERS.
+            Remove all encodings from arrBody, based on those specified in the supplied HTTP headers; does NOT modify headers. 
             Throws on errors.
             </summary>
             <param name="oHeaders">*Readonly* headers specifying what encodings are applied</param>

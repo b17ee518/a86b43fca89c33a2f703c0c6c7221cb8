@@ -3,6 +3,7 @@
 #include <QList>
 #include "ControlAction.h"
 #include "kansavedata.h"
+#include "kandatacalc.h"
 
 class ControlManager
 {
@@ -22,6 +23,7 @@ public:
 		None,
 		Kira,
 		Fuel,
+		SouthEast,
 	};
 
 	class CheckColor
@@ -59,6 +61,8 @@ public:
 	bool BuildNext_Kira();
 
 	bool BuildNext_Fuel();
+
+	bool BuildNext_SouthEast();
 	
 	void StartJob();
 
@@ -72,10 +76,15 @@ public:
 
 	void setToTerminate();
 
+	void createSSShipList();
+	bool isTreatedSameShip(int shipno, int oshipno);
+	bool isAfterShip(const kcsapi_mst_ship* pmstship, const kcsapi_mst_ship* pomstship); // is pmstship after of pomstship
+
 	int getCurrentFlagshipId();
 	int getCurrentSecondshipId();
 	bool shouldChangeSecondShip();
 	bool needChargeFlagship();
+	bool needChargeAnyShip();
 	int getOneWasteShipId();
 	bool isShipFull();
 	bool findPagePosByShipId(int shipno, int& page, int& pos, int& lastPage);
@@ -85,11 +94,16 @@ public:
 
 	bool isHenseiDone(const QList<int>& ships, int index = -1);
 	bool isFlagshipOnly();
+	int getTeamSize();
 	bool isShipType(int shipno, ShipType stype);
 	bool hasSlotitem(int shipno, SlotitemType sitype);
 	bool noSlotitem(int shipno);
 			
 	bool flagshipSevereDamaged();
+
+	bool shouldNightBattle();
+	bool shouldRetrieve();
+	WoundState hugestDamageInTeam();
 
 	bool isRunning(){ return _state == State::Started; }
 
@@ -122,11 +136,14 @@ public:
 
 	inline bool isKiraMode(){ return _target == SortieTarget::Kira; }
 	inline bool isFuelMode(){ return _target == SortieTarget::Fuel; }
+	inline bool isSouthEastMode(){ return _target == SortieTarget::SouthEast; }
 
 	void setState(State state, const char* str);
 
 	void setStateStr(const QString& str);
 	inline const QString& getStateStr(){ return _stateStr; }
+
+	inline qint64 getWaitMS(){ return _waitMS; }
 
 //private:
 	void moveMouseToAndClick(float x, float y, float offsetX = 5, float offsetY = 3);
@@ -148,5 +165,12 @@ public:
 
 	QString _stateStr;
 	bool _pauseNext = false;
+
+	QList<QList<int>> _ssShips;
+	int _southEastTeamSize = 5;
+
+	int _sortieMinCond = 30;
+	int _sortieWaitCond = 40;
+	qint64 _waitMS = -1;
 }; 
 

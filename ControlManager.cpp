@@ -6,6 +6,7 @@
 #include "kandataconnector.h"
 #include "kansavedata.h"
 #include "kandatacalc.h"
+#include <QtMath>
 
 #define COL_ALLOWRANCE 3
 #define COND_DAIHATSU	80
@@ -89,16 +90,15 @@ bool ControlManager::BuildNext_Fuel()
 		return;
 	}
 	*/
+	if (!isFlagshipOnly())
+	{
+		// southeast
+		return BuildNext_SouthEast();
+	}
 
 	if (flagshipSevereDamaged())
 	{
 		setState(State::Terminated, "Terminated:Flagship");
-		return false;
-	}
-
-	if (!isFlagshipOnly())
-	{
-		setState(State::Terminated, "Terminated:More than one ship");
 		return false;
 	}
 
@@ -109,18 +109,196 @@ bool ControlManager::BuildNext_Fuel()
 		return false;
 	}
 
-	_target = SortieTarget::Fuel;
 	if (isShipFull())
 	{
 		setState(State::Terminated, "Terminated:ShipFull");
 		return false;
 //		_actionList.append(new DestroyShipAction());
 	}
+	
+	_target = SortieTarget::Fuel;
+
 	_actionList.append(new SortieAction());
 	_actionList.append(new SortieAdvanceAction());
 	_actionList.append(new ChargeAction());
 	_actionList.append(new RepeatAction());
 
+	setState(State::Ready, "Ready");
+	return true;
+}
+
+bool ControlManager::BuildNext_SouthEast()
+{
+	_southEastTeamSize = getTeamSize();
+	if (_southEastTeamSize < 4)
+	{
+		// keep 4 and up for formation
+		_southEastTeamSize = 4;
+	}
+
+	if (isShipFull())
+	{
+		setState(State::Terminated, "Terminated:ShipFull");
+		return false;
+		//		_actionList.append(new DestroyShipAction());
+	}
+
+	if (_ssShips.isEmpty())
+	{
+		createSSShipList();
+	}
+
+	// find possible hensei
+	KanDataConnector* pkdc = &KanDataConnector::getInstance();
+	// find best in each group
+	QList<kcsapi_ship2*> bestShips;
+	for (auto& group : _ssShips)
+	{
+		kcsapi_ship2* pbestship = nullptr;
+		for (auto ssid:group)
+		{
+			auto pcurship = pkdc->findShipFromShipno(ssid);
+			// cond ng later
+			/*
+			if (pcurship->api_cond <= _sortieMinCond)
+			{
+				continue;
+			}
+			*/
+			// damage ng
+			if (KanDataCalc::GetWoundState(pcurship->api_nowhp, pcurship->api_maxhp) >= WoundState::Middle)
+			{
+				continue;
+			}
+			// in dock
+			if (isShipInDock(ssid))
+			{
+				continue;
+			}
+			// in other team
+			if (isShipInOtherTeam(ssid))
+			{
+				continue;
+			}
+
+			if (!pbestship)
+			{
+				pbestship = pcurship;
+				continue;
+			}
+			if (pcurship->api_cond > pbestship->api_cond)
+			{
+				pbestship = pcurship;
+			}
+		}
+		if (pbestship)
+		{
+			bestShips.append(pbestship);
+		}
+	}
+
+	if (bestShips.size() < _southEastTeamSize)
+	{
+		setState(State::Terminated, "Terminated:No Enough Ship");
+		return false;
+	}
+
+	// sort bestships
+	qSort(bestShips.begin(), bestShips.end(), [](const  kcsapi_ship2* left, const kcsapi_ship2* right)
+	{
+		return left->api_cond > right->api_cond; // cond from high to low
+	});
+
+	int minCond = bestShips.at(_southEastTeamSize - 1)->api_cond;
+	if (minCond <= _sortieMinCond)
+	{
+		// wait
+		_waitMS = qCeil((_sortieWaitCond - minCond) / 3.0) * 3000;
+		_actionList.append(new WaitCondAction());
+	}
+
+	QList<int> ships;
+	for (int i = 0; i < _southEastTeamSize; i++)
+	{
+		ships.push_front(bestShips.at(i)->api_id);
+	}
+	
+	// sort in team first
+	QList<int> sortInTeamShips;
+
+	KanSaveData* pksd = &KanSaveData::getInstance();
+	QList<int> nonEmptyShipList;
+	if (pksd->portdata.api_deck_port.size())
+	{
+		auto& firstFleet = pksd->portdata.api_deck_port.first();
+		for (auto id : firstFleet.api_ship)
+		{
+			if (id >= 0)
+			{
+				nonEmptyShipList.append(id);
+			}
+		}
+	}
+	for (int shipno : ships)
+	{
+		bool bDone = false;
+		QList<int>* pgroup = NULL;
+		for (auto& group:_ssShips)
+		{
+			if (group.contains(shipno))
+			{
+				pgroup = &group;
+				break;
+			}
+		}
+		if (!pgroup)
+		{
+			setState(State::Terminated, "Terminated:Wrong SS Data");
+			return false;
+		}
+
+		for (int gpshipno:(*pgroup))
+		{
+			for (int neshipno : nonEmptyShipList)
+			{
+				// already in team 1
+				if (gpshipno == neshipno)
+				{
+					sortInTeamShips.append(gpshipno);
+					bDone = true;
+					break;
+				}
+			}
+			if (bDone)
+			{
+				break;
+			}
+		}
+
+		if (!bDone) //none in team 1
+		{
+			sortInTeamShips.append(shipno);
+		}
+	}
+
+
+	_target = SortieTarget::SouthEast;
+
+	// change hensei sort
+	auto chSortAction = new ChangeHenseiAction();
+	chSortAction->setShips(sortInTeamShips);
+	_actionList.append(chSortAction);
+
+	// change hensei
+	auto chAction = new ChangeHenseiAction();
+	chAction->setShips(ships);
+	_actionList.append(chAction);
+	
+	_actionList.append(new SortieAction());
+	_actionList.append(new SortieCommonAdvanceAction());
+	_actionList.append(new ChargeAction());
+	_actionList.append(new RepeatAction());
+	
 	setState(State::Ready, "Ready");
 	return true;
 }
@@ -222,18 +400,20 @@ void ControlManager::Run()
 void ControlManager::Pause()
 {
 	setState(State::Paused, "Paused");
+	setPauseNextVal(false);
 }
 
 void ControlManager::Resume()
 {
 	setState(State::Started, "Started:Resume");
+	setPauseNextVal(false);
 }
 
 void ControlManager::Terminate()
 {
 	qDeleteAll(_actionList);
 	_actionList.clear();
-	setPauseNextVal(_pauseNext);
+	setPauseNextVal(false);
 	setState(State::Terminated, "Terminated");
 }
 
@@ -255,6 +435,139 @@ void ControlManager::setToTerminate()
 	if (_state == State::Started)
 	{
 		setState(State::ToTerminate, "ToTerminate");
+	}
+}
+
+void ControlManager::createSSShipList()
+{
+	if (!_ssShips.isEmpty())
+	{
+		return;
+	}
+
+	KanSaveData* pksd = &KanSaveData::getInstance();
+	KanDataConnector * pkdc = &KanDataConnector::getInstance();
+	for (auto ship: pksd->portdata.api_ship)
+	{
+		const kcsapi_mst_ship * pmstship = pkdc->findMstShipFromShipid(ship.api_ship_id);
+		if (!pmstship)
+		{
+			continue;
+		}
+		if (pmstship->api_stype == (int)ShipType::SenBou 
+			|| pmstship->api_stype == (int)ShipType::SenSui)
+		{
+			if (ship.api_lv >= 50 && ship.api_maxhp >= 10)
+			{
+				bool bAdded = false;
+				for (QList<int>& group:_ssShips)
+				{
+					/*
+					if (group.isEmpty())
+					{
+						group.append(shipid);
+						bAdded = true;
+					}
+					else
+					{
+					*/
+						for (auto ssid : group)
+						{
+							if (isTreatedSameShip(ssid, ship.api_id))
+							{
+								group.push_front(ship.api_id);	// put kai back
+								bAdded = true;
+								break;
+							}
+						}
+//					}
+					if (bAdded)
+					{
+						break;
+					}
+				}
+				if (!bAdded)
+				{
+					QList<int> tships;
+					tships.push_front(ship.api_id);
+					_ssShips.append(tships);
+				}
+			}
+		}
+	}
+}
+
+bool ControlManager::isTreatedSameShip(int shipno, int oshipno)
+{
+	if (shipno == oshipno)
+	{
+		return true;
+	}
+
+	KanDataConnector * pkdc = &KanDataConnector::getInstance();
+	auto pship = pkdc->findShipFromShipno(shipno);
+	if (!pship)
+	{
+		return false;
+	}
+	auto poship = pkdc->findShipFromShipno(oshipno);
+	if (!poship)
+	{
+		return false;
+	}
+
+	int shipid = pship->api_ship_id;
+	int oshipid = poship->api_ship_id;
+	if (shipid == oshipid)
+	{
+		return true;
+	}
+
+	auto pmstship = pkdc->findMstShipFromShipid(shipid);
+	if (!pmstship)
+	{
+		return false;
+	}
+	auto pomstship = pkdc->findMstShipFromShipid(oshipid);
+	if (!pmstship)
+	{
+		return false;
+	}
+
+	if (isAfterShip(pmstship, pomstship) || isAfterShip(pomstship, pmstship))
+	{
+		return true;
+	}
+
+	return false;
+}
+
+bool ControlManager::isAfterShip(const kcsapi_mst_ship* pmstship, const kcsapi_mst_ship* pomstship)
+{
+	if (!pmstship || !pomstship)
+	{
+		return false;
+	}
+
+	bool bOk = false;
+	int afterid = pomstship->api_aftershipid.toInt(&bOk);
+	if (!bOk || afterid <= 0)
+	{
+		return false;
+	}
+	if (afterid == pmstship->api_id)
+	{
+		return true;
+	}
+	else
+	{
+		KanDataConnector * pkdc = &KanDataConnector::getInstance();
+		auto ponewmstship = pkdc->findMstShipFromShipid(afterid);
+		if (!ponewmstship)
+		{
+			return false;
+		}
+		return isAfterShip(pmstship, ponewmstship);
 	}
 }
 
@@ -456,6 +769,11 @@ bool ControlManager::isHenseiDone(const QList<int>& ships, int index/*=-1*/)
 
 bool ControlManager::isFlagshipOnly()
 {
+	return getTeamSize() == 1;
+}
+
+int ControlManager::getTeamSize()
+{
 	KanSaveData* pksd = &KanSaveData::getInstance();
 
 	if (pksd->portdata.api_deck_port.size())
@@ -469,12 +787,9 @@ bool ControlManager::isFlagshipOnly()
 				nonEmptyShipList.append(id);
 			}
 		}
-		if (nonEmptyShipList.size() == 1)
-		{
-			return true;
-		}
+		return nonEmptyShipList.size();
 	}
-	return false;
+	return 0;
 }
 
 bool ControlManager::isShipType(int shipno, ShipType stype)
@@ -557,6 +872,68 @@ bool ControlManager::flagshipSevereDamaged()
 		}
 	}
 	return true;
+}
+
+bool ControlManager::shouldNightBattle()
+{
+	KanSaveData* pksd = &KanSaveData::getInstance();
+	if (pksd->lastWonAssumption)
+	{
+		return false;
+	}
+	return true;
+}
+
+bool ControlManager::shouldRetrieve()
+{
+	return (hugestDamageInTeam() >= WoundState::Big);
+}
+
+WoundState ControlManager::hugestDamageInTeam()
+{
+	KanSaveData* pksd = &KanSaveData::getInstance();
+	KanDataConnector* pkdc = &KanDataConnector::getInstance();
+
+	WoundState maxState = WoundState::Full;
+
+	if (!pksd->portdata.api_ship.size())
+	{
+		return WoundState::Dead;
+	}
+
+	if (pksd->portdata.api_deck_port.size())
+	{
+		auto& firstFleet = pksd->portdata.api_deck_port.first();
+		if (firstFleet.api_ship.size())
+		{
+			for (auto shipno: firstFleet.api_ship)
+			{
+				if (shipno < 0)
+				{
+					continue;
+				}
+				const kcsapi_ship2 * pship = pkdc->findShipFromShipno(shipno);
+				if (!pship)
+				{
+					continue;
+				}
+				int shipid = pship->api_ship_id;
+				const kcsapi_mst_ship * pmstship = pkdc->findMstShipFromShipid(shipid);
+				if (!pmstship)
+				{
+					continue;
+				}
+
+				// ship found
+				auto wstate = KanDataCalc::GetWoundState(pship->api_nowhp, pship->api_maxhp);
+				if (wstate > maxState)
+				{
+					maxState = wstate;
+				}
+			}
+		}
+	}
+	return maxState;
 }
 
 bool ControlManager::checkColors(const QList<CheckColor>& checklist)
@@ -685,6 +1062,53 @@ bool ControlManager::needChargeFlagship()
 		}
 	}
 	return false;
+}
+
+bool ControlManager::needChargeAnyShip()
+{
+	KanSaveData* pksd = &KanSaveData::getInstance();
+	KanDataConnector* pkdc = &KanDataConnector::getInstance();
+
+	if (!pksd->portdata.api_ship.size())
+	{
+		return false;
+	}
+
+	if (pksd->portdata.api_deck_port.size())
+	{
+		auto& firstFleet = pksd->portdata.api_deck_port.first();
+		if (firstFleet.api_ship.size())
+		{
+			for (auto shipno:firstFleet.api_ship)
+			{
+				if (shipno < 0)
+				{
+					continue;
+				}
+				const kcsapi_ship2 * pship = pkdc->findShipFromShipno(shipno);
+				if (!pship)
+				{
+					continue;
+				}
+				int shipid = pship->api_ship_id;
+				const kcsapi_mst_ship * pmstship = pkdc->findMstShipFromShipid(shipid);
+				if (!pmstship)
+				{
+					continue;
+				}
+
+				// ship found
+				if (pship->api_fuel < pmstship->api_fuel_max
+					|| pship->api_bull < pmstship->api_bull_max
+					)
+				{
+					return true;
+				}
+			}
+		}
+	}
+	return false;
+
 }
 
 int ControlManager::getCurrentFlagshipId()

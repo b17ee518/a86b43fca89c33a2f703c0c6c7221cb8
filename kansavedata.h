@@ -172,6 +172,8 @@ public:
 	int lastEFormation = -1;
 	int lastIntercept = -1;
 
+	bool lastWonAssumption = false;
+
 public:
 	void logAllExport();
 

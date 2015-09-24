@@ -39,6 +39,35 @@ protected:
 	QString _expectingRequest;
 };
 
+class WaitCondAction : public ControlAction
+{
+public:
+	enum class State
+	{
+		None,
+		Waiting,
+
+		HomePortChecking,
+		HomePortDone, // click change
+		FakeHenseiChecking,
+		FakeHenseiDone, // click port
+
+		ExpectingPort,
+		Done,
+	};
+	WaitCondAction(QObject* parent = NULL)
+		:ControlAction(parent)
+	{
+	}
+
+	virtual bool action() override;
+
+private:
+	State _state = State::None;
+	void setState(State state, const char* str);
+
+};
+
 class ChangeHenseiAction : public ControlAction
 {
 public:
@@ -73,6 +102,7 @@ public:
 	virtual bool action() override;
 
 	void setShips(int ship0, int ship1);
+	void setShips(const QList<int>& ships);
 	void resetCurPage()
 	{
 		_curPage = 0;
@@ -185,6 +215,35 @@ private:
 	void setState(State state, const char* str);
 };
 
+class SortieCommonAdvanceAction : public ControlAction
+{
+public:
+	enum class State
+	{
+		None,
+		Checking,
+
+		ClickElse,
+		SelectFormation,
+		ClickLeft,
+		ClickRight,
+
+		Done,
+	};
+	SortieCommonAdvanceAction(QObject* parent = NULL)
+		:ControlAction(parent)
+	{
+	}
+
+	virtual bool action() override;
+
+private:
+	State _state = State::None;
+	void setState(State state, const char* str);
+
+	void setStateToChecking();
+	bool _shouldRetrieve = false;
+};
 
 class RepeatAction : public ControlAction
 {

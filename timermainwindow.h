@@ -64,6 +64,8 @@ public:
 	void setTitle(const QString& title);
 	void playSound(SoundIndex i);
 
+	static qint64 currentMS();
+
 private slots:
     void on_pbClose_clicked();
     void on_pbMinimize_clicked();
@@ -72,7 +74,6 @@ private slots:
 
 private:
 
-    qint64 currentMS();
     QString getRemainTimeStr(qint64 ct, qint64 dt);
 	QString getExpectedTimeStr(qint64 ct, qint64 dt);
 	QString getPassedTimeStr(qint64 ct, qint64 st);

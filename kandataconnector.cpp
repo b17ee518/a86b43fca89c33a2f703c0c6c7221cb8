@@ -1023,7 +1023,7 @@ void KanDataConnector::updateBuildDockTable()
 
 }
 
-void KanDataConnector::updateInfoTitleBattle(bool bBattle, QList<int> * enemyhps)
+void KanDataConnector::updateInfoTitleBattle(bool bBattle, QList<int> * enemyhps, bool bSelfDamaged)
 {
 	KanSaveData * pksd = &KanSaveData::getInstance();
 	if (pksd->nextdata.api_no < 0 && !enemyhps)
@@ -1042,6 +1042,8 @@ void KanDataConnector::updateInfoTitleBattle(bool bBattle, QList<int> * enemyhps
 
 	if (bBattle)
 	{
+		pksd->lastWonAssumption = false;
+
 		int totalremain = 0;
 		int acremain = 0;
 		int actotal = 0;
@@ -1050,6 +1052,7 @@ void KanDataConnector::updateInfoTitleBattle(bool bBattle, QList<int> * enemyhps
 		int subremain = 0;
 		int subtotal = 0;
 
+		int totalecount = 0;
 		for (int i = 1; i<pksd->battledata.api_ship_ke.count(); i++)
 		{
 			int shipid = pksd->battledata.api_ship_ke[i];
@@ -1058,9 +1061,14 @@ void KanDataConnector::updateInfoTitleBattle(bool bBattle, QList<int> * enemyhps
 				const kcsapi_mst_ship * pmstship = findMstShipFromShipid(shipid);
 				if (pmstship)
 				{
+					totalecount++;
 					if ((*enemyhps)[i] > 0)
 					{
 						totalremain++;
+					}
+					else if (i == 0)
+					{
+						pksd->lastWonAssumption = true;
 					}
 					switch (static_cast<ShipType>(pmstship->api_stype))
 					{
@@ -1101,7 +1109,45 @@ void KanDataConnector::updateInfoTitleBattle(bool bBattle, QList<int> * enemyhps
 			eflagshipremainstr = QString::fromLocal8Bit("旗");
 		}
 
-		strtitle += QString::fromLocal8Bit(" - 残:%1%2, 輸%3(%4), 航:%5(%6), 潜%7(%8)")
+		if (!pksd->lastWonAssumption)
+		{
+			if (totalremain == 0 || !bSelfDamaged)
+			{
+				pksd->lastWonAssumption = true;
+			}
+			else
+			{
+				switch (totalecount)
+				{
+				case 2:
+				case 3:
+					if (totalremain <= 1)
+					{
+						pksd->lastWonAssumption = true;
+					}
+					break;
+				case 4:
+				case 5:
+				case 6:
+					if (totalremain <= 2)
+					{
+						pksd->lastWonAssumption = true;
+					}
+					break;
+				default:
+					break;
+				}
+			}
+		}
+
+		QString loseStr = "";
+		if (!pksd->lastWonAssumption)
+		{
+			loseStr = "敗";
+		}
+
+		strtitle += QString::fromLocal8Bit(" - %1残:%2%3, 輸%4(%5), 航:%6(%7), 潜%8(%9)")
+			.arg(loseStr)
 			.arg(totalremain)
 			.arg(eflagshipremainstr)
 			.arg(transremain)
@@ -1929,7 +1975,27 @@ QList<int> KanDataConnector::updateBattle(const kcsapi_battle &api_battle, KanBa
 			enemyhps.append(nowhp);
 		}
 
-		updateInfoTitleBattle(true, &enemyhps);
+		bool bSelfDamaged = false;
+		for (auto damage:totalfdamage)
+		{
+			if (damage > 0)
+			{
+				bSelfDamaged = true;
+				break;
+			}
+		}
+		if (!bSelfDamaged)
+		{
+			for (auto damage : totalfdamage_combined)
+			{
+				if (damage > 0)
+				{
+					bSelfDamaged = true;
+					break;
+				}
+			}
+		}
+		updateInfoTitleBattle(true, &enemyhps, bSelfDamaged);
 
 	}
 	return enemyhps;

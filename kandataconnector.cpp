@@ -127,6 +127,7 @@ KanDataConnector::KanDataConnector(void)
 	_colYellow = QColor(255, 255, 0);
 	_colRed = QColor(255, 0, 0);
 	_colBlue = QColor(0, 0, 255);
+	_colAqua = QColor(0, 255, 255);
 
 	start2_flag = PARSEFLAG_NORMAL;
 	port_port_flag = PARSEFLAG_NORMAL;
@@ -409,17 +410,26 @@ void KanDataConnector::updateOverviewTable()
 	int slotitemcount = pksd->slotitemdata.count()+pksd->slotitemcountoffset;
 	int slotitemmaxcount = pksd->portdata.api_basic.api_max_slotitem;
 	int instantrepaircount = pksd->portdata.api_material[(int)MaterialDataIndex::InstantRepair].api_value;
-	int instantbuildcount = pksd->portdata.api_material[(int)MaterialDataIndex::InstandBuild].api_value;
+//	int instantbuildcount = pksd->portdata.api_material[(int)MaterialDataIndex::InstandBuild].api_value;
 	int lv = pksd->portdata.api_basic.api_level;
 	int nextexp = KanDataCalc::GetAdmiralNextLevelExp(pksd->portdata.api_basic.api_experience, lv);
-	int fcoin = pksd->portdata.api_basic.api_fcoin;
+//	int fcoin = pksd->portdata.api_basic.api_fcoin;
 
 	lst.append(QString::fromLocal8Bit("所有艦娘数: %1/%2").arg(kancount).arg(kanmaxcount));
 	lst.append(QString::fromLocal8Bit("所有装備数: %1/%2").arg(slotitemcount).arg(slotitemmaxcount));
-	lst.append(QString::fromLocal8Bit("高速修復材: %1").arg(instantrepaircount));
-	lst.append(QString::fromLocal8Bit("高速建造材: %1").arg(instantbuildcount));
 	lst.append(QString::fromLocal8Bit("提督Lv. %1(次:%2)").arg(lv).arg(nextexp));
-	lst.append(QString::fromLocal8Bit("家具コイン: %1").arg(fcoin));
+	lst.append(QString::fromLocal8Bit("高速修復材: %1").arg(instantrepaircount));
+//	lst.append(QString::fromLocal8Bit("高速建造材: %1").arg(instantbuildcount));
+//	lst.append(QString::fromLocal8Bit("家具コイン: %1").arg(fcoin));
+	lst.append(QString::fromLocal8Bit("ボス: %1(%2/%3) 南西: %4 輸: %5 航: %6 潜: %7 出撃:%8")
+		.arg(pksd->totalBossReached)
+		.arg(pksd->totalBossWin)
+		.arg(pksd->totalBossSRank)
+		.arg(pksd->totalSouthEastWin)
+		.arg(pksd->totalKilledYusou)
+		.arg(pksd->totalKilledKubou)
+		.arg(pksd->totalKilledSensui)
+		.arg(pksd->totalSortie));
 
 	//
 	if (kanmaxcount == kancount)
@@ -450,8 +460,26 @@ void KanDataConnector::updateOverviewTable()
 	//
 	cols.append(_colWhite);
 	cols.append(_colWhite);
-	cols.append(_colWhite);
-	cols.append(_colWhite);
+
+	if (pksd->totalSouthEastWin >= 5)
+	{
+		cols.append(_colYellow);
+	}
+	else if (pksd->totalKilledYusou >= 3)
+	{
+		cols.append(_colAqua);
+	}
+	else if (pksd->totalBossWin >= 12 
+		&& pksd->totalBossReached >= 24 
+		&& pksd->totalBossSRank >= 6
+		&& pksd->totalSortie >= 36)
+	{
+		cols.append(_colYellow);
+	}
+	else
+	{
+		cols.append(_colWhite);
+	}
 
 	MainWindow::infoWindow()->updateOverviewTable(lst, cols);
 }
@@ -1143,7 +1171,7 @@ void KanDataConnector::updateInfoTitleBattle(bool bBattle, QList<int> * enemyhps
 		QString loseStr = "";
 		if (!pksd->lastWonAssumption)
 		{
-			loseStr = "敗";
+			loseStr = QString::fromLocal8Bit("敗");
 		}
 
 		strtitle += QString::fromLocal8Bit(" - %1残:%2%3, 輸%4(%5), 航:%6(%7), 潜%8(%9)")
@@ -1156,6 +1184,11 @@ void KanDataConnector::updateInfoTitleBattle(bool bBattle, QList<int> * enemyhps
 			.arg(actotal)
 			.arg(subremain)
 			.arg(subtotal);
+
+		pksd->wasLastBossCell = (pksd->nextdata.api_no == pksd->nextdata.api_bosscell_no);
+		pksd->lastKilledYusou = transtotal - transremain;
+		pksd->lastKilledKubou = actotal - acremain;
+		pksd->lastKilledSensui = subtotal - subremain;
 	}
 
 	int colindex = 0;
@@ -2111,6 +2144,43 @@ QString KanDataConnector::logBattleResult(bool bWrite/*=true*/)
 	int maparea_id = pksd->nextdata.api_maparea_id;
 	int mapinfo_no = pksd->nextdata.api_mapinfo_no;
 
+	bool bWon = false;
+	bool bSWon = false;
+	QString winRankString = pksd->battleresultdata.api_win_rank;
+	if (winRankString.contains('S') || winRankString.contains('A') || winRankString.contains('B'))
+	{
+		bWon = true;
+		if (winRankString.contains('S'))
+		{
+			bSWon = true;
+		}
+	}
+	if (pksd->wasLastBossCell)
+	{
+		if (bWon)
+		{
+			if (bSWon)
+			{
+				pksd->totalBossSRank++;
+			}
+			pksd->totalBossWin++;
+			if (maparea_id == 2 && mapinfo_no > 1)
+			{
+				pksd->totalSouthEastWin++;
+			}
+		}
+		pksd->totalBossReached++;
+	}
+	pksd->totalKilledYusou += pksd->lastKilledYusou;
+	pksd->totalKilledKubou += pksd->lastKilledKubou;
+	pksd->totalKilledSensui += pksd->lastKilledSensui;
+
+	pksd->wasLastBossCell = false;
+	pksd->lastWonAssumption = false;
+	pksd->lastKilledYusou = 0;
+	pksd->lastKilledKubou = 0;
+	pksd->lastKilledSensui = 0;
+
 	QString mapareastr = "";
 	QString mapinfostr = "";
 	foreach(const Api_Mst_Maparea &v, pksd->start2data.api_mst_maparea)
@@ -2297,6 +2367,10 @@ QString KanDataConnector::logBattleResult(bool bWrite/*=true*/)
 		QString filename = QString("Result_%1_%2").arg(maparea_id).arg(mapinfo_no);
 		RECLOG(filename, writestr);
 	}
+
+	// for total info
+	updateOverviewTable();
+
 	return writestr;
 }
 
@@ -3344,6 +3418,8 @@ bool KanDataConnector::req_map_start_parse()
 
 	updateInfoTitleBattle();
 	checkWoundQuit();
+
+	pksd->totalSortie++;
 	// for serial_id
 //	DAPILOGDEBUG();
 	return true;

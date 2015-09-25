@@ -61,11 +61,11 @@ InfoMainWindow::~InfoMainWindow()
 
 void InfoMainWindow::updateOverviewTable(const QList<QString>& lst, const QList<QColor>& cols)
 {
-	if (lst.count() == 6 && cols.count() == 6)
+	if (lst.count() == 5 && cols.count() == 5)
 	{
 		for (int i=0; i<2; i++)
 		{
-			for (int j=0; j<3; j++)
+			for (int j=0; j<2; j++)
 			{
 				QTableWidgetItem * pItem = ui->overviewTable->item(j, i);
 				pItem->setText(lst[j*2+i]);
@@ -73,6 +73,9 @@ void InfoMainWindow::updateOverviewTable(const QList<QString>& lst, const QList<
 			}
 		}
 	}
+	QTableWidgetItem * pItem = ui->overviewTable->item(2, 0);
+	pItem->setText(lst[4]);
+	pItem->setTextColor(cols[4]);
 }
 
 void InfoMainWindow::updateMissionTable(const QString& buttonTitle, const QList<KQRowData>& rows)
@@ -202,7 +205,8 @@ void InfoMainWindow::setOverviewColumnFormat()
 	ui->overviewTable->setColumnCount(2);
 	ui->overviewTable->setColumnWidth(0, 175);
 	ui->overviewTable->setColumnWidth(1, 145);
-	for (int i=0; i<3; i++)
+	ui->overviewTable->setSpan(2, 0, 1, 2);
+	for (int i=0; i<2; i++)
 	{
 		for (int j=0; j<2; j++)
 		{
@@ -210,6 +214,8 @@ void InfoMainWindow::setOverviewColumnFormat()
 			ui->overviewTable->setItem(i, j, pItem);
 		}
 	}
+	QTableWidgetItem * pItem = new QTableWidgetItem();
+	ui->overviewTable->setItem(2, 0, pItem);
 }
 
 void InfoMainWindow::setMissionColumnFormat()

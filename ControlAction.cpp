@@ -327,6 +327,11 @@ bool ChangeHenseiAction::action()
 						cm.moveMouseToAndClick(707, 452); // last page
 						_curPage = _lastPage;
 					}
+					else if (_pageList[_nowIndex] >= 5)
+					{
+						cm.moveMouseToAndClick(677, 449); // 6th page
+						_curPage = 5;
+					}
 					else
 					{
 						cm.moveMouseToAndClick(547, 446); // second page
@@ -367,12 +372,18 @@ bool ChangeHenseiAction::action()
 					if (_curPage == 1)
 					{
 						cm.moveMouseToAndClick(579, 447); // third page
+						_curPage++;
+					}
+					else if (_pageList[_nowIndex] >= _curPage + 5)
+					{
+						cm.moveMouseToAndClick(677, 449); // 6th page
+						_curPage += 5;
 					}
 					else
 					{
 						cm.moveMouseToAndClick(609, 446); // fourth and further
+						_curPage++;
 					}
-					_curPage++;
 					setState(State::FindShipNextPageChecking, "Hensei:FindShipNextPageChecking");
 					resetRetryAndWainting();
 				});
@@ -609,11 +620,11 @@ bool ChargeAction::action()
 			{
 				if (cm.isSouthEastMode())
 				{
-					cm.moveMouseToAndClick(117, 120); // all ships
+					cm.moveMouseToAndClick(117, 120, 2, 2); // all ships
 				}
 				else
 				{
-					cm.moveMouseToAndClick(117, 167); // first ship
+					cm.moveMouseToAndClick(117, 167, 2, 2); // first ship
 				}
 				setState(State::OKToChargeChecking, "Charge:OKToChargeChecking");
 				resetRetryAndWainting();

@@ -174,6 +174,20 @@ public:
 
 	bool lastWonAssumption = false;
 
+	int lastKilledYusou = 0;
+	int lastKilledKubou = 0;
+	int lastKilledSensui = 0;
+	bool wasLastBossCell = false;
+
+	int totalKilledYusou = 0;
+	int totalKilledKubou = 0;
+	int totalKilledSensui = 0;
+	int totalBossWin = 0;
+	int totalBossReached = 0;
+	int totalBossSRank = 0;
+	int totalSortie = 0;
+	int totalSouthEastWin = 0;
+
 public:
 	void logAllExport();
 

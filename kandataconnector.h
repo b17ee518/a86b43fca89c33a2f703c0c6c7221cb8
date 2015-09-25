@@ -268,6 +268,7 @@ private:
 	QColor _colYellow;
 	QColor _colRed;
 	QColor _colBlue;
+	QColor _colAqua;
 
 	QString _pathAndQuery;
 	QString _requestBody;

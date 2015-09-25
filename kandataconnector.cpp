@@ -3420,6 +3420,7 @@ bool KanDataConnector::req_map_start_parse()
 	checkWoundQuit();
 
 	pksd->totalSortie++;
+	updateOverviewTable();
 	// for serial_id
 //	DAPILOGDEBUG();
 	return true;

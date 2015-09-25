@@ -22,21 +22,26 @@ ControlManager::~ControlManager()
 
 bool ControlManager::BuildNext_Kira()
 {
+	if (stopWhenCheck())
+	{
+		setToTerminate("Termination:StopWhenDone");
+		return false;
+	}
 	if (_todoShipids.empty())
 	{
-		setState(State::Terminated, "Terminated:NoShip");
+		setToTerminate("Terminated:NoShip");
 		return false;
 	}
 	if (flagshipSevereDamaged())
 	{
-		setState(State::Terminated, "Terminated:Flagship");
+		setToTerminate("Terminated:Flagship");
 		return false;
 	}
 
 	_target = SortieTarget::Kira;
 	if (isShipFull())
 	{
-		setState(State::Terminated, "Terminated:ShipFull");
+		setToTerminate("Terminated:ShipFull");
 		return false;
 //		_actionList.append(new DestroyShipAction());
 	}
@@ -54,7 +59,7 @@ bool ControlManager::BuildNext_Kira()
 		_todoShipids.removeAt(0);
 		if (_todoShipids.empty())
 		{
-			setState(State::Terminated, "Terminated:NoShip");
+			setToTerminate("Terminated:NoShip");
 			return false;
 		}
 		togoShipId = _todoShipids.at(0);
@@ -90,6 +95,12 @@ bool ControlManager::BuildNext_Fuel()
 		return;
 	}
 	*/
+
+	if (stopWhenCheck())
+	{
+		setToTerminate("Termination:StopWhenDone");
+		return false;
+	}
 	if (!isFlagshipOnly())
 	{
 		// southeast
@@ -98,20 +109,20 @@ bool ControlManager::BuildNext_Fuel()
 
 	if (flagshipSevereDamaged())
 	{
-		setState(State::Terminated, "Terminated:Flagship");
+		setToTerminate("Terminated:Flagship");
 		return false;
 	}
 
 	int flagshipid = getCurrentFlagshipId();
 	if (!isShipType(flagshipid, ShipType::SenSui))
 	{
-		setState(State::Terminated, "Terminated:Ship type");
+		setToTerminate("Terminated:Ship type");
 		return false;
 	}
 
 	if (isShipFull())
 	{
-		setState(State::Terminated, "Terminated:ShipFull");
+		setToTerminate("Terminated:ShipFull");
 		return false;
 //		_actionList.append(new DestroyShipAction());
 	}
@@ -129,7 +140,18 @@ bool ControlManager::BuildNext_Fuel()
 
 bool ControlManager::BuildNext_SouthEast()
 {
+	if (stopWhenCheck())
+	{
+		setToTerminate("Termination:StopWhenDone");
+		return false;
+	}
 	_southEastTeamSize = getTeamSize();
+	KanSaveData* pksd = &KanSaveData::getInstance();
+	if (pksd->totalSouthEastWin >= 5)
+	{
+		setToTerminate("Terminated:Done Mission");
+		return false;
+	}
 	if (_southEastTeamSize < 4)
 	{
 		// keep 4 and up for formation
@@ -138,7 +160,7 @@ bool ControlManager::BuildNext_SouthEast()
 
 	if (isShipFull())
 	{
-		setState(State::Terminated, "Terminated:ShipFull");
+		setToTerminate("Terminated:ShipFull");
 		return false;
 		//		_actionList.append(new DestroyShipAction());
 	}
@@ -199,7 +221,7 @@ bool ControlManager::BuildNext_SouthEast()
 
 	if (bestShips.size() < _southEastTeamSize)
 	{
-		setState(State::Terminated, "Terminated:No Enough Ship");
+		setToTerminate("Terminated:No Enough Ship");
 		return false;
 	}
 
@@ -226,7 +248,6 @@ bool ControlManager::BuildNext_SouthEast()
 	// sort in team first
 	QList<int> sortInTeamShips;
 
-	KanSaveData* pksd = &KanSaveData::getInstance();
 	QList<int> nonEmptyShipList;
 	if (pksd->portdata.api_deck_port.size())
 	{
@@ -253,7 +274,7 @@ bool ControlManager::BuildNext_SouthEast()
 		}
 		if (!pgroup)
 		{
-			setState(State::Terminated, "Terminated:Wrong SS Data");
+			setToTerminate("Terminated:Wrong SS Data");
 			return false;
 		}
 
@@ -300,6 +321,40 @@ bool ControlManager::BuildNext_SouthEast()
 	_actionList.append(new RepeatAction());
 	
 	setState(State::Ready, "Ready");
+	return true;
+}
+
+bool ControlManager::stopWhenCheck()
+{
+
+	switch (_stopwhen)
+	{
+	case ControlManager::StopWhen::None:
+		return false;
+		break;
+	case ControlManager::StopWhen::Yusou3:
+		if (KanSaveData::getInstance().totalKilledYusou >= 3)
+		{
+			return true;
+		}
+		else
+		{
+			return false;
+		}
+		break;
+	case ControlManager::StopWhen::SouthEast5:
+		if (KanSaveData::getInstance().totalSouthEastWin >= 5)
+		{
+			return true;
+		}
+		else
+		{
+			return false;
+		}
+		break;
+	default:
+		break;
+	}
 	return true;
 }
 
@@ -379,7 +434,7 @@ void ControlManager::Run()
 
 	if (_actionList.empty())
 	{
-		setState(State::Terminated, "Terminated:NoAction");
+		setToTerminate("Terminated:NoAction");
 		return;
 	}
 	if (_actionList[0]->action())
@@ -414,6 +469,7 @@ void ControlManager::Terminate()
 	qDeleteAll(_actionList);
 	_actionList.clear();
 	setPauseNextVal(false);
+	_stopwhen = StopWhen::None;
 	setState(State::Terminated, "Terminated");
 }
 
@@ -430,11 +486,19 @@ void ControlManager::PauseNext()
 	}
 }
 
-void ControlManager::setToTerminate()
+void ControlManager::togglePauseNext()
 {
 	if (_state == State::Started)
 	{
-		setState(State::ToTerminate, "ToTerminate");
+		setPauseNextVal(!_pauseNext);
+	}
+}
+
+void ControlManager::setToTerminate(const char* title)
+{
+	if (_state == State::Started)
+	{
+		setState(State::ToTerminate, title);
 	}
 }
 
@@ -936,6 +1000,11 @@ WoundState ControlManager::hugestDamageInTeam()
 	return maxState;
 }
 
+void ControlManager::setStopWhen(StopWhen stopwhen)
+{
+	_stopwhen = stopwhen;
+}
+
 bool ControlManager::checkColors(const QList<CheckColor>& checklist)
 {
 	if (checklist.empty())
@@ -1159,7 +1228,7 @@ void ControlManager::setState(State state, const char* str)
 	if (_state != state)
 	{
 		_state = state;
-		if (_state == State::Terminated)
+		if (_state == State::Terminated || _state == State::ToTerminate)
 		{
 			MainWindow::mainWindow()->timerWindow()->playSound(TimerMainWindow::SoundIndex::Terminated);
 			QTimer::singleShot(4000, [this]()

@@ -26,7 +26,7 @@ void ControlAction::tryRetry()
 	}
 	else
 	{
-		ControlManager::getInstance().setToTerminate();
+		ControlManager::getInstance().setToTerminate("Terminated:RetryTimeOver");
 		emit sigCheckFail();
 	}
 }
@@ -431,15 +431,15 @@ bool ChangeHenseiAction::action()
 						if (cm.isHenseiDone(_ships, _nowIndex))
 						{
 							_nowIndex++;
+							setState(State::HenseiChecking, "Hensei:HenseiChecking");
+							resetRetryAndWainting();
 						}
 						else
 						{
 							qDebug() << "hensei error";
 							emit sigCheckFail();
-							cm.setToTerminate();
+							cm.setToTerminate("Terminated:HenseiError");
 						}
-						setState(State::HenseiChecking, "Hensei:HenseiChecking");
-						resetRetryAndWainting();
 					});
 				}
 			});
@@ -493,7 +493,7 @@ bool ChangeHenseiAction::action()
 		else
 		{
 			emit sigCheckFail();
-			cm.setToTerminate();
+			cm.setToTerminate("Terminated:HenseiError");
 		}
 		break;
 	default:
@@ -733,7 +733,7 @@ bool SortieAction::action()
 		{
 			if (cm.needChargeAnyShip() || cm.hugestDamageInTeam() >= WoundState::Middle)
 			{
-				cm.setToTerminate();
+				cm.setToTerminate("Terminated:Damage");
 				emit sigFatal();
 				return false;
 			}
@@ -742,7 +742,7 @@ bool SortieAction::action()
 		{
 			if (cm.needChargeFlagship() || cm.hugestDamageInTeam() >= WoundState::Big)
 			{
-				cm.setToTerminate();
+				cm.setToTerminate("Terminated:Damage");
 				emit sigFatal();
 				return false;
 			}

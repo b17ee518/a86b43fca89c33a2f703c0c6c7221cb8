@@ -893,7 +893,43 @@ void MainWindow::onDoJobFuel()
 	auto& cm = ControlManager::getInstance();
 	cm.Terminate();
 
-	cm.BuildNext_Fuel();
+	if (QApplication::queryKeyboardModifiers()&Qt::ShiftModifier)
+	{
+		QMessageBox* pMessageBox = new QMessageBox(
+			QMessageBox::NoIcon
+			, QString::fromLocal8Bit("")
+			, QString::fromLocal8Bit("終了条件")
+			, QMessageBox::NoButton
+			, this
+			, Qt::Dialog | Qt::MSWindowsFixedSizeDialogHint | Qt::FramelessWindowHint);
+
+		pMessageBox->addButton(QString::fromLocal8Bit("輸送×3"), QMessageBox::YesRole);
+		pMessageBox->addButton(QString::fromLocal8Bit("南西×5"), QMessageBox::NoRole);
+		pMessageBox->addButton(QString::fromLocal8Bit("永久"), QMessageBox::ApplyRole);
+
+		pMessageBox->setDefaultButton(QMessageBox::NoButton);
+		pMessageBox->setAttribute(Qt::WA_DeleteOnClose, true);
+		int reply = pMessageBox->exec();
+
+		if (reply == QMessageBox::Yes)
+		{
+			cm.setStopWhen(ControlManager::StopWhen::Yusou3);
+		}
+		else if (reply == QMessageBox::No)
+		{
+			cm.setStopWhen(ControlManager::StopWhen::SouthEast5);
+		}
+	}
+
+	if (cm.isFlagshipOnly())
+	{
+		cm.BuildNext_Fuel();
+	}
+	else
+	{
+		cm.BuildNext_SouthEast();
+	}
+
 	cm.StartJob();
 }
 
@@ -1047,7 +1083,7 @@ void MainWindow::onJobPauseNext()
 	}
 	else
 	{
-		ControlManager::getInstance().PauseNext();
+		ControlManager::getInstance().togglePauseNext();
 	}
 	ui->pbPauseNext->setChecked(ControlManager::getInstance().getPauseNextVal());
 }

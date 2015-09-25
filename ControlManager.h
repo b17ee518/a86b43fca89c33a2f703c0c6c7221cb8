@@ -26,6 +26,13 @@ public:
 		SouthEast,
 	};
 
+	enum class StopWhen
+	{
+		None,
+		Yusou3,
+		SouthEast5,
+	};
+
 	class CheckColor
 	{
 	public:
@@ -63,6 +70,8 @@ public:
 	bool BuildNext_Fuel();
 
 	bool BuildNext_SouthEast();
+
+	bool stopWhenCheck();
 	
 	void StartJob();
 
@@ -73,8 +82,9 @@ public:
 
 	bool isPaused();
 	void PauseNext();
+	void togglePauseNext();
 
-	void setToTerminate();
+	void setToTerminate(const char* title);
 
 	void createSSShipList();
 	bool isTreatedSameShip(int shipno, int oshipno);
@@ -104,6 +114,8 @@ public:
 	bool shouldNightBattle();
 	bool shouldRetrieve();
 	WoundState hugestDamageInTeam();
+
+	void setStopWhen(StopWhen stopwhen);
 
 	bool isRunning(){ return _state == State::Started; }
 
@@ -172,5 +184,7 @@ public:
 	int _sortieMinCond = 30;
 	int _sortieWaitCond = 40;
 	qint64 _waitMS = -1;
+
+	StopWhen _stopwhen = StopWhen::None;
 }; 
 

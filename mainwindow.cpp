@@ -911,11 +911,11 @@ void MainWindow::onDoJobFuel()
 		pMessageBox->setAttribute(Qt::WA_DeleteOnClose, true);
 		int reply = pMessageBox->exec();
 
-		if (reply == QMessageBox::Yes)
+		if (reply == 0)
 		{
 			cm.setStopWhen(ControlManager::StopWhen::Yusou3);
 		}
-		else if (reply == QMessageBox::No)
+		else if (reply == 1)
 		{
 			cm.setStopWhen(ControlManager::StopWhen::SouthEast5);
 		}

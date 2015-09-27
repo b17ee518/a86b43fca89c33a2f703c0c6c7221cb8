@@ -599,7 +599,7 @@ bool ChargeAction::action()
 			QTimer::singleShot(DELAY_TIME, this, [this, &cm]()
 			{
 				if (cm.checkColors(
-					516, 167, 230, 215, 201
+					516, 167, 230, 216, 202
 					, 625, 254, 113, 110, 74))
 				{
 					_waiting = false;

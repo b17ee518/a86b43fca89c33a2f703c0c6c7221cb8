@@ -903,19 +903,26 @@ void MainWindow::onDoJobFuel()
 			, this
 			, Qt::Dialog | Qt::MSWindowsFixedSizeDialogHint | Qt::FramelessWindowHint);
 
-		pMessageBox->addButton(QString::fromLocal8Bit("輸送×3"), QMessageBox::YesRole);
-		pMessageBox->addButton(QString::fromLocal8Bit("南西×5"), QMessageBox::NoRole);
-		pMessageBox->addButton(QString::fromLocal8Bit("永久"), QMessageBox::ApplyRole);
+		auto resetButton = pMessageBox->addButton(QString::fromLocal8Bit("クリア"), QMessageBox::ResetRole);
+		auto yusouButton = pMessageBox->addButton(QString::fromLocal8Bit("輸送×3"), QMessageBox::AcceptRole);
+		auto southEastButton = pMessageBox->addButton(QString::fromLocal8Bit("南西×5"), QMessageBox::ActionRole);
+		auto foreverButton = pMessageBox->addButton(QString::fromLocal8Bit("永久"), QMessageBox::RejectRole);
 
 		pMessageBox->setDefaultButton(QMessageBox::NoButton);
 		pMessageBox->setAttribute(Qt::WA_DeleteOnClose, true);
-		int reply = pMessageBox->exec();
+		pMessageBox->exec();
 
-		if (reply == 0)
+		auto clickedButton = pMessageBox->clickedButton();
+		if (clickedButton == resetButton)
+		{
+			KanSaveData::getInstance().resetTotals();
+			return;
+		}
+		else if (clickedButton == yusouButton)
 		{
 			cm.setStopWhen(ControlManager::StopWhen::Yusou3);
 		}
-		else if (reply == 1)
+		else if (clickedButton == southEastButton)
 		{
 			cm.setStopWhen(ControlManager::StopWhen::SouthEast5);
 		}

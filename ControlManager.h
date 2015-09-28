@@ -95,7 +95,8 @@ public:
 	bool shouldChangeSecondShip();
 	bool needChargeFlagship();
 	bool needChargeAnyShip();
-	int getOneWasteShipId();
+	int getOneWasteShipId(int exclude1=-1, int exclude2=-1);
+	int getOneWasteShipId(const QList<int>& excludes);
 	bool isShipFull();
 	bool findPagePosByShipId(int shipno, int& page, int& pos, int& lastPage);
 	bool isShipKiraDone(int shipno);

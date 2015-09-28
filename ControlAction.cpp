@@ -599,8 +599,8 @@ bool ChargeAction::action()
 			QTimer::singleShot(DELAY_TIME, this, [this, &cm]()
 			{
 				if (cm.checkColors(
-					516, 167, 230, 216, 202
-					, 625, 254, 113, 110, 74))
+					766, 124, 191, 137, 0
+					, 771, 164, 114, 91, 70))
 				{
 					_waiting = false;
 					setState(State::NeedChargeDone, "Charge:NeedChargeDone");

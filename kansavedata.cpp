@@ -88,6 +88,18 @@ void KanSaveData::logAllExport()
 	}
 }
 
+void KanSaveData::resetTotals()
+{
+	totalKilledYusou = 0;
+	totalKilledKubou = 0;
+	totalKilledSensui = 0;
+	totalBossWin = 0;
+	totalBossReached = 0;
+	totalBossSRank = 0;
+	totalSortie = 0;
+	totalSouthEastWin = 0;
+}
+
 KanSaveData::KanSaveData()
 {
     kcsapi_material tm;

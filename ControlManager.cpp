@@ -67,14 +67,30 @@ bool ControlManager::BuildNext_Kira()
 
 	int flagshipid = getCurrentFlagshipId();
 	int flagshipIndex = _todoShipids.indexOf(flagshipid);
-	if (flagshipIndex > 0)
+	if (flagshipIndex > 0 && !isShipKiraDone(flagshipid))
 	{
 		_todoShipids.swap(flagshipIndex, 0);
 	}
 
 	togoShipId = _todoShipids.at(0);
 	auto chAction = new ChangeHenseiAction();
-	chAction->setShips(togoShipId, shouldChangeSecondShip()?getOneWasteShipId():getCurrentSecondshipId());
+
+	int curSecond = getCurrentSecondshipId();
+	bool bChangeSecond = true;
+	if (!shouldChangeSecondShip())
+	{
+		if (!isTreatedSameShip(togoShipId, curSecond))
+		{
+			bChangeSecond = false;
+		}
+	}
+
+	int wasteId = curSecond;
+	if (bChangeSecond)
+	{
+		wasteId = getOneWasteShipId(togoShipId, getCurrentFlagshipId());
+	}
+	chAction->setShips(togoShipId, wasteId);
 	_actionList.append(chAction);
 
 	_actionList.append(new SortieAction());
@@ -635,7 +651,7 @@ bool ControlManager::isAfterShip(const kcsapi_mst_ship* pmstship, const kcsapi_m
 	}
 }
 
-int ControlManager::getOneWasteShipId()
+int ControlManager::getOneWasteShipId(const QList<int>& excludes)
 {
 	KanSaveData* pksd = &KanSaveData::getInstance();
 	KanDataConnector* pkdc = &KanDataConnector::getInstance();
@@ -657,12 +673,42 @@ int ControlManager::getOneWasteShipId()
 				if (ship.api_fuel == pmstship->api_fuel_max
 					&& ship.api_bull == pmstship->api_bull_max)
 				{
+					if (excludes.size() > 0)
+					{
+						bool bShouldContinue = false;
+						for (auto excludeId:excludes)
+						{
+							if (isTreatedSameShip(excludeId, ship.api_id))
+							{
+								bShouldContinue = true;
+								break;
+							}
+						}
+						if (bShouldContinue)
+						{
+							continue;
+						}
+					}
 					return ship.api_id;
 				}
 			}
 		}
 	}
 	return -1;
+}
+
+int ControlManager::getOneWasteShipId(int exclude1/*=-1*/, int exclude2/*=-1*/)
+{
+	QList<int> excludes;
+	if (exclude1 >= 0)
+	{
+		excludes.append(exclude1);
+	}
+	if (exclude2 >= 0)
+	{
+		excludes.append(exclude2);
+	}
+	return getOneWasteShipId(excludes);
 }
 
 bool ControlManager::isShipFull()

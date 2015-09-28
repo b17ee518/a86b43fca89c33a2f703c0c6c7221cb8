@@ -191,6 +191,8 @@ public:
 public:
 	void logAllExport();
 
+	void resetTotals();
+
 private:
 	KanSaveData(void);
 public:

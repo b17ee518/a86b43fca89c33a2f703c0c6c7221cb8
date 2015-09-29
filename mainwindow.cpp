@@ -916,6 +916,7 @@ void MainWindow::onDoJobFuel()
 		if (clickedButton == resetButton)
 		{
 			KanSaveData::getInstance().resetTotals();
+			KanDataConnector::getInstance().callUpdateOverviewTable();
 			return;
 		}
 		else if (clickedButton == yusouButton)

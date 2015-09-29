@@ -36,6 +36,8 @@ public:
 
 	void setOutputAllLog(bool bVal){ _outputAllLog = bVal; }
 
+	void callUpdateOverviewTable(){ updateOverviewTable(); }
+
 private:
 	void updateOverviewTable();
 	void updateMissionTable();

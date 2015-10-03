@@ -77,12 +77,20 @@ bool ControlManager::BuildNext_Kira()
 
 	int curSecond = getCurrentSecondshipId();
 	bool bChangeSecond = true;
-	if (!shouldChangeSecondShip())
+	bool bTogoSameToCurSecond = false;
+
+	if (isTreatedSameShip(togoShipId, curSecond))
 	{
-		if (!isTreatedSameShip(togoShipId, curSecond))
-		{
-			bChangeSecond = false;
-		}
+		// must exclude second first
+		auto preChAction = new ChangeHenseiAction();
+		preChAction->setShips(togoShipId, -1);
+		_actionList.append(preChAction);
+		bTogoSameToCurSecond = true;
+	}
+
+	if (!shouldChangeSecondShip() && !bTogoSameToCurSecond)
+	{
+		bChangeSecond = false;
 	}
 
 	int wasteId = curSecond;

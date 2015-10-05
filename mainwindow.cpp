@@ -948,7 +948,15 @@ void MainWindow::onDoJobKira()
 	cm.Terminate();
 
 	cm.LoadToDoShipList_Kira();
-	cm.BuildNext_Kira();
+
+	if (QApplication::queryKeyboardModifiers()&Qt::ShiftModifier)
+	{
+		cm.BuildNext_Kira(true);
+	}
+	else
+	{
+		cm.BuildNext_Kira();
+	}
 	cm.StartJob();
 
 }

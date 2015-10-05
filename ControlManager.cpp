@@ -20,12 +20,16 @@ ControlManager::~ControlManager()
 {
 }
 
-bool ControlManager::BuildNext_Kira()
+bool ControlManager::BuildNext_Kira(bool bForceCurrent/*=false*/)
 {
 	if (stopWhenCheck())
 	{
 		setToTerminate("Termination:StopWhenDone");
 		return false;
+	}
+	if (bForceCurrent)
+	{
+		_todoShipids.push_front(getCurrentFlagshipId());
 	}
 	if (_todoShipids.empty())
 	{
@@ -71,7 +75,7 @@ bool ControlManager::BuildNext_Kira()
 	{
 		_todoShipids.swap(flagshipIndex, 0);
 	}
-
+	
 	togoShipId = _todoShipids.at(0);
 	auto chAction = new ChangeHenseiAction();
 

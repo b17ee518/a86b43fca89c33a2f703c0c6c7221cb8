@@ -65,7 +65,7 @@ public:
 	void setDoneRequest(const QString& api);
 
 	bool LoadToDoShipList_Kira();
-	bool BuildNext_Kira();
+	bool BuildNext_Kira(bool bForceCurrent=false);
 
 	bool BuildNext_Fuel();
 

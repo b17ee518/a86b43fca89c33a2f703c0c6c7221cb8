@@ -3,11 +3,17 @@
 #include <QDebug>
 #include "kandatacalc.h"
 
-#define DELAY_TIME			250
-#define DELAY_TIME_CLICK	250
-#define DELAY_TIME_LONG	500
-#define DELAY_TIME_PAGE	300
-#define DELAY_TIME_SUPERLONG	1200
+#define DELAY_TIME			(250*_intervalMul)
+#define DELAY_TIME_CLICK	(250*_intervalMul)
+#define DELAY_TIME_LONG	(500*_intervalMul)
+#define DELAY_TIME_PAGE	(300*_intervalMul)
+#define DELAY_TIME_SUPERLONG	(1200*_intervalMul)
+
+ControlAction::ControlAction(QObject* parent /*= NULL*/)
+:QObject(parent)
+{
+	_intervalMul = ControlManager::getInstance().getIntervalMul();
+}
 
 void ControlAction::setDoneRequest(const QString& api)
 {

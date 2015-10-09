@@ -158,6 +158,16 @@ public:
 
 	inline qint64 getWaitMS(){ return _waitMS; }
 
+	double getIntervalMul(){ return _intervalMul; }
+	void setIntervalMul(double val)
+	{
+		_intervalMul = val; 
+		if (_intervalMul <= 0.0f)
+		{
+			_intervalMul = 1.0f;
+		}
+	}
+
 //private:
 	void moveMouseToAndClick(float x, float y, float offsetX = 5, float offsetY = 3);
 	void moveMouseTo(float x, float y, float offsetX = 5, float offsetY = 3);
@@ -187,5 +197,7 @@ public:
 	qint64 _waitMS = -1;
 
 	StopWhen _stopwhen = StopWhen::None;
+
+	double _intervalMul = 1.0f;
 }; 
 

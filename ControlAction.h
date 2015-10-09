@@ -9,11 +9,7 @@ class ControlAction : public QObject
 {
 	Q_OBJECT
 public:
-	ControlAction(QObject* parent = NULL)
-		:QObject(parent)
-	{
-
-	}
+	ControlAction(QObject* parent = NULL);
 	virtual ~ControlAction()
 	{
 	};
@@ -37,6 +33,8 @@ protected:
 	int _retryTime = 0;
 	bool _waiting = false;
 	QString _expectingRequest;
+
+	double _intervalMul = 1.0f;
 };
 
 class WaitCondAction : public ControlAction

@@ -1227,6 +1227,7 @@ void MainWindow::loadSettings()
 	const QString itemGameUrl = "GameUrl";
 	const QString itemUrlId = "UrlId";
 	const QString itemUsePort = "UsePort";
+	const QString itemIntervalMul = "IntervalMul";
 	
 	setting->beginGroup("Settings");
 	if (!setting->contains(itemUseIE))
@@ -1252,11 +1253,23 @@ void MainWindow::loadSettings()
 	{
 		setting->setValue(itemUsePort, 13347);
 	}
+	if (!setting->contains(itemIntervalMul))
+	{
+		if (QSysInfo::WindowsVersion >= QSysInfo::WV_WINDOWS8)
+		{
+			setting->setValue(itemIntervalMul, 1.5f);
+		}
+		else
+		{
+			setting->setValue(itemIntervalMul, 1.0f);
+		}
+	}
 
 	_bUseIE = setting->value(itemUseIE).toBool();
 	_gameUrl = setting->value(itemGameUrl).toString();
 	_gameUrlId = setting->value(itemUrlId).toString();
 	_useport = setting->value(itemUsePort).toInt();
+	ControlManager::getInstance().setIntervalMul(setting->value(itemIntervalMul).toDouble());
 
 	setting->endGroup();
 

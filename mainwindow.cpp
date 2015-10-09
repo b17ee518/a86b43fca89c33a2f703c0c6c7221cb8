@@ -1257,11 +1257,11 @@ void MainWindow::loadSettings()
 	{
 		if (QSysInfo::WindowsVersion >= QSysInfo::WV_WINDOWS8)
 		{
-			setting->setValue(itemIntervalMul, 1.5f);
+			setting->setValue(itemIntervalMul, 1500);
 		}
 		else
 		{
-			setting->setValue(itemIntervalMul, 1.0f);
+			setting->setValue(itemIntervalMul, 1000);
 		}
 	}
 
@@ -1269,7 +1269,7 @@ void MainWindow::loadSettings()
 	_gameUrl = setting->value(itemGameUrl).toString();
 	_gameUrlId = setting->value(itemUrlId).toString();
 	_useport = setting->value(itemUsePort).toInt();
-	ControlManager::getInstance().setIntervalMul(setting->value(itemIntervalMul).toDouble());
+	ControlManager::getInstance().setIntervalMul(setting->value(itemIntervalMul).toInt()/100.0);
 
 	setting->endGroup();
 

@@ -1258,11 +1258,11 @@ void MainWindow::loadSettings()
 	{
 		if (QSysInfo::WindowsVersion >= QSysInfo::WV_WINDOWS8)
 		{
-			setting->setValue(itemIntervalMul, 1500);
+			setting->setValue(itemIntervalMul, 150);
 		}
 		else
 		{
-			setting->setValue(itemIntervalMul, 1000);
+			setting->setValue(itemIntervalMul, 100);
 		}
 	}
 

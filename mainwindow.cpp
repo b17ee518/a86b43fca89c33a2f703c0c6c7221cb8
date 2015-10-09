@@ -893,7 +893,7 @@ void MainWindow::onDoJobFuel()
 	auto& cm = ControlManager::getInstance();
 	cm.Terminate();
 
-	if (QApplication::queryKeyboardModifiers()&Qt::ShiftModifier)
+	if (!(QApplication::queryKeyboardModifiers()&Qt::ShiftModifier))
 	{
 		QMessageBox* pMessageBox = new QMessageBox(
 			QMessageBox::NoIcon

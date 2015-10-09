@@ -618,15 +618,16 @@ bool ChargeAction::action()
 			_waiting = true;
 			QTimer::singleShot(DELAY_TIME_CLICK, this, [this, &cm]()
 			{
-				if (cm.isSouthEastMode())
+				if (cm.isSouthEastMode() || cm.isFuelMode())
 				{
 					cm.moveMouseToAndClick(117, 120, 2, 2); // all ships
+					setState(State::OKToChargeDone, "Charge:OKToChargeDone");
 				}
 				else
 				{
 					cm.moveMouseToAndClick(117, 167, 2, 2); // first ship
+					setState(State::OKToChargeChecking, "Charge:OKToChargeChecking");
 				}
-				setState(State::OKToChargeChecking, "Charge:OKToChargeChecking");
 				resetRetryAndWainting();
 			});
 		}

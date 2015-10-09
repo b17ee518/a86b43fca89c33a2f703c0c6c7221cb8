@@ -907,6 +907,7 @@ void MainWindow::onDoJobFuel()
 		auto yusouButton = pMessageBox->addButton(QString::fromLocal8Bit("輸送×3"), QMessageBox::AcceptRole);
 		auto southEastButton = pMessageBox->addButton(QString::fromLocal8Bit("南西×5"), QMessageBox::ActionRole);
 		auto foreverButton = pMessageBox->addButton(QString::fromLocal8Bit("永久"), QMessageBox::RejectRole);
+		Q_UNUSED(foreverButton);
 
 		pMessageBox->setDefaultButton(QMessageBox::NoButton);
 		pMessageBox->setAttribute(Qt::WA_DeleteOnClose, true);

@@ -30,6 +30,7 @@ void SubMainWindow::moveEvent(QMoveEvent *event)
 		if (!_bDockingOnTop)
 		{
 			_bDockingOnTop = true;
+			_pDockingCallbackTimer->setTimerType(Qt::PreciseTimer);
 			_pDockingCallbackTimer->start(16);
 			setWindowFlags(windowFlags() | Qt::WindowStaysOnTopHint);
 			show();

@@ -1289,7 +1289,7 @@ void ControlManager::setState(State state, const char* str)
 		if (_state == State::Terminated || _state == State::ToTerminate)
 		{
 			MainWindow::mainWindow()->timerWindow()->playSound(TimerMainWindow::SoundIndex::Terminated);
-			QTimer::singleShot(4000, [this]()
+			QTimer::singleShot(4000, Qt::PreciseTimer, [this]()
 			{
 				if (this->_state == State::Terminated)
 				{
@@ -1306,25 +1306,74 @@ void ControlManager::setStateStr(const QString& str)
 	_stateStr = str;
 	MainWindow::mainWindow()->timerWindow()->setTitle(str);
 }
-
+#include <windows.h>
 void ControlManager::moveMouseToAndClick(float x, float y, float offsetX /*= 5*/, float offsetY /*= 3*/)
 {
 	QPointF ptAdjusted = QPointF(x+randVal(-offsetX, offsetX), y+randVal(-offsetY, offsetY));
 
-	QMouseEvent e(QEvent::MouseButtonPress, ptAdjusted, Qt::LeftButton, Qt::LeftButton, Qt::NoModifier);
-	QApplication::sendEvent(MainWindow::mainWindow()->getBrowserWidget(), &e);
+	if (MainWindow::mainWindow()->isUsingIE())
+	{
+		INPUT input;
+		input.type = INPUT_MOUSE;
+		input.mi.dx = ptAdjusted.x()+5;
+		input.mi.dy = ptAdjusted.y() + 25;
+		input.mi.dx *= (65536 / GetSystemMetrics(SM_CXSCREEN));
+		input.mi.dy *= (65536 / GetSystemMetrics(SM_CYSCREEN));
+		input.mi.dwFlags = (MOUSEEVENTF_ABSOLUTE | MOUSEEVENTF_MOVE | MOUSEEVENTF_LEFTDOWN | MOUSEEVENTF_LEFTUP);
+		input.mi.mouseData = 0;
+		input.mi.dwExtraInfo = NULL;
+		input.mi.time = 0;
+		SendInput(1, &input, sizeof(INPUT));
+		/*
+		int adjx = ptAdjusted.x();
+		int adjy = ptAdjusted.y() + 20;
+		HWND hwnd = (HWND)MainWindow::mainWindow()->winId();
+		PostMessage(hwnd, WM_LBUTTONDOWN, 0, (adjx) & ((adjy) << 16));
+		PostMessage(hwnd, WM_LBUTTONUP, 0, (adjx) & ((adjy) << 16));
+		*/
+	}
+	else
+	{
+		QMouseEvent e(QEvent::MouseButtonPress, ptAdjusted, Qt::LeftButton, Qt::LeftButton, Qt::NoModifier);
+		QApplication::sendEvent(MainWindow::mainWindow()->getBrowserWidget(), &e);
 
-	QMouseEvent e2(QEvent::MouseButtonRelease, ptAdjusted, Qt::LeftButton, Qt::LeftButton, Qt::NoModifier);
-	QApplication::sendEvent(MainWindow::mainWindow()->getBrowserWidget(), &e2);
+		QMouseEvent e2(QEvent::MouseButtonRelease, ptAdjusted, Qt::LeftButton, Qt::LeftButton, Qt::NoModifier);
+		QApplication::sendEvent(MainWindow::mainWindow()->getBrowserWidget(), &e2);
+
+	}
 
 }
 
 void ControlManager::moveMouseTo(float x, float y, float offsetX /*= 5*/, float offsetY /*= 3*/)
 {
 	QPointF ptAdjusted = QPointF(x + randVal(-offsetX, offsetX), y + randVal(-offsetY, offsetY));
+	if (MainWindow::mainWindow()->isUsingIE())
+	{
+		INPUT input;
+		input.type = INPUT_MOUSE;
+		input.mi.dx = ptAdjusted.x()+5;
+		input.mi.dy = ptAdjusted.y() + 25;
+		input.mi.dx *= (65536 / GetSystemMetrics(SM_CXSCREEN));
+		input.mi.dy *= (65536 / GetSystemMetrics(SM_CYSCREEN));
+		input.mi.dwFlags = (MOUSEEVENTF_ABSOLUTE | MOUSEEVENTF_MOVE);
+		input.mi.mouseData = 0;
+		input.mi.dwExtraInfo = NULL;
+		input.mi.time = 0;
+		SendInput(1, &input, sizeof(INPUT));
 
-	QMouseEvent e(QEvent::MouseMove, ptAdjusted, Qt::LeftButton, Qt::LeftButton, Qt::NoModifier);
-	QApplication::sendEvent(MainWindow::mainWindow()->getBrowserWidget(), &e);
+		/*
+		int adjx = ptAdjusted.x();
+		int adjy = ptAdjusted.y() + 20;
+		HWND hwnd = (HWND)MainWindow::mainWindow()->winId();
+		PostMessage(hwnd, WM_MOUSEMOVE, 0, (adjx)& ((adjy) << 16));
+		*/
+	}
+	else
+	{
+		QMouseEvent e(QEvent::MouseMove, ptAdjusted, Qt::LeftButton, Qt::LeftButton, Qt::NoModifier);
+		QApplication::sendEvent(MainWindow::mainWindow()->getBrowserWidget(), &e);
+
+	}
 }
 
 void ControlManager::setPauseNextVal(bool bVal)

@@ -108,6 +108,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
 	_jobTimer = new QTimer(this);
 	connect(_jobTimer, SIGNAL(timeout()), this, SLOT(slotJobtTimeout()));
+	_jobTimer->setTimerType(Qt::PreciseTimer);
 	_jobTimer->start(200);
 
 
@@ -622,6 +623,7 @@ void MainWindow::slotTogglePanicTimer(int timeVal)
 {
 	if (timeVal > 0)
 	{
+		_panicTimer->setTimerType(Qt::PreciseTimer);
 		_panicTimer->start(timeVal);
 	}
 	else
@@ -1110,6 +1112,7 @@ void MainWindow::on_pbSwitchScreenshot_toggled(bool checked)
 	if (checked)
 	{
 		shootScreen();
+		_pScreenshotTimer->setTimerType(Qt::PreciseTimer);
 		_pScreenshotTimer->start(250);
 	}
 	else
@@ -1282,7 +1285,7 @@ void MainWindow::rebuildIE(bool bNavigate)
 	if (_axWidget)
 	{
 		WebBrowser* toDelete = _axWidget;
-		QTimer::singleShot(1, [toDelete, this](){
+		QTimer::singleShot(1, Qt::PreciseTimer, [toDelete, this](){
 			QObject::disconnect(toDelete,
 				SIGNAL(NavigateComplete2(IDispatch*, QVariant&)),
 				this,

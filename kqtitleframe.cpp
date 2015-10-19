@@ -28,7 +28,8 @@ void KQTitleFrame::mousePressEvent(QMouseEvent *event)
     if (event->button() == Qt::LeftButton)
     {
         _bMoving = true;
-        _lastMovingPos = QCursor::pos();
+		_lastMovingPos = QCursor::pos();
+		_pUpdateTimer->setTimerType(Qt::PreciseTimer);
         _pUpdateTimer->start(16);
     }
     QFrame::mousePressEvent(event);

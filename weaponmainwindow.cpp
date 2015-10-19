@@ -29,6 +29,7 @@ WeaponMainWindow::WeaponMainWindow(QWidget *parent)
 	connect(ui->lineEditTitle, SIGNAL(textChanged(QString)), this, SLOT(slotTextChanged(QString)));
 
 	_pUpdateTimer = new QTimer(this);
+	_pUpdateTimer->setTimerType(Qt::PreciseTimer);
 	connect(_pUpdateTimer, SIGNAL(timeout()), this, SLOT(slotUpdateTimer()));
 	_pUpdateTimer->start(WEAPON_UPDATETIMER_INTERVAL);
 	connect(MainWindow::mainWindow(), SIGNAL(sigToggleSleepMode(bool)), this, SLOT(onToggleSleepMode(bool)));

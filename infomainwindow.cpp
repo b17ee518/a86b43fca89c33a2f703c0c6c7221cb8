@@ -37,6 +37,7 @@ InfoMainWindow::InfoMainWindow(QWidget *parent) :
 	setRepairColumnFormat();
 
 	pUpdateTimer = new QTimer(this);
+	pUpdateTimer->setTimerType(Qt::PreciseTimer);
 	connect(pUpdateTimer, SIGNAL(timeout()), this, SLOT(slotUpdateTimer()));
 	pUpdateTimer->start(INFO_UPDATETIMER_INTERVAL);
 	connect(MainWindow::mainWindow(), SIGNAL(sigToggleSleepMode(bool)), this, SLOT(onToggleSleepMode(bool)));

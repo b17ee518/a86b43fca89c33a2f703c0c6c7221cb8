@@ -19,36 +19,37 @@ InfoMainWindow::InfoMainWindow(QWidget *parent) :
 	ui->overviewTable->horizontalHeader()->hide();
 	ui->overviewTable->verticalHeader()->hide();
 
-	pFleetFrames[0] = ui->fleetFrame_1;
-	pFleetFrames[1] = ui->fleetFrame_2;
-	pFleetFrames[2] = ui->fleetFrame_3;
-	pFleetFrames[3] = ui->fleetFrame_4;
+	_pFleetFrames[0] = ui->fleetFrame_1;
+	_pFleetFrames[1] = ui->fleetFrame_2;
+	_pFleetFrames[2] = ui->fleetFrame_3;
+	_pFleetFrames[3] = ui->fleetFrame_4;
 
-	lstCollapsibleFrames.append(ui->missionFrame);
-	lstCollapsibleFrames.append(ui->fleetFrame_1);
-	lstCollapsibleFrames.append(ui->fleetFrame_2);
-	lstCollapsibleFrames.append(ui->fleetFrame_3);
-	lstCollapsibleFrames.append(ui->fleetFrame_4);
-	lstCollapsibleFrames.append(ui->repairFrame);
+	_lstCollapsibleFrames.append(ui->missionFrame);
+	_lstCollapsibleFrames.append(ui->fleetFrame_1);
+	_lstCollapsibleFrames.append(ui->fleetFrame_2);
+	_lstCollapsibleFrames.append(ui->fleetFrame_3);
+	_lstCollapsibleFrames.append(ui->fleetFrame_4);
+	_lstCollapsibleFrames.append(ui->repairFrame);
 
 	setOverviewColumnFormat();
 	setMissionColumnFormat();
 	setFleetColumnFormat();
 	setRepairColumnFormat();
 
-	pUpdateTimer = new QTimer(this);
-	pUpdateTimer->setTimerType(Qt::PreciseTimer);
-	connect(pUpdateTimer, SIGNAL(timeout()), this, SLOT(slotUpdateTimer()));
-	pUpdateTimer->start(INFO_UPDATETIMER_INTERVAL);
+	_pUpdateTimer = new QTimer(this);
+	_pUpdateTimer->setTimerType(Qt::PreciseTimer);
+	connect(_pUpdateTimer, SIGNAL(timeout()), this, SLOT(slotUpdateTimer()));
+	_pUpdateTimer->start(INFO_UPDATETIMER_INTERVAL);
 	connect(MainWindow::mainWindow(), SIGNAL(sigToggleSleepMode(bool)), this, SLOT(onToggleSleepMode(bool)));
 
 	KQUI_CollapsibleFrame * pFrame;
-	foreach(pFrame, lstCollapsibleFrames)
+	foreach(pFrame, _lstCollapsibleFrames)
 	{
 		pFrame->tableWidget()->hide();
 		pFrame->pushButton()->setStyleSheet("text-align: left;");
 		connect(pFrame->tableWidget(), SIGNAL(sigTableSizeChanged()), this, SLOT(slotOnTableSizeChanged()));
 		connect(pFrame->pushButton(), SIGNAL(toggled(bool)), pFrame->tableWidget(), SLOT(setVisible(bool)));
+		connect(pFrame->pushButton(), SIGNAL(toggled(bool)), pFrame, SLOT(slotResize(bool)));
 	}
 	ui->missionFrame->pushButton()->setChecked(true);
 	ui->fleetFrame_1->pushButton()->setChecked(true);
@@ -161,10 +162,10 @@ void InfoMainWindow::updateFleetTable(int n, const QString& buttonTitle, int col
 		}  \
 		"
 	};
-	pFleetFrames[n]->pushButton()->setText(buttonTitle);
-	pFleetFrames[n]->tableWidget()->updateFullTable(rows);
+	_pFleetFrames[n]->pushButton()->setText(buttonTitle);
+	_pFleetFrames[n]->tableWidget()->updateFullTable(rows);
 
-	pFleetFrames[n]->pushButton()->setStyleSheet(stylesheet_a[colindex]+stylesheet_b[bRed?1:0]);
+	_pFleetFrames[n]->pushButton()->setStyleSheet(stylesheet_a[colindex]+stylesheet_b[bRed?1:0]);
 }
 
 void InfoMainWindow::updateRepairTable(const QString& buttonTitle, const QList<KQRowData>& rows)
@@ -279,7 +280,7 @@ void InfoMainWindow::slotOnTableSizeChanged()
 {
     int minw=280;
     KQUI_CollapsibleFrame * pFrame;
-    foreach (pFrame, lstCollapsibleFrames)
+    foreach (pFrame, _lstCollapsibleFrames)
     {
         pFrame->tableWidget()->resizeColumnsToContents();
         int w = pFrame->tableWidget()->minimumWidth();
@@ -288,11 +289,12 @@ void InfoMainWindow::slotOnTableSizeChanged()
             minw = w;
         }
     }
-    foreach (pFrame, lstCollapsibleFrames)
+    foreach (pFrame, _lstCollapsibleFrames)
     {
         pFrame->tableWidget()->adjustSizeToWidth(minw);
     }
-    this->adjustSize();
+	_needUpdateNext[0] = true;
+//    this->adjustSize();
 
 }
 void InfoMainWindow::slotUpdateTimer()
@@ -311,7 +313,24 @@ void InfoMainWindow::slotUpdateTimer()
 	}
 	if (!this->isMinimized())
 	{
-		this->adjustSize();
+		int index = -1;
+		for (int i = 0; i < UPDATENEXT_TRYTIME; i++)
+		{
+			if (_needUpdateNext[i])
+			{
+				index = i;
+				break;
+			}
+		}
+		if (index >= 0)
+		{
+			_needUpdateNext[index] = false;
+			if (index < UPDATENEXT_TRYTIME)
+			{
+				_needUpdateNext[index + 1] = true;
+			}
+			this->adjustSize();
+		}
 	}
 }
 
@@ -329,10 +348,10 @@ void InfoMainWindow::onToggleSleepMode(bool bSleep)
 {
 	if (bSleep)
 	{
-		pUpdateTimer->stop();
+		_pUpdateTimer->stop();
 	}
 	else
 	{
-		pUpdateTimer->start(INFO_UPDATETIMER_INTERVAL);
+		_pUpdateTimer->start(INFO_UPDATETIMER_INTERVAL);
 	}
 }

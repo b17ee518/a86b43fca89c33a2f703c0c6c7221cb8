@@ -247,8 +247,8 @@ void ShipMainWindow::buildSingleTable(const UIShipGroupData& groupData)
     pFrame->pushButton()->setStyleSheet("text-align: left;");
     connect(pFrame->tableWidget(), SIGNAL(sigTableSizeChanged()), this, SLOT(slotOnTableSizeChanged()));
 	connect(pFrame->pushButton(), SIGNAL(toggled(bool)), pFrame->tableWidget(), SLOT(setVisible(bool)));
-	connect(pFrame->pushButton(), SIGNAL(toggled(bool)), pFrame, SLOT(slotResize(bool)));
 	connect(pFrame->pushButton(), SIGNAL(toggled(bool)), this, SLOT(slotToggled(bool)));
+	connect(pFrame->pushButton(), SIGNAL(toggled(bool)), pFrame, SLOT(slotResize(bool)));
 
 
     ui->verticalLayout->addWidget(pFrame);
@@ -458,7 +458,7 @@ void ShipMainWindow::slotUpdateTimer()
 				return;
 			}
 		}
-		this->adjustSize();
+//		this->adjustSize();
 	}
 }
 

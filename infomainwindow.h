@@ -10,6 +10,8 @@ namespace Ui {
 class InfoMainWindow;
 }
 
+#define UPDATENEXT_TRYTIME 4
+
 class InfoMainWindow : public SubMainWindow
 {
     Q_OBJECT
@@ -34,11 +36,13 @@ private:
 
     Ui::InfoMainWindow *ui;
 
-    QTimer * pUpdateTimer = NULL;
+    QTimer * _pUpdateTimer = NULL;
 
-	KQUI_CollapsibleFrame * pFleetFrames[4];	// should be set
+	KQUI_CollapsibleFrame * _pFleetFrames[4];	// should be set
 
-    QList<KQUI_CollapsibleFrame*> lstCollapsibleFrames;
+    QList<KQUI_CollapsibleFrame*> _lstCollapsibleFrames;
+
+	bool _needUpdateNext[UPDATENEXT_TRYTIME];// = { true, false, false, false };
 
 public slots:
 	void slotOnTableSizeChanged();
@@ -49,6 +53,7 @@ private slots:
     void slotUpdateTimer();
     void on_pbClose_clicked();
     void on_pbMinimize_clicked();
+
 };
 
 #endif // INFOMAINWINDOW_H

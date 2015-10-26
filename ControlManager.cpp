@@ -263,7 +263,7 @@ bool ControlManager::BuildNext_SouthEast()
 	if (minCond <= _sortieMinCond)
 	{
 		// wait
-		_waitMS = qCeil((_sortieWaitCond - minCond) / 3.0) * 3000;
+		_waitMS = qCeil((_sortieWaitCond - minCond) / 3.0) * 3 * 60 * 1000;
 		_actionList.append(new WaitCondAction());
 	}
 

@@ -325,7 +325,7 @@ void InfoMainWindow::slotUpdateTimer()
 		if (index >= 0)
 		{
 			_needUpdateNext[index] = false;
-			if (index < UPDATENEXT_TRYTIME)
+			if (index < UPDATENEXT_TRYTIME-1)
 			{
 				_needUpdateNext[index + 1] = true;
 			}

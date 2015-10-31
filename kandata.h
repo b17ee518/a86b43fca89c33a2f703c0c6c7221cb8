@@ -1700,6 +1700,41 @@ public:
 };
 
 /**
+* @brief The kcsapi_hensei_preset_register class
+*/
+class kcsapi_hensei_preset_register : public KAPIBaseData
+{
+public:
+	kcsapi_hensei_preset_register(){}
+
+	virtual bool ReadFromJObj(const QJsonObject &jobj);
+
+	int api_preset_no;
+	QString api_name;
+	QString api_name_id;
+	QList<int> api_ship;
+};
+
+/**
+* @brief The kcsapi_hensei_preset_select class
+*/
+class kcsapi_hensei_preset_select : public KAPIBaseData
+{
+public:
+	kcsapi_hensei_preset_select(){}
+
+	virtual bool ReadFromJObj(const QJsonObject &jobj);
+
+	int api_member_id;
+	int api_id;
+	QString api_name;
+	QList<int> api_mission;
+	QString api_name_id;
+	QString api_flagship;
+	QList<int> api_ship;
+};
+
+/**
 * @brief The kcsapi_kaisou_lock class
 */
 class kcsapi_kaisou_lock : public KAPIBaseData

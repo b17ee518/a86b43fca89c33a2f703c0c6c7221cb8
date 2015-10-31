@@ -119,6 +119,8 @@ private slots:
 	void onDoJobKira();
 	void onExportAllList();
 	void onTerminateJob();
+	void onIncreaseSouthEast();
+	void onDecreaseSouthEast();
 
 	void slotSetLogAll(bool bSet);
 

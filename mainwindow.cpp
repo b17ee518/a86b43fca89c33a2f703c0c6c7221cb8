@@ -106,6 +106,12 @@ MainWindow::MainWindow(QWidget *parent) :
 	QShortcut * shortcutTerminateJob = new QShortcut(QKeySequence("F12"), this);
 	connect(shortcutTerminateJob, SIGNAL(activated()), this, SLOT(onTerminateJob()));
 
+	QShortcut * shortcutIncreaseSouthEast = new QShortcut(QKeySequence("Ctrl+PgUp"), this);
+	connect(shortcutIncreaseSouthEast, SIGNAL(activated()), this, SLOT(onIncreaseSouthEast()));
+
+	QShortcut * shortcutDecreaseSouthEast = new QShortcut(QKeySequence("Ctrl+PgDown"), this);
+	connect(shortcutDecreaseSouthEast, SIGNAL(activated()), this, SLOT(onDecreaseSouthEast()));
+
 	_jobTimer = new QTimer(this);
 	connect(_jobTimer, SIGNAL(timeout()), this, SLOT(slotJobtTimeout()));
 	_jobTimer->setTimerType(Qt::PreciseTimer);
@@ -1399,6 +1405,18 @@ void MainWindow::slotNavigateComplete2(IDispatch*, QVariant& url)
 void MainWindow::setPauseNextChanged(bool bVal)
 {
 	ui->pbPauseNext->setChecked(bVal);
+}
+
+void MainWindow::onIncreaseSouthEast()
+{
+	KanSaveData::getInstance().adjustSouthEast(1);
+	KanDataConnector::getInstance().callUpdateOverviewTable();
+}
+
+void MainWindow::onDecreaseSouthEast()
+{
+	KanSaveData::getInstance().adjustSouthEast(-1);
+	KanDataConnector::getInstance().callUpdateOverviewTable();
 }
 
 QWindowsEventFilter::QWindowsEventFilter()

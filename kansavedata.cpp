@@ -119,6 +119,15 @@ KanSaveData::KanSaveData()
 	createshipdata.clearValue();
 }
 
+void KanSaveData::adjustSouthEast(int addval)
+{
+	totalSouthEastWin += addval;
+	if (totalSouthEastWin < 0)
+	{
+		totalSouthEastWin = 0;
+	}
+}
+
 void CreateShipSaveData::setValue(int fuel, int bull, int steel, int bauxite, int dev, int kdock)
 {
 	_usefuel = fuel;

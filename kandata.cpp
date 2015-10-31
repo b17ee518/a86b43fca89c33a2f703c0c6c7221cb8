@@ -1594,6 +1594,27 @@ bool kcsapi_hensei_lock::ReadFromJObj(const QJsonObject &jobj)
 	return _bParseRet;
 }
 
+bool kcsapi_hensei_preset_register::ReadFromJObj(const QJsonObject &jobj)
+{
+	_IREAD(api_preset_no);
+	_SREAD(api_name);
+	_SREAD(api_name_id);
+	_AIREAD(api_ship);
+	return _bParseRet;
+}
+
+bool kcsapi_hensei_preset_select::ReadFromJObj(const QJsonObject &jobj)
+{
+	_IREAD(api_member_id);
+	_IREAD(api_id);
+	_SREAD(api_name);
+	_SREAD(api_name_id);
+	_AIREAD(api_mission);
+	_SREAD(api_flagship);
+	_AIREAD(api_ship);
+	return _bParseRet;
+}
+
 bool kcsapi_kaisou_lock::ReadFromJObj(const QJsonObject &jobj)
 {
 	_IREAD(api_locked);
@@ -1611,3 +1632,4 @@ bool kcsapi_remodel_slot::ReadFromJObj(const QJsonObject &jobj)
 
 	return _bParseRet;
 }
+

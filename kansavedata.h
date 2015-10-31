@@ -192,6 +192,7 @@ public:
 	void logAllExport();
 
 	void resetTotals();
+	void adjustSouthEast(int addval);
 
 private:
 	KanSaveData(void);

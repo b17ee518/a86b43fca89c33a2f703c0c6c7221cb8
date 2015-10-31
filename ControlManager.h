@@ -88,7 +88,8 @@ public:
 
 	void createSSShipList();
 	bool isTreatedSameShip(int shipno, int oshipno);
-	bool isAfterShip(const kcsapi_mst_ship* pmstship, const kcsapi_mst_ship* pomstship); // is pmstship after of pomstship
+	bool isAfterShip(const kcsapi_mst_ship* pmstship, const kcsapi_mst_ship* pomstship, QList<int> checkedIdList=QList<int>()/*for convert*/); 
+	// is pmstship after of pomstship
 
 	int getCurrentFlagshipId();
 	int getCurrentSecondshipId();

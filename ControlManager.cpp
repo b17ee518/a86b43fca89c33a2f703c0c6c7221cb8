@@ -634,7 +634,7 @@ bool ControlManager::isTreatedSameShip(int shipno, int oshipno)
 	return false;
 }
 
-bool ControlManager::isAfterShip(const kcsapi_mst_ship* pmstship, const kcsapi_mst_ship* pomstship)
+bool ControlManager::isAfterShip(const kcsapi_mst_ship* pmstship, const kcsapi_mst_ship* pomstship, QList<int> checkedIdList/*=QList<int>()*/)
 {
 	if (!pmstship || !pomstship)
 	{
@@ -643,6 +643,10 @@ bool ControlManager::isAfterShip(const kcsapi_mst_ship* pmstship, const kcsapi_m
 
 	bool bOk = false;
 	int afterid = pomstship->api_aftershipid.toInt(&bOk);
+	if (checkedIdList.contains(afterid))
+	{
+		return false;
+	}
 	if (!bOk || afterid <= 0)
 	{
 		return false;
@@ -659,7 +663,8 @@ bool ControlManager::isAfterShip(const kcsapi_mst_ship* pmstship, const kcsapi_m
 		{
 			return false;
 		}
-		return isAfterShip(pmstship, ponewmstship);
+		checkedIdList.append(afterid);
+		return isAfterShip(pmstship, ponewmstship, checkedIdList);
 	}
 }
 

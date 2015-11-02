@@ -87,7 +87,7 @@ bool ControlManager::BuildNext_Kira(bool bForceCurrent/*=false*/)
 	{
 		// must exclude second first
 		auto preChAction = new ChangeHenseiAction();
-		preChAction->setShips(togoShipId, -1);
+		preChAction->setShips(flagshipid, -1);
 		_actionList.append(preChAction);
 		bTogoSameToCurSecond = true;
 	}

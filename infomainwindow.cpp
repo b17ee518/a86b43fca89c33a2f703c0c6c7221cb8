@@ -331,6 +331,10 @@ void InfoMainWindow::slotUpdateTimer()
 			}
 			this->adjustSize();
 		}
+		else if (QSysInfo::WindowsVersion < QSysInfo::WV_WINDOWS8)
+		{
+			this->adjustSize();
+		}
 	}
 }
 

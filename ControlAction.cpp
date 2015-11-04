@@ -8,6 +8,7 @@
 #define DELAY_TIME_LONG	(500*_intervalMul)
 #define DELAY_TIME_PAGE	(300*_intervalMul)
 #define DELAY_TIME_SUPERLONG	(1200*_intervalMul)
+#define DELAY_TIME_SUPERSUPERLONG	(2000*_intervalMul)
 #define DELAY_TIME_SKIP	(5000*_intervalMul)
 
 ControlAction::ControlAction(QObject* parent /*= NULL*/)
@@ -328,7 +329,7 @@ bool ChangeHenseiAction::action()
 				}
 				else if (cm.checkColors(
 					34, 144, 238, 213, 54
-					, 757, 110, 255, 246, 242))
+					, 709, 449, 196, 188, 105))
 				{
 					_waiting = false;
 					setState(State::FindShipChangeSort, "Hensei:FindShipChangeSort");
@@ -509,7 +510,7 @@ bool ChangeHenseiAction::action()
 				else
 				{
 					_waiting = true;
-					QTimer::singleShot(DELAY_TIME_SUPERLONG, Qt::PreciseTimer, this, [this, &cm]()
+					QTimer::singleShot(DELAY_TIME_SUPERSUPERLONG, Qt::PreciseTimer, this, [this, &cm]()
 					{
 						if (cm.isHenseiDone(_ships, _team, _nowIndex))
 						{

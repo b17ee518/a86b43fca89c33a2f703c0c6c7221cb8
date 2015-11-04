@@ -64,6 +64,8 @@ public:
 	void setTitle(const QString& title);
 	void playSound(SoundIndex i);
 
+	qint64 getMinExpeditionMS(int& team);
+
 	static qint64 currentMS();
 
 private slots:

@@ -78,6 +78,7 @@ public:
 	bool isUsingIE();
 
 	void setPauseNextChanged(bool bVal);
+	void setJobTerminated();
 
 signals:
 	void sigParse(const QString &PathAndQuery, const QString &requestBody, const QString &responseBody);
@@ -117,6 +118,8 @@ private slots:
 	void onPanic();
 	void onDoJobFuel();
 	void onDoJobKira();
+	void onDoJobExpedition(bool bDo);
+	void onToggleJobExpedition();
 	void onExportAllList();
 	void onTerminateJob();
 	void onIncreaseSouthEast();

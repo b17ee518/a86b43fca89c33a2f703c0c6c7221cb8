@@ -129,7 +129,7 @@
          </property>
          <property name="sizeHint" stdset="0">
           <size>
-           <width>120</width>
+           <width>60</width>
            <height>17</height>
           </size>
          </property>
@@ -471,6 +471,53 @@
          </property>
          <property name="text">
           <string>Lo</string>
+         </property>
+         <property name="checkable">
+          <bool>true</bool>
+         </property>
+         <property name="flat">
+          <bool>true</bool>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <spacer name="horizontalSpacer_18">
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+         <property name="sizeType">
+          <enum>QSizePolicy::Fixed</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>30</width>
+           <height>17</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+       <item>
+        <widget class="QPushButton" name="pbWaitExpedition">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="minimumSize">
+          <size>
+           <width>20</width>
+           <height>20</height>
+          </size>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>20</width>
+           <height>20</height>
+          </size>
+         </property>
+         <property name="text">
+          <string>W</string>
          </property>
          <property name="checkable">
           <bool>true</bool>
@@ -918,7 +965,7 @@
    <slot>onDoJobFuel()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>257</x>
+     <x>211</x>
      <y>11</y>
     </hint>
     <hint type="destinationlabel">
@@ -934,7 +981,7 @@
    <slot>onDoJobKira()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>297</x>
+     <x>247</x>
      <y>8</y>
     </hint>
     <hint type="destinationlabel">
@@ -950,7 +997,7 @@
    <slot>onJobPauseNext()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>339</x>
+     <x>283</x>
      <y>18</y>
     </hint>
     <hint type="destinationlabel">
@@ -966,7 +1013,7 @@
    <slot>onTerminateJob()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>381</x>
+     <x>327</x>
      <y>11</y>
     </hint>
     <hint type="destinationlabel">
@@ -982,7 +1029,7 @@
    <slot>onExportAllList()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>416</x>
+     <x>371</x>
      <y>9</y>
     </hint>
     <hint type="destinationlabel">
@@ -998,12 +1045,28 @@
    <slot>slotSetLogAll(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>461</x>
+     <x>415</x>
      <y>11</y>
     </hint>
     <hint type="destinationlabel">
      <x>500</x>
      <y>-20</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>pbWaitExpedition</sender>
+   <signal>clicked(bool)</signal>
+   <receiver>MainWindow</receiver>
+   <slot>onDoJobExpedition(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>458</x>
+     <y>10</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>801</x>
+     <y>22</y>
     </hint>
    </hints>
   </connection>
@@ -1015,5 +1078,6 @@
   <slot>onTerminateJob()</slot>
   <slot>onExportAllList()</slot>
   <slot>slotSetLogAll(bool)</slot>
+  <slot>onDoJobExpedition(bool)</slot>
  </slots>
 </ui>

@@ -8,6 +8,7 @@
 #define DELAY_TIME_LONG	(500*_intervalMul)
 #define DELAY_TIME_PAGE	(300*_intervalMul)
 #define DELAY_TIME_SUPERLONG	(1200*_intervalMul)
+#define DELAY_TIME_SKIP	(5000*_intervalMul)
 
 ControlAction::ControlAction(QObject* parent /*= NULL*/)
 :QObject(parent)
@@ -56,12 +57,7 @@ bool WaitCondAction::action()
 		if (!_waiting)
 		{
 			_waiting = true;
-			int waitMS = cm.getWaitMS();
-			if (waitMS < 0)
-			{
-				waitMS = 1;
-			}
-			QTimer::singleShot(waitMS, Qt::PreciseTimer, this, [this, &cm]()
+			QTimer::singleShot(_waitMS, Qt::PreciseTimer, this, [this, &cm]()
 			{
 				_waiting = false;
 				setState(State::HomePortChecking, "Wait:HomePortChecking");
@@ -151,6 +147,15 @@ bool WaitCondAction::action()
 	return false;
 }
 
+void WaitCondAction::setWaitMS(qint64 waitms)
+{
+	_waitMS = waitms;
+	if (_waitMS < 0)
+	{
+		_waitMS = 1;
+	}
+}
+
 void WaitCondAction::setState(State state, const char* str)
 {
 	_state = state;
@@ -166,7 +171,7 @@ bool ChangeHenseiAction::action()
 
 		_nowIndex = 0;
 		setState(State::HomePortChecking, "Hensei:HomePortChecking");
-		while (cm.isHenseiDone(_ships, _nowIndex))
+		while (cm.isHenseiDone(_ships, _team, _nowIndex))
 		{
 			_nowIndex++;
 			if (_nowIndex >= _ships.size())
@@ -203,7 +208,7 @@ bool ChangeHenseiAction::action()
 		if (!_waiting)
 		{
 			_waiting = true;
-			if (cm.isHenseiDone(_ships))
+			if (cm.isHenseiDone(_ships, _team))
 			{
 				setState(State::Done, "Hensei:Done");
 				resetRetryAndWainting();
@@ -213,10 +218,51 @@ bool ChangeHenseiAction::action()
 				QTimer::singleShot(DELAY_TIME_CLICK, Qt::PreciseTimer, this, [this, &cm]()
 				{
 					cm.moveMouseToAndClick(199, 135.5f, 23, 21.5f); // change button
-					setState(State::HenseiChecking, "Hensei:HenseiChecking");
+					if (_team == 0)
+					{
+						setState(State::HenseiChecking, "Hensei:HenseiChecking");
+					}
+					else
+					{
+						setState(State::ChangeFleetChecking, "Hensei:ChangeFleetChecking");
+					}
 					resetRetryAndWainting();
 				});
 			}
+		}
+		break;
+	case ChangeHenseiAction::State::ChangeFleetChecking:
+		if (!_waiting)
+		{
+			_waiting = true;
+			QTimer::singleShot(DELAY_TIME, Qt::PreciseTimer, this, [this, &cm]()
+			{
+				// home port
+				if (cm.checkColors(
+					34, 144, 238, 213, 54
+					, 404, 208, 84, 178, 105))
+				{
+					_waiting = false;
+					setState(State::ChangeFleetDone, "Hensei:ChangeFleetDone");
+				}
+				else
+				{
+					tryRetry();
+				}
+			});
+		}
+		break;
+	case ChangeHenseiAction::State::ChangeFleetDone:
+		if (!_waiting)
+		{
+			_waiting = true;
+			QTimer::singleShot(DELAY_TIME_CLICK, Qt::PreciseTimer, this, [this, &cm]()
+			{
+				cm.moveMouseToAndClick(135+30*_team, 118); // Fleet
+
+				setState(State::HenseiChecking, "Hensei:HenseiChecking");
+				resetRetryAndWainting();
+			});
 		}
 		break;
 	case ChangeHenseiAction::State::HenseiChecking:
@@ -246,7 +292,7 @@ bool ChangeHenseiAction::action()
 			_waiting = true;
 			QTimer::singleShot(DELAY_TIME_CLICK, Qt::PreciseTimer, this, [this, &cm]()
 			{
-				while (cm.isHenseiDone(_ships, _nowIndex))
+				while (cm.isHenseiDone(_ships, _team, _nowIndex))
 				{
 					_nowIndex++;
 					if (_nowIndex >= _ships.size())
@@ -280,10 +326,29 @@ bool ChangeHenseiAction::action()
 					_waiting = false;
 					setState(State::FindShipDone, "Hensei:FindShipDone");
 				}
+				else if (cm.checkColors(
+					34, 144, 238, 213, 54
+					, 757, 110, 255, 246, 242))
+				{
+					_waiting = false;
+					setState(State::FindShipChangeSort, "Hensei:FindShipChangeSort");
+				}
 				else
 				{
 					tryRetry();
 				}
+			});
+		}
+		break;
+	case ChangeHenseiAction::State::FindShipChangeSort:
+		if (!_waiting)
+		{
+			_waiting = true;
+			QTimer::singleShot(DELAY_TIME_CLICK, Qt::PreciseTimer, this, [this, &cm]()
+			{
+				cm.moveMouseToAndClick(775, 112, 15, 5); // sort button
+				setState(State::FindShipChecking, "Hensei:FindShipChecking");
+				resetRetryAndWainting();
 			});
 		}
 		break;
@@ -326,9 +391,12 @@ bool ChangeHenseiAction::action()
 			_waiting = true;
 			if (_pageList[_nowIndex] == 0)
 			{
-				cm.moveMouseToAndClick(439, 169 + _cellHeight*_posList[_nowIndex]);
-				setState(State::FindShipOKChecking, "Hensei:FindShipOKChecking");
-				resetRetryAndWainting();
+				QTimer::singleShot(DELAY_TIME_CLICK, Qt::PreciseTimer, this, [this, &cm]()
+				{
+					cm.moveMouseToAndClick(439, 169 + _cellHeight*_posList[_nowIndex]);
+					setState(State::FindShipOKChecking, "Hensei:FindShipOKChecking");
+					resetRetryAndWainting();
+				});
 			}
 			else
 			{
@@ -373,9 +441,12 @@ bool ChangeHenseiAction::action()
 			_waiting = true;
 			if (_pageList[_nowIndex] == _curPage)
 			{
-				cm.moveMouseToAndClick(439, 169 + _cellHeight*_posList[_nowIndex]);
-				setState(State::FindShipOKChecking, "Hensei:FindShipOKChecking");
-				resetRetryAndWainting();
+				QTimer::singleShot(DELAY_TIME_CLICK, Qt::PreciseTimer, this, [this, &cm]()
+				{
+					cm.moveMouseToAndClick(439, 169 + _cellHeight*_posList[_nowIndex]);
+					setState(State::FindShipOKChecking, "Hensei:FindShipOKChecking");
+					resetRetryAndWainting();
+				});
 			}
 			else
 			{
@@ -406,7 +477,7 @@ bool ChangeHenseiAction::action()
 		if (!_waiting)
 		{
 			_waiting = true;
-			QTimer::singleShot(DELAY_TIME, Qt::PreciseTimer, this, [this, &cm]()
+			QTimer::singleShot(DELAY_TIME_SUPERLONG, Qt::PreciseTimer, this, [this, &cm]()
 			{
 				// home port
 				if (cm.checkColors(
@@ -440,7 +511,7 @@ bool ChangeHenseiAction::action()
 					_waiting = true;
 					QTimer::singleShot(DELAY_TIME_SUPERLONG, Qt::PreciseTimer, this, [this, &cm]()
 					{
-						if (cm.isHenseiDone(_ships, _nowIndex))
+						if (cm.isHenseiDone(_ships, _team, _nowIndex))
 						{
 							_nowIndex++;
 							setState(State::HenseiChecking, "Hensei:HenseiChecking");
@@ -499,7 +570,7 @@ bool ChangeHenseiAction::action()
 		}
 		break;
 	case ChangeHenseiAction::State::Done:
-		if (cm.isHenseiDone(_ships))
+		if (cm.isHenseiDone(_ships, _team))
 		{
 			return true;
 		}
@@ -547,6 +618,14 @@ void ChangeHenseiAction::setShips(const QList<int>& ships)
 	}
 }
 
+void ChangeHenseiAction::setTeam(int team)
+{
+	if (team >= 0 && team < 4)
+	{
+		_team = team;
+	}
+}
+
 void ChangeHenseiAction::setState(State state, const char* str)
 {
 	_state = state;
@@ -561,7 +640,11 @@ bool ChargeAction::action()
 	case ChargeAction::State::None:
 
 		cm.moveMouseTo(400, 240);
-		if (!cm.needChargeFlagship())
+		if (_skipExpedition)
+		{
+			setState(State::Skipping, "Charge:Skipping");
+		}
+		else if (!cm.needChargeFlagship(_team))
 		{
 			setState(State::Done, "Charge:Done");
 		}
@@ -570,6 +653,37 @@ bool ChargeAction::action()
 			setState(State::HomePortChecking, "Charge:HomePortChecking");
 		}
 		resetRetryAndWainting();
+		break;
+	case ChargeAction::State::Skipping:
+		if (!_waiting)
+		{
+			_waiting = true;
+			QTimer::singleShot(DELAY_TIME, Qt::PreciseTimer, this, [this, &cm]()
+			{
+				// charge panel
+				if (cm.checkColors(
+					766, 124, 191, 137, 0
+					, 771, 164, 114, 91, 70))
+				{
+					_waiting = false;
+					if (!cm.needChargeFlagship(_team))
+					{
+						setState(State::FinishedChargeDone, "Charge:FinishedChargeDone");
+						resetRetryAndWainting();
+					}
+					else
+					{
+						setState(State::NeedChargeDone, "Charge:NeedChargeDone");
+						resetRetryAndWainting();
+					}
+				}
+				else
+				{
+					cm.moveMouseToAndClick(101, 217); // charge button
+					resetRetryAndWainting();
+				}
+			});
+		}
 		break;
 	case ChargeAction::State::HomePortChecking:
 		if (!_waiting)
@@ -631,15 +745,24 @@ bool ChargeAction::action()
 			_waiting = true;
 			QTimer::singleShot(DELAY_TIME_CLICK, Qt::PreciseTimer, this, [this, &cm]()
 			{
-				if (cm.isSouthEastMode() || cm.isFuelMode())
+				if (_team > 0 && !_teamChanged)
 				{
-					cm.moveMouseToAndClick(117, 120, 2, 2); // all ships
-					setState(State::OKToChargeDone, "Charge:OKToChargeDone");
+					cm.moveMouseToAndClick(148+_team*30, 119); // team
+					setState(State::NeedChargeChecking, "Charge:NeedChargeChecking");
+					_teamChanged = true;
 				}
 				else
 				{
-					cm.moveMouseToAndClick(117, 167, 2, 2); // first ship
-					setState(State::OKToChargeChecking, "Charge:OKToChargeChecking");
+					if (cm.isSouthEastMode() || cm.isFuelMode() || cm.isExpeditionMode())
+					{
+						cm.moveMouseToAndClick(117, 120, 2, 2); // all ships
+						setState(State::OKToChargeDone, "Charge:OKToChargeDone");
+					}
+					else
+					{
+						cm.moveMouseToAndClick(117, 167, 2, 2); // first ship
+						setState(State::OKToChargeChecking, "Charge:OKToChargeChecking");
+					}
 				}
 				resetRetryAndWainting();
 			});
@@ -726,6 +849,19 @@ bool ChargeAction::action()
 	return false;
 }
 
+void ChargeAction::setTeam(int team)
+{
+	if (team >= 0 && team < 4)
+	{
+		_team = team;
+	}
+}
+
+void ChargeAction::setSkipExpedition(bool skip)
+{
+	_skipExpedition = skip;
+}
+
 void ChargeAction::setState(State state, const char* str)
 {
 	_state = state;
@@ -746,7 +882,7 @@ bool SortieAction::action()
 
 		if (cm.isSouthEastMode())
 		{
-			if (cm.needChargeAnyShip() || cm.hugestDamageInTeam() >= WoundState::Middle)
+			if (cm.needChargeAnyShip(0) || cm.hugestDamageInTeam(0) >= WoundState::Middle)
 			{
 				cm.setToTerminate("Terminated:Damage");
 				emit sigFatal();
@@ -755,7 +891,7 @@ bool SortieAction::action()
 		}
 		else
 		{
-			if (cm.needChargeFlagship() || cm.hugestDamageInTeam() >= WoundState::Big)
+			if (cm.needChargeFlagship(0) || cm.hugestDamageInTeam(0) >= WoundState::Big)
 			{
 				cm.setToTerminate("Terminated:Damage");
 				emit sigFatal();
@@ -1241,6 +1377,14 @@ bool RepeatAction::action()
 				cm.StartJob();
 			}
 		}
+		else if (cm.isExpeditionMode())
+		{
+			if (cm.BuildNext_Expedition())
+			{
+				setState(State::Done, "Repeat:Done");
+				cm.StartJob();
+			}
+		}
 		break;
 	case RepeatAction::State::Done:
 		return true;
@@ -1257,3 +1401,320 @@ void RepeatAction::setState(State state, const char* str)
 	ControlManager::getInstance().setStateStr(str);
 }
 
+void ExpeditionAction::setTeamAndTarget(int team, int area, int item)
+{
+	if (team > 0 && team < 4)
+	{
+		_team = team;
+	}
+	if (area >= 0 && area < 5)
+	{
+		_area = area;
+	}
+	if (item >= 0 && item < 8)
+	{
+		_item = item;
+	}
+}
+
+bool ExpeditionAction::action()
+{
+	auto& cm = ControlManager::getInstance();
+	switch (_state)
+	{
+	case ExpeditionAction::State::None:
+
+		if (cm.needChargeAnyShip(_team) || cm.hugestDamageInTeam(_team) > WoundState::Full
+			|| (_area != 0 && _area != 4))
+		{
+			cm.setToTerminate("Terminated:Damage");
+			emit sigFatal();
+			return false;
+		}
+
+		cm.moveMouseTo(400, 240);
+		setState(State::HomePortChecking, "Expedition:HomePortChecking");
+		resetRetryAndWainting();
+
+		break;
+	case ExpeditionAction::State::HomePortChecking:
+		if (!_waiting)
+		{
+			_waiting = true;
+			QTimer::singleShot(DELAY_TIME, Qt::PreciseTimer, this, [this, &cm]()
+			{
+				// home port
+				if (cm.checkColors(
+					213, 247, 251, 155, 32
+					, 231, 114, 224, 201, 66))
+				{
+					_waiting = false;
+					setState(State::HomePortDone, "Expedition:HomePortDone");
+				}
+				else
+				{
+					tryRetry();
+				}
+			});
+		}
+		break;
+	case ExpeditionAction::State::HomePortDone:
+
+		if (!_waiting)
+		{
+			_waiting = true;
+			QTimer::singleShot(DELAY_TIME_CLICK, Qt::PreciseTimer, this, [this, &cm]()
+			{
+				cm.moveMouseToAndClick(195.5f, 259.5f, 36.5f, 31.5f); // sortie button
+				setState(State::SortieSelectChecking, "Expedition:SortieSelectChecking");
+				resetRetryAndWainting();
+			});
+		}
+		break;
+	case ExpeditionAction::State::SortieSelectChecking:
+		if (!_waiting)
+		{
+			_waiting = true;
+			QTimer::singleShot(DELAY_TIME, Qt::PreciseTimer, this, [this, &cm]()
+			{
+				// sortie select
+				if (cm.checkColors(
+					468, 224, 115, 182, 85
+					, 625, 156, 88, 194, 179))
+				{
+					_waiting = false;
+					setState(State::SortieSelectDone, "Expedition:SortieSelectDone");
+				}
+				else
+				{
+					tryRetry();
+				}
+			});
+		}
+		break;
+	case ExpeditionAction::State::SortieSelectDone:
+
+		if (!_waiting)
+		{
+			_waiting = true;
+			QTimer::singleShot(DELAY_TIME_CLICK, Qt::PreciseTimer, this, [this, &cm]()
+			{
+				cm.moveMouseToAndClick(675, 218.5f, 58, 47.5f); // expedition button
+				setState(State::SelectAreaChecking, "Expedition:SelectAreaChecking");
+				resetRetryAndWainting();
+			});
+		}
+		break;
+	case ExpeditionAction::State::SelectAreaChecking:
+		if (!_waiting)
+		{
+			_waiting = true;
+			QTimer::singleShot(DELAY_TIME, Qt::PreciseTimer, this, [this, &cm]()
+			{
+				if (cm.checkColors(
+					508, 112, 250, 174, 89
+					, 592, 165, 35, 158, 159))
+				{
+					_waiting = false;
+					setState(State::SelectAreaDone, "Expedition:SelectAreaDone");
+				}
+				else
+				{
+					tryRetry();
+				}
+			});
+		}
+		break;
+	case ExpeditionAction::State::SelectAreaDone:
+		if (_area == 4)
+		{
+			if (!_waiting)
+			{
+				_waiting = true;
+				QTimer::singleShot(DELAY_TIME_CLICK, Qt::PreciseTimer, this, [this, &cm]()
+				{
+					cm.moveMouseToAndClick(135+60*_area , 436); // area
+					setState(State::SelectItemChecking, "Expedition:SelectItemChecking");
+					resetRetryAndWainting();
+				});
+			}
+		}
+		else if (_area == 0)
+		{
+			// skip to select item
+			setState(State::SelectItemDone, "Expedition:SelectItemDone");
+		}
+		break;
+	case ExpeditionAction::State::SelectItemChecking:
+		if (!_waiting)
+		{
+			_waiting = true;
+			QTimer::singleShot(DELAY_TIME, Qt::PreciseTimer, this, [this, &cm]()
+			{
+				if (cm.checkColors(
+					233, 170, 86, 82, 76
+					, 213, 233, 236, 228, 215))
+				{
+					_waiting = false;
+					setState(State::SelectItemDone, "Expedition:SelectItemDone");
+				}
+				else
+				{
+					tryRetry();
+				}
+			});
+		}
+		break;
+	case ExpeditionAction::State::SelectItemDone:
+		if (!_waiting)
+		{
+			_waiting = true;
+			QTimer::singleShot(DELAY_TIME_CLICK, Qt::PreciseTimer, this, [this, &cm]()
+			{
+				cm.moveMouseToAndClick(404, 172+_item*31, 101, 5); // item
+				setState(State::SortieCheckChecking, "Expedition:SortieCheckChecking");
+				resetRetryAndWainting();
+			});
+		}
+		break;
+	case ExpeditionAction::State::SortieCheckChecking:
+		if (!_waiting)
+		{
+			_waiting = true;
+			QTimer::singleShot(DELAY_TIME, Qt::PreciseTimer, this, [this, &cm]()
+			{
+				// expedition ok button
+				if (cm.checkColors(
+					709, 438, 23, 94, 97
+					, 667, 436, 255, 248, 238))
+				{
+					_waiting = false;
+					setState(State::SortieCheckDone, "Expedition:SortieCheckDone");
+				}
+				else
+				{
+					tryRetry();
+				}
+			});
+		}
+		break;
+	case ExpeditionAction::State::SortieCheckDone:
+
+		if (!_waiting)
+		{
+			_waiting = true;
+			QTimer::singleShot(DELAY_TIME_CLICK, Qt::PreciseTimer, this, [this, &cm]()
+			{
+				cm.moveMouseToAndClick(678, 444, 32.5f, 12); // ok kettei
+				setState(State::TeamSelectChecking, "Expedition:TeamSelectChecking");
+				resetRetryAndWainting();
+			});
+		}
+		break;
+	case ExpeditionAction::State::TeamSelectChecking:
+		if (!_waiting)
+		{
+			_waiting = true;
+			QTimer::singleShot(DELAY_TIME, Qt::PreciseTimer, this, [this, &cm]()
+			{
+				if (cm.checkColors(
+					571, 129, 35, 35, 35
+					, 637, 170, 255, 246, 242))
+				{
+					_waiting = false;
+					if (_team == 1)
+					{
+						setState(State::TeamSelectedChecking, "Expedition:TeamSelectedChecking");
+					}
+					else
+					{
+						setState(State::TeamSelectDone, "Expedition:TeamSelectDone");
+					}
+				}
+				else
+				{
+					tryRetry();
+				}
+			});
+		}
+		break;
+	case ExpeditionAction::State::TeamSelectDone:
+		if (!_waiting)
+		{
+			_waiting = true;
+			QTimer::singleShot(DELAY_TIME_LONG, Qt::PreciseTimer, this, [this, &cm]()	// use longer
+			{
+				cm.moveMouseToAndClick(364+30*_team, 118); // team
+				setState(State::TeamSelectedChecking, "Expedition:TeamSelectedChecking");
+				resetRetryAndWainting();
+			});
+		}
+		break;
+	case ExpeditionAction::State::TeamSelectedChecking:
+		if (!_waiting)
+		{
+			_waiting = true;
+			QTimer::singleShot(DELAY_TIME, Qt::PreciseTimer, this, [this, &cm]()
+			{
+				if (cm.checkColors(
+					652, 429, 44, 165, 153
+					, 694, 451, 255, 226, 90))
+				{
+					_waiting = false;
+					setState(State::TeamSelectedDone, "Expedition:TeamSelectedDone");
+				}
+				else
+				{
+					tryRetry();
+				}
+			});
+		}
+		break;
+		break;
+	case ExpeditionAction::State::TeamSelectedDone:
+		if (!_waiting)
+		{
+			_waiting = true;
+			QTimer::singleShot(DELAY_TIME_CLICK, Qt::PreciseTimer, this, [this, &cm]()
+			{
+				cm.moveMouseToAndClick(631, 446.5f, 54, 12.5f); // ok to start
+				setState(State::Skipping, "Expedition:Skipping");
+				resetRetryAndWainting();
+			});
+		}
+		break;
+
+	case ExpeditionAction::State::Skipping:
+		if (!_waiting)
+		{
+			_waiting = true;
+			QTimer::singleShot(DELAY_TIME_SKIP, Qt::PreciseTimer, this, [this, &cm]()
+			{
+				_expectingRequest = "/kcsapi/api_port/port";
+				cm.moveMouseToAndClick(75, 261); // home button
+				setState(State::ExpectingPort, "Charge:ExpectingPort");
+				resetRetryAndWainting();
+			});
+		}
+		break;
+	case ExpeditionAction::State::ExpectingPort:
+		if (_expectingRequest == "")
+		{
+			cm.moveMouseTo(400, 200);
+			setState(State::Done, "Expedition:Done");
+		}
+		break;
+	case ExpeditionAction::State::Done:
+		return true;
+		break;
+	default:
+		break;
+	}
+	return false;
+}
+
+void ExpeditionAction::setState(State state, const char* str)
+{
+	_state = state;
+	ControlManager::getInstance().setStateStr(str);
+}

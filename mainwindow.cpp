@@ -95,6 +95,9 @@ MainWindow::MainWindow(QWidget *parent) :
 	QShortcut *shortcutDoJobKira = new QShortcut(QKeySequence("Ctrl+F10"), this);
 	connect(shortcutDoJobKira, SIGNAL(activated()), this, SLOT(onDoJobKira()));
 
+	QShortcut *shortcutDoJobExpedition = new QShortcut(QKeySequence("Ctrl+F11"), this);
+	connect(shortcutDoJobExpedition, SIGNAL(activated()), this, SLOT(onToggleJobExpedition()));
+
 	QShortcut *shortcutExport = new QShortcut(QKeySequence("Ctrl+F6"), this);
 	connect(shortcutExport, SIGNAL(activated()), this, SLOT(onExportAllList()));
 
@@ -970,6 +973,31 @@ void MainWindow::onDoJobKira()
 
 }
 
+void MainWindow::onDoJobExpedition(bool bDo)
+{
+	auto& cm = ControlManager::getInstance();
+	cm.Terminate();
+	if (bDo)
+	{
+		cm.BuildNext_Expedition();
+		cm.StartJob();
+	}
+	ui->pbWaitExpedition->setChecked(bDo);
+}
+
+void MainWindow::onToggleJobExpedition()
+{
+	auto& cm = ControlManager::getInstance();
+	if (cm.isTerminated())
+	{
+		onDoJobExpedition(true);
+	}
+	else
+	{
+		onDoJobExpedition(false);
+	}
+}
+
 void MainWindow::onExportAllList()
 {
 	KanSaveData* pksd = &KanSaveData::getInstance();
@@ -1405,6 +1433,12 @@ void MainWindow::slotNavigateComplete2(IDispatch*, QVariant& url)
 void MainWindow::setPauseNextChanged(bool bVal)
 {
 	ui->pbPauseNext->setChecked(bVal);
+}
+
+void MainWindow::setJobTerminated()
+{
+	ui->pbPauseNext->setChecked(false);
+	ui->pbWaitExpedition->setChecked(false);
 }
 
 void MainWindow::onIncreaseSouthEast()

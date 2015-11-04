@@ -60,6 +60,10 @@ public:
 
 	virtual bool action() override;
 
+public:
+	void setWaitMS(qint64 waitms);
+	qint64 _waitMS = 1;
+
 private:
 	State _state = State::None;
 	void setState(State state, const char* str);
@@ -75,10 +79,14 @@ public:
 		HomePortChecking,
 		HomePortDone, // click change
 
+		ChangeFleetChecking,
+		ChangeFleetDone,
+
 		HenseiChecking,
 		HenseiDone, // click change one / skip
 
 		FindShipChecking,	// cur page
+		FindShipChangeSort,	// sort change
 		FindShipDone,		// click leftmost
 		FindShipFirstPageChecking,
 		FindShipFirstPageDone,
@@ -101,6 +109,7 @@ public:
 
 	void setShips(int ship0, int ship1);
 	void setShips(const QList<int>& ships);
+	void setTeam(int team);
 	void resetCurPage()
 	{
 		_curPage = 0;
@@ -117,6 +126,8 @@ public:
 	int _nowIndex = 0;
 	int _cellHeight = 28;
 
+	int _team = 0;
+
 private:
 	State _state = State::None;
 	void setState(State state, const char* str);
@@ -128,6 +139,7 @@ public:
 	enum class State
 	{
 		None,
+		Skipping,
 		HomePortChecking,
 		HomePortDone, // click charge
 		NeedChargeChecking,
@@ -142,6 +154,58 @@ public:
 
 	ChargeAction(QObject* parent = NULL)
 		:ControlAction(parent){}	// only charge flagship of team1
+
+	virtual bool action() override;
+
+public:
+	void setTeam(int team);
+	int _team = 0;
+
+	void setSkipExpedition(bool skip);
+	bool _skipExpedition = false;
+
+private:
+	bool _teamChanged = false;
+
+private:
+	State _state = State::None;
+	void setState(State state, const char* str);
+};
+
+class ExpeditionAction : public ControlAction
+{
+public:
+	ExpeditionAction(QObject* parent = NULL)
+		:ControlAction(parent){}
+
+	enum class State
+	{
+		None,
+		HomePortChecking,
+		HomePortDone, // click sortie
+		SortieSelectChecking,
+		SortieSelectDone, // click sortie
+		SelectAreaChecking,
+		SelectAreaDone, // click area
+		SelectItemChecking,
+		SelectItemDone, // click item
+		SortieCheckChecking,
+		SortieCheckDone, // click ok
+		TeamSelectChecking,
+		TeamSelectDone, // click team
+		TeamSelectedChecking,
+		TeamSelectedDone, // click go
+		ExpectingExpedition, // wait for http	click port
+		Skipping,	// click to skip expedition
+		ExpectingPort,
+		Done,
+	};
+
+public:
+	void setTeamAndTarget(int team, int area, int item);
+	int _team = 2;
+	int _area = 0;
+	int _item = 1;
 
 	virtual bool action() override;
 

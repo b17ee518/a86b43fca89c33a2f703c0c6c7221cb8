@@ -24,6 +24,7 @@ public:
 		Kira,
 		Fuel,
 		SouthEast,
+		Expedition,
 	};
 
 	enum class StopWhen
@@ -71,6 +72,9 @@ public:
 
 	bool BuildNext_SouthEast();
 
+	bool LoadExpeditionPossibleList(); // TODO
+	bool BuildNext_Expedition();
+
 	bool stopWhenCheck();
 	
 	void StartJob();
@@ -84,6 +88,8 @@ public:
 	void PauseNext();
 	void togglePauseNext();
 
+	bool isTerminated(){ return _state == State::Terminated; }
+
 	void setToTerminate(const char* title);
 
 	void createSSShipList();
@@ -94,28 +100,32 @@ public:
 	int getCurrentFlagshipId();
 	int getCurrentSecondshipId();
 	bool shouldChangeSecondShip();
-	bool needChargeFlagship();
-	bool needChargeAnyShip();
+	bool needChargeFlagship(int team);
+	bool needChargeAnyShip(int team);
 	int getOneWasteShipId(int exclude1=-1, int exclude2=-1);
 	int getOneWasteShipId(const QList<int>& excludes);
 	bool isShipFull();
 	bool findPagePosByShipId(int shipno, int& page, int& pos, int& lastPage);
 	bool isShipKiraDone(int shipno);
-	bool isShipInOtherTeam(int shipno);
+	bool isShipInOtherTeam(int shipno, int team);
 	bool isShipInDock(int shipno);
+	bool isShipDamaged(int shipno);
+	bool isShipCharged(int shipno);
 
-	bool isHenseiDone(const QList<int>& ships, int index = -1);
+	bool isHenseiDone(const QList<int>& ships, int team, int index = -1);
 	bool isFlagshipOnly();
 	int getTeamSize();
 	bool isShipType(int shipno, ShipType stype);
 	bool hasSlotitem(int shipno, SlotitemType sitype);
 	bool noSlotitem(int shipno);
+
+	int getShipCondVal(int shipno);
 			
 	bool flagshipSevereDamaged();
 
 	bool shouldNightBattle();
 	bool shouldRetrieve();
-	WoundState hugestDamageInTeam();
+	WoundState hugestDamageInTeam(int team);
 
 	void setStopWhen(StopWhen stopwhen);
 
@@ -151,13 +161,12 @@ public:
 	inline bool isKiraMode(){ return _target == SortieTarget::Kira; }
 	inline bool isFuelMode(){ return _target == SortieTarget::Fuel; }
 	inline bool isSouthEastMode(){ return _target == SortieTarget::SouthEast; }
+	inline bool isExpeditionMode(){ return _target == SortieTarget::Expedition; }
 
 	void setState(State state, const char* str);
 
 	void setStateStr(const QString& str);
 	inline const QString& getStateStr(){ return _stateStr; }
-
-	inline qint64 getWaitMS(){ return _waitMS; }
 
 	double getIntervalMul(){ return _intervalMul; }
 	void setIntervalMul(double val)
@@ -195,7 +204,6 @@ public:
 
 	int _sortieMinCond = 30;
 	int _sortieWaitCond = 40;
-	qint64 _waitMS = -1;
 
 	StopWhen _stopwhen = StopWhen::None;
 

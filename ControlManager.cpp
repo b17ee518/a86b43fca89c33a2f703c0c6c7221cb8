@@ -365,11 +365,26 @@ bool ControlManager::BuildNext_Expedition()
 	QList<int> excludes;
 
 	QDateTime dt;
-	QTime borderTime(22, 30);
+	QTime borderNightTime(22, 30);
+	QTime borderMorningTime(7, 30);
 	while (team > 0)
 	{
-		dt.setMSecsSinceEpoch(ct + waitMS);
-		if (dt.time() >= borderTime)
+		QTime exptime;
+		switch (team)
+		{
+		case 1:
+			exptime.setHMS(2, 44, 0);
+			break;
+		case 2:
+			exptime.setHMS(0, 29, 0);
+			break;
+		case 3:
+			exptime.setHMS(2, 54, 0);
+			break;
+		}
+		dt.setMSecsSinceEpoch(ct + waitMS + exptime.msecsSinceStartOfDay());
+
+		if (dt.time() >= borderNightTime || dt.time() < borderMorningTime)
 		{
 			excludes.append(team);
 			waitMS = timerWindow->getMinExpeditionMS(team, excludes);

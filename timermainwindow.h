@@ -64,7 +64,7 @@ public:
 	void setTitle(const QString& title);
 	void playSound(SoundIndex i);
 
-	qint64 getMinExpeditionMS(int& team);
+	qint64 getMinExpeditionMS(int& team, QList<int>excludes=QList<int>());
 
 	static qint64 currentMS();
 

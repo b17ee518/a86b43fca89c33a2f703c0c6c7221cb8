@@ -357,8 +357,28 @@ bool ControlManager::BuildNext_SouthEast()
 bool ControlManager::BuildNext_Expedition()
 {
 	_target = SortieTarget::Expedition;
-	int team = 1;
-	qint64 waitMS = MainWindow::mainWindow()->timerWindow()->getMinExpeditionMS(team);
+	int team = -1;
+	auto timerWindow = MainWindow::mainWindow()->timerWindow();
+	qint64 waitMS = timerWindow->getMinExpeditionMS(team);
+
+	qint64 ct = TimerMainWindow::currentMS();
+	QList<int> excludes;
+
+	QDateTime dt;
+	QTime borderTime(22, 30);
+	while (team > 0)
+	{
+		dt.setMSecsSinceEpoch(ct + waitMS);
+		if (dt.time() >= borderTime)
+		{
+			excludes.append(team);
+			waitMS = timerWindow->getMinExpeditionMS(team, excludes);
+		}
+		else
+		{
+			break;
+		}
+	}
 
 	if (team < 1 || team >= 4)
 	{
@@ -464,7 +484,8 @@ bool ControlManager::BuildNext_Expedition()
 						&& !isShipInDock(id)
 						&& !isShipInOtherTeam(id, -1)	// every team
 						&& !isShipDamaged(id)
-						&& isShipCharged(id))
+						&& isShipCharged(id)
+						&& hasSlotitem(id, SlotitemType::YuSou))
 					{
 						bool bSkip = false;
 						for (int j = 3; j < i; j++)
@@ -549,7 +570,8 @@ bool ControlManager::BuildNext_Expedition()
 						&& !isShipInDock(id)
 						&& !isShipInOtherTeam(id, -1)	// every team
 						&& !isShipDamaged(id)
-						&& isShipCharged(id))
+						&& isShipCharged(id)
+						&& hasSlotitem(id, SlotitemType::YuSou))
 					{
 						bool bSkip = false;
 						for (int j = 2; j < i; j++)
@@ -655,6 +677,7 @@ void ControlManager::StartJob()
 {
 	if (_state == State::Ready)
 	{
+		setInactiveWaiting(false);
 		setState(State::Started, "Started");
 	}
 }
@@ -762,6 +785,7 @@ void ControlManager::Terminate()
 	qDeleteAll(_actionList);
 	_actionList.clear();
 	setPauseNextVal(false);
+	setInactiveWaiting(false);
 	MainWindow::mainWindow()->setJobTerminated();
 	_stopwhen = StopWhen::None;
 	setState(State::Terminated, "Terminated");
@@ -1374,6 +1398,19 @@ WoundState ControlManager::hugestDamageInTeam(int team)
 void ControlManager::setStopWhen(StopWhen stopwhen)
 {
 	_stopwhen = stopwhen;
+}
+
+bool ControlManager::isActiveRunning()
+{
+	if (!isRunning())
+	{
+		return false;
+	}
+	if (_inactiveWaiting)
+	{
+		return false;
+	}
+	return true;
 }
 
 bool ControlManager::checkColors(const QList<CheckColor>& checklist)

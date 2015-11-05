@@ -283,7 +283,7 @@ void MainWindow::changeEvent(QEvent *e)
 
 void MainWindow::closeEvent(QCloseEvent *e)
 {
-	if (!ControlManager::getInstance().isRunning())
+	if (!ControlManager::getInstance().isActiveRunning())
 	{
 		QMessageBox * pMessageBox = new QMessageBox(
 			QMessageBox::NoIcon
@@ -979,8 +979,14 @@ void MainWindow::onDoJobExpedition(bool bDo)
 	cm.Terminate();
 	if (bDo)
 	{
-		cm.BuildNext_Expedition();
-		cm.StartJob();
+		if (cm.BuildNext_Expedition())
+		{
+			cm.StartJob();
+		}
+		else
+		{
+			return;
+		}
 	}
 	ui->pbWaitExpedition->setChecked(bDo);
 }

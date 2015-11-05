@@ -562,13 +562,17 @@ void TimerMainWindow::playSound(SoundIndex i)
 	QTimer::singleShot(dur, MainWindow::mainWindow(), SLOT(slotSoundEnded()));
 }
 
-qint64 TimerMainWindow::getMinExpeditionMS(int& team)
+qint64 TimerMainWindow::getMinExpeditionMS(int& team, QList<int>excludes/*=QList<int>()*/)
 {
 	qint64 minTime = std::numeric_limits<qint64>::max();
 	qint64 ct = currentMS();
-	int minTimeTeam = 1;
+	int minTimeTeam = -1;
 	for (int i = 0; i < 3; i++)
 	{
+		if (excludes.contains(i+1))
+		{
+			continue;
+		}
 		if (_exptimerecord[i].desttime - 1000*60 - ct < minTime)
 		{
 			minTime = _exptimerecord[i].desttime - 1000*60 - ct;

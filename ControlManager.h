@@ -130,6 +130,7 @@ public:
 	void setStopWhen(StopWhen stopwhen);
 
 	bool isRunning(){ return _state == State::Started; }
+	bool isActiveRunning();
 
 	bool checkColors(const QList<CheckColor>& checklist);
 
@@ -164,6 +165,7 @@ public:
 	inline bool isExpeditionMode(){ return _target == SortieTarget::Expedition; }
 
 	void setState(State state, const char* str);
+	void setInactiveWaiting(bool waiting){ _inactiveWaiting = waiting; }
 
 	void setStateStr(const QString& str);
 	inline const QString& getStateStr(){ return _stateStr; }
@@ -194,6 +196,7 @@ public:
 	QList<ControlAction*> _actionList;
 	
 	State _state = State::None;
+	bool _inactiveWaiting = false;
 	SortieTarget _target = SortieTarget::None;
 
 	QString _stateStr;

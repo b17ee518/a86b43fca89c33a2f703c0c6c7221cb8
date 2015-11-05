@@ -9,7 +9,7 @@
 #define DELAY_TIME_PAGE	(300*_intervalMul)
 #define DELAY_TIME_SUPERLONG	(1200*_intervalMul)
 #define DELAY_TIME_SUPERSUPERLONG	(2000*_intervalMul)
-#define DELAY_TIME_SKIP	(5000*_intervalMul)
+#define DELAY_TIME_SKIP	(7000*_intervalMul)
 
 ControlAction::ControlAction(QObject* parent /*= NULL*/)
 :QObject(parent)
@@ -58,9 +58,11 @@ bool WaitCondAction::action()
 		if (!_waiting)
 		{
 			_waiting = true;
+			cm.setInactiveWaiting(true);
 			QTimer::singleShot(_waitMS, Qt::PreciseTimer, this, [this, &cm]()
 			{
 				_waiting = false;
+				cm.setInactiveWaiting(false);
 				setState(State::HomePortChecking, "Wait:HomePortChecking");
 			});
 		}

@@ -413,6 +413,9 @@ bool ControlManager::BuildNext_Expedition()
 
 	ships.removeAll(-1);
 
+	QList<int> todoships = _todoShipids;
+	srand(ct);
+	std::random_shuffle(todoships.begin(), todoships.end());
 	bool needChangeHensei = false;
 	QList<int> toShips;
 
@@ -449,7 +452,7 @@ bool ControlManager::BuildNext_Expedition()
 			needChangeHensei = true;
 			bool bChanged = false;
 			// change keijun
-			for (int id:_todoShipids)
+			for (int id : todoships)
 			{
 				// TODO:no check on treated same ship!!
 				if (isShipType(id, ShipType::KeiJun) 
@@ -476,7 +479,7 @@ bool ControlManager::BuildNext_Expedition()
 				needChangeHensei = true;
 				bool bChanged = false;
 				// change kuchiku
-				for (int id : _todoShipids)
+				for (int id : todoships)
 				{
 					// TODO:no check on treated same ship!!
 					if (isShipType(id, ShipType::KuChiKu)
@@ -562,7 +565,7 @@ bool ControlManager::BuildNext_Expedition()
 				needChangeHensei = true;
 				bool bChanged = false;
 				// change kuchiku
-				for (int id : _todoShipids)
+				for (int id : todoships)
 				{
 					// TODO:no check on treated same ship!!
 					if (isShipType(id, ShipType::KuChiKu)

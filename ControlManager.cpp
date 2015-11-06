@@ -471,7 +471,7 @@ bool ControlManager::BuildNext_Expedition()
 			{
 				// TODO:no check on treated same ship!!
 				if (isShipType(id, ShipType::KeiJun) 
-					&& KanDataCalc::GetCondState(getShipCondVal(id)) >= CondState::Kira
+					&& KanDataCalc::GetCondState(getShipCondVal(id)) == CondState::Kira
 					&& !isShipInDock(id)
 					&& !isShipInOtherTeam(id, -1) // every team
 					&& !isShipDamaged(id)
@@ -498,7 +498,7 @@ bool ControlManager::BuildNext_Expedition()
 				{
 					// TODO:no check on treated same ship!!
 					if (isShipType(id, ShipType::KuChiKu)
-						&& KanDataCalc::GetCondState(getShipCondVal(id)) >= CondState::Kira
+						&& KanDataCalc::GetCondState(getShipCondVal(id)) == CondState::Kira
 						&& !isShipInDock(id)
 						&& !isShipInOtherTeam(id, -1)	// every team
 						&& !isShipDamaged(id)
@@ -584,7 +584,7 @@ bool ControlManager::BuildNext_Expedition()
 				{
 					// TODO:no check on treated same ship!!
 					if (isShipType(id, ShipType::KuChiKu)
-						&& KanDataCalc::GetCondState(getShipCondVal(id)) >= CondState::Kira
+						&& KanDataCalc::GetCondState(getShipCondVal(id)) == CondState::Kira
 						&& !isShipInDock(id)
 						&& !isShipInOtherTeam(id, -1)	// every team
 						&& !isShipDamaged(id)

@@ -87,7 +87,9 @@ bool ControlManager::BuildNext_Kira(bool bForceCurrent/*=false*/)
 	{
 		// must exclude second first
 		auto preChAction = new ChangeHenseiAction();
-		preChAction->setShips(flagshipid, -1);
+
+		auto randomwaste = getOneWasteShipId(flagshipid, curSecond);
+		preChAction->setShips(flagshipid, randomwaste);
 		_actionList.append(preChAction);
 		bTogoSameToCurSecond = true;
 	}
@@ -100,7 +102,7 @@ bool ControlManager::BuildNext_Kira(bool bForceCurrent/*=false*/)
 	int wasteId = curSecond;
 	if (bChangeSecond)
 	{
-		wasteId = getOneWasteShipId(togoShipId, getCurrentFlagshipId());
+		wasteId = getOneWasteShipId(togoShipId, flagshipid);
 	}
 	chAction->setShips(togoShipId, wasteId);
 	_actionList.append(chAction);

@@ -3067,15 +3067,32 @@ bool KanDataConnector::req_hensei_preset_select_parse()
 	kcsapi_hensei_preset_select api_hensei_preset_select;
 	api_hensei_preset_select.ReadFromJObj(_jobj);
 
+	int team = api_hensei_preset_select.api_id;
+
 	if (api_hensei_preset_select.api_ship.size())
 	{
-		QList<int> * lstship = &(pksd->portdata.api_deck_port[api_hensei_preset_select.api_id - 1].api_ship);
+		QList<int> * lstship = &(pksd->portdata.api_deck_port[team - 1].api_ship);
 		lstship->clear();
 		for (auto shipid : api_hensei_preset_select.api_ship)
 		{
 			lstship->append(shipid);
 		}
 		updateFleetTable();
+
+		// assume only fleet 1
+		if (team == 1)
+		{
+			bool bAutoRepairing = false;
+			// has auto repair slotitem
+			if (lstship->size())
+			{
+				if (isAutoRepairing(lstship->at(0)))
+				{
+					bAutoRepairing = true;
+				}
+			}
+			MainWindow::mainWindow()->timerWindow()->setAutoRepairTime(bAutoRepairing);
+		}
 	}
 
 	return true;

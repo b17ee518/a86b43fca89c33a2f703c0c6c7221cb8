@@ -62,6 +62,7 @@ public:
 	void setAutoRepairTime(bool bOn, bool bResetIfOver = false);
 
 	void setTitle(const QString& title);
+	QString getTitle();
 	void playSound(SoundIndex i);
 
 	qint64 getMinExpeditionMS(int& team, QList<int>excludes=QList<int>());

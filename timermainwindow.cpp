@@ -5,6 +5,7 @@
 #include <QDateTime>
 #include "mainwindow.h"
 #include <QSettings>
+#include "ControlManager.h"
 
 #define TIMER_UPDATETIMER_INTERVAL	250
 
@@ -142,13 +143,24 @@ void TimerMainWindow::setAutoRepairTime(bool bOn, bool bResetIfOver/*=false*/)
 	else
 	{
 		_autoRepairOn = false;
-		setTitle(""); // may override others
+		auto title = getTitle();		
+		int index = title.indexOf("AR: ");
+		if (index >= 0)
+		{
+			title = title.left(index).trimmed();
+		}
+		setTitle(title);
 	}
 }
 
 void TimerMainWindow::setTitle(const QString& title)
 {
 	ui->lineEditTitle->setText(title);
+}
+
+QString TimerMainWindow::getTitle()
+{
+	return ui->lineEditTitle->text();
 }
 
 void TimerMainWindow::on_pbClose_clicked()
@@ -323,9 +335,23 @@ void TimerMainWindow::slotUpdateTimer()
 	MainWindow::mainWindow()->SetProgressBarPos(processpercentage, progressbarstate);
 
 	// auto repair timer
+	QString titlepre = "";
+	if (ControlManager::getInstance().isRunning())
+	{
+		titlepre = getTitle();
+		int index = titlepre.indexOf("AR: ");
+		if (index >= 0)
+		{
+			titlepre = titlepre.left(index);
+			if (!titlepre.isEmpty() && !titlepre.endsWith(" "))
+			{
+				titlepre += " ";
+			}
+		}
+	}
 	if (_autoRepairOn)
 	{
-		setTitle("AutoRepair: " + getPassedTimeStr(ct, _autoRepairTimeBegin));
+		setTitle(titlepre + "AR: " + getPassedTimeStr(ct, _autoRepairTimeBegin));
 	}
 }
 

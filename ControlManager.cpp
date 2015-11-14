@@ -399,6 +399,7 @@ bool ControlManager::BuildNext_Expedition()
 
 	if (team < 1 || team >= 4)
 	{
+		setToTerminate("Termination:NoTeam");
 		return false;
 	}
 	// check if team match hensei
@@ -408,6 +409,7 @@ bool ControlManager::BuildNext_Expedition()
 	KanSaveData* pksd = &KanSaveData::getInstance();
 	if (!pksd->portdata.api_ship.size())
 	{
+		setToTerminate("Termination:Fatal");
 		return false;
 	}
 	QList<int> ships;
@@ -420,11 +422,13 @@ bool ControlManager::BuildNext_Expedition()
 		}
 		else
 		{
+			setToTerminate("Termination:Fatal");
 			return false;
 		}
 	}
 	else
 	{
+		setToTerminate("Termination:Fatal");
 		return false;
 	}
 
@@ -442,20 +446,24 @@ bool ControlManager::BuildNext_Expedition()
 	{
 		if (ships.size() != 6)
 		{
+			setToTerminate("Termination:Team1Error");
 			return false;
 		}
 		if (!isShipType(ships[0], ShipType::KeiJun))
 		{
+			setToTerminate("Termination:Team1-F-Error");
 			return false;
 		}
 		if (!(ships[1] == 4767 && ships[2] == 5012 || ships[1] == 5012 && ships[2] == 4767))
 		{
+			setToTerminate("Termination:Team1-K-Error");
 			return false;
 		}
 		for (int i = 3; i < 6; i++)
 		{
 			if (!isShipType(ships[i], ShipType::KuChiKu))
 			{
+				setToTerminate("Termination:Team1-O-Error");
 				return false;
 			}
 		}
@@ -486,6 +494,7 @@ bool ControlManager::BuildNext_Expedition()
 			}
 			if (!bChanged)
 			{
+				setToTerminate("Termination:Team1-F-NoChangeError");
 				return false;
 			}
 		}
@@ -529,6 +538,7 @@ bool ControlManager::BuildNext_Expedition()
 					}
 					if (!bChanged)
 					{
+						setToTerminate("Termination:Team1NoChangeError");
 						return false;
 					}
 				}
@@ -546,6 +556,7 @@ bool ControlManager::BuildNext_Expedition()
 		{
 			if (ships[i] != 56 && ships[i] != 34 && ships[i] != 157 && ships[i] != 3142)
 			{
+				setToTerminate("Termination:Team2Error");
 				return false;
 			}
 		}
@@ -557,16 +568,19 @@ bool ControlManager::BuildNext_Expedition()
 	{
 		if (ships.size() != 6)
 		{
+			setToTerminate("Termination:Team3Error");
 			return false;
 		}
 		if (!(ships[0] == 1703 && ships[1] == 4774 || ships[0] == 4774 && ships[1] == 1703))
 		{
+			setToTerminate("Termination:Team3-F-Error");
 			return false;
 		}
 		for (int i = 2; i < 6; i++)
 		{
 			if (!isShipType(ships[i], ShipType::KuChiKu))
 			{
+				setToTerminate("Termination:Team3-O-Error");
 				return false;
 			}
 		}
@@ -616,6 +630,7 @@ bool ControlManager::BuildNext_Expedition()
 				}
 				if (!bChanged)
 				{
+					setToTerminate("Termination:Team3NoChangeError");
 					return false;
 				}
 			}

@@ -601,7 +601,14 @@ qint64 TimerMainWindow::getMinExpeditionMS(int& team, QList<int>excludes/*=QList
 		}
 		if (_exptimerecord[i].desttime - 1000*60 - ct < minTime)
 		{
-			minTime = _exptimerecord[i].desttime - 1000*60 - ct;
+			if (_exptimerecord[i].desttime < 0)
+			{
+				minTime = 0;
+			}
+			else
+			{
+				minTime = _exptimerecord[i].desttime - 1000 * 60 - ct;
+			}
 			minTimeTeam = i+1;
 		}
 	}

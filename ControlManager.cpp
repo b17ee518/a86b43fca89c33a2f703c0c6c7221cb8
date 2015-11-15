@@ -434,6 +434,7 @@ bool ControlManager::BuildNext_Expedition()
 
 	ships.removeAll(-1);
 
+	LoadToDoShipList_Kira();
 	QList<int> todoships = _todoShipids;
 	srand(ct);
 	std::random_shuffle(todoships.begin(), todoships.end());
@@ -441,7 +442,6 @@ bool ControlManager::BuildNext_Expedition()
 	QList<int> toShips;
 
 	int shouldChangeCondBorder = 52;
-	LoadToDoShipList_Kira();
 	if (team == 1)
 	{
 		if (ships.size() != 6)
@@ -536,11 +536,11 @@ bool ControlManager::BuildNext_Expedition()
 							break;
 						}
 					}
-					if (!bChanged)
-					{
-						setToTerminate("Termination:Team1NoChangeError");
-						return false;
-					}
+				}
+				if (!bChanged)
+				{
+					setToTerminate("Termination:Team1NoChangeError");
+					return false;
 				}
 			}
 

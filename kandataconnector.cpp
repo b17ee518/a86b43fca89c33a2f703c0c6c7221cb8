@@ -2789,15 +2789,17 @@ bool KanDataConnector::get_member_ship_deck_parse()
 		}
 	}
 
-	int decksize = pksd->portdata.api_deck_port.count();
-	if (api_ship_deck.api_deck_data.size() == decksize)
+	foreach (const kcsapi_deck &v, api_ship_deck.api_deck_data)
 	{
-		for (int i = 0; i < decksize; i++)
+		QList<kcsapi_deck>::iterator it;
+		for (it = pksd->portdata.api_deck_port.begin(); it!=pksd->portdata.api_deck_port.end(); ++it)
 		{
-			api_ship_deck.api_deck_data[i].api_mission = pksd->portdata.api_deck_port[i].api_mission;
+			if (v.api_id == it->api_id)
+			{
+				(*it) = v;
+			}
 		}
 	}
-	pksd->portdata.api_deck_port = api_ship_deck.api_deck_data;
 
 	updateOverviewTable();
 	updateFleetTable();

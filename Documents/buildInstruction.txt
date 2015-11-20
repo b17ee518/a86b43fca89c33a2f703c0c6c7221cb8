@@ -1,0 +1,6 @@
+﻿Build Nekoxy in release mode with build setting: register COM
+Put bin/release dlls to exe folders(debug release released)
+Build KanPlay
+
+To modify com:
+Qt dumpcpp Nekoxy.tlb

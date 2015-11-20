@@ -56,6 +56,12 @@
     <Filter Include="IECOM">
       <UniqueIdentifier>{ea4ed6d2-399d-483e-abcc-3a36cab3830b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="FidCOM">
+      <UniqueIdentifier>{758581eb-8953-47bd-b3b6-1d8edf1a10a5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="NekoxyCOM">
+      <UniqueIdentifier>{1128192f-f3f8-4537-829a-cb6f1b400fbb}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="cookiejar.cpp">
@@ -199,9 +205,6 @@
     <ClCompile Include="Release\moc_weaponmainwindow.cpp">
       <Filter>Generated Files\Release</Filter>
     </ClCompile>
-    <ClCompile Include="FiddlerCOM.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="shdocvw.cpp">
       <Filter>IECOM</Filter>
     </ClCompile>
@@ -234,6 +237,12 @@
     </ClCompile>
     <ClCompile Include="kandataconnecto_parse.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="nekoxy.cpp">
+      <Filter>NekoxyCOM</Filter>
+    </ClCompile>
+    <ClCompile Include="fidcom.cpp">
+      <Filter>FidCOM</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -351,9 +360,6 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="FiddlerCOM.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="shdocvw.h">
       <Filter>IECOM</Filter>
     </ClInclude>
@@ -362,6 +368,12 @@
     </ClInclude>
     <ClInclude Include="ControlManager.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="nekoxy.h">
+      <Filter>NekoxyCOM</Filter>
+    </ClInclude>
+    <ClInclude Include="fidcom.h">
+      <Filter>FidCOM</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

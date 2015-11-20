@@ -133,14 +133,17 @@ MainWindow::MainWindow(QWidget *parent) :
 //	navigateTo("https://www.dmm.com/my/-/login/auth/");
 
 	QApplication::instance()->installNativeEventFilter(&_windowsEventfilter);
-
 }
 
 MainWindow::~MainWindow()
 {
-	if (_pFiddler)
+	if (_pFid)
 	{
-		delete _pFiddler;
+		delete _pFid;
+	}
+	if (_pNekoxy)
+	{
+		delete _pNekoxy;
 	}
 	delete ui;
 }
@@ -303,9 +306,13 @@ void MainWindow::closeEvent(QCloseEvent *e)
 		}
 	}
 
-	if (_bUseFiddler)
+	if (_proxyMode == ProxyMode::Fid && _pFid)
 	{
-		_pFiddler->Shutdown();
+		_pFid->Shutdown();
+	}
+	else if (_proxyMode == ProxyMode::Nekoxy && _pNekoxy)
+	{
+		_pNekoxy->Shutdown();
 	}
 
 	ControlManager::getInstance().Terminate();
@@ -505,7 +512,7 @@ void MainWindow::slotWebViewException(int code, const QString &source, const QSt
 	qDebug(source.toUtf8());
 	qDebug(desc.toUtf8());
 	qDebug(help.toUtf8());
-	qDebug("Put FiddlerCore.dll to exe folder.");
+	qDebug("Put dll to exe folder.");
 }
 
 void MainWindow::BeforeRequestFunc(int sessionID, char *fullURL, char *requestBody)
@@ -644,26 +651,44 @@ void MainWindow::slotTogglePanicTimer(int timeVal)
 
 void MainWindow::setWebSettings()
 {
-	if (_bUseFiddler)
+	if (_proxyMode == ProxyMode::Fid)
 	{
-		_pFiddler = new FiddlerCOM::FiddlerCOMClass(this);
+		_pFid = new FidCOM::FidCOMClass(this);
 
 		loadCertKey();
-		_pFiddler->SetupCertificate(_certStr, _keyStr);
-		_pFiddler->InstallCertificate(_certStr, _keyStr);
+		_pFid->SetupCertificate(_certStr, _keyStr);
+		_pFid->InstallCertificate(_certStr, _keyStr);
 		saveCertKey();
 		
 		connect(
-			_pFiddler,
+			_pFid,
 			SIGNAL(exception(int, const QString &, const QString &, const QString &)),
 			this,
 			SLOT(slotWebViewException(int, const QString &, const QString &, const QString &)));
 
 
-		_pFiddler->SetBeforeRequest((int)&MainWindow::BeforeRequestFunc);
-		_pFiddler->SetAfterSessionComplete((int)&MainWindow::AfterSessionCompleteFunc);
+		_pFid->SetBeforeRequest((int)&MainWindow::BeforeRequestFunc);
+		_pFid->SetAfterSessionComplete((int)&MainWindow::AfterSessionCompleteFunc);
 
-		_pFiddler->Startup(_useport, false, true);
+		_pFid->Startup(_useport, false, true);
+
+		QNetworkProxyFactorySet * proxies = new QNetworkProxyFactorySet();
+		proxies->init(_useport);
+		QNetworkProxyFactory::setApplicationProxyFactory(proxies);
+	}
+	else if (_proxyMode == ProxyMode::Nekoxy)
+	{
+		_pNekoxy = new Nekoxy::HttpProxy(this);
+
+		connect(
+			_pNekoxy,
+			SIGNAL(exception(int, const QString &, const QString &, const QString &)),
+			this,
+			SLOT(slotWebViewException(int, const QString &, const QString &, const QString &)));
+
+		_pNekoxy->SetAfterSessionComplete((int)&MainWindow::AfterSessionCompleteFunc);
+
+		_pNekoxy->Startup(_useport, false, true);
 
 		QNetworkProxyFactorySet * proxies = new QNetworkProxyFactorySet();
 		proxies->init(_useport);
@@ -677,7 +702,7 @@ void MainWindow::setWebSettings()
 
 		_webView->setContextMenuPolicy(Qt::PreventContextMenu);
 
-		if (!_bUseFiddler)
+		if (_proxyMode == ProxyMode::QtProxy)
 		{
 			KQNetworkAccessManager * manager = new KQNetworkAccessManager(this);
 			_webView->page()->setNetworkAccessManager(manager);
@@ -1272,6 +1297,7 @@ void MainWindow::loadSettings()
 	const QString itemUrlId = "UrlId";
 	const QString itemUsePort = "UsePort";
 	const QString itemIntervalMul = "IntervalMul";
+	const QString itemProxyMode = "ProxyMode";
 	
 	setting->beginGroup("Settings");
 	if (!setting->contains(itemUseIE))
@@ -1308,12 +1334,34 @@ void MainWindow::loadSettings()
 			setting->setValue(itemIntervalMul, 100);
 		}
 	}
+	if (!setting->contains(itemProxyMode))
+	{
+		setting->setValue(itemProxyMode, "Nekoxy");
+	}
 
 	_bUseIE = setting->value(itemUseIE).toBool();
 	_gameUrl = setting->value(itemGameUrl).toString();
 	_gameUrlId = setting->value(itemUrlId).toString();
 	_useport = setting->value(itemUsePort).toInt();
 	ControlManager::getInstance().setIntervalMul(setting->value(itemIntervalMul).toInt()/100.0);
+
+	QString proxymode = setting->value(itemProxyMode).toString();
+	if (!proxymode.compare("NoProxy", Qt::CaseInsensitive))
+	{
+		_proxyMode = ProxyMode::NoProxy;
+	}
+	else if (!proxymode.compare("QtProxy", Qt::CaseInsensitive))
+	{
+		_proxyMode = ProxyMode::QtProxy;
+	}
+	else if (!proxymode.compare("Fid", Qt::CaseInsensitive))
+	{
+		_proxyMode = ProxyMode::Fid;
+	}
+	else if (!proxymode.compare("Nekoxy", Qt::CaseInsensitive))
+	{
+		_proxyMode = ProxyMode::Nekoxy;
+	}
 
 	setting->endGroup();
 

@@ -7,13 +7,15 @@
 #include "timermainwindow.h"
 #include "weaponmainwindow.h"
 #include "shipmainwindow.h"
-#include "FiddlerCOM.h"
 #include <QShowEvent>
 #include <QWinTaskbarButton>
 #include <QNetworkReply>
 #include <QWebView>
 #include <QAxWidget>
 #include "shdocvw.h"
+
+#include "fidcom.h"
+#include "nekoxy.h"
 
 using namespace SHDocVw;
 
@@ -39,6 +41,14 @@ enum class QWebViewCSSIndex
 	Transparent,
 	//	CLEAR,
 	Max,
+};
+
+enum class ProxyMode
+{
+	NoProxy,
+	QtProxy,
+	Fid,
+	Nekoxy,
 };
 
 
@@ -131,7 +141,6 @@ private slots:
 	void onJobPauseNext();
 
 private:
-	// Fiddler
 	static void __stdcall BeforeRequestFunc(int sessionID, char * fullURL, char * requestBody);
 	static void __stdcall AfterSessionCompleteFunc(int sessionID, char * mimeType, int responseCode, char * PathAndQuery, char * requestBody, char * responseBody);
 
@@ -149,9 +158,11 @@ private:
 private:
 	Ui::MainWindow *ui;
 
-	bool _bUseFiddler = true;
+	ProxyMode _proxyMode = ProxyMode::Nekoxy;
+
 	int _useport = 0;
-	FiddlerCOM::FiddlerCOMClass * _pFiddler = NULL;
+	FidCOM::FidCOMClass * _pFid = NULL;
+	Nekoxy::HttpProxy * _pNekoxy = NULL;
 
 	bool _bIEPageLoaded = false;
 	QWebViewCSSIndex _applyCssWhenLoaded = QWebViewCSSIndex::Invalid;

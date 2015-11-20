@@ -39,10 +39,6 @@
       <UniqueIdentifier>{E0D8C965-CC5F-43d7-AD63-FAEF0BBC0F85}-dumpcpp_impl</UniqueIdentifier>
       <ParseFiles>false</ParseFiles>
     </Filter>
-    <Filter Include="CPP">
-      <UniqueIdentifier>{E0D8C965-CC5F-43d7-AD63-FAEF0BBC0F85}-dumpcpp_impl</UniqueIdentifier>
-      <ParseFiles>false</ParseFiles>
-    </Filter>
     <Filter Include="Generated Files\Debug">
       <UniqueIdentifier>{02a113d9-921d-4161-9648-b51bbc53be41}</UniqueIdentifier>
       <Extensions>cpp;moc</Extensions>
@@ -353,11 +349,6 @@
     <CustomBuild Include="weaponmainwindow.ui">
       <Filter>Form Files</Filter>
     </CustomBuild>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="FiddlerCOM\FiddlerCOM\bin\Release\FiddlerCOM.tlb">
-      <Filter>CPP</Filter>
-    </None>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="shdocvw.h">

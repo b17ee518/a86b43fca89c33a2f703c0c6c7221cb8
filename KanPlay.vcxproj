@@ -771,7 +771,6 @@
     </CustomBuild>
   </ItemGroup>
   <ItemGroup>
-    <None Include="FiddlerCOM\FiddlerCOM\bin\Release\FiddlerCOM.tlb" />
     <CustomBuild Include="weaponmainwindow.ui">
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(QTDIR)\bin\uic.exe;%(AdditionalInputs)</AdditionalInputs>
       <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Uic%27ing %(Identity)...</Message>

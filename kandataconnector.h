@@ -12,6 +12,9 @@
 #define PARSEFLAG_IGNORE 0x01
 #define PARSEFLAG_OUTPUT 0x02
 
+#define DAPILOG() APILOG(_pathAndQuery, _requestBody, _responseBody)
+#define DAPILOGDEBUG() APILOGDEBUG(_pathAndQuery, _requestBody, _responseBody)
+
 class KanDataConnector
 {
 private:
@@ -112,6 +115,7 @@ private:
 	bool req_hokyu_charge_parse();
 	bool req_kaisou_powerup_parse();
 	bool req_kaisou_slotset_parse();
+	bool req_kaisou_slot_exchange_index_parse();
 	bool req_kaisou_remodeling_parse();
 	bool req_mission_start_parse();
 	bool req_mission_result_parse();
@@ -209,6 +213,7 @@ private:
 	int req_hokyu_charge_flag;
 	int req_kaisou_powerup_flag;
 	int req_kaisou_slotset_flag;
+	int req_kaisou_slot_exchange_index_flag;
 	int req_kaisou_remodeling_flag;
 	int req_mission_start_flag;
 	int req_mission_result_flag;

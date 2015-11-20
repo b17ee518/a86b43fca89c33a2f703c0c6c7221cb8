@@ -73,7 +73,7 @@ MainWindow::MainWindow(QWidget *parent) :
 	{
 		_webView = new QWebView(ui->webFrame);
 		_webView->setObjectName(QStringLiteral("webView"));
-		_webView->setUrl(QUrl(QStringLiteral("about:blank")));
+//		_webView->setUrl(QUrl(QStringLiteral("about:blank")));
 		ui->webFrame_layout->addWidget(_webView);
 	}
 	

@@ -6,3 +6,4 @@ release/
 *.user
 *.TMP
 *.pd_
+*.cache

@@ -756,7 +756,7 @@ bool ChargeAction::action()
 				}
 				else
 				{
-					if (cm.isSouthEastMode() || cm.isFuelMode() || cm.isExpeditionMode())
+					if (cm.isSouthEastMode() || cm.isFuelMode() || cm.isExpeditionMode() || cm.isLevelMode())
 					{
 						cm.moveMouseToAndClick(117, 120, 2, 2); // all ships
 						setState(State::OKToChargeDone, "Charge:OKToChargeDone");
@@ -883,7 +883,7 @@ bool SortieAction::action()
 	{
 	case SortieAction::State::None:
 
-		if (cm.isSouthEastMode())
+		if (cm.isSouthEastMode() || cm.isLevelMode())
 		{
 			if (cm.needChargeAnyShip(0) || cm.hugestDamageInTeam(0) >= WoundState::Middle)
 			{
@@ -1012,6 +1012,20 @@ bool SortieAction::action()
 			}
 			// fule mode select 2
 		}
+		else if (cm.isLevelMode())
+		{
+			if (!_waiting)
+			{
+				_waiting = true;
+				QTimer::singleShot(DELAY_TIME_CLICK, Qt::PreciseTimer, this, [this, &cm]()
+				{
+					cm.moveMouseToAndClick(304, 445, 14, 9); // area 3
+					setState(State::SelectMapChecking, "Sortie:SelectMapChecking");
+					resetRetryAndWainting();
+				});
+			}
+			// selec 3
+		}
 		else if (cm.isKiraMode())
 		{
 			// skip to select map
@@ -1025,9 +1039,14 @@ bool SortieAction::action()
 			_waiting = true;
 			QTimer::singleShot(DELAY_TIME, Qt::PreciseTimer, this, [this, &cm]()
 			{
-				if (cm.checkColors(
+				if ((cm.isLevelMode() 
+					&& cm.checkColors(
+					512, 263, 84, 90, 107
+					, 618, 190, 179, 211, 206)) ||
+				 ((cm.isSouthEastMode() || cm.isFuelMode()) &&
+					cm.checkColors(
 					246, 326, 197, 106, 166
-					, 354, 370, 244, 206, 94))
+					, 354, 370, 244, 206, 94)))
 				{
 					_waiting = false;
 					setState(State::SelectMapDone, "Sortie:SelectMapDone");
@@ -1053,6 +1072,20 @@ bool SortieAction::action()
 				});
 			}
 			// fule mode select 3
+		}
+		else if (cm.isLevelMode())
+		{
+			if (!_waiting)
+			{
+				_waiting = true;
+				QTimer::singleShot(DELAY_TIME_CLICK, Qt::PreciseTimer, this, [this, &cm]()
+				{
+					cm.moveMouseToAndClick(600, 199, 60, 36); // map 2
+					setState(State::SortieCheckChecking, "Sortie:SortieCheckChecking");
+					resetRetryAndWainting();
+				});
+			}
+			// level mode select 2
 		}
 		else if (cm.isKiraMode())
 		{
@@ -1283,12 +1316,24 @@ bool SortieCommonAdvanceAction::action()
 		if (!_waiting)
 		{
 			_waiting = true;
-			QTimer::singleShot(DELAY_TIME_CLICK, Qt::PreciseTimer, this, [this, &cm]()
+			if (_shouldRetrieve && !cm.isLevelMode())
 			{
-				cm.moveMouseToAndClick(445, 184); // formation button
-				setStateToChecking();
-				resetRetryAndWainting();
-			});
+				if (_shouldRetrieve)
+				{
+					cm.setToTerminate("Terminated:Fatal");
+					emit sigFatal();
+					return false;
+				}
+			}
+			else
+			{
+				QTimer::singleShot(DELAY_TIME_CLICK, Qt::PreciseTimer, this, [this, &cm]()
+				{
+					cm.moveMouseToAndClick(445, 184); // formation button
+					setStateToChecking();
+					resetRetryAndWainting();
+				});
+			}
 		}
 		break;
 	case SortieCommonAdvanceAction::State::ClickElse:
@@ -1298,7 +1343,7 @@ bool SortieCommonAdvanceAction::action()
 			_waiting = true;
 			QTimer::singleShot(DELAY_TIME_CLICK, Qt::PreciseTimer, this, [this, &cm]()
 			{
-				cm.moveMouseToAndClick(729, 416, 15, 15); // formation button
+				cm.moveMouseToAndClick(729, 416, 15, 15);
 				setStateToChecking();
 				resetRetryAndWainting();
 			});
@@ -1309,6 +1354,12 @@ bool SortieCommonAdvanceAction::action()
 		if (!_waiting)
 		{
 			_waiting = true;
+			if (_shouldRetrieve)
+			{
+				cm.setToTerminate("Terminated:Fatal");
+				emit sigFatal();
+				return false;
+			}
 			QTimer::singleShot(DELAY_TIME_CLICK, Qt::PreciseTimer, this, [this, &cm]()
 			{
 				cm.moveMouseToAndClick(296, 240, 25, 20); // left button
@@ -1383,6 +1434,14 @@ bool RepeatAction::action()
 		else if (cm.isExpeditionMode())
 		{
 			if (cm.BuildNext_Expedition())
+			{
+				setState(State::Done, "Repeat:Done");
+				cm.StartJob();
+			}
+		}
+		else if (cm.isLevelMode())
+		{
+			if (cm.BuildNext_Level())
 			{
 				setState(State::Done, "Repeat:Done");
 				cm.StartJob();

@@ -356,6 +356,148 @@ bool ControlManager::BuildNext_SouthEast()
 	return true;
 }
 
+bool ControlManager::BuildNext_Level()
+{
+	_target = SortieTarget::Level;
+
+	KanSaveData* pksd = &KanSaveData::getInstance();
+	KanDataConnector* pkdc = &KanDataConnector::getInstance();
+
+	if (isShipFull())
+	{
+		setToTerminate("Terminated:ShipFull");
+		return false;
+	}
+	
+	bool bHaveMaruyu = false;
+	int redFaceCount = 0;
+	int totalShipCount = 0;
+	int minCond = 100;
+	bool bNeedChangeMaruyu = false;
+
+	QList<int> toChangeIdList;
+	if (pksd->portdata.api_deck_port.size())
+	{
+		auto& firstFleet = pksd->portdata.api_deck_port.first();
+		for (auto id : firstFleet.api_ship)
+		{
+			if (id >= 0)
+			{
+				const kcsapi_ship2* pship = pkdc->findShipFromShipno(id);
+				if (pship)
+				{
+					const kcsapi_mst_ship* pmstship = pkdc->findMstShipFromShipid(pship->api_ship_id);
+					WoundState ws = KanDataCalc::GetWoundState(pship->api_nowhp, pship->api_maxhp);
+					if (pship->api_maxhp < 8 && pmstship->api_stype == (int)ShipType::SenSui)
+					{
+						if (bHaveMaruyu)
+						{
+							setToTerminate("Terminated:MoreThanOneMaruyu");
+							return false;
+						}
+						bHaveMaruyu = true;
+						if (ws > WoundState::Middle)
+						{
+							bNeedChangeMaruyu = true;
+						}
+						else
+						{
+							toChangeIdList.append(id);
+						}
+					}
+					else
+					{
+						toChangeIdList.append(id);
+						if (ws > WoundState::Little)
+						{
+							setToTerminate("Terminated:NeedNDock");
+							return false;
+						}
+						if (pship->api_cond < 30)
+						{
+							redFaceCount++;
+							if (pship->api_cond < minCond)
+							{
+								minCond = pship->api_cond;
+							}
+						}
+					}
+					totalShipCount++;
+				}
+			}
+		}
+	}
+	if (totalShipCount < 6)
+	{
+		setToTerminate("Terminated:TeamSize");
+		return false;
+	}
+	if (!bHaveMaruyu)
+	{
+		setToTerminate("Terminated:NoMaruyu");
+		return false;
+	}
+
+	if (bNeedChangeMaruyu)
+	{
+		// find one maruyu
+		int maruyuId = -1;
+		int bigMaruyuId = -1;
+		for (auto ship : pksd->portdata.api_ship)
+		{
+			const kcsapi_mst_ship * pmstship = pkdc->findMstShipFromShipid(ship.api_ship_id);
+			if (!pmstship)
+			{
+				continue;
+			}
+			if (pmstship->api_stype == (int)ShipType::SenSui && ship.api_maxhp < 8)
+			{
+				if (isShipCharged(ship.api_id)
+					&& !isShipDamaged(ship.api_id)
+					&& !isShipInDock(ship.api_id)
+					&& !isShipInOtherTeam(ship.api_id, -1))
+				{
+					if (ship.api_lv >= 50)
+					{
+						bigMaruyuId = ship.api_id;
+						continue;
+					}
+					maruyuId = ship.api_id;
+					break;
+				}
+			}
+		}
+		if (maruyuId < 0 && bigMaruyuId >= 0)
+		{
+			maruyuId = bigMaruyuId;
+		}
+		toChangeIdList.append(maruyuId);
+		if (maruyuId < 0 || toChangeIdList.size() != 6)
+		{
+			setToTerminate("Terminated:NoAvailableMaruyu");
+			return false;
+		}
+		// change hensei
+		auto chAction = new ChangeHenseiAction();
+		chAction->setShips(toChangeIdList);
+		_actionList.append(chAction);
+	}
+	// wait cond if over three red face
+	if (redFaceCount > 3)
+	{
+		qint64 waitMS = qCeil((_sortieWaitCond - minCond) / 3.0) * 3 * 60 * 1000;
+		auto waitAction = new WaitCondAction();
+		waitAction->setWaitMS(waitMS);
+		_actionList.append(waitAction);
+	}
+	_actionList.append(new SortieAction());
+	_actionList.append(new SortieCommonAdvanceAction());
+	_actionList.append(new ChargeAction());
+	_actionList.append(new RepeatAction());
+	setState(State::Ready, "Ready");
+	return true;
+}
+
 bool ControlManager::BuildNext_Expedition()
 {
 	_target = SortieTarget::Expedition;
@@ -1380,6 +1522,10 @@ bool ControlManager::shouldNightBattle()
 
 bool ControlManager::shouldRetrieve()
 {
+	if (_target == SortieTarget::Level)
+	{
+		return true;
+	}
 	return (hugestDamageInTeam(0) >= WoundState::Big);
 }
 

@@ -679,7 +679,6 @@ void MainWindow::setWebSettings()
 	else if (_proxyMode == ProxyMode::Nekoxy)
 	{
 		_pNekoxy = new Nekoxy::HttpProxy(this);
-
 		connect(
 			_pNekoxy,
 			SIGNAL(exception(int, const QString &, const QString &, const QString &)),
@@ -978,7 +977,6 @@ void MainWindow::onDoJobFuel()
 	cm.StartJob();
 }
 
-
 void MainWindow::onDoJobKira()
 {
 	auto& cm = ControlManager::getInstance();
@@ -996,6 +994,16 @@ void MainWindow::onDoJobKira()
 	}
 	cm.StartJob();
 
+}
+
+void MainWindow::onDoJobLevel()
+{
+	auto& cm = ControlManager::getInstance();
+	cm.Terminate();
+	if (cm.BuildNext_Level())
+	{
+		cm.StartJob();
+	}
 }
 
 void MainWindow::onDoJobExpedition(bool bDo)

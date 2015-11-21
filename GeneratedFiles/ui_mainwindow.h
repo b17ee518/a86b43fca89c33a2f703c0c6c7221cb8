@@ -43,6 +43,8 @@ public:
     QSpacerItem *horizontalSpacer_13;
     QPushButton *pbStartKira;
     QSpacerItem *horizontalSpacer_14;
+    QPushButton *pbStartLevel;
+    QSpacerItem *horizontalSpacer_19;
     QPushButton *pbPauseNext;
     QSpacerItem *horizontalSpacer_15;
     QPushButton *pbTerminate;
@@ -176,6 +178,20 @@ public:
         horizontalSpacer_14 = new QSpacerItem(16, 17, QSizePolicy::Fixed, QSizePolicy::Minimum);
 
         horizontalLayout->addItem(horizontalSpacer_14);
+
+        pbStartLevel = new QPushButton(titleFrame);
+        pbStartLevel->setObjectName(QStringLiteral("pbStartLevel"));
+        sizePolicy1.setHeightForWidth(pbStartLevel->sizePolicy().hasHeightForWidth());
+        pbStartLevel->setSizePolicy(sizePolicy1);
+        pbStartLevel->setMinimumSize(QSize(20, 20));
+        pbStartLevel->setMaximumSize(QSize(20, 20));
+        pbStartLevel->setFlat(true);
+
+        horizontalLayout->addWidget(pbStartLevel);
+
+        horizontalSpacer_19 = new QSpacerItem(16, 17, QSizePolicy::Fixed, QSizePolicy::Minimum);
+
+        horizontalLayout->addItem(horizontalSpacer_19);
 
         pbPauseNext = new QPushButton(titleFrame);
         pbPauseNext->setObjectName(QStringLiteral("pbPauseNext"));
@@ -399,6 +415,7 @@ public:
         QObject::connect(pbExport, SIGNAL(clicked()), MainWindow, SLOT(onExportAllList()));
         QObject::connect(pbLogAll, SIGNAL(clicked(bool)), MainWindow, SLOT(slotSetLogAll(bool)));
         QObject::connect(pbWaitExpedition, SIGNAL(clicked(bool)), MainWindow, SLOT(onDoJobExpedition(bool)));
+        QObject::connect(pbStartLevel, SIGNAL(clicked()), MainWindow, SLOT(onDoJobLevel()));
 
         QMetaObject::connectSlotsByName(MainWindow);
     } // setupUi
@@ -411,6 +428,7 @@ public:
         pbSwitchScreenshot->setText(QApplication::translate("MainWindow", "\351\200\243", 0));
         pbStartFuel->setText(QApplication::translate("MainWindow", "\347\207\203", 0));
         pbStartKira->setText(QApplication::translate("MainWindow", "\343\202\255", 0));
+        pbStartLevel->setText(QApplication::translate("MainWindow", "\343\203\254", 0));
         pbPauseNext->setText(QApplication::translate("MainWindow", "\345\201\234", 0));
         pbTerminate->setText(QApplication::translate("MainWindow", "\347\265\202", 0));
         pbExport->setText(QApplication::translate("MainWindow", "\345\207\272", 0));

@@ -315,6 +315,50 @@
         </spacer>
        </item>
        <item>
+        <widget class="QPushButton" name="pbStartLevel">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="minimumSize">
+          <size>
+           <width>20</width>
+           <height>20</height>
+          </size>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>20</width>
+           <height>20</height>
+          </size>
+         </property>
+         <property name="text">
+          <string>レ</string>
+         </property>
+         <property name="flat">
+          <bool>true</bool>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <spacer name="horizontalSpacer_19">
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+         <property name="sizeType">
+          <enum>QSizePolicy::Fixed</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>16</width>
+           <height>17</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+       <item>
         <widget class="QPushButton" name="pbPauseNext">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
@@ -997,7 +1041,7 @@
    <slot>onJobPauseNext()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>283</x>
+     <x>319</x>
      <y>18</y>
     </hint>
     <hint type="destinationlabel">
@@ -1013,7 +1057,7 @@
    <slot>onTerminateJob()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>327</x>
+     <x>363</x>
      <y>11</y>
     </hint>
     <hint type="destinationlabel">
@@ -1029,7 +1073,7 @@
    <slot>onExportAllList()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>371</x>
+     <x>407</x>
      <y>9</y>
     </hint>
     <hint type="destinationlabel">
@@ -1045,7 +1089,7 @@
    <slot>slotSetLogAll(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>415</x>
+     <x>451</x>
      <y>11</y>
     </hint>
     <hint type="destinationlabel">
@@ -1061,12 +1105,28 @@
    <slot>onDoJobExpedition(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>458</x>
+     <x>494</x>
      <y>10</y>
     </hint>
     <hint type="destinationlabel">
      <x>801</x>
      <y>22</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>pbStartLevel</sender>
+   <signal>clicked()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>onDoJobLevel()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>268</x>
+     <y>5</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>-4</x>
+     <y>-5</y>
     </hint>
    </hints>
   </connection>
@@ -1079,5 +1139,6 @@
   <slot>onExportAllList()</slot>
   <slot>slotSetLogAll(bool)</slot>
   <slot>onDoJobExpedition(bool)</slot>
+  <slot>onDoJobLevel()</slot>
  </slots>
 </ui>

@@ -25,6 +25,7 @@ public:
 		Fuel,
 		SouthEast,
 		Expedition,
+		Level,
 	};
 
 	enum class StopWhen
@@ -71,6 +72,8 @@ public:
 	bool BuildNext_Fuel();
 
 	bool BuildNext_SouthEast();
+
+	bool BuildNext_Level();
 
 	bool LoadExpeditionPossibleList(); // TODO
 	bool BuildNext_Expedition();
@@ -162,6 +165,7 @@ public:
 	inline bool isKiraMode(){ return _target == SortieTarget::Kira; }
 	inline bool isFuelMode(){ return _target == SortieTarget::Fuel; }
 	inline bool isSouthEastMode(){ return _target == SortieTarget::SouthEast; }
+	inline bool isLevelMode(){ return _target == SortieTarget::Level; }
 	inline bool isExpeditionMode(){ return _target == SortieTarget::Expedition; }
 
 	void setState(State state, const char* str);

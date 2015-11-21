@@ -128,6 +128,7 @@ private slots:
 	void onPanic();
 	void onDoJobFuel();
 	void onDoJobKira();
+	void onDoJobLevel();
 	void onDoJobExpedition(bool bDo);
 	void onToggleJobExpedition();
 	void onExportAllList();

@@ -16,6 +16,7 @@
 
 #include "fidcom.h"
 #include "nekoxy.h"
+#include "titanium_web_proxy.h"
 
 using namespace SHDocVw;
 
@@ -49,6 +50,7 @@ enum class ProxyMode
 	QtProxy,
 	Fid,
 	Nekoxy,
+	Titanium,
 };
 
 
@@ -164,6 +166,7 @@ private:
 	int _useport = 0;
 	FidCOM::FidCOMClass * _pFid = NULL;
 	Nekoxy::HttpProxy * _pNekoxy = NULL;
+	Titanium_Web_Proxy::ProxyServer* _pTitanium = NULL;
 
 	bool _bIEPageLoaded = false;
 	QWebViewCSSIndex _applyCssWhenLoaded = QWebViewCSSIndex::Invalid;

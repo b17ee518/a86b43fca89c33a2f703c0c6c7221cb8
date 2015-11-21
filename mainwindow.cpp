@@ -145,6 +145,10 @@ MainWindow::~MainWindow()
 	{
 		delete _pNekoxy;
 	}
+	if (_pTitanium)
+	{
+		delete _pTitanium;
+	}
 	delete ui;
 }
 
@@ -313,6 +317,10 @@ void MainWindow::closeEvent(QCloseEvent *e)
 	else if (_proxyMode == ProxyMode::Nekoxy && _pNekoxy)
 	{
 		_pNekoxy->Shutdown();
+	}
+	else if (_proxyMode == ProxyMode::Titanium && _pTitanium)
+	{
+		_pTitanium->Shutdown();
 	}
 
 	ControlManager::getInstance().Terminate();
@@ -535,7 +543,7 @@ void MainWindow::AfterSessionCompleteFunc(int sessionID, char *mimeType, int res
 	Q_UNUSED(responseCode);
 	QString strPathAndQuery = PathAndQuery;
 
-	if (strPathAndQuery.startsWith("/kcsapi"))
+	if (strPathAndQuery.startsWith("/kcsapi") && responseCode == 200)
 	{
 		if (0 == QString::compare(mimeType, "text/plain"))
 		{
@@ -651,6 +659,7 @@ void MainWindow::slotTogglePanicTimer(int timeVal)
 
 void MainWindow::setWebSettings()
 {
+	QObject * exceptionSender = NULL;
 	if (_proxyMode == ProxyMode::Fid)
 	{
 		_pFid = new FidCOM::FidCOMClass(this);
@@ -659,35 +668,42 @@ void MainWindow::setWebSettings()
 		_pFid->SetupCertificate(_certStr, _keyStr);
 		_pFid->InstallCertificate(_certStr, _keyStr);
 		saveCertKey();
-		
-		connect(
-			_pFid,
-			SIGNAL(exception(int, const QString &, const QString &, const QString &)),
-			this,
-			SLOT(slotWebViewException(int, const QString &, const QString &, const QString &)));
-
+		exceptionSender = _pFid;
 
 		_pFid->SetBeforeRequest((int)&MainWindow::BeforeRequestFunc);
 		_pFid->SetAfterSessionComplete((int)&MainWindow::AfterSessionCompleteFunc);
 
 		_pFid->Startup(_useport, false, true);
-
-		QNetworkProxyFactorySet * proxies = new QNetworkProxyFactorySet();
-		proxies->init(_useport);
-		QNetworkProxyFactory::setApplicationProxyFactory(proxies);
 	}
 	else if (_proxyMode == ProxyMode::Nekoxy)
 	{
 		_pNekoxy = new Nekoxy::HttpProxy(this);
-		connect(
-			_pNekoxy,
-			SIGNAL(exception(int, const QString &, const QString &, const QString &)),
-			this,
-			SLOT(slotWebViewException(int, const QString &, const QString &, const QString &)));
+		exceptionSender = _pNekoxy;
 
 		_pNekoxy->SetAfterSessionComplete((int)&MainWindow::AfterSessionCompleteFunc);
 
 		_pNekoxy->Startup(_useport, false, true);
+	}
+	else if (_proxyMode == ProxyMode::Titanium)
+	{
+		_pTitanium = new Titanium_Web_Proxy::ProxyServer(this);
+		exceptionSender = _pTitanium;
+		_pTitanium->SetMakecertPath(QApplication::applicationDirPath() + "/makecert.exe");
+
+		_pTitanium->SetAfterSessionComplete((int)&MainWindow::AfterSessionCompleteFunc);
+		_pTitanium->Startup(_useport);
+	}
+
+	if (_proxyMode != ProxyMode::NoProxy && _proxyMode != ProxyMode::QtProxy)
+	{
+		if (exceptionSender)
+		{
+			connect(
+				exceptionSender,
+				SIGNAL(exception(int, const QString &, const QString &, const QString &)),
+				this,
+				SLOT(slotWebViewException(int, const QString &, const QString &, const QString &)));
+		}
 
 		QNetworkProxyFactorySet * proxies = new QNetworkProxyFactorySet();
 		proxies->init(_useport);
@@ -1369,6 +1385,10 @@ void MainWindow::loadSettings()
 	else if (!proxymode.compare("Nekoxy", Qt::CaseInsensitive))
 	{
 		_proxyMode = ProxyMode::Nekoxy;
+	}
+	else if (!proxymode.compare("Titanium", Qt::CaseInsensitive))
+	{
+		_proxyMode = ProxyMode::Titanium;
 	}
 
 	setting->endGroup();

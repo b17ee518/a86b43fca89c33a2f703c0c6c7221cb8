@@ -883,9 +883,18 @@ bool SortieAction::action()
 	{
 	case SortieAction::State::None:
 
-		if (cm.isSouthEastMode() || cm.isLevelMode())
+		if (cm.isSouthEastMode())
 		{
 			if (cm.needChargeAnyShip(0) || cm.hugestDamageInTeam(0) >= WoundState::Middle)
+			{
+				cm.setToTerminate("Terminated:Damage");
+				emit sigFatal();
+				return false;
+			}
+		}
+		else if (cm.isLevelMode())
+		{
+			if (cm.needChargeAnyShip(0) || cm.hugestDamageInTeam(0) > WoundState::Middle)
 			{
 				cm.setToTerminate("Terminated:Damage");
 				emit sigFatal();

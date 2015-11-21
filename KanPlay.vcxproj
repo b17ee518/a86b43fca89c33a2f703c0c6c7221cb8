@@ -413,9 +413,11 @@
     <ClCompile Include="shipmainwindow.cpp" />
     <ClCompile Include="submainwindow.cpp" />
     <ClCompile Include="timermainwindow.cpp" />
+    <ClCompile Include="titanium_web_proxy.cpp" />
     <ClCompile Include="weaponmainwindow.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="titanium_web_proxy.h" />
     <CustomBuild Include="ControlAction.h">
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>
       <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Moc%27ing ControlAction.h...</Message>

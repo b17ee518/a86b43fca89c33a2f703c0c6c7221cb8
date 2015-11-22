@@ -70,6 +70,33 @@ private:
 
 };
 
+class WaitNextPortAction : public ControlAction
+{
+public:
+	enum class State
+	{
+		None,
+
+		ExpectingPort,
+		Done,
+	};
+	WaitNextPortAction(QObject* parent = NULL)
+		:ControlAction(parent)
+	{
+	}
+
+	virtual bool action() override;
+
+public:
+	void setMaxWaitMS(qint64 waitms);
+	qint64 _maxWaitMS = 30*1000;
+
+private:
+	State _state = State::None;
+	void setState(State state, const char* str);
+
+};
+
 class ChangeHenseiAction : public ControlAction
 {
 public:

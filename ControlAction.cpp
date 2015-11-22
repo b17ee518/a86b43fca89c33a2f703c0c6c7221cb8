@@ -2,6 +2,7 @@
 #include "ControlManager.h"
 #include <QDebug>
 #include "kandatacalc.h"
+#include "mainwindow.h"
 
 #define DELAY_TIME			(250*_intervalMul)
 #define DELAY_TIME_CLICK	(250*_intervalMul)
@@ -160,6 +161,63 @@ void WaitCondAction::setWaitMS(qint64 waitms)
 }
 
 void WaitCondAction::setState(State state, const char* str)
+{
+	_state = state;
+	ControlManager::getInstance().setStateStr(str);
+}
+
+bool WaitNextPortAction::action()
+{
+	auto& cm = ControlManager::getInstance();
+	switch (_state)
+	{
+	case WaitNextPortAction::State::None:
+		MainWindow::mainWindow()->timerWindow()->playSound(TimerMainWindow::SoundIndex::Action);
+		_expectingRequest = "/kcsapi/api_port/port";
+		setState(State::ExpectingPort, "Wait:WaitingForPort");
+		resetRetryAndWainting();
+		break;
+	case WaitNextPortAction::State::ExpectingPort:
+		if (_expectingRequest == "")
+		{
+			cm.moveMouseTo(400, 200);
+			cm.setInactiveWaiting(false);
+			setState(State::Done, "Wait:Done");
+		}
+		else if (!_waiting)
+		{
+			_waiting = true;
+			cm.setInactiveWaiting(true);
+			QTimer::singleShot(_maxWaitMS, Qt::PreciseTimer, this, [this, &cm]()
+			{
+				_waiting = false;
+				cm.setInactiveWaiting(false);
+				setState(State::Done, "Wait:Done");
+			});
+		}
+		break;
+	case WaitNextPortAction::State::Done:
+		_expectingRequest = "";
+		cm.setInactiveWaiting(false);
+		return true;
+		break;
+	default:
+		break;
+	}
+	return false;
+
+}
+
+void WaitNextPortAction::setMaxWaitMS(qint64 waitms)
+{
+	_maxWaitMS = waitms;
+	if (_maxWaitMS < 0)
+	{
+		_maxWaitMS = 1;
+	}
+}
+
+void WaitNextPortAction::setState(State state, const char* str)
 {
 	_state = state;
 	ControlManager::getInstance().setStateStr(str);
@@ -1327,12 +1385,9 @@ bool SortieCommonAdvanceAction::action()
 			_waiting = true;
 			if (_shouldRetrieve && !cm.isLevelMode())
 			{
-				if (_shouldRetrieve)
-				{
-					cm.setToTerminate("Terminated:Fatal");
-					emit sigFatal();
-					return false;
-				}
+				cm.setToTerminate("Terminated:Fatal");
+				emit sigFatal();
+				return false;
 			}
 			else
 			{
@@ -1363,12 +1418,6 @@ bool SortieCommonAdvanceAction::action()
 		if (!_waiting)
 		{
 			_waiting = true;
-			if (_shouldRetrieve)
-			{
-				cm.setToTerminate("Terminated:Fatal");
-				emit sigFatal();
-				return false;
-			}
 			QTimer::singleShot(DELAY_TIME_CLICK, Qt::PreciseTimer, this, [this, &cm]()
 			{
 				cm.moveMouseToAndClick(296, 240, 25, 20); // left button

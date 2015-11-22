@@ -1016,6 +1016,15 @@ void MainWindow::onDoJobLevel()
 {
 	auto& cm = ControlManager::getInstance();
 	cm.Terminate();
+
+	if (QApplication::queryKeyboardModifiers()&Qt::ShiftModifier)
+	{
+		cm.setLevelNoWait(false);
+	}
+	else
+	{
+		cm.setLevelNoWait(true);
+	}
 	if (cm.BuildNext_Level())
 	{
 		cm.StartJob();

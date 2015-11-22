@@ -184,6 +184,9 @@ public:
 		}
 	}
 
+	inline void setLevelNoWait(bool bNoWait){ _levelNoWait = bNoWait; }
+	inline bool getLevelNoWait(){ return _levelNoWait; }
+
 //private:
 	void moveMouseToAndClick(float x, float y, float offsetX = 5, float offsetY = 3);
 	void moveMouseTo(float x, float y, float offsetX = 5, float offsetY = 3);
@@ -211,6 +214,8 @@ public:
 
 	int _sortieMinCond = 30;
 	int _sortieWaitCond = 40;
+
+	bool _levelNoWait = false;
 
 	StopWhen _stopwhen = StopWhen::None;
 

@@ -408,7 +408,7 @@ bool ControlManager::BuildNext_Level()
 					else
 					{
 						toChangeIdList.append(id);
-						if (ws > WoundState::Little)
+						if (ws > WoundState::Small)
 						{
 							setToTerminate("Terminated:NeedNDock");
 							return false;
@@ -483,9 +483,17 @@ bool ControlManager::BuildNext_Level()
 		_actionList.append(chAction);
 	}
 	// wait cond if over three red face
-	if (redFaceCount > 3)
+	if (_levelNoWait)
+	{
+		if (bNeedChangeMaruyu)
+		{
+			_actionList.append(new WaitNextPortAction());
+		}
+	}
+	else if (redFaceCount > 3)
 	{
 		qint64 waitMS = qCeil((_sortieWaitCond - minCond) / 3.0) * 3 * 60 * 1000;
+
 		auto waitAction = new WaitCondAction();
 		waitAction->setWaitMS(waitMS);
 		_actionList.append(waitAction);

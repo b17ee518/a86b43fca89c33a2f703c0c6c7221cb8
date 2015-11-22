@@ -47,6 +47,7 @@ public:
 		Repair,
 		Build,
 		Terminated,
+		Action,
 	};
 
     explicit TimerMainWindow(QWidget *parent = 0);

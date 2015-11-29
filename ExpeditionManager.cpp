@@ -2,6 +2,8 @@
 #include "kansavedata.h"
 #include "ControlManager.h"
 
+//#include <QDebug>
+
 void ExpeditionManager::BuildByPreset(ExpeditionPreset preset)
 {
 	Clear();
@@ -284,7 +286,10 @@ SingleExpedition* ExpeditionManager::getShouldNextSchedule(int team, qint64 ct, 
 		QTime costTime = it.value().costTime;
 
 		QDateTime estNextBackTime = backTime;
-		estNextBackTime.addMSecs(costTime.msecsSinceStartOfDay());
+		estNextBackTime = estNextBackTime.addMSecs(costTime.msecsSinceStartOfDay());
+
+//		qDebug() << "estNext" << estNextBackTime.toString("dd:hh:mm:ss.zzz");
+//		qDebug() << "schEndTime" << schEndTime.toString("dd:hh:mm:ss.zzz");
 
 		if (estNextBackTime < schEndTime || bOverNight)
 		{
@@ -346,6 +351,7 @@ QString SingleExpedition::checkMatches(int shipid, int index, int team, int& toS
 			&& cm->isShipCharged(id)
 			&& cm->hasSlotitem(id, SlotitemType::YuSou, drumCount[index]))
 		{
+			toShipid = id;
 			return "";
 		}
 		else

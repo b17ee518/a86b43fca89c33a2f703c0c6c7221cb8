@@ -232,13 +232,16 @@ bool ChangeHenseiAction::action()
 
 		_nowIndex = 0;
 		setState(State::HomePortChecking, "Hensei:HomePortChecking");
-		while (cm.isHenseiDone(_ships, _team, _nowIndex))
+		if (cm.getTeamSize(_team) == _ships.size())
 		{
-			_nowIndex++;
-			if (_nowIndex == _ships.size())
+			while (cm.isHenseiDone(_ships, _team, _nowIndex))
 			{
-				setState(State::Done, "Hensei:Done");
-				break;
+				_nowIndex++;
+				if (_nowIndex == _ships.size())
+				{
+					setState(State::Done, "Hensei:Done");
+					break;
+				}
 			}
 		}
 

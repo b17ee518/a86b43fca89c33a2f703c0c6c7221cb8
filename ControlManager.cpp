@@ -183,7 +183,7 @@ bool ControlManager::BuildNext_SouthEast()
 		setToTerminate("Terminated:Done Mission");
 		return false;
 	}
-//	if (_southEastTeamSize < 4)
+	if (_southEastTeamSize < 4)
 	{
 		// keep 4 and up for formation
 		_southEastTeamSize = 4;
@@ -1185,7 +1185,11 @@ bool ControlManager::isHenseiDone(const QList<int>& ships, int team, int index/*
 		{
 			if (index >= 0 && index < ships.size())
 			{
-				if (fleet.api_ship[index] == ships[index])
+				if (index >= fleet.api_ship.size())
+				{
+					return false;
+				}
+				else if (fleet.api_ship[index] == ships[index])
 				{
 					return true;
 				}
@@ -1202,6 +1206,10 @@ bool ControlManager::isHenseiDone(const QList<int>& ships, int team, int index/*
 			{
 				for (int i = 0; i < ships.size(); i++)
 				{
+					if (i >= fleet.api_ship.size())
+					{
+						return false;
+					}
 					if (fleet.api_ship[i] != ships[i])
 					{
 						return false;

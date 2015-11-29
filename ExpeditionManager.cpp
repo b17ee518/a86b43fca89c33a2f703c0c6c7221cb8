@@ -364,7 +364,8 @@ QString SingleExpedition::checkMatches(int shipid, int index, int team, int& toS
 		int shouldChangeCondBorder = 52;
 		// if current ship is ok
 		if (cm->isShipType(shipid, (ShipType)shiptype)
-			&& cm->hasSlotitem(shipid, SlotitemType::YuSou, drumCount[index]))
+			&& cm->hasSlotitem(shipid, SlotitemType::YuSou, drumCount[index])
+			&& checkDaihatsu(shipid, shiptype))
 		{
 			if (!kiraState[index])
 			{
@@ -392,7 +393,7 @@ QString SingleExpedition::checkMatches(int shipid, int index, int team, int& toS
 							{
 								continue;
 							}
-							else  if (!checkDaihatsu(shipid, shiptype))
+							else  if (!checkDaihatsu(id, shiptype))
 							{
 								continue;
 							}
@@ -452,7 +453,7 @@ QString SingleExpedition::checkMatches(int shipid, int index, int team, int& toS
 					{
 						continue;
 					}
-					else  if (!checkDaihatsu(shipid, shiptype))
+					else  if (!checkDaihatsu(id, shiptype))
 					{
 						continue;
 					}
@@ -493,7 +494,7 @@ QString SingleExpedition::checkMatches(int shipid, int index, int team, int& toS
 					{
 						continue;
 					}
-					else  if (!checkDaihatsu(shipid, shiptype))
+					else  if (!checkDaihatsu(id, shiptype))
 					{
 						continue;
 					}
@@ -524,7 +525,7 @@ bool SingleExpedition::checkDaihatsu(int shipid, int shiptype)
 	if (shiptype == (int)ShipType::SuiBou
 		|| shiptype == (int)ShipType::YouRiKu)
 	{
-		if (!ControlManager::getInstance().hasSlotitem(shipid, SlotitemType::JouRiKuTei, 3))
+		if (ControlManager::getInstance().hasSlotitem(shipid, SlotitemType::JouRiKuTei, 3))
 		{
 			return true;
 		}

@@ -24,6 +24,7 @@
 #include <QSettings>
 #include <QSysInfo>
 #include "ControlManager.h"
+#include "ExpeditionManager.h"
 
 #define SAFE_RELEASE(x) if(x) { x->Release(); x = NULL; } 
 
@@ -961,7 +962,7 @@ void MainWindow::onDoJobFuel()
 		Q_UNUSED(foreverButton);
 
 		pMessageBox->setDefaultButton(QMessageBox::NoButton);
-		pMessageBox->setAttribute(Qt::WA_DeleteOnClose, true);
+//		pMessageBox->setAttribute(Qt::WA_DeleteOnClose, true);
 		pMessageBox->exec();
 
 		auto clickedButton = pMessageBox->clickedButton();
@@ -979,9 +980,10 @@ void MainWindow::onDoJobFuel()
 		{
 			cm.setStopWhen(ControlManager::StopWhen::SouthEast5);
 		}
+		delete pMessageBox;
 	}
 
-	if (cm.isFlagshipOnly())
+	if (cm.isFlagshipOnly(0))
 	{
 		cm.BuildNext_Fuel();
 	}
@@ -1331,6 +1333,7 @@ void MainWindow::loadSettings()
 	const QString itemUsePort = "UsePort";
 	const QString itemIntervalMul = "IntervalMul";
 	const QString itemProxyMode = "ProxyMode";
+	const QString itemExpeditionMode = "ExpeditionMode";
 	
 	setting->beginGroup("Settings");
 	if (!setting->contains(itemUseIE))
@@ -1371,6 +1374,10 @@ void MainWindow::loadSettings()
 	{
 		setting->setValue(itemProxyMode, "Nekoxy");
 	}
+	if (!setting->contains(itemExpeditionMode))
+	{
+		setting->setValue(itemExpeditionMode, "General");
+	}
 
 	_bUseIE = setting->value(itemUseIE).toBool();
 	_gameUrl = setting->value(itemGameUrl).toString();
@@ -1399,6 +1406,8 @@ void MainWindow::loadSettings()
 	{
 		_proxyMode = ProxyMode::Titanium;
 	}
+
+	ExpeditionManager::getInstance().BuildByPreset(setting->value(itemExpeditionMode).toString());
 
 	setting->endGroup();
 

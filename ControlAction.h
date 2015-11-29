@@ -110,7 +110,10 @@ public:
 		ChangeFleetDone,
 
 		HenseiChecking,
-		HenseiDone, // click change one / skip
+		HenseiDone, // click change one / skip / remove all
+
+		RemoveAllOtherChecking,
+		RemoveAllOtherDone,
 
 		FindShipChecking,	// cur page
 		FindShipChangeSort,	// sort change

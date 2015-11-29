@@ -369,13 +369,18 @@ const kcsapi_mst_slotitem * KanDataConnector::findMstSlotItemFromSlotitemid(int 
 }
 
 
-bool KanDataConnector::isShipHasSlotitem(kcsapi_ship2* pship, SlotitemType sitype)
+bool KanDataConnector::isShipHasSlotitem(kcsapi_ship2* pship, SlotitemType sitype, int count/*=1*/)
 {
 	if (!pship)
 	{
 		return false;
 	}
+	if (count <= 0)
+	{
+		return true;
+	}
 
+	int nowCount = 0;
 	for (auto slotitemid : pship->api_slot)
 	{
 		if (slotitemid >= 0)
@@ -391,7 +396,11 @@ bool KanDataConnector::isShipHasSlotitem(kcsapi_ship2* pship, SlotitemType sityp
 						int type = pmstslotitem->api_type[2];
 						if ((int)sitype == type)
 						{
-							return true;
+							nowCount++;
+							if (nowCount >= count)
+							{
+								return true;
+							}
 						}
 					}
 				}

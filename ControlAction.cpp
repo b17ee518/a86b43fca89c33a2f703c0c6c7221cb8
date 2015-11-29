@@ -235,7 +235,7 @@ bool ChangeHenseiAction::action()
 		while (cm.isHenseiDone(_ships, _team, _nowIndex))
 		{
 			_nowIndex++;
-			if (_nowIndex >= _ships.size())
+			if (_nowIndex == _ships.size())
 			{
 				setState(State::Done, "Hensei:Done");
 				break;
@@ -353,10 +353,18 @@ bool ChangeHenseiAction::action()
 			_waiting = true;
 			QTimer::singleShot(DELAY_TIME_CLICK, Qt::PreciseTimer, this, [this, &cm]()
 			{
+				// need remove all
+				if (cm.getTeamSize(_team) > _ships.size())
+				{
+					setState(State::RemoveAllOtherChecking, "Hensei:RemoveAllOtherChecking");
+					resetRetryAndWainting();
+					return;
+				}
+
 				while (cm.isHenseiDone(_ships, _team, _nowIndex))
 				{
 					_nowIndex++;
-					if (_nowIndex >= _ships.size())
+					if (_nowIndex == _ships.size())
 					{
 						setState(State::ReturnToPortChecking, "Hensei:ReturnToPortChecking");
 						resetRetryAndWainting();
@@ -372,6 +380,43 @@ bool ChangeHenseiAction::action()
 				setState(State::FindShipChecking, "Hensei:FindShipChecking");
 				resetRetryAndWainting();
 			});			
+		}
+		break;
+	case ChangeHenseiAction::State::RemoveAllOtherChecking:
+		if (!_waiting)
+		{
+			_waiting = true;
+			QTimer::singleShot(DELAY_TIME, Qt::PreciseTimer, this, [this, &cm]()
+			{
+				if (cm.checkColors(
+					34, 144, 238, 213, 54
+					, 404, 208, 84, 178, 105))
+				{
+					_waiting = false;
+					setState(State::RemoveAllOtherDone, "Hensei:RemoveAllOtherDone");
+				}
+				else
+				{
+					tryRetry();
+				}
+			});
+		}
+		break;
+	case ChangeHenseiAction::State::RemoveAllOtherDone:
+		if (!_waiting)
+		{
+			_waiting = true;
+			QTimer::singleShot(DELAY_TIME_CLICK, Qt::PreciseTimer, this, [this, &cm]()
+			{
+				cm.moveMouseToAndClick(420, 119, 20, 3); // remove all button
+
+				// jump to done directly
+				QTimer::singleShot(DELAY_TIME_SUPERLONG, Qt::PreciseTimer, this, [this, &cm]()
+				{
+					setState(State::HenseiDone, "Hensei:HenseiDone");
+					resetRetryAndWainting();
+				});
+			});
 		}
 		break;
 	case ChangeHenseiAction::State::FindShipChecking:
@@ -1544,8 +1589,7 @@ bool ExpeditionAction::action()
 	{
 	case ExpeditionAction::State::None:
 
-		if (cm.needChargeAnyShip(_team) || cm.hugestDamageInTeam(_team) > WoundState::Full
-			|| (_area != 0 && _area != 4))
+		if (cm.needChargeAnyShip(_team) || cm.hugestDamageInTeam(_team) > WoundState::Full)
 		{
 			cm.setToTerminate("Terminated:Damage");
 			emit sigFatal();
@@ -1646,7 +1690,7 @@ bool ExpeditionAction::action()
 		}
 		break;
 	case ExpeditionAction::State::SelectAreaDone:
-		if (_area == 4)
+		if (_area > 0)
 		{
 			if (!_waiting)
 			{
@@ -1672,8 +1716,8 @@ bool ExpeditionAction::action()
 			QTimer::singleShot(DELAY_TIME, Qt::PreciseTimer, this, [this, &cm]()
 			{
 				if (cm.checkColors(
-					233, 170, 86, 82, 76
-					, 213, 233, 236, 228, 215))
+					75, 210, 244, 222, 168
+					, 508, 113, 247, 177, 85))
 				{
 					_waiting = false;
 					setState(State::SelectItemDone, "Expedition:SelectItemDone");

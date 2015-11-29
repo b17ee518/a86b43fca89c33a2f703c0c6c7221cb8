@@ -7,6 +7,7 @@
 #include "kansavedata.h"
 #include "kandatacalc.h"
 #include <QtMath>
+#include "ExpeditionManager.h"
 
 #define COL_ALLOWRANCE 3
 #define COND_DAIHATSU	80
@@ -131,7 +132,7 @@ bool ControlManager::BuildNext_Fuel()
 		setToTerminate("Termination:StopWhenDone");
 		return false;
 	}
-	if (!isFlagshipOnly())
+	if (!isFlagshipOnly(0))
 	{
 		// southeast
 		return BuildNext_SouthEast();
@@ -175,14 +176,14 @@ bool ControlManager::BuildNext_SouthEast()
 		setToTerminate("Termination:StopWhenDone");
 		return false;
 	}
-	_southEastTeamSize = getTeamSize();
+	_southEastTeamSize = getTeamSize(0);
 	KanSaveData* pksd = &KanSaveData::getInstance();
 	if (pksd->totalSouthEastWin >= 5)
 	{
 		setToTerminate("Terminated:Done Mission");
 		return false;
 	}
-	if (_southEastTeamSize < 4)
+//	if (_southEastTeamSize < 4)
 	{
 		// keep 4 and up for formation
 		_southEastTeamSize = 4;
@@ -514,47 +515,15 @@ bool ControlManager::BuildNext_Expedition()
 	qint64 waitMS = timerWindow->getMinExpeditionMS(team);
 
 	qint64 ct = TimerMainWindow::currentMS();
-	QList<int> excludes;
 
-	QDateTime dt;
-	QTime borderNightTime(22, 30);
-	QTime borderMorningTime(7, 30);
-	while (team > 0)
+	auto pExp = ExpeditionManager::getInstance().getShouldNextSchedule(team, ct, ct+waitMS);
+	if (!pExp)
 	{
-		QTime exptime;
-		switch (team)
-		{
-		case 1:
-			exptime.setHMS(2, 44, 0);
-			break;
-		case 2:
-			exptime.setHMS(0, 29, 0);
-			break;
-		case 3:
-			exptime.setHMS(2, 54, 0);
-			break;
-		}
-		dt.setMSecsSinceEpoch(ct + waitMS + exptime.msecsSinceStartOfDay());
-
-		if (dt.time() >= borderNightTime || dt.time() < borderMorningTime)
-		{
-			excludes.append(team);
-			waitMS = timerWindow->getMinExpeditionMS(team, excludes);
-		}
-		else
-		{
-			break;
-		}
-	}
-
-	if (team < 1 || team >= 4)
-	{
-		setToTerminate("Termination:NoTeam");
+		setToTerminate("Termination:Fatal");
 		return false;
 	}
-	// check if team match hensei
-	int area = 0;
-	int item = 1;
+
+	// set pexp
 
 	KanSaveData* pksd = &KanSaveData::getInstance();
 	if (!pksd->portdata.api_ship.size())
@@ -589,204 +558,52 @@ bool ControlManager::BuildNext_Expedition()
 	srand(ct);
 	std::random_shuffle(todoships.begin(), todoships.end());
 	bool needChangeHensei = false;
-	QList<int> toShips;
+	QList<int> toShips = ships;
 
-	int shouldChangeCondBorder = 52;
-	if (team == 1)
+	int shipCount = pExp->shipTypes.count();
+	while (toShips.size() > shipCount)
 	{
-		if (ships.size() != 6)
-		{
-			setToTerminate("Termination:Team1Error");
-			return false;
-		}
-		if (!isShipType(ships[0], ShipType::KeiJun))
-		{
-			setToTerminate("Termination:Team1-F-Error");
-			return false;
-		}
-		if (!(ships[1] == 4767 && ships[2] == 5012 || ships[1] == 5012 && ships[2] == 4767))
-		{
-			setToTerminate("Termination:Team1-K-Error");
-			return false;
-		}
-		for (int i = 3; i < 6; i++)
-		{
-			if (!isShipType(ships[i], ShipType::KuChiKu))
-			{
-				setToTerminate("Termination:Team1-O-Error");
-				return false;
-			}
-		}
+		toShips.removeLast();
+	}
+	while (toShips.size() < shipCount)
+	{
+		toShips.append(-1);
+	}
+	while (ships.size() < shipCount)
+	{
+		ships.append(-1);
+	}
 
-		area = 4;
-		item = 4;
-		//
-		toShips = ships;
-		if (getShipCondVal(ships[0]) <= shouldChangeCondBorder)
+	// TODO: adjust exchangeable special ships
+	for (int i = 0; i < shipCount; i++)
+	{
+		int toShipid = -1;
+		QList<int> excludeShipids;
+		for (int j = 0; j < i; j++)
+		{
+			excludeShipids.append(toShips[j]);
+		}
+		QString failReason = pExp->checkMatches(ships[i], i, team, toShipid, todoships, excludeShipids);
+		if (!failReason.isEmpty())
+		{
+			setToTerminate((QString("Termination:") + failReason).toStdString().c_str());
+			return false;
+		}
+		if (toShipid < 0)
+		{
+			continue;
+		}
+		else if (toShipid == toShips[i])
+		{
+			continue;
+		}
+		else
 		{
 			needChangeHensei = true;
-			bool bChanged = false;
-			// change keijun
-			for (int id : todoships)
-			{
-				// TODO:no check on treated same ship!!
-				if (isShipType(id, ShipType::KeiJun) 
-					&& KanDataCalc::GetCondState(getShipCondVal(id)) == CondState::Kira
-					&& !isShipInDock(id)
-					&& !isShipInOtherTeam(id, -1) // every team
-					&& !isShipDamaged(id)
-					&& isShipCharged(id))
-				{
-					toShips[0] = id;
-					bChanged = true;
-					break;
-				}
-			}
-			if (!bChanged)
-			{
-				setToTerminate("Termination:Team1-F-NoChangeError");
-				return false;
-			}
-		}
-		for (int i = 3; i < 6; i++)
-		{
-			if (getShipCondVal(ships[i]) <= shouldChangeCondBorder)
-			{
-				needChangeHensei = true;
-				bool bChanged = false;
-				// change kuchiku
-				for (int id : todoships)
-				{
-					// TODO:no check on treated same ship!!
-					if (isShipType(id, ShipType::KuChiKu)
-						&& KanDataCalc::GetCondState(getShipCondVal(id)) == CondState::Kira
-						&& !isShipInDock(id)
-						&& !isShipInOtherTeam(id, -1)	// every team
-						&& !isShipDamaged(id)
-						&& isShipCharged(id)
-						&& hasSlotitem(id, SlotitemType::YuSou))
-					{
-						bool bSkip = false;
-						for (int j = 3; j < i; j++)
-						{
-							if (toShips[j] == id)
-							{
-								bSkip = true;
-								break;
-							}
-						}
-						if (bSkip)
-						{
-							continue;
-						}
-						else
-						{
-							toShips[i] = id;
-							bChanged = true;
-							break;
-						}
-					}
-				}
-				if (!bChanged)
-				{
-					setToTerminate("Termination:Team1NoChangeError");
-					return false;
-				}
-			}
-
+			toShips[i] = toShipid;
 		}
 	}
-	else if (team == 2)
-	{
-		if (ships.size() != 4)
-		{
-			return false;
-		}
-		for (int i = 0; i < 4; i++)
-		{
-			if (ships[i] != 56 && ships[i] != 34 && ships[i] != 157 && ships[i] != 3142)
-			{
-				setToTerminate("Termination:Team2Error");
-				return false;
-			}
-		}
-		area = 0;
-		item = 1;
-		needChangeHensei = false;
-	}
-	else if (team == 3)
-	{
-		if (ships.size() != 6)
-		{
-			setToTerminate("Termination:Team3Error");
-			return false;
-		}
-		if (!(ships[0] == 1703 && ships[1] == 4774 || ships[0] == 4774 && ships[1] == 1703))
-		{
-			setToTerminate("Termination:Team3-F-Error");
-			return false;
-		}
-		for (int i = 2; i < 6; i++)
-		{
-			if (!isShipType(ships[i], ShipType::KuChiKu))
-			{
-				setToTerminate("Termination:Team3-O-Error");
-				return false;
-			}
-		}
-
-		area = 4;
-		item = 5;
-		//
-		toShips = ships;
-		for (int i = 2; i < 6; i++)
-		{
-			if (getShipCondVal(ships[i]) <= shouldChangeCondBorder)
-			{
-				needChangeHensei = true;
-				bool bChanged = false;
-				// change kuchiku
-				for (int id : todoships)
-				{
-					// TODO:no check on treated same ship!!
-					if (isShipType(id, ShipType::KuChiKu)
-						&& KanDataCalc::GetCondState(getShipCondVal(id)) == CondState::Kira
-						&& !isShipInDock(id)
-						&& !isShipInOtherTeam(id, -1)	// every team
-						&& !isShipDamaged(id)
-						&& isShipCharged(id)
-						&& hasSlotitem(id, SlotitemType::YuSou))
-					{
-						bool bSkip = false;
-						for (int j = 2; j < i; j++)
-						{
-							if (toShips[j] == id)
-							{
-								bSkip = true;
-								break;
-							}
-						}
-						if (bSkip)
-						{
-							continue;
-						}
-						else
-						{
-							toShips[i] = id;
-							bChanged = true;
-							break;
-						}
-					}
-				}
-				if (!bChanged)
-				{
-					setToTerminate("Termination:Team3NoChangeError");
-					return false;
-				}
-			}
-		}
-	}
-
+	
 	if (waitMS > 0)
 	{
 		waitMS += 5000+randVal(-1000, 1000);
@@ -802,20 +619,17 @@ bool ControlManager::BuildNext_Expedition()
 	_actionList.append(chargeAction);
 
 	// change hensei
-	if (team != 2)
+	if (needChangeHensei)
 	{
-		if (needChangeHensei)
-		{
-			auto changeAction = new ChangeHenseiAction();
-			changeAction->setShips(toShips);
-			changeAction->setTeam(team);
-			_actionList.append(changeAction);
-		}
+		auto changeAction = new ChangeHenseiAction();
+		changeAction->setShips(toShips);
+		changeAction->setTeam(team);
+		_actionList.append(changeAction);
 	}
 
 	// go expedition
 	auto expeditionAction = new ExpeditionAction();
-	expeditionAction->setTeamAndTarget(team, area, item);
+	expeditionAction->setTeamAndTarget(team, pExp->destPage, pExp->destIndex);
 	_actionList.append(expeditionAction);
 
 	_actionList.append(new RepeatAction());
@@ -973,7 +787,14 @@ void ControlManager::Terminate()
 	setInactiveWaiting(false);
 	MainWindow::mainWindow()->setJobTerminated();
 	_stopwhen = StopWhen::None;
-	setState(State::Terminated, "Terminated");
+	if (_state != State::ToTerminate)
+	{
+		setState(State::Terminated, "Terminated");
+	}
+	else
+	{
+		setState(State::Terminated, _stateStr.toStdString().c_str());
+	}
 }
 
 bool ControlManager::isPaused()
@@ -1400,20 +1221,23 @@ bool ControlManager::isHenseiDone(const QList<int>& ships, int team, int index/*
 	return true;
 }
 
-bool ControlManager::isFlagshipOnly()
+bool ControlManager::isFlagshipOnly(int team)
 {
-	return getTeamSize() == 1;
+	return getTeamSize(team) == 1;
 }
 
-int ControlManager::getTeamSize()
+int ControlManager::getTeamSize(int team)
 {
 	KanSaveData* pksd = &KanSaveData::getInstance();
-
-	if (pksd->portdata.api_deck_port.size())
+	if (team < 0)
 	{
-		auto& firstFleet = pksd->portdata.api_deck_port.first();
+		return 0;
+	}
+	if (pksd->portdata.api_deck_port.size() > team)
+	{
+		auto& fleet = pksd->portdata.api_deck_port.at(team);
 		QList<int> nonEmptyShipList;
-		for (auto id : firstFleet.api_ship)
+		for (auto id : fleet.api_ship)
 		{
 			if (id >= 0)
 			{
@@ -1445,9 +1269,13 @@ bool ControlManager::isShipType(int shipno, ShipType stype)
 	return false;
 }
 
-bool ControlManager::hasSlotitem(int shipno, SlotitemType sitype)
+bool ControlManager::hasSlotitem(int shipno, SlotitemType sitype, int count/*=1*/)
 {
-	return KanDataConnector::getInstance().isShipHasSlotitem(shipno, sitype);
+	if (count <= 0)
+	{
+		return true;
+	}
+	return KanDataConnector::getInstance().isShipHasSlotitem(shipno, sitype, count);
 }
 
 bool ControlManager::noSlotitem(int shipno)

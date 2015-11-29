@@ -246,6 +246,9 @@
     <ClCompile Include="titanium_web_proxy.cpp">
       <Filter>TitaniumCOM</Filter>
     </ClCompile>
+    <ClCompile Include="ExpeditionManager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="cookiejar.h">
@@ -374,6 +377,9 @@
     </ClInclude>
     <ClInclude Include="titanium_web_proxy.h">
       <Filter>TitaniumCOM</Filter>
+    </ClInclude>
+    <ClInclude Include="ExpeditionManager.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

@@ -116,10 +116,10 @@ public:
 	bool isShipCharged(int shipno);
 
 	bool isHenseiDone(const QList<int>& ships, int team, int index = -1);
-	bool isFlagshipOnly();
-	int getTeamSize();
+	bool isFlagshipOnly(int team);
+	int getTeamSize(int team);
 	bool isShipType(int shipno, ShipType stype);
-	bool hasSlotitem(int shipno, SlotitemType sitype);
+	bool hasSlotitem(int shipno, SlotitemType sitype, int count=1);
 	bool noSlotitem(int shipno);
 
 	int getShipCondVal(int shipno);

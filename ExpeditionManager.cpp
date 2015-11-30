@@ -230,7 +230,7 @@ void ExpeditionManager::BuildByPreset(ExpeditionPreset preset)
 
 void ExpeditionManager::BuildByPreset(const QString& preset)
 {
-	if (preset.compare("Bouxite", Qt::CaseInsensitive))
+	if (!preset.compare("Bouxite", Qt::CaseInsensitive))
 	{
 		BuildByPreset(ExpeditionPreset::Bouxite);
 		return;

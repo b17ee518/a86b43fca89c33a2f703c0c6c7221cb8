@@ -270,6 +270,11 @@ SingleExpedition* ExpeditionManager::getShouldNextSchedule(int team, qint64 ct, 
 	QDateTime zeroToday = QDateTime::currentDateTime();
 	zeroToday.setTime(QTime(0, 0));
 
+	if (backTime > zeroToday.addDays(1))
+	{
+		return NULL;
+	}
+
 	QMap<QTime, SingleExpedition>::iterator it = pSchedule->expeditions.begin();
 	while (it != pSchedule->expeditions.end()) {
 		bool bOverNight = false;

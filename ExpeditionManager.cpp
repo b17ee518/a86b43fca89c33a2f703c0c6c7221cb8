@@ -4,6 +4,15 @@
 
 //#include <QDebug>
 
+#define SPSHIP_AKIGUMO	4767
+#define SPSHIP_YUGUMO	5012
+#define SPSHIP_MAKIGUMO	1703
+#define SPSHIP_NAGANAMI	4774
+#define SPSHIP_SATSUKI	56
+#define SPSHIP_FUMITSUKI	34
+#define SPSHIP_NAGATSUKI	157
+#define SPSHIP_KIKUDUKI	3142
+
 void ExpeditionManager::BuildByPreset(ExpeditionPreset preset)
 {
 	Clear();
@@ -20,8 +29,8 @@ void ExpeditionManager::BuildByPreset(ExpeditionPreset preset)
 				// toukyu1
 				exp.Clear();
 				exp.addShip((int)ShipType::KeiJun, true, 0);
-				exp.addShip(-4767, false, 2);
-				exp.addShip(-5012, false, 2);
+				exp.addShip(-SPSHIP_AKIGUMO, false, 2);
+				exp.addShip(-SPSHIP_YUGUMO, false, 2);
 				exp.addShip((int)ShipType::KuChiKu, true, 1);
 				exp.addShip((int)ShipType::KuChiKu, true, 1);
 				exp.addShip((int)ShipType::KuChiKu, true, 1);
@@ -32,10 +41,10 @@ void ExpeditionManager::BuildByPreset(ExpeditionPreset preset)
 				// padding 30
 
 				exp.Clear();
-				exp.addShip(-56, false, 0);
-				exp.addShip(-34, false, 0);
-				exp.addShip(-157, false, 0);
-				exp.addShip(-3142, false, 0);
+				exp.addShip(-SPSHIP_SATSUKI, false, 0);
+				exp.addShip(-SPSHIP_FUMITSUKI, false, 0);
+				exp.addShip(-SPSHIP_NAGATSUKI, false, 0);
+				exp.addShip(-SPSHIP_KIKUDUKI, false, 0);
 				exp.setInfo(QTime(0, 29), 0, 1);
 
 				pschedule->addExpedition(QTime(22, 30), exp);
@@ -43,8 +52,8 @@ void ExpeditionManager::BuildByPreset(ExpeditionPreset preset)
 				// 3last
 				exp.Clear();
 				exp.addShip((int)ShipType::KeiJun, true, 0);
-				exp.addShip(-4767, false, 2);
-				exp.addShip(-5012, false, 2);
+				exp.addShip(-SPSHIP_AKIGUMO, false, 2);
+				exp.addShip(-SPSHIP_YUGUMO, false, 2);
 				exp.addShip((int)ShipType::KuChiKu, true, 1);
 				exp.addShip((int)ShipType::KuChiKu, true, 1);
 				exp.addShip((int)ShipType::YouRiKu, true, 0);
@@ -57,10 +66,10 @@ void ExpeditionManager::BuildByPreset(ExpeditionPreset preset)
 				pschedule = &(_schedules[1]);
 
 				exp.Clear();
-				exp.addShip(-56, false, 0);
-				exp.addShip(-34, false, 0);
-				exp.addShip(-157, false, 0);
-				exp.addShip(-3142, false, 0);
+				exp.addShip(-SPSHIP_SATSUKI, false, 0);
+				exp.addShip(-SPSHIP_FUMITSUKI, false, 0);
+				exp.addShip(-SPSHIP_NAGATSUKI, false, 0);
+				exp.addShip(-SPSHIP_KIKUDUKI, false, 0);
 				exp.setInfo(QTime(0, 29), 0, 1);
 
 				pschedule->addExpedition(QTime(19, 0), exp);
@@ -83,8 +92,8 @@ void ExpeditionManager::BuildByPreset(ExpeditionPreset preset)
 
 				// toukyu2
 				exp.Clear();
-				exp.addShip(-1703, false, 3);
-				exp.addShip(-4774, false, 3);
+				exp.addShip(-SPSHIP_MAKIGUMO, false, 3);
+				exp.addShip(-SPSHIP_NAGANAMI, false, 3);
 				exp.addShip((int)ShipType::KuChiKu, true, 1);
 				exp.addShip((int)ShipType::KuChiKu, true, 1);
 				exp.addShip((int)ShipType::KuChiKu, true, 1);
@@ -96,8 +105,8 @@ void ExpeditionManager::BuildByPreset(ExpeditionPreset preset)
 				// 5last
 				exp.Clear();
 				exp.addShip((int)ShipType::KeiJun, true, 0);
-				exp.addShip(-1703, false, 3);
-				exp.addShip(-4774, false, 3);
+				exp.addShip(-SPSHIP_MAKIGUMO, false, 3);
+				exp.addShip(-SPSHIP_NAGANAMI, false, 3);
 				exp.addShip((int)ShipType::KuChiKu, true, 1);
 				exp.addShip((int)ShipType::SuiBou, true, 0);
 				exp.addShip((int)ShipType::SuiBou, true, 0);
@@ -118,8 +127,8 @@ void ExpeditionManager::BuildByPreset(ExpeditionPreset preset)
 				// toukyu1
 				exp.Clear();
 				exp.addShip((int)ShipType::KeiJun, true, 0);
-				exp.addShip(-4767, false, 2);
-				exp.addShip(-5012, false, 2);
+				exp.addShip(-SPSHIP_AKIGUMO, false, 2);
+				exp.addShip(-SPSHIP_YUGUMO, false, 2);
 				exp.addShip((int)ShipType::KuChiKu, true, 1);
 				exp.addShip((int)ShipType::KuChiKu, true, 1);
 				exp.addShip((int)ShipType::KuChiKu, true, 1);
@@ -130,10 +139,10 @@ void ExpeditionManager::BuildByPreset(ExpeditionPreset preset)
 				// padding 30
 
 				exp.Clear();
-				exp.addShip(-56, false, 0);
-				exp.addShip(-34, false, 0);
-				exp.addShip(-157, false, 0);
-				exp.addShip(-3142, false, 0);
+				exp.addShip(-SPSHIP_SATSUKI, false, 0);
+				exp.addShip(-SPSHIP_FUMITSUKI, false, 0);
+				exp.addShip(-SPSHIP_NAGATSUKI, false, 0);
+				exp.addShip(-SPSHIP_KIKUDUKI, false, 0);
 				exp.setInfo(QTime(0, 29), 0, 1);
 
 				pschedule->addExpedition(QTime(22, 30), exp);
@@ -141,8 +150,8 @@ void ExpeditionManager::BuildByPreset(ExpeditionPreset preset)
 				// 3last
 				exp.Clear();
 				exp.addShip((int)ShipType::KeiJun, true, 0);
-				exp.addShip(-4767, false, 2);
-				exp.addShip(-5012, false, 2);
+				exp.addShip(-SPSHIP_AKIGUMO, false, 2);
+				exp.addShip(-SPSHIP_YUGUMO, false, 2);
 				exp.addShip((int)ShipType::KuChiKu, true, 1);
 				exp.addShip((int)ShipType::KuChiKu, true, 1);
 				exp.addShip((int)ShipType::YouRiKu, true, 0);
@@ -155,10 +164,10 @@ void ExpeditionManager::BuildByPreset(ExpeditionPreset preset)
 				pschedule = &(_schedules[1]);
 
 				exp.Clear();
-				exp.addShip(-56, false, 0);
-				exp.addShip(-34, false, 0);
-				exp.addShip(-157, false, 0);
-				exp.addShip(-3142, false, 0);
+				exp.addShip(-SPSHIP_SATSUKI, false, 0);
+				exp.addShip(-SPSHIP_FUMITSUKI, false, 0);
+				exp.addShip(-SPSHIP_NAGATSUKI, false, 0);
+				exp.addShip(-SPSHIP_KIKUDUKI, false, 0);
 				exp.setInfo(QTime(0, 29), 0, 1);
 
 				pschedule->addExpedition(QTime(19, 0), exp);
@@ -184,14 +193,20 @@ void ExpeditionManager::BuildByPreset(ExpeditionPreset preset)
 				exp.addShip((int)ShipType::KuChiKu, false, 0);
 				exp.addShip((int)ShipType::KuChiKu, false, 0);
 				exp.addShip((int)ShipType::KuChiKu, false, 0);
+				exp.addSpecialExcludes(SPSHIP_AKIGUMO);
+				exp.addSpecialExcludes(SPSHIP_YUGUMO);
+				exp.addSpecialExcludes(SPSHIP_SATSUKI);
+				exp.addSpecialExcludes(SPSHIP_FUMITSUKI);
+				exp.addSpecialExcludes(SPSHIP_NAGATSUKI);
+				exp.addSpecialExcludes(SPSHIP_KIKUDUKI);
 				exp.setInfo(QTime(0, 39), 0, 5);
 
 				pschedule->addExpedition(QTime(19, 0), exp);
 
 				// toukyu2
 				exp.Clear();
-				exp.addShip(-1703, false, 3);
-				exp.addShip(-4774, false, 3);
+				exp.addShip(-SPSHIP_MAKIGUMO, false, 3);
+				exp.addShip(-SPSHIP_NAGANAMI, false, 3);
 				exp.addShip((int)ShipType::KuChiKu, true, 1);
 				exp.addShip((int)ShipType::KuChiKu, true, 1);
 				exp.addShip((int)ShipType::KuChiKu, true, 1);
@@ -205,6 +220,12 @@ void ExpeditionManager::BuildByPreset(ExpeditionPreset preset)
 				exp.addShip((int)ShipType::KuChiKu, false, 0);
 				exp.addShip((int)ShipType::KuChiKu, false, 0);
 				exp.addShip((int)ShipType::KuChiKu, false, 0);
+				exp.addSpecialExcludes(SPSHIP_AKIGUMO);
+				exp.addSpecialExcludes(SPSHIP_YUGUMO);
+				exp.addSpecialExcludes(SPSHIP_SATSUKI);
+				exp.addSpecialExcludes(SPSHIP_FUMITSUKI);
+				exp.addSpecialExcludes(SPSHIP_NAGATSUKI);
+				exp.addSpecialExcludes(SPSHIP_KIKUDUKI);
 				exp.setInfo(QTime(0, 39), 0, 5);
 
 				pschedule->addExpedition(QTime(22, 30), exp);
@@ -212,8 +233,8 @@ void ExpeditionManager::BuildByPreset(ExpeditionPreset preset)
 				// 5last
 				exp.Clear();
 				exp.addShip((int)ShipType::KeiJun, true, 0);
-				exp.addShip(-1703, false, 3);
-				exp.addShip(-4774, false, 3);
+				exp.addShip(-SPSHIP_MAKIGUMO, false, 3);
+				exp.addShip(-SPSHIP_NAGANAMI, false, 3);
 				exp.addShip((int)ShipType::KuChiKu, true, 1);
 				exp.addShip((int)ShipType::SuiBou, true, 0);
 				exp.addShip((int)ShipType::SuiBou, true, 0);
@@ -313,6 +334,7 @@ void SingleExpedition::Clear()
 	shipTypes.clear();
 	kiraState.clear();
 	drumCount.clear();
+	specialExcludes.clear();
 	costTime = QTime();
 }
 
@@ -328,6 +350,11 @@ void SingleExpedition::setInfo(const QTime& cost, int page, int index)
 	costTime = cost;
 	destPage = page;
 	destIndex = index;
+}
+
+void SingleExpedition::addSpecialExcludes(int shipid)
+{
+	specialExcludes.append(shipid);
 }
 
 QString SingleExpedition::checkMatches(int shipid, int index, int team, int& toShipid, 
@@ -392,9 +419,11 @@ QString SingleExpedition::checkMatches(int shipid, int index, int team, int& toS
 							&& !cm->isShipInOtherTeam(id, -1)	// every team
 							&& !cm->isShipDamaged(id)
 							&& cm->isShipCharged(id)
-							&& cm->hasSlotitem(id, SlotitemType::YuSou, drumCount[index]))
+							&& cm->hasSlotitem(id, SlotitemType::YuSou, drumCount[index])
+							&& !cm->hasSlotitem(id, SlotitemType::Sonar)
+							&& !cm->hasSlotitem(id, SlotitemType::BaKuRai))
 						{
-							if (excludeShips.contains(id))
+							if (excludeShips.contains(id) || specialExcludes.contains(id))
 							{
 								continue;
 							}

@@ -12,6 +12,7 @@ public:
 	void Clear();
 	void addShip(int type, bool kira, int drum);
 	void setInfo(const QTime& cost, int page, int index);
+	void addSpecialExcludes(int shipid);
 
 	QString checkMatches(int shipid, int index, int team, int& toShipid, 
 		const QList<int>& shipList, const QList<int>& excludeShips);
@@ -21,6 +22,7 @@ public:
 	QList<int> shipTypes;	// minus for special ship
 	QList<bool> kiraState;
 	QList<int> drumCount;
+	QList<int> specialExcludes;
 	QTime costTime;
 	int destPage = -1;
 	int destIndex = -1;

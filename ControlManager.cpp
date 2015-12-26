@@ -444,7 +444,7 @@ bool ControlManager::BuildNext_Level()
 		// find one maruyu
 		int maruyuId = -1;
 		int bigMaruyuId = -1;
-		for (auto ship : pksd->portdata.api_ship)
+		for (auto& ship : pksd->portdata.api_ship)
 		{
 			const kcsapi_mst_ship * pmstship = pkdc->findMstShipFromShipid(ship.api_ship_id);
 			if (!pmstship)
@@ -458,7 +458,7 @@ bool ControlManager::BuildNext_Level()
 					&& !isShipInDock(ship.api_id)
 					&& !isShipInOtherTeam(ship.api_id, -1))
 				{
-					if (ship.api_lv >= 50)
+					if (ship.api_lv >= 20)
 					{
 						bigMaruyuId = ship.api_id;
 						continue;
@@ -835,7 +835,7 @@ void ControlManager::createSSShipList()
 
 	KanSaveData* pksd = &KanSaveData::getInstance();
 	KanDataConnector * pkdc = &KanDataConnector::getInstance();
-	for (auto ship: pksd->portdata.api_ship)
+	for (auto& ship: pksd->portdata.api_ship)
 	{
 		const kcsapi_mst_ship * pmstship = pkdc->findMstShipFromShipid(ship.api_ship_id);
 		if (!pmstship)

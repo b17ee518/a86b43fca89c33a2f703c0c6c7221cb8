@@ -481,7 +481,9 @@ QString SingleExpedition::checkMatches(int shipid, int index, int team, int& toS
 					&& !cm->isShipInOtherTeam(id, -1)	// every team
 					&& !cm->isShipDamaged(id)
 					&& cm->isShipCharged(id)
-					&& cm->hasSlotitem(id, SlotitemType::YuSou, drumCount[index]))
+					&& cm->hasSlotitem(id, SlotitemType::YuSou, drumCount[index])
+					&& !cm->hasSlotitem(id, SlotitemType::Sonar)
+					&& !cm->hasSlotitem(id, SlotitemType::BaKuRai))
 				{
 					if (excludeShips.contains(id))
 					{
@@ -522,7 +524,9 @@ QString SingleExpedition::checkMatches(int shipid, int index, int team, int& toS
 					&& !cm->isShipInOtherTeam(id, -1)	// every team
 					&& !cm->isShipDamaged(id)
 					&& cm->isShipCharged(id)
-					&& cm->hasSlotitem(id, SlotitemType::YuSou, drumCount[index]))
+					&& cm->hasSlotitem(id, SlotitemType::YuSou, drumCount[index])
+					&& !cm->hasSlotitem(id, SlotitemType::Sonar)
+					&& !cm->hasSlotitem(id, SlotitemType::BaKuRai))
 				{
 					if (excludeShips.contains(id))
 					{

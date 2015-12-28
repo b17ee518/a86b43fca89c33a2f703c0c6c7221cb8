@@ -245,6 +245,20 @@ bool ChangeHenseiAction::action()
 			}
 		}
 
+		for (auto shipno : _ships)
+		{
+			int page;
+			int pos;
+			if (ControlManager::getInstance().findPagePosByShipId(shipno, page, pos, _lastPage))
+			{
+				_pageList.append(page);
+				_posList.append(pos);
+			}
+			else
+			{
+				cm.setToTerminate("Terminated:HenseiError");
+			}
+		}
 		resetRetryAndWainting();
 		break;
 	case ChangeHenseiAction::State::HomePortChecking:
@@ -716,14 +730,6 @@ void ChangeHenseiAction::setShips(const QList<int>& ships)
 			continue;
 		}
 		_ships.append(shipno);
-
-		int page;
-		int pos;
-		if (ControlManager::getInstance().findPagePosByShipId(shipno, page, pos, _lastPage))
-		{
-			_pageList.append(page);
-			_posList.append(pos);
-		}
 	}
 }
 

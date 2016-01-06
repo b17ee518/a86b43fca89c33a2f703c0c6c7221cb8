@@ -39,6 +39,7 @@ enum class QWebViewCSSIndex
 {
 	Invalid = -1,
 	Normal = 0,
+	Compact,
 	Transparent,
 	//	CLEAR,
 	Max,

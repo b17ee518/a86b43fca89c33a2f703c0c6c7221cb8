@@ -197,6 +197,8 @@ void MainWindow::postInit(InfoMainWindow *pInfo, TimerMainWindow *pTimer, Weapon
     connect(ui->pbCheckWeapon, SIGNAL(toggled(bool)), _pWeaponWindow, SLOT(slotSetVisible(bool)));
 	connect(ui->pbCheckShip, SIGNAL(toggled(bool)), _pShipWindow, SLOT(slotSetVisible(bool)));
 
+	connect(ui->pbCheckTransparent, SIGNAL(toggled(bool)), this, SLOT(on_pbCheckTransparent_toggled(bool)));
+
 	AdjustVolume(-1);
 
 	HWND hwnd = (HWND)effectiveWinId();
@@ -512,7 +514,16 @@ void MainWindow::on_pbCheckTransparent_toggled(bool checked)
 
 		applyCss(QWebViewCSSIndex::Normal);
 	}
-
+	/*
+	if (checked)
+	{
+		applyCss(QWebViewCSSIndex::Compact);
+	}
+	else
+	{
+		applyCss(QWebViewCSSIndex::Normal);
+	}
+	*/
 }
 
 void MainWindow::slotWebViewException(int code, const QString &source, const QString &desc, const QString &help)
@@ -1268,8 +1279,40 @@ body {
 									left:-50px;\
 									z-index:1\
 								 }";
-	_webViewCsses[(int)QWebViewCSSIndex::Normal] = 
-		(QUrl("data:text/css;charset=utf-8;base64,Ym9keSB7DQoJbWFyZ2luOjA7DQoJb3ZlcmZsb3c6aGlkZGVuDQp9DQoNCiNnYW1lX2ZyYW1lIHsNCglwb3NpdGlvbjpmaXhlZDsNCgl0b3A6LTE2cHg7DQoJbGVmdDotNTBweDsNCgl6LWluZGV4OjENCn0="));
+	_webViewCsses[(int)QWebViewCSSIndex::Normal] = QUrl(QString("data:text/css;charset=utf-8;base64,") 
+		+ _ieCsses[(int)QWebViewCSSIndex::Normal].toUtf8().toBase64());
+//		(QUrl("data:text/css;charset=utf-8;base64,Ym9keSB7DQoJbWFyZ2luOjA7DQoJb3ZlcmZsb3c6aGlkZGVuDQp9DQoNCiNnYW1lX2ZyYW1lIHsNCglwb3NpdGlvbjpmaXhlZDsNCgl0b3A6LTE2cHg7DQoJbGVmdDotNTBweDsNCgl6LWluZGV4OjENCn0="));
+
+
+	/*
+	*
+	body {
+	margin:0;
+	overflow:hidden
+	}
+
+	#game_frame {
+	position:fixed;
+	top:-16px;
+	left:-50px;
+	z-index:1
+	zoom:0.5
+	}
+	*/
+	
+	_ieCsses[(int)QWebViewCSSIndex::Compact] = "\
+								body {\
+									margin:0;\
+									overflow:hidden;\
+								}\
+								#game_frame{\
+									position:fixed;\
+									top:-16px;\
+									left:-50px;\
+									z-index:1\
+																										 }";
+	_webViewCsses[(int)QWebViewCSSIndex::Compact] = QUrl(QString("data:text/css;charset=utf-8;base64,")
+		+ _ieCsses[(int)QWebViewCSSIndex::Compact].toUtf8().toBase64());
 	/*
 body {
 	margin:0;

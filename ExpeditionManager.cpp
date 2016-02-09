@@ -485,7 +485,7 @@ QString SingleExpedition::checkMatches(int shipid, int index, int team, int& toS
 					&& !cm->hasSlotitem(id, SlotitemType::Sonar)
 					&& !cm->hasSlotitem(id, SlotitemType::BaKuRai))
 				{
-					if (excludeShips.contains(id))
+					if (excludeShips.contains(id) || specialExcludes.contains(id))
 					{
 						continue;
 					}
@@ -528,7 +528,7 @@ QString SingleExpedition::checkMatches(int shipid, int index, int team, int& toS
 					&& !cm->hasSlotitem(id, SlotitemType::Sonar)
 					&& !cm->hasSlotitem(id, SlotitemType::BaKuRai))
 				{
-					if (excludeShips.contains(id))
+					if (excludeShips.contains(id) || specialExcludes.contains(id))
 					{
 						continue;
 					}

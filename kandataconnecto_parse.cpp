@@ -928,7 +928,25 @@ bool KanDataConnector::req_sortie_airbattle_parse()
 	return true;
 }
 
+bool KanDataConnector::req_sortie_ld_airbattle_parse()
+{
+	pksd->battledata.ReadFromJObj(_jobj);
+
+	pksd->enemyhpdata = updateBattle(pksd->battledata, KanBattleType::Air);
+	// TODO check air???
+	return true;
+
+}
+
 bool KanDataConnector::req_combined_battle_airbattle_parse()
+{
+	pksd->battledata.ReadFromJObj(_jobj);
+
+	pksd->enemyhpdata = updateBattle(pksd->battledata, KanBattleType::Combined_KouKu);
+	return true;
+}
+
+bool KanDataConnector::req_combined_battle_ld_airbattle_parse()
 {
 	pksd->battledata.ReadFromJObj(_jobj);
 

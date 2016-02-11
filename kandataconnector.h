@@ -137,7 +137,9 @@ private:
 	bool req_battle_midnight_sp_midnight_parse();
 	bool req_sortie_night_to_day_parse();
 	bool req_sortie_airbattle_parse();
+	bool req_sortie_ld_airbattle_parse();
 	bool req_combined_battle_airbattle_parse();
+	bool req_combined_battle_ld_airbattle_parse();
 	bool req_combined_battle_battlewater_parse();
 	bool req_combined_battle_battleresult_parse();
 	bool req_combined_battle_battle_parse();
@@ -235,7 +237,9 @@ private:
 	int req_battle_midnight_sp_midnight_flag;
 	int req_sortie_night_to_day_flag;
 	int req_sortie_airbattle_flag;
+	int req_sortie_ld_airbattle_flag;
 	int req_combined_battle_airbattle_flag;
+	int req_combined_battle_ld_airbattle_flag;
 	int req_combined_battle_battlewater_flag;
 	int req_combined_battle_battleresult_flag;
 	int req_combined_battle_battle_flag;

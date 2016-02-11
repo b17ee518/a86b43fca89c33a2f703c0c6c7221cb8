@@ -162,7 +162,9 @@ KanDataConnector::KanDataConnector(void)
 	req_battle_midnight_sp_midnight_flag = PARSEFLAG_NORMAL;
 	req_sortie_night_to_day_flag = PARSEFLAG_NORMAL;
 	req_sortie_airbattle_flag = PARSEFLAG_NORMAL;
+	req_sortie_ld_airbattle_flag = PARSEFLAG_NORMAL;
 	req_combined_battle_airbattle_flag = PARSEFLAG_NORMAL;
+	req_combined_battle_ld_airbattle_flag = PARSEFLAG_NORMAL;
 	req_combined_battle_battlewater_flag = PARSEFLAG_NORMAL;
 	req_combined_battle_battleresult_flag = PARSEFLAG_NORMAL;
 	req_combined_battle_battle_flag = PARSEFLAG_NORMAL;
@@ -315,7 +317,9 @@ bool KanDataConnector::Parse(const QString& pathAndQuery, const QString& request
 		PARSEAPI("/kcsapi/api_req_battle_midnight/sp_midnight", req_battle_midnight_sp_midnight)
 		PARSEAPI("/kcsapi/api_req_sortie/night_to_day", req_sortie_night_to_day)
 		PARSEAPI("/kcsapi/api_req_sortie/airbattle", req_sortie_airbattle)
+		PARSEAPI("/kcsapi/api_req_sortie/ld_airbattle", req_sortie_ld_airbattle)
 		PARSEAPI("/kcsapi/api_req_combined_battle/airbattle", req_combined_battle_airbattle)
+		PARSEAPI("/kcsapi/api_req_combined_battle/ld_airbattle", req_combined_battle_ld_airbattle)
 		PARSEAPI("/kcsapi/api_req_combined_battle/battle_water", req_combined_battle_battlewater)
 		PARSEAPI("/kcsapi/api_req_combined_battle/battleresult", req_combined_battle_battleresult)
 		PARSEAPI("/kcsapi/api_req_combined_battle/battle", req_combined_battle_battle)

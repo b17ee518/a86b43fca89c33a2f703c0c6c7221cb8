@@ -18,232 +18,395 @@ void ExpeditionManager::BuildByPreset(ExpeditionPreset preset)
 	Clear();
 	switch (preset)
 	{
+		////////////////////////////////////////////////////////////////////////
 	case ExpeditionPreset::General:
+	{
+		ExpeditionSchedule* pschedule = NULL;
+		SingleExpedition exp;
+		// first team toukyu1 -> padding 30 -> 3last
 		{
-			ExpeditionSchedule* pschedule = NULL;
-			SingleExpedition exp;
-			// first team toukyu1 -> padding 30 -> 3last
-			{
-				pschedule = &(_schedules[0]);
+			pschedule = &(_schedules[0]);
 
-				// toukyu1
-				exp.Clear();
-				exp.addShip((int)ShipType::KeiJun, true, 0);
-				exp.addShip(-SPSHIP_AKIGUMO, false, 2);
-				exp.addShip(-SPSHIP_YUGUMO, false, 2);
-				exp.addShip((int)ShipType::KuChiKu, true, 1);
-				exp.addShip((int)ShipType::KuChiKu, true, 1);
-				exp.addShip((int)ShipType::KuChiKu, true, 1);
-				exp.setInfo(QTime(2, 44), 4, 4);
+			// toukyu1
+			exp.Clear();
+			exp.addShip((int)ShipType::KeiJun, true, 0);
+			exp.addShip(-SPSHIP_AKIGUMO, false, 2);
+			exp.addShip(-SPSHIP_YUGUMO, false, 2);
+			exp.addShip((int)ShipType::KuChiKu, true, 1);
+			exp.addShip((int)ShipType::KuChiKu, true, 1);
+			exp.addShip((int)ShipType::KuChiKu, true, 1);
+			exp.setInfo(QTime(2, 44), 4, 4);
 
-				pschedule->addExpedition(QTime(22, 29), exp);
+			pschedule->addExpedition(QTime(22, 29), exp);
 
-				// padding 30
+			// padding 30
 
-				exp.Clear();
-				exp.addShip(-SPSHIP_SATSUKI, false, 0);
-				exp.addShip(-SPSHIP_FUMITSUKI, false, 0);
-				exp.addShip(-SPSHIP_NAGATSUKI, false, 0);
-				exp.addShip(-SPSHIP_KIKUDUKI, false, 0);
-				exp.setInfo(QTime(0, 29), 0, 1);
+			exp.Clear();
+			exp.addShip(-SPSHIP_SATSUKI, false, 0);
+			exp.addShip(-SPSHIP_FUMITSUKI, false, 0);
+			exp.addShip(-SPSHIP_NAGATSUKI, false, 0);
+			exp.addShip(-SPSHIP_KIKUDUKI, false, 0);
+			exp.setInfo(QTime(0, 29), 0, 1);
 
-				pschedule->addExpedition(QTime(22, 30), exp);
+			pschedule->addExpedition(QTime(22, 30), exp);
 
-				// 3last
-				exp.Clear();
-				exp.addShip((int)ShipType::KeiJun, true, 0);
-				exp.addShip(-SPSHIP_AKIGUMO, false, 2);
-				exp.addShip(-SPSHIP_YUGUMO, false, 2);
-				exp.addShip((int)ShipType::KuChiKu, true, 1);
-				exp.addShip((int)ShipType::KuChiKu, true, 1);
-				exp.addShip((int)ShipType::YouRiKu, true, 0);
-				exp.setInfo(QTime(8, 19), 2, 7);
+			// 3last
+			exp.Clear();
+			exp.addShip((int)ShipType::KeiJun, true, 0);
+			exp.addShip(-SPSHIP_AKIGUMO, false, 2);
+			exp.addShip(-SPSHIP_YUGUMO, false, 2);
+			exp.addShip((int)ShipType::KuChiKu, true, 1);
+			exp.addShip((int)ShipType::KuChiKu, true, 1);
+			exp.addShip((int)ShipType::YouRiKu, true, 0);
+			exp.setInfo(QTime(8, 19), 2, 7);
 
-				pschedule->addExpedition(QTime(23, 59, 59, 900), exp);
-			}
-			// second team 30->2last
-			{
-				pschedule = &(_schedules[1]);
-
-				exp.Clear();
-				exp.addShip(-SPSHIP_SATSUKI, false, 0);
-				exp.addShip(-SPSHIP_FUMITSUKI, false, 0);
-				exp.addShip(-SPSHIP_NAGATSUKI, false, 0);
-				exp.addShip(-SPSHIP_KIKUDUKI, false, 0);
-				exp.setInfo(QTime(0, 29), 0, 1);
-
-				pschedule->addExpedition(QTime(19, 0), exp);
-
-				exp.Clear();
-				exp.addShip((int)ShipType::KeiJun, true, 0);
-				exp.addShip((int)ShipType::YouRiKu, true, 0);
-				exp.addShip((int)ShipType::KuChiKu, true, 1);
-				exp.addShip((int)ShipType::KuChiKu, true, 1);
-				exp.addShip((int)ShipType::KuChiKu, true, 1);
-				exp.addShip((int)ShipType::KuChiKu, true, 1);
-				exp.setInfo(QTime(14, 59), 1, 7);
-
-				pschedule->addExpedition(QTime(23, 59, 59, 900), exp);
-
-			}
-			// third team toukyu2 -> 5last
-			{
-				pschedule = &(_schedules[2]);
-
-				// toukyu2
-				exp.Clear();
-				exp.addShip(-SPSHIP_MAKIGUMO, false, 3);
-				exp.addShip(-SPSHIP_NAGANAMI, false, 3);
-				exp.addShip((int)ShipType::KuChiKu, true, 1);
-				exp.addShip((int)ShipType::KuChiKu, true, 1);
-				exp.addShip((int)ShipType::KuChiKu, true, 1);
-				exp.addShip((int)ShipType::KuChiKu, true, 1);
-				exp.setInfo(QTime(2, 54), 4, 5);
-
-				pschedule->addExpedition(QTime(22, 30), exp);
-
-				// 5last
-				exp.Clear();
-				exp.addShip((int)ShipType::KeiJun, true, 0);
-				exp.addShip(-SPSHIP_MAKIGUMO, false, 3);
-				exp.addShip(-SPSHIP_NAGANAMI, false, 3);
-				exp.addShip((int)ShipType::KuChiKu, true, 1);
-				exp.addShip((int)ShipType::SuiBou, true, 0);
-				exp.addShip((int)ShipType::SuiBou, true, 0);
-				exp.setInfo(QTime(6, 49), 4, 7);
-
-				pschedule->addExpedition(QTime(23, 59, 59, 900), exp);
-			}
+			pschedule->addExpedition(QTime(23, 59, 59, 900), exp);
 		}
-		break;
-	case ExpeditionPreset::Bouxite:
+		// second team 30->2last
 		{
-			ExpeditionSchedule* pschedule = NULL;
-			SingleExpedition exp;
-			// first team toukyu1 -> padding 30 -> 3last
-			{
-				pschedule = &(_schedules[0]);
+			pschedule = &(_schedules[1]);
 
-				// toukyu1
-				exp.Clear();
-				exp.addShip((int)ShipType::KeiJun, true, 0);
-				exp.addShip(-SPSHIP_AKIGUMO, false, 2);
-				exp.addShip(-SPSHIP_YUGUMO, false, 2);
-				exp.addShip((int)ShipType::KuChiKu, true, 1);
-				exp.addShip((int)ShipType::KuChiKu, true, 1);
-				exp.addShip((int)ShipType::KuChiKu, true, 1);
-				exp.setInfo(QTime(2, 44), 4, 4);
+			exp.Clear();
+			exp.addShip(-SPSHIP_SATSUKI, false, 0);
+			exp.addShip(-SPSHIP_FUMITSUKI, false, 0);
+			exp.addShip(-SPSHIP_NAGATSUKI, false, 0);
+			exp.addShip(-SPSHIP_KIKUDUKI, false, 0);
+			exp.setInfo(QTime(0, 29), 0, 1);
 
-				pschedule->addExpedition(QTime(22, 29), exp);
+			pschedule->addExpedition(QTime(19, 0), exp);
 
-				// padding 30
+			exp.Clear();
+			exp.addShip((int)ShipType::KeiJun, true, 0);
+			exp.addShip((int)ShipType::YouRiKu, true, 0);
+			exp.addShip((int)ShipType::KuChiKu, true, 1);
+			exp.addShip((int)ShipType::KuChiKu, true, 1);
+			exp.addShip((int)ShipType::KuChiKu, true, 1);
+			exp.addShip((int)ShipType::KuChiKu, true, 1);
+			exp.setInfo(QTime(14, 59), 1, 7);
 
-				exp.Clear();
-				exp.addShip(-SPSHIP_SATSUKI, false, 0);
-				exp.addShip(-SPSHIP_FUMITSUKI, false, 0);
-				exp.addShip(-SPSHIP_NAGATSUKI, false, 0);
-				exp.addShip(-SPSHIP_KIKUDUKI, false, 0);
-				exp.setInfo(QTime(0, 29), 0, 1);
+			pschedule->addExpedition(QTime(23, 59, 59, 900), exp);
 
-				pschedule->addExpedition(QTime(22, 30), exp);
-
-				// 3last
-				exp.Clear();
-				exp.addShip((int)ShipType::KeiJun, true, 0);
-				exp.addShip(-SPSHIP_AKIGUMO, false, 2);
-				exp.addShip(-SPSHIP_YUGUMO, false, 2);
-				exp.addShip((int)ShipType::KuChiKu, true, 1);
-				exp.addShip((int)ShipType::KuChiKu, true, 1);
-				exp.addShip((int)ShipType::YouRiKu, true, 0);
-				exp.setInfo(QTime(8, 19), 2, 7);
-
-				pschedule->addExpedition(QTime(23, 59, 59, 900), exp);
-			}
-			// second team 30->2last
-			{
-				pschedule = &(_schedules[1]);
-
-				exp.Clear();
-				exp.addShip(-SPSHIP_SATSUKI, false, 0);
-				exp.addShip(-SPSHIP_FUMITSUKI, false, 0);
-				exp.addShip(-SPSHIP_NAGATSUKI, false, 0);
-				exp.addShip(-SPSHIP_KIKUDUKI, false, 0);
-				exp.setInfo(QTime(0, 29), 0, 1);
-
-				pschedule->addExpedition(QTime(19, 0), exp);
-
-				exp.Clear();
-				exp.addShip((int)ShipType::KeiJun, true, 0);
-				exp.addShip((int)ShipType::YouRiKu, true, 0);
-				exp.addShip((int)ShipType::KuChiKu, true, 1);
-				exp.addShip((int)ShipType::KuChiKu, true, 1);
-				exp.addShip((int)ShipType::KuChiKu, true, 1);
-				exp.addShip((int)ShipType::KuChiKu, true, 1);
-				exp.setInfo(QTime(14, 59), 1, 7);
-
-				pschedule->addExpedition(QTime(23, 59, 59, 900), exp);
-
-			}
-			// third team 40 -> toukyu2 -> padding 40 -> 5last
-			{
-				pschedule = &(_schedules[2]);
-
-				exp.Clear();
-				exp.addShip((int)ShipType::KuChiKu, false, 0);
-				exp.addShip((int)ShipType::KuChiKu, false, 0);
-				exp.addShip((int)ShipType::KuChiKu, false, 0);
-				exp.addShip((int)ShipType::KuChiKu, false, 0);
-				exp.addSpecialExcludes(SPSHIP_AKIGUMO);
-				exp.addSpecialExcludes(SPSHIP_YUGUMO);
-				exp.addSpecialExcludes(SPSHIP_SATSUKI);
-				exp.addSpecialExcludes(SPSHIP_FUMITSUKI);
-				exp.addSpecialExcludes(SPSHIP_NAGATSUKI);
-				exp.addSpecialExcludes(SPSHIP_KIKUDUKI);
-				exp.setInfo(QTime(0, 39), 0, 5);
-
-				pschedule->addExpedition(QTime(19, 0), exp);
-
-				// toukyu2
-				exp.Clear();
-				exp.addShip(-SPSHIP_MAKIGUMO, false, 3);
-				exp.addShip(-SPSHIP_NAGANAMI, false, 3);
-				exp.addShip((int)ShipType::KuChiKu, true, 1);
-				exp.addShip((int)ShipType::KuChiKu, true, 1);
-				exp.addShip((int)ShipType::KuChiKu, true, 1);
-				exp.addShip((int)ShipType::KuChiKu, true, 1);
-				exp.setInfo(QTime(2, 54), 4, 5);
-
-				pschedule->addExpedition(QTime(22, 29), exp);
-
-				exp.Clear();
-				exp.addShip((int)ShipType::KuChiKu, false, 0);
-				exp.addShip((int)ShipType::KuChiKu, false, 0);
-				exp.addShip((int)ShipType::KuChiKu, false, 0);
-				exp.addShip((int)ShipType::KuChiKu, false, 0);
-				exp.addSpecialExcludes(SPSHIP_AKIGUMO);
-				exp.addSpecialExcludes(SPSHIP_YUGUMO);
-				exp.addSpecialExcludes(SPSHIP_SATSUKI);
-				exp.addSpecialExcludes(SPSHIP_FUMITSUKI);
-				exp.addSpecialExcludes(SPSHIP_NAGATSUKI);
-				exp.addSpecialExcludes(SPSHIP_KIKUDUKI);
-				exp.setInfo(QTime(0, 39), 0, 5);
-
-				pschedule->addExpedition(QTime(22, 30), exp);
-
-				// 5last
-				exp.Clear();
-				exp.addShip((int)ShipType::KeiJun, true, 0);
-				exp.addShip(-SPSHIP_MAKIGUMO, false, 3);
-				exp.addShip(-SPSHIP_NAGANAMI, false, 3);
-				exp.addShip((int)ShipType::KuChiKu, true, 1);
-				exp.addShip((int)ShipType::SuiBou, true, 0);
-				exp.addShip((int)ShipType::SuiBou, true, 0);
-				exp.setInfo(QTime(6, 49), 4, 7);
-
-				pschedule->addExpedition(QTime(23, 59, 59, 900), exp);
-			}
 		}
-		break;
+		// third team toukyu2 -> 5last
+		{
+			pschedule = &(_schedules[2]);
+
+			// toukyu2
+			exp.Clear();
+			exp.addShip(-SPSHIP_MAKIGUMO, false, 3);
+			exp.addShip(-SPSHIP_NAGANAMI, false, 3);
+			exp.addShip((int)ShipType::KuChiKu, true, 1);
+			exp.addShip((int)ShipType::KuChiKu, true, 1);
+			exp.addShip((int)ShipType::KuChiKu, true, 1);
+			exp.addShip((int)ShipType::KuChiKu, true, 1);
+			exp.setInfo(QTime(2, 54), 4, 5);
+
+			pschedule->addExpedition(QTime(22, 30), exp);
+
+			// 5last
+			exp.Clear();
+			exp.addShip((int)ShipType::KeiJun, true, 0);
+			exp.addShip(-SPSHIP_MAKIGUMO, false, 3);
+			exp.addShip(-SPSHIP_NAGANAMI, false, 3);
+			exp.addShip((int)ShipType::KuChiKu, true, 1);
+			exp.addShip((int)ShipType::SuiBou, true, 0);
+			exp.addShip((int)ShipType::SuiBou, true, 0);
+			exp.setInfo(QTime(6, 49), 4, 7);
+
+			pschedule->addExpedition(QTime(23, 59, 59, 900), exp);
+		}
+	}
+	break;
+	////////////////////////////////////////////////////////////////////////
+	case ExpeditionPreset::RepairAndBauxite:
+	{
+		ExpeditionSchedule* pschedule = NULL;
+		SingleExpedition exp;
+		// first team toukyu1 -> padding 30 -> 3last
+		{
+			pschedule = &(_schedules[0]);
+
+			// toukyu1
+			exp.Clear();
+			exp.addShip((int)ShipType::KeiJun, true, 0);
+			exp.addShip(-SPSHIP_AKIGUMO, false, 2);
+			exp.addShip(-SPSHIP_YUGUMO, false, 2);
+			exp.addShip((int)ShipType::KuChiKu, true, 1);
+			exp.addShip((int)ShipType::KuChiKu, true, 1);
+			exp.addShip((int)ShipType::KuChiKu, true, 1);
+			exp.setInfo(QTime(2, 44), 4, 4);
+
+			pschedule->addExpedition(QTime(22, 29), exp);
+
+			// padding 30
+
+			exp.Clear();
+			exp.addShip(-SPSHIP_SATSUKI, false, 0);
+			exp.addShip(-SPSHIP_FUMITSUKI, false, 0);
+			exp.addShip(-SPSHIP_NAGATSUKI, false, 0);
+			exp.addShip(-SPSHIP_KIKUDUKI, false, 0);
+			exp.setInfo(QTime(0, 29), 0, 1);
+
+			pschedule->addExpedition(QTime(22, 30), exp);
+
+			// 3last
+			exp.Clear();
+			exp.addShip((int)ShipType::KeiJun, true, 0);
+			exp.addShip(-SPSHIP_AKIGUMO, false, 2);
+			exp.addShip(-SPSHIP_YUGUMO, false, 2);
+			exp.addShip((int)ShipType::KuChiKu, true, 1);
+			exp.addShip((int)ShipType::KuChiKu, true, 1);
+			exp.addShip((int)ShipType::YouRiKu, true, 0);
+			exp.setInfo(QTime(8, 19), 2, 7);
+
+			pschedule->addExpedition(QTime(23, 59, 59, 900), exp);
+		}
+		// second team 30->2last
+		{
+			pschedule = &(_schedules[1]);
+
+			exp.Clear();
+			exp.addShip(-SPSHIP_SATSUKI, false, 0);
+			exp.addShip(-SPSHIP_FUMITSUKI, false, 0);
+			exp.addShip(-SPSHIP_NAGATSUKI, false, 0);
+			exp.addShip(-SPSHIP_KIKUDUKI, false, 0);
+			exp.setInfo(QTime(0, 29), 0, 1);
+
+			pschedule->addExpedition(QTime(19, 0), exp);
+
+			exp.Clear();
+			exp.addShip((int)ShipType::KeiJun, true, 0);
+			exp.addShip((int)ShipType::YouRiKu, true, 0);
+			exp.addShip((int)ShipType::KuChiKu, true, 1);
+			exp.addShip((int)ShipType::KuChiKu, true, 1);
+			exp.addShip((int)ShipType::KuChiKu, true, 1);
+			exp.addShip((int)ShipType::KuChiKu, true, 1);
+			exp.setInfo(QTime(14, 59), 1, 7);
+
+			pschedule->addExpedition(QTime(23, 59, 59, 900), exp);
+
+		}
+		// third team 40 -> toukyu2 -> padding 40 -> 5last
+		{
+			pschedule = &(_schedules[2]);
+
+			exp.Clear();
+			exp.addShip((int)ShipType::KuChiKu, false, 0);
+			exp.addShip((int)ShipType::KuChiKu, false, 0);
+			exp.addShip((int)ShipType::KuChiKu, false, 0);
+			exp.addShip((int)ShipType::KuChiKu, false, 0);
+			exp.addSpecialExcludes(SPSHIP_AKIGUMO);
+			exp.addSpecialExcludes(SPSHIP_YUGUMO);
+			exp.addSpecialExcludes(SPSHIP_SATSUKI);
+			exp.addSpecialExcludes(SPSHIP_FUMITSUKI);
+			exp.addSpecialExcludes(SPSHIP_NAGATSUKI);
+			exp.addSpecialExcludes(SPSHIP_KIKUDUKI);
+			exp.setInfo(QTime(0, 39), 0, 5);
+
+			pschedule->addExpedition(QTime(19, 0), exp);
+
+			// toukyu2
+			exp.Clear();
+			exp.addShip(-SPSHIP_MAKIGUMO, false, 3);
+			exp.addShip(-SPSHIP_NAGANAMI, false, 3);
+			exp.addShip((int)ShipType::KuChiKu, true, 1);
+			exp.addShip((int)ShipType::KuChiKu, true, 1);
+			exp.addShip((int)ShipType::KuChiKu, true, 1);
+			exp.addShip((int)ShipType::KuChiKu, true, 1);
+			exp.setInfo(QTime(2, 54), 4, 5);
+
+			pschedule->addExpedition(QTime(22, 29), exp);
+
+			exp.Clear();
+			exp.addShip((int)ShipType::KuChiKu, false, 0);
+			exp.addShip((int)ShipType::KuChiKu, false, 0);
+			exp.addShip((int)ShipType::KuChiKu, false, 0);
+			exp.addShip((int)ShipType::KuChiKu, false, 0);
+			exp.addSpecialExcludes(SPSHIP_AKIGUMO);
+			exp.addSpecialExcludes(SPSHIP_YUGUMO);
+			exp.addSpecialExcludes(SPSHIP_SATSUKI);
+			exp.addSpecialExcludes(SPSHIP_FUMITSUKI);
+			exp.addSpecialExcludes(SPSHIP_NAGATSUKI);
+			exp.addSpecialExcludes(SPSHIP_KIKUDUKI);
+			exp.setInfo(QTime(0, 39), 0, 5);
+
+			pschedule->addExpedition(QTime(22, 30), exp);
+
+			// 5last
+			exp.Clear();
+			exp.addShip((int)ShipType::KeiJun, true, 0);
+			exp.addShip(-SPSHIP_MAKIGUMO, false, 3);
+			exp.addShip(-SPSHIP_NAGANAMI, false, 3);
+			exp.addShip((int)ShipType::KuChiKu, true, 1);
+			exp.addShip((int)ShipType::SuiBou, true, 0);
+			exp.addShip((int)ShipType::SuiBou, true, 0);
+			exp.setInfo(QTime(6, 49), 4, 7);
+
+			pschedule->addExpedition(QTime(23, 59, 59, 900), exp);
+		}
+	}
+	break;
+
+	////////////////////////////////////////////////////////////////////////
+	case ExpeditionPreset::Bauxite:
+	{
+		ExpeditionSchedule* pschedule = NULL;
+		SingleExpedition exp;
+		// first team toukyu1 -> padding 30 -> 3last
+		{
+			pschedule = &(_schedules[0]);
+
+			// toukyu1
+			exp.Clear();
+			exp.addShip((int)ShipType::KeiJun, true, 0);
+			exp.addShip(-SPSHIP_AKIGUMO, false, 2);
+			exp.addShip(-SPSHIP_YUGUMO, false, 2);
+			exp.addShip((int)ShipType::KuChiKu, true, 1);
+			exp.addShip((int)ShipType::KuChiKu, true, 1);
+			exp.addShip((int)ShipType::KuChiKu, true, 1);
+			exp.setInfo(QTime(2, 44), 4, 4);
+
+			pschedule->addExpedition(QTime(22, 29), exp);
+
+			// padding 30
+
+			exp.Clear();
+			exp.addShip(-SPSHIP_SATSUKI, false, 0);
+			exp.addShip(-SPSHIP_FUMITSUKI, false, 0);
+			exp.addShip(-SPSHIP_NAGATSUKI, false, 0);
+			exp.addShip(-SPSHIP_KIKUDUKI, false, 0);
+			exp.setInfo(QTime(0, 29), 0, 1);
+
+			pschedule->addExpedition(QTime(22, 30), exp);
+
+			// 3last
+			exp.Clear();
+			exp.addShip((int)ShipType::KeiJun, true, 0);
+			exp.addShip(-SPSHIP_AKIGUMO, false, 2);
+			exp.addShip(-SPSHIP_YUGUMO, false, 2);
+			exp.addShip((int)ShipType::KuChiKu, true, 1);
+			exp.addShip((int)ShipType::KuChiKu, true, 1);
+			exp.addShip((int)ShipType::YouRiKu, true, 0);
+			exp.setInfo(QTime(8, 19), 2, 7);
+
+			pschedule->addExpedition(QTime(23, 59, 59, 900), exp);
+		}
+		// second team 40->2last
+		{
+			pschedule = &(_schedules[1]);
+
+			// 40
+			exp.Clear();
+			exp.addShip((int)ShipType::KuChiKu, false, 0);
+			exp.addShip((int)ShipType::KuChiKu, false, 0);
+			exp.addShip((int)ShipType::KuChiKu, false, 0);
+			exp.addShip((int)ShipType::KuChiKu, false, 0);
+			exp.addSpecialExcludes(SPSHIP_AKIGUMO);
+			exp.addSpecialExcludes(SPSHIP_YUGUMO);
+			exp.addSpecialExcludes(SPSHIP_SATSUKI);
+			exp.addSpecialExcludes(SPSHIP_FUMITSUKI);
+			exp.addSpecialExcludes(SPSHIP_NAGATSUKI);
+			exp.addSpecialExcludes(SPSHIP_KIKUDUKI);
+			exp.setInfo(QTime(0, 39), 0, 5);
+
+			pschedule->addExpedition(QTime(19, 0), exp);
+
+			// 2 last
+			exp.Clear();
+			exp.addShip((int)ShipType::KeiJun, true, 0);
+			exp.addShip((int)ShipType::YouRiKu, true, 0);
+			exp.addShip((int)ShipType::KuChiKu, true, 1);
+			exp.addShip((int)ShipType::KuChiKu, true, 1);
+			exp.addShip((int)ShipType::KuChiKu, true, 1);
+			exp.addShip((int)ShipType::KuChiKu, true, 1);
+			exp.setInfo(QTime(14, 59), 1, 7);
+
+			pschedule->addExpedition(QTime(23, 59, 59, 900), exp);
+
+		}
+		// third team bauxite->padding30->bauxite->padding40->5last
+		{
+			pschedule = &(_schedules[2]);
+			
+			// bauxite
+			exp.Clear();
+			exp.addShip((int)ShipType::KuChiKu, true, 1);
+			exp.addShip((int)ShipType::YouRiKu, true, 0);
+			exp.addShip((int)ShipType::KuChiKu, true, 1);
+			exp.addShip((int)ShipType::KuChiKu, true, 1);
+			exp.addShip((int)ShipType::KuChiKu, true, 1);
+			exp.addShip((int)ShipType::KuChiKu, true, 1);
+			exp.addSpecialExcludes(SPSHIP_AKIGUMO);
+			exp.addSpecialExcludes(SPSHIP_YUGUMO);
+			exp.addSpecialExcludes(SPSHIP_SATSUKI);
+			exp.addSpecialExcludes(SPSHIP_FUMITSUKI);
+			exp.addSpecialExcludes(SPSHIP_NAGATSUKI);
+			exp.addSpecialExcludes(SPSHIP_KIKUDUKI);
+			exp.setInfo(QTime(4, 59), 1, 2);
+
+			pschedule->addExpedition(QTime(16, 29), exp);
+
+			// padding 30
+
+			exp.Clear();
+			exp.addShip(-SPSHIP_SATSUKI, false, 0);
+			exp.addShip(-SPSHIP_FUMITSUKI, false, 0);
+			exp.addShip(-SPSHIP_NAGATSUKI, false, 0);
+			exp.addShip(-SPSHIP_KIKUDUKI, false, 0);
+			exp.setInfo(QTime(0, 29), 0, 1);
+
+			pschedule->addExpedition(QTime(16, 30), exp);
+
+			// bauxite
+			exp.Clear();
+			exp.addShip((int)ShipType::KuChiKu, true, 1);
+			exp.addShip((int)ShipType::YouRiKu, true, 0);
+			exp.addShip((int)ShipType::KuChiKu, true, 1);
+			exp.addShip((int)ShipType::KuChiKu, true, 1);
+			exp.addShip((int)ShipType::KuChiKu, true, 1);
+			exp.addShip((int)ShipType::KuChiKu, true, 1);
+			exp.addSpecialExcludes(SPSHIP_AKIGUMO);
+			exp.addSpecialExcludes(SPSHIP_YUGUMO);
+			exp.addSpecialExcludes(SPSHIP_SATSUKI);
+			exp.addSpecialExcludes(SPSHIP_FUMITSUKI);
+			exp.addSpecialExcludes(SPSHIP_NAGATSUKI);
+			exp.addSpecialExcludes(SPSHIP_KIKUDUKI);
+			exp.setInfo(QTime(4, 59), 1, 2);
+
+			pschedule->addExpedition(QTime(22, 29), exp);
+
+			// padding 40
+
+			exp.Clear();
+			exp.addShip((int)ShipType::KuChiKu, false, 0);
+			exp.addShip((int)ShipType::KuChiKu, false, 0);
+			exp.addShip((int)ShipType::KuChiKu, false, 0);
+			exp.addShip((int)ShipType::KuChiKu, false, 0);
+			exp.addSpecialExcludes(SPSHIP_AKIGUMO);
+			exp.addSpecialExcludes(SPSHIP_YUGUMO);
+			exp.addSpecialExcludes(SPSHIP_SATSUKI);
+			exp.addSpecialExcludes(SPSHIP_FUMITSUKI);
+			exp.addSpecialExcludes(SPSHIP_NAGATSUKI);
+			exp.addSpecialExcludes(SPSHIP_KIKUDUKI);
+			exp.setInfo(QTime(0, 39), 0, 5);
+
+			pschedule->addExpedition(QTime(22, 30), exp);
+
+			// 5last
+			exp.Clear();
+			exp.addShip((int)ShipType::KeiJun, true, 0);
+			exp.addShip(-SPSHIP_MAKIGUMO, false, 3);
+			exp.addShip(-SPSHIP_NAGANAMI, false, 3);
+			exp.addShip((int)ShipType::KuChiKu, true, 1);
+			exp.addShip((int)ShipType::SuiBou, true, 0);
+			exp.addShip((int)ShipType::SuiBou, true, 0);
+			exp.setInfo(QTime(6, 49), 4, 7);
+
+			pschedule->addExpedition(QTime(23, 59, 59, 900), exp);
+		}
+	}
+	break;
+
 	default:
 		break;
 	}
@@ -251,10 +414,14 @@ void ExpeditionManager::BuildByPreset(ExpeditionPreset preset)
 
 void ExpeditionManager::BuildByPreset(const QString& preset)
 {
-	if (!preset.compare("Bouxite", Qt::CaseInsensitive))
+	if (!preset.compare("Bauxite", Qt::CaseInsensitive))
 	{
-		BuildByPreset(ExpeditionPreset::Bouxite);
+		BuildByPreset(ExpeditionPreset::Bauxite);
 		return;
+	}
+	else if (!preset.compare("RepairAndBauxite", Qt::CaseInsensitive))
+	{
+		BuildByPreset(ExpeditionPreset::RepairAndBauxite);
 	}
 	BuildByPreset(ExpeditionPreset::General);
 }

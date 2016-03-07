@@ -45,7 +45,8 @@ class ExpeditionManager
 	enum class ExpeditionPreset
 	{
 		General,
-		Bouxite,
+		RepairAndBauxite,
+		Bauxite,
 	};
 
 public:

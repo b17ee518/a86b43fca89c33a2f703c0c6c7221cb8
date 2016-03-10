@@ -30,6 +30,7 @@ bool ControlManager::BuildNext_Kira(bool bForceCurrent/*=false*/)
 	}
 	if (bForceCurrent)
 	{
+		_todoShipids.clear();
 		_todoShipids.push_front(getCurrentFlagshipId());
 	}
 	if (_todoShipids.empty())

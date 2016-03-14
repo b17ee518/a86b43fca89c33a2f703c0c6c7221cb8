@@ -60,6 +60,7 @@ bool ControlManager::BuildNext_Kira(bool bForceCurrent/*=false*/)
 		|| hasSlotitem(togoShipId, SlotitemType::Sonar)
 		|| hasSlotitem(togoShipId, SlotitemType::BaKuRai)
 		|| hasSlotitem(togoShipId, SlotitemType::Sonar_L)
+		|| hasSlotitem(togoShipId, SlotitemType::YuSou, 3)
 		|| noSlotitem(togoShipId))
 	{
 		_todoShipids.removeAt(0);

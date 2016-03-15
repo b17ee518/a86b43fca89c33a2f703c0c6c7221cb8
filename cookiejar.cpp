@@ -23,6 +23,7 @@
 #include <QtCore/QTimer>
 #include <QtCore/QMutableListIterator>
 #include <QtNetwork/QNetworkCookie>
+#include <QDataStream>
 
 static const unsigned int COOKIEJAR_MAGIC = 80;
 static const int INTERVAL = 1000 * 3;  // 3sec.

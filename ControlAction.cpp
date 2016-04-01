@@ -1070,7 +1070,8 @@ bool SortieAction::action()
 			{
 				// sortie select
 				if (cm.checkColors(
-					468, 224, 115, 182, 85
+//					468, 224, 115, 182, 85
+					468, 224, 108, 175, 78
 					, 625, 156, 88, 194, 179))
 				{
 					_waiting = false;
@@ -1652,7 +1653,8 @@ bool ExpeditionAction::action()
 			{
 				// sortie select
 				if (cm.checkColors(
-					468, 224, 115, 182, 85
+//					468, 224, 115, 182, 85
+					468, 224, 108, 175, 78
 					, 625, 156, 88, 194, 179))
 				{
 					_waiting = false;

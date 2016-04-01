@@ -271,6 +271,7 @@ bool KanDataConnector::Parse(const QString& pathAndQuery, const QString& request
 	PARSEAPIF("/kcsapi/api_start2", start2)
 		PARSEAPI("/kcsapi/api_port/port", port_port)
 		PARSEAPI("/kcsapi/api_get_member/basic", get_member_basic)
+		PARSEAPI("/kcsapi/api_get_member/require_info", get_member_require_info)
 		PARSEAPI("/kcsapi/api_get_member/ship", get_member_ship)
 		PARSEAPI("/kcsapi/api_get_member/ship2", get_member_ship2)
 		PARSEAPI("/kcsapi/api_get_member/ship3", get_member_ship3)

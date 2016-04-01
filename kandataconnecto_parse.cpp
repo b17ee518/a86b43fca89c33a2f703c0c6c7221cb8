@@ -60,6 +60,61 @@ bool KanDataConnector::get_member_basic_parse()
 	return true;
 }
 
+bool KanDataConnector::get_member_require_info_parse()
+{
+	// api_basic! do not update
+//	pksd->portdata.api_basic.ReadFromJObj(_jobj["api_basic"].toObject());
+
+	// api_slot_item
+	{
+		pksd->slotitemdata.clear();
+		QJsonArray jarray = _jobj["api_slot_item"].toArray();
+		for (int i = 0; i < jarray.count(); i++)
+		{
+			kcsapi_slotitem api_slotitem;
+			api_slotitem.ReadFromJObj(jarray[i].toObject());
+			pksd->slotitemdata.append(api_slotitem);
+
+			if (api_slotitem.api_id > pksd->maxslotitemid)
+			{
+				pksd->maxslotitemid = api_slotitem.api_id;
+			}
+		}
+		pksd->slotitemcountoffset = 0;
+	}
+
+	// api_unsetslot: ignored
+
+	// api_kdock
+	{
+		pksd->kdockdata.clear();
+		QJsonArray jarray = _jobj["api_kdock"].toArray();
+		for (int i = 0; i < jarray.count(); i++)
+		{
+			kcsapi_kdock api_kdock;
+			api_kdock.ReadFromJObj(jarray[i].toObject());
+			pksd->kdockdata.append(api_kdock);
+		}
+	}
+
+	updateBuildDockTable();
+
+	if (pksd->createshipdata.isValueSet())
+	{
+		logBuildResult();
+		pksd->createshipdata.clearValue();
+	}
+
+	// api_use_item
+	// api_furniture
+
+	updateOverviewTable();
+	updateWeaponTable();
+
+	return true;
+}
+
+
 bool KanDataConnector::get_member_ship_parse()
 {
 	kcsapi_ship api_ship;

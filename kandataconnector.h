@@ -91,6 +91,7 @@ private:
 	bool start2_parse();
 	bool port_port_parse();
 	bool get_member_basic_parse();
+	bool get_member_require_info_parse();
 	bool get_member_ship_parse();
 	bool get_member_ship2_parse();
 	bool get_member_ship3_parse();
@@ -191,6 +192,7 @@ private:
 	int start2_flag;
 	int port_port_flag;
 	int get_member_basic_flag;
+	int get_member_require_info_flag;
 	int get_member_ship_flag;
 	int get_member_ship2_flag;
 	int get_member_ship3_flag;

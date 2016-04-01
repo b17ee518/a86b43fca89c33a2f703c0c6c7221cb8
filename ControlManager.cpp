@@ -822,10 +822,7 @@ void ControlManager::togglePauseNext()
 
 void ControlManager::setToTerminate(const char* title)
 {
-	if (_state == State::Started)
-	{
-		setState(State::ToTerminate, title);
-	}
+	setState(State::ToTerminate, title);
 }
 
 void ControlManager::createSSShipList()

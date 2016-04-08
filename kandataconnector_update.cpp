@@ -815,6 +815,7 @@ void KanDataConnector::updateInfoTitleCond()
 
 	int suibocount = 0;
 	int suibokiras = 0;
+	int suibokirawarnings = 0;
 	int keijuncount = 0;
 	int keijunkiras = 0;
 	int kuchikucount = 0;
@@ -825,8 +826,9 @@ void KanDataConnector::updateInfoTitleCond()
 	foreach (const kcsapi_ship2 &v, pksd->portdata.api_ship)
 	{
 		int shipid = v.api_ship_id;
+		/*
 		bool bSkip = false;
-
+		
 		foreach(const kcsapi_deck &deck, pksd->portdata.api_deck_port)
 		{
 			if (deck.api_mission[0] > 0)
@@ -845,24 +847,30 @@ void KanDataConnector::updateInfoTitleCond()
 				break;
 			}
 		}
+		
 		if (bSkip)
 		{
 			continue;
 		}
-
+		*/
 		if (shipid > 0)
 		{
 			const kcsapi_mst_ship * pmstship = findMstShipFromShipid(shipid);
 			if (pmstship)
 			{
-				if (pmstship->api_stype == (int)ShipType::SuiBou)
+				if (pmstship->api_stype == (int)ShipType::SuiBou
+					|| pmstship->api_stype == (int) ShipType::YouRiKu)
 				{
-					if (v.api_locked && v.api_lv >= lvmin)
+					if (v.api_locked && v.api_lv >= lvmin && isShipHasSlotitem(&v, SlotitemType::JouRiKuTei))
 					{
 						suibocount++;
 						if (KanDataCalc::GetCondState(v.api_cond) == CondState::Kira)
 						{
 							suibokiras++;
+						}
+						if (KanDataCalc::GetCondState(v.api_cond-3) != CondState::Kira)
+						{
+							suibokirawarnings++;
 						}
 					}
 				}
@@ -879,7 +887,7 @@ void KanDataConnector::updateInfoTitleCond()
 				}
 				if (pmstship->api_stype == (int)ShipType::KuChiKu)
 				{
-					if (v.api_locked && v.api_lv >= lvmin)
+					if (v.api_locked && v.api_lv >= lvmin && isShipHasSlotitem(&v, SlotitemType::YuSou))
 					{
 						kuchikucount++;
 						if (KanDataCalc::GetCondState(v.api_cond) == CondState::Kira)
@@ -892,22 +900,27 @@ void KanDataConnector::updateInfoTitleCond()
 		}
 	}
 
-	QString titlestr = QString::fromLocal8Bit("キラ - 水母:%1(%2) 軽巡:%3(%4) 駆逐:%5(%6)")
+	QString titlestr = QString::fromLocal8Bit("キラ - 水母:%1(%2/%3) 軽巡:%3(%4) 駆逐:%5(%6)")
 		.arg(suibokiras)
 		.arg(suibocount - suibokiras)
+		.arg(suibokirawarnings)
 		.arg(keijunkiras)
 		.arg(keijuncount - keijunkiras)
 		.arg(kuchikukiras)
 		.arg(kuchikucount - kuchikukiras);
 
 	int colindex = 0;
-	if (suibokiras == suibocount && kuchikukiras*3 >= kuchikucount*2 && keijunkiras*3 >= keijuncount)
+	if (suibokiras == suibocount && kuchikukiras*2 >= kuchikucount && keijunkiras*2 >= keijuncount && suibokirawarnings==0)
 	{
 		colindex = 1;
 	}
 	else if (suibokiras < suibocount || kuchikukiras < 10 || keijunkiras < 4)
 	{
 		colindex = 2;
+	}
+	else if (suibokirawarnings>0)
+	{
+		colindex = 3;
 	}
 	MainWindow::infoWindow()->updateTitle(titlestr, colindex);
 }

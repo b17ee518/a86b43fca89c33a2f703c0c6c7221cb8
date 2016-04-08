@@ -34,7 +34,7 @@ public:
 	const Api_Mst_Mission *findMstMissionFromMissionid(int missionid) const;
 	kcsapi_slotitem *findSlotitemFromId(int id);
 	const kcsapi_mst_slotitem *findMstSlotItemFromSlotitemid(int slotitemid) const;
-	bool isShipHasSlotitem(kcsapi_ship2* pship, SlotitemType sitype, int count=1);
+	bool isShipHasSlotitem(const kcsapi_ship2* pship, SlotitemType sitype, int count=1);
 	bool isShipHasSlotitem(int shipno, SlotitemType sitype, int count=1)
 	{
 		if (count <= 0)

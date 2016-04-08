@@ -369,7 +369,7 @@ const kcsapi_mst_slotitem * KanDataConnector::findMstSlotItemFromSlotitemid(int 
 }
 
 
-bool KanDataConnector::isShipHasSlotitem(kcsapi_ship2* pship, SlotitemType sitype, int count/*=1*/)
+bool KanDataConnector::isShipHasSlotitem(const kcsapi_ship2* pship, SlotitemType sitype, int count/*=1*/)
 {
 	if (!pship)
 	{

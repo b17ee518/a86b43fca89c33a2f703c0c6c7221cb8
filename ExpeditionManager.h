@@ -67,7 +67,20 @@ public:
 	ExpeditionSchedule* getSchedule(int team);
 	SingleExpedition* getShouldNextSchedule(int team, qint64 ct, qint64 bt);
 
-	// TODO: check overnight / daihatsu
+
+	void BuildSingle20(ExpeditionSchedule* pschedule, int toHour, int toMin);
+	void BuildSingle30(ExpeditionSchedule* pschedule, int toHour, int toMin);
+	void BuildSingle40(ExpeditionSchedule* pschedule, int toHour, int toMin);
+
+	void BuildSingleTokyu1(ExpeditionSchedule* pschedule, int toHour, int toMin);
+	void BuildSingleTokyu2(ExpeditionSchedule* pschedule, int toHour, int toMin);
+
+	void BuildSingle2last(ExpeditionSchedule* pschedule, int toHour, int toMin);
+	void BuildSingle3last(ExpeditionSchedule* pschedule, int toHour, int toMin);
+	void BuildSingle5last(ExpeditionSchedule* pschedule, int toHour, int toMin);
+
+	void BuildSingleNezumiYusou(ExpeditionSchedule* pschedule, int toHour, int toMin);
+	void BuildSingleBauxiteYusou(ExpeditionSchedule* pschedule, int toHour, int toMin);
 
 private:
 	QList<ExpeditionSchedule> _schedules;	// each team

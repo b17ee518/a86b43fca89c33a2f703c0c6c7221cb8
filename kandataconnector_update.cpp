@@ -900,7 +900,7 @@ void KanDataConnector::updateInfoTitleCond()
 		}
 	}
 
-	QString titlestr = QString::fromLocal8Bit("キラ - 水母:%1(%2/%3) 軽巡:%3(%4) 駆逐:%5(%6)")
+	QString titlestr = QString::fromLocal8Bit("キラ - 水母:%1(%2/%3) 軽巡:%4(%5) 駆逐:%6(%7)")
 		.arg(suibokiras)
 		.arg(suibocount - suibokiras)
 		.arg(suibokirawarnings)

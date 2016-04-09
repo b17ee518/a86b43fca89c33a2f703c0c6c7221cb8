@@ -45,6 +45,7 @@ class ExpeditionManager
 	enum class ExpeditionPreset
 	{
 		General,
+		Fuel,
 		RepairAndBauxite,
 		Bauxite,
 	};

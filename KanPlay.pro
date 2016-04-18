@@ -32,7 +32,7 @@ SOURCES += main.cpp\
     qnetworkproxyfactoryset.cpp \
     kandataconnector.cpp \
     kandatacalc.cpp \
-    kqwebpage.cpp \
+    KQWebPage.cpp \
     klog.cpp \
     kqnetworkaccessmanager.cpp \
     weaponmainwindow.cpp
@@ -55,7 +55,7 @@ HEADERS  += mainwindow.h \
     qnetworkproxyfactoryset.h \
     kandataconnector.h \
     kandatacalc.h \
-    kqwebpage.h \
+    KQWebPage.h \
     klog.h \
     kqnetworkaccessmanager.h \
     weaponmainwindow.h

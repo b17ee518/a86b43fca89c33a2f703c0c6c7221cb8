@@ -1,10 +1,10 @@
-﻿#ifndef KQWEBPAGE_H
-#define KQWEBPAGE_H
+﻿#ifndef KQWebPage_H
+#define KQWebPage_H
 
-#include <QWebPage>
+#include <QWebEnginePage>
 #include <QApplication>
 
-class KQWebPage : public QWebPage
+class KQWebPage : public QWebEnginePage
 {
     Q_OBJECT
 public:
@@ -21,4 +21,4 @@ public slots:
 
 };
 
-#endif // KQWEBPAGE_H
+#endif // KQWebPage_H

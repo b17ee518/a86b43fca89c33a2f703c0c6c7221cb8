@@ -10,7 +10,7 @@
 #include <QShowEvent>
 #include <QWinTaskbarButton>
 #include <QNetworkReply>
-#include <QWebView>
+#include <QWebEngineView>
 #include <QAxWidget>
 #include "shdocvw.h"
 
@@ -195,7 +195,7 @@ private:
 
 	QWindowsEventFilter _windowsEventfilter;
 
-	QWebView* _webView = NULL;
+	QWebEngineView* _webView = NULL;
 	WebBrowser* _axWidget = NULL;
 
 	// settings

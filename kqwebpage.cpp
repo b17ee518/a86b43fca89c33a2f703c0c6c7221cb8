@@ -1,6 +1,6 @@
-#include "kqwebpage.h"
+#include "kQWebPage.h"
 
 KQWebPage::KQWebPage(QWidget *parent) :
-    QWebPage(parent)
+    QWebEnginePage(parent)
 {
 }

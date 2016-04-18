@@ -6,14 +6,14 @@
 #include <QNetworkDiskCache>
 #include <QStandardPaths>
 #include "qnetworkproxyfactoryset.h"
-#include "kqwebpage.h"
+#include "KQWebPage.h"
 #include "kandataconnector.h"
 #include <QWinTaskbarProgress>
 #include <QMessageBox>
 #include "kqnetworkaccessmanager.h"
 #include <QNetworkRequest>
 #include <QPixmap>
-#include <QWebFrame>
+//#include <QWebFrame>
 #include <QShortcut>
 
 #include <Audiopolicy.h>
@@ -72,12 +72,13 @@ MainWindow::MainWindow(QWidget *parent) :
 	}
 	else
 	{
-		_webView = new QWebView(ui->webFrame);
+		_webView = new QWebEngineView(ui->webFrame);
 		_webView->setObjectName(QStringLiteral("webView"));
 //		_webView->setUrl(QUrl(QStringLiteral("about:blank")));
 		ui->webFrame_layout->addWidget(_webView);
 	}
-	
+
+	// WARNING!!! comment out this line when changing any layout
 	mwbPostInit();
 
 	ui->titleFrame->setHandlingWidget(this);
@@ -724,30 +725,32 @@ void MainWindow::setWebSettings()
 
 	if (!_bUseIE)
 	{
+		/*
 		KQWebPage * page = new KQWebPage();
 		_webView->setPage(page);
 
 		_webView->setContextMenuPolicy(Qt::PreventContextMenu);
-
+		/*
 		if (_proxyMode == ProxyMode::QtProxy)
 		{
 			KQNetworkAccessManager * manager = new KQNetworkAccessManager(this);
 			_webView->page()->setNetworkAccessManager(manager);
 		}
 		CookieJar* jar = new CookieJar(this);
-		_webView->page()->networkAccessManager()->setCookieJar(jar);
+		_webView->page()->setCookieJar(jar);
+		
 		//WebView
 		QNetworkDiskCache *cache = new QNetworkDiskCache(this);
 		cache->setCacheDirectory(QStandardPaths::writableLocation(QStandardPaths::CacheLocation));
 		cache->setMaximumCacheSize(1073741824); //about 1024MB
 		_webView->page()->networkAccessManager()->setCache(cache);
-		/*
+		
 		QDir dir(QStandardPaths::writableLocation(QStandardPaths::CacheLocation));
 		if(dir.exists()){
 		dir.removeRecursively();
 		}
 		*/
-
+		/*
 		QWebSettings *websetting = QWebSettings::globalSettings();
 		//JavaScript関連設定
 		websetting->setAttribute(QWebSettings::JavascriptCanOpenWindows, true);
@@ -770,7 +773,7 @@ void MainWindow::setWebSettings()
 		websetting->setFontFamily(QWebSettings::FixedFont, "Osaka");
 #else
 #endif
-
+		*/
 		//    QNetworkProxyFactory::setUseSystemConfiguration(false);
 		//    updateProxyConfiguration();
 	}
@@ -943,7 +946,7 @@ void MainWindow::onPanic()
 	}
 	else
 	{
-		_webView->page()->mainFrame()->evaluateJavaScript(jsstr);
+		_webView->page()->runJavaScript(jsstr);
 	}
 	if (_panicTimer)
 	{
@@ -1538,7 +1541,7 @@ void MainWindow::applyCss(QWebViewCSSIndex css)
 	}
 	else
 	{
-		_webView->page()->settings()->setUserStyleSheetUrl(_webViewCsses[(int)css]);
+//		_webView->page()->settings()->setUserStyleSheetUrl(_webViewCsses[(int)css]);
 	}
 }
 

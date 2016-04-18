@@ -15,6 +15,7 @@
 #include <QPixmap>
 //#include <QWebFrame>
 #include <QShortcut>
+#include <QWebEngineSettings>
 
 #include <Audiopolicy.h>
 #include <Mmdeviceapi.h>
@@ -73,6 +74,7 @@ MainWindow::MainWindow(QWidget *parent) :
 	else
 	{
 		_webView = new QWebEngineView(ui->webFrame);
+		_webView->settings()->setAttribute(QWebEngineSettings::PluginsEnabled, true);
 		_webView->setObjectName(QStringLiteral("webView"));
 //		_webView->setUrl(QUrl(QStringLiteral("about:blank")));
 		ui->webFrame_layout->addWidget(_webView);
@@ -747,36 +749,48 @@ void MainWindow::setWebSettings()
 		
 		QDir dir(QStandardPaths::writableLocation(QStandardPaths::CacheLocation));
 		if(dir.exists()){
-		dir.removeRecursively();
+			dir.removeRecursively();
 		}
 		*/
-		/*
-		QWebSettings *websetting = QWebSettings::globalSettings();
+
+		//    QNetworkProxyFactory::setUseSystemConfiguration(false);
+		//    updateProxyConfiguration();
+	}
+
+
+	auto webSettingFunc = [](QWebEngineSettings* websetting)
+	{
 		//JavaScript関連設定
-		websetting->setAttribute(QWebSettings::JavascriptCanOpenWindows, true);
-		websetting->setAttribute(QWebSettings::JavascriptCanCloseWindows, true);
-		websetting->setAttribute(QWebSettings::PluginsEnabled, true);
-		websetting->setAttribute(QWebSettings::JavascriptEnabled, true);
+		websetting->setAttribute(QWebEngineSettings::PluginsEnabled, true);
+		websetting->setAttribute(QWebEngineSettings::JavascriptCanOpenWindows, true);
+		//		websetting->setAttribute(QWebEngineSettings::JavascriptCanCloseWindows, true);
+		websetting->setAttribute(QWebEngineSettings::PluginsEnabled, true);
+		websetting->setAttribute(QWebEngineSettings::JavascriptEnabled, true);
 		//フォント設定
 #if defined(Q_OS_WIN32)
 		//    websetting->setFontFamily(QWebSettings::StandardFont, "ＭＳ Ｐゴシック");
 		//    websetting->setFontFamily(QWebSettings::StandardFont, "MS PGothic");
-		websetting->setFontFamily(QWebSettings::StandardFont, "Meiryo UI");
-		websetting->setFontFamily(QWebSettings::SerifFont, "MS PMincho");
-		websetting->setFontFamily(QWebSettings::SansSerifFont, "MS PGothic");
-		websetting->setFontFamily(QWebSettings::FixedFont, "MS Gothic");
+		websetting->setFontFamily(QWebEngineSettings::StandardFont, "Meiryo UI");
+		websetting->setFontFamily(QWebEngineSettings::SerifFont, "MS PMincho");
+		websetting->setFontFamily(QWebEngineSettings::SansSerifFont, "MS PGothic");
+		websetting->setFontFamily(QWebEngineSettings::FixedFont, "MS Gothic");
 #elif defined(Q_OS_LINUX)
 #elif defined(Q_OS_MAC)
-		websetting->setFontFamily(QWebSettings::StandardFont, "ヒラギノ角ゴPro");
-		websetting->setFontFamily(QWebSettings::SerifFont, "ヒラギノ明朝Pro");
-		websetting->setFontFamily(QWebSettings::SansSerifFont, "ヒラギノ角ゴPro");
-		websetting->setFontFamily(QWebSettings::FixedFont, "Osaka");
+		websetting->setFontFamily(QWebEngineSettings::StandardFont, "ヒラギノ角ゴPro");
+		websetting->setFontFamily(QWebEngineSettings::SerifFont, "ヒラギノ明朝Pro");
+		websetting->setFontFamily(QWebEngineSettings::SansSerifFont, "ヒラギノ角ゴPro");
+		websetting->setFontFamily(QWebEngineSettings::FixedFont, "Osaka");
 #else
 #endif
-		*/
-		//    QNetworkProxyFactory::setUseSystemConfiguration(false);
-		//    updateProxyConfiguration();
+	};
+
+	webSettingFunc(QWebEngineSettings::defaultSettings());
+	if (!_bUseIE)
+	{
+		webSettingFunc(_webView->settings());
+		webSettingFunc(_webView->page()->settings());
 	}
+
 }
 
 void MainWindow::AdjustVolume(int vol)

@@ -1708,11 +1708,31 @@ void ControlManager::moveMouseToAndClick(float x, float y, float offsetX /*= 5*/
 	}
 	else
 	{
-		QMouseEvent e(QEvent::MouseButtonPress, ptAdjusted, Qt::LeftButton, Qt::LeftButton, Qt::NoModifier);
-		QApplication::sendEvent(MainWindow::mainWindow()->getBrowserWidget(), &e);
+		auto sendMouseEvents = [this, ptAdjusted](QWidget* w){
+			if (!w)
+			{
+				return;
+			}
+			QMouseEvent e(QEvent::MouseButtonPress, ptAdjusted, Qt::LeftButton, Qt::LeftButton, Qt::NoModifier);
+			QApplication::sendEvent(w, &e);
 
-		QMouseEvent e2(QEvent::MouseButtonRelease, ptAdjusted, Qt::LeftButton, Qt::LeftButton, Qt::NoModifier);
-		QApplication::sendEvent(MainWindow::mainWindow()->getBrowserWidget(), &e2);
+			QMouseEvent e2(QEvent::MouseButtonRelease, ptAdjusted, Qt::LeftButton, Qt::LeftButton, Qt::NoModifier);
+			QApplication::sendEvent(w, &e2);
+		};
+
+		auto browserWidget = MainWindow::mainWindow()->getBrowserWidget();
+		QWebEngineView *webView = dynamic_cast<QWebEngineView *>(browserWidget);
+		if (NULL != webView)
+		{
+			Q_FOREACH(QObject* obj, webView->page()->view()->children())
+			{
+				sendMouseEvents(qobject_cast<QWidget*>(obj));
+			}
+		}
+		else
+		{
+			sendMouseEvents(browserWidget);
+		}
 
 	}
 
@@ -1744,8 +1764,28 @@ void ControlManager::moveMouseTo(float x, float y, float offsetX /*= 5*/, float 
 	}
 	else
 	{
-		QMouseEvent e(QEvent::MouseMove, ptAdjusted, Qt::LeftButton, Qt::LeftButton, Qt::NoModifier);
-		QApplication::sendEvent(MainWindow::mainWindow()->getBrowserWidget(), &e);
+		auto sendMouseEvents = [this, ptAdjusted](QWidget* w){
+			if (!w)
+			{
+				return;
+			}
+			QMouseEvent e(QEvent::MouseButtonPress, ptAdjusted, Qt::LeftButton, Qt::LeftButton, Qt::NoModifier);
+			QApplication::sendEvent(w, &e);
+		};
+
+		auto browserWidget = MainWindow::mainWindow()->getBrowserWidget();
+		QWebEngineView *webView = dynamic_cast<QWebEngineView *>(browserWidget);
+		if (NULL != webView)
+		{
+			Q_FOREACH(QObject* obj, webView->page()->view()->children())
+			{
+				sendMouseEvents(qobject_cast<QWidget*>(obj));
+			}
+		}
+		else
+		{
+			sendMouseEvents(browserWidget);
+		}
 
 	}
 }

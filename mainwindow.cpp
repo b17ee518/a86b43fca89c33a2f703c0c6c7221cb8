@@ -560,6 +560,12 @@ void MainWindow::AfterSessionCompleteFunc(int sessionID, char *mimeType, int res
 
 	if (strPathAndQuery.startsWith("/kcsapi") && responseCode == 200)
 	{
+		static bool first = true;
+		if (first)
+		{
+			MainWindow::mainWindow()->applyCss(QWebViewCSSIndex::Normal);
+			first = false;
+		}
 		if (0 == QString::compare(mimeType, "text/plain"))
 		{
 			emit MainWindow::mainWindow()->sigParse(PathAndQuery, requestBody, responseBody);
@@ -719,10 +725,11 @@ void MainWindow::setWebSettings()
 				this,
 				SLOT(slotWebViewException(int, const QString &, const QString &, const QString &)));
 		}
-
+		
 		QNetworkProxyFactorySet * proxies = new QNetworkProxyFactorySet();
 		proxies->init(_useport);
-		QNetworkProxyFactory::setApplicationProxyFactory(proxies);
+//		QNetworkProxyFactory::setApplicationProxyFactory(proxies);
+		QNetworkProxy::setApplicationProxy(proxies->_proxyhttp);
 	}
 
 	if (!_bUseIE)
@@ -1555,6 +1562,15 @@ void MainWindow::applyCss(QWebViewCSSIndex css)
 	}
 	else
 	{
+		QString jsStr = "function addStyleString(str) {\
+			var node = document.createElement('style');\
+		node.innerHTML = str;\
+		document.body.appendChild(node);\
+	}\
+	addStyleString('body {margin:0;overflow:hidden;}');\
+	addStyleString('#game_frame{position:fixed;top:-16px;left:-50px;z-index:1}'); \
+	addStyleString('body { background: silver }'); ";
+		_webView->page()->runJavaScript(jsStr);
 //		_webView->page()->settings()->setUserStyleSheetUrl(_webViewCsses[(int)css]);
 	}
 }
@@ -1577,6 +1593,7 @@ void MainWindow::on_pbCheckLowVol_toggled(bool checked)
 
 void MainWindow::slotNavigateComplete2(IDispatch*, QVariant& url)
 {
+	// warning : does not work with 5.6
 	_bIEPageLoaded = true;
 	QString urlStr = url.toString();
 	if (urlStr.contains(_gameUrlId))

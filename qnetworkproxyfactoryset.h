@@ -11,7 +11,7 @@ public:
 
     void init(int useport);
 
-private:
+//private:
     QNetworkProxy _proxyhttp;
     QNetworkProxy _proxyhttps;
 };

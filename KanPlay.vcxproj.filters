@@ -249,6 +249,18 @@
     <ClCompile Include="ExpeditionManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="qwindowseventfilter.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="mainwindowsettings.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="mainwindowevents.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="mainwindowjob.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="cookiejar.h">
@@ -333,6 +345,9 @@
       <Filter>Form Files</Filter>
     </CustomBuild>
     <CustomBuild Include="ControlAction.h">
+      <Filter>Header Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="qwindowseventfilter.h">
       <Filter>Header Files</Filter>
     </CustomBuild>
   </ItemGroup>

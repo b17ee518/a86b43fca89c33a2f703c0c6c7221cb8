@@ -261,6 +261,15 @@
     <ClCompile Include="mainwindowjob.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="qwebenginemouseeventfilter.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Debug\moc_qwebenginemouseeventfilter.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="Release\moc_qwebenginemouseeventfilter.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="cookiejar.h">
@@ -348,6 +357,9 @@
       <Filter>Header Files</Filter>
     </CustomBuild>
     <CustomBuild Include="qwindowseventfilter.h">
+      <Filter>Header Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="qwebenginemouseeventfilter.h">
       <Filter>Header Files</Filter>
     </CustomBuild>
   </ItemGroup>

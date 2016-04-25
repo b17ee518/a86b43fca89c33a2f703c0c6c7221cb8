@@ -7,6 +7,7 @@ class QWindowsEventFilter : public QAbstractNativeEventFilter
 {
 public:
 	QWindowsEventFilter();
+	virtual ~QWindowsEventFilter();
 	virtual bool nativeEventFilter(const QByteArray &eventType, void *message, long *result);
 };
 

@@ -11,7 +11,10 @@ public:
 
     void init(int useport);
 
-//private:
+	const QNetworkProxy& getHttpProxy() { return _proxyhttp; }
+	const QNetworkProxy& getHttpsProxy() { return _proxyhttps; }
+
+private:
     QNetworkProxy _proxyhttp;
     QNetworkProxy _proxyhttps;
 };

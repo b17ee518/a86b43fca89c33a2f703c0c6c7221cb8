@@ -7,8 +7,6 @@
 #include "ControlManager.h"
 #include "ExpeditionManager.h"
 
-#define SAFE_RELEASE(x) if(x) { x->Release(); x = NULL; } 
-
 void MainWindow::onDoJobFuel()
 {
 	auto& cm = ControlManager::getInstance();

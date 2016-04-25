@@ -8,8 +8,6 @@
 #include "ControlManager.h"
 #include "ExpeditionManager.h"
 
-#define SAFE_RELEASE(x) if(x) { x->Release(); x = NULL; } 
-
 void MainWindow::onSubMainWindowShowHide(bool bShow, MainWindowBase *pWindow)
 {
 	QPushButton * pButton = 0;
@@ -374,6 +372,10 @@ void MainWindow::on_pbRefresh_clicked()
 
 	if (reply == QMessageBox::Yes)
 	{
+		if (_webWidgetType == WebWidgetType::WebEngine)
+		{
+			_applyCssToGameFlag = true;
+		}
 		navigateReload();
 	}
 

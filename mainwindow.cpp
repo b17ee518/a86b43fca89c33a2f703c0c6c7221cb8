@@ -5,13 +5,16 @@
 
 //#include <QWebFrame>
 #include <QShortcut>
+
+#if (QT_VERSION >= QT_VERSION_CHECK(5, 6, 0))
 #include <QWebEngineSettings>
+#include "qwebenginemouseeventfilter.h"
+#endif
 
 #ifdef Q_OS_WIN
 #include <windows.h>
 #endif
 
-#define SAFE_RELEASE(x) if(x) { x->Release(); x = NULL; } 
 
 MainWindow * MainWindow::s_pMainWindow = NULL;
 
@@ -58,7 +61,18 @@ MainWindow::MainWindow(QWidget *parent) :
 	else
 	{
 		_webView = new QWebEngineView(ui->webFrame);
+#if (QT_VERSION >= QT_VERSION_CHECK(5, 6, 0))
 		_webView->settings()->setAttribute(QWebEngineSettings::PluginsEnabled, true);
+
+		// install mouse event filter
+		Q_FOREACH(QObject* child, _webView->children())
+		{
+			child->installEventFilter(new QWebEngineMouseEventFilter);
+		}
+
+#else
+		_webView->settings()->setAttribute(QWebSettings::PluginsEnabled, true);
+#endif
 		_webView->setObjectName(QStringLiteral("webView"));
 //		_webView->setUrl(QUrl(QStringLiteral("about:blank")));
 		ui->webFrame_layout->addWidget(_webView);
@@ -176,15 +190,16 @@ void MainWindow::AfterSessionCompleteFunc(int sessionID, char *mimeType, int res
 
 	if (strPathAndQuery.startsWith("/kcsapi") && responseCode == 200)
 	{
-		static bool first = true;
-		if (first)
+		auto mainWindow = MainWindow::mainWindow();
+		if (mainWindow->_applyCssToGameFlag && mainWindow->_webWidgetType == WebWidgetType::WebEngine)
 		{
-			MainWindow::mainWindow()->applyCss(QWebViewCSSIndex::Normal);
-			first = false;
+			mainWindow->applyCss(QWebViewCSSIndex::Normal);
+			mainWindow->_applyCssToGameFlag = false;
 		}
+
 		if (0 == QString::compare(mimeType, "text/plain"))
 		{
-			emit MainWindow::mainWindow()->sigParse(PathAndQuery, requestBody, responseBody);
+			emit mainWindow->sigParse(PathAndQuery, requestBody, responseBody);
 //            KanDataConnector::getInstance().Parse(PathAndQuery, requestBody, responseBody);
 			/*
 			QString str = QDateTime::currentDateTime().toString("[yyyy/MM/dd HH:mm:ss]\t");
@@ -257,11 +272,6 @@ void MainWindow::navigateReload()
 	{
 		_webView->reload();
 	}
-}
-
-bool MainWindow::isUsingIE()
-{
-	return _webWidgetType == WebWidgetType::IE;
 }
 
 void MainWindow::rebuildIE(bool bNavigate)

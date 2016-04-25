@@ -9,6 +9,7 @@
 #include "weaponmainwindow.h"
 #include "shipmainwindow.h"
 
+#include "QNetworkProxyFactorySet.h"
 #include <QShowEvent>
 #include <QWinTaskbarButton>
 #include <QNetworkReply>
@@ -81,8 +82,7 @@ class MainWindow : public MainWindowBase
 public:
 	explicit MainWindow(QWidget *parent = 0);
 	~MainWindow();
-
-
+	
 	static inline MainWindow * mainWindow(){return s_pMainWindow;}
 	static inline void setMainWindow(MainWindow * pWindow){s_pMainWindow = pWindow;}
     void postInit(InfoMainWindow * pInfo, TimerMainWindow * pTimer, WeaponMainWindow *pWeapon, ShipMainWindow* pShip);
@@ -103,14 +103,12 @@ public:
 	QWidget* getBrowserWidget();
 	void navigateTo(const QString& urlString);
 	void navigateReload();
-
-	bool isUsingIE();
-
+	
 	void setPauseNextChanged(bool bVal);
 	void setJobTerminated();
 
-	WebWidgetType getWebWidgetType();
-	PlatformType getPlatformType();
+	WebWidgetType getWebWidgetType() { return _webWidgetType; }
+	PlatformType getPlatformType() { return _platformType; }
 
 signals:
 	void sigParse(const QString &PathAndQuery, const QString &requestBody, const QString &responseBody);
@@ -213,6 +211,7 @@ private:
 	bool _bSleep = false;
 
 	QWindowsEventFilter _windowsEventfilter;
+	QNetworkProxyFactorySet _proxyFactory;
 
 #if (QT_VERSION >= QT_VERSION_CHECK(5, 6, 0))
 	QWebEngineView* _webView = NULL;
@@ -231,6 +230,8 @@ private:
 	// need to be set
 	WebWidgetType _webWidgetType = WebWidgetType::Webkit;
 	PlatformType _platformType = PlatformType::Windows7;
+
+	bool _applyCssToGameFlag = true;
 };
 
 

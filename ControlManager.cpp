@@ -9,6 +9,10 @@
 #include <QtMath>
 #include "ExpeditionManager.h"
 
+#ifdef Q_OS_WIN
+#include <windows.h>
+#endif
+
 #define COL_ALLOWRANCE 3
 #define COND_DAIHATSU	80
 
@@ -1680,13 +1684,14 @@ void ControlManager::setStateStr(const QString& str)
 	_stateStr = str;
 	MainWindow::mainWindow()->timerWindow()->setTitle(str);
 }
-#include <windows.h>
+
 void ControlManager::moveMouseToAndClick(float x, float y, float offsetX /*= 5*/, float offsetY /*= 3*/)
 {
 	QPointF ptAdjusted = QPointF(x+randVal(-offsetX, offsetX), y+randVal(-offsetY, offsetY));
 
-	if (MainWindow::mainWindow()->isUsingIE())
+	if (MainWindow::mainWindow()->getWebWidgetType() == WebWidgetType::IE)
 	{
+#ifdef Q_OS_WIN
 		INPUT input;
 		input.type = INPUT_MOUSE;
 		input.mi.dx = ptAdjusted.x()+5;
@@ -1705,6 +1710,7 @@ void ControlManager::moveMouseToAndClick(float x, float y, float offsetX /*= 5*/
 		PostMessage(hwnd, WM_LBUTTONDOWN, 0, (adjx) & ((adjy) << 16));
 		PostMessage(hwnd, WM_LBUTTONUP, 0, (adjx) & ((adjy) << 16));
 		*/
+#endif
 	}
 	else
 	{
@@ -1721,13 +1727,18 @@ void ControlManager::moveMouseToAndClick(float x, float y, float offsetX /*= 5*/
 		};
 
 		auto browserWidget = MainWindow::mainWindow()->getBrowserWidget();
-		QWebEngineView *webView = dynamic_cast<QWebEngineView *>(browserWidget);
-		if (NULL != webView)
+		if (MainWindow::mainWindow()->getWebWidgetType() == WebWidgetType::WebEngine)
 		{
-			Q_FOREACH(QObject* obj, webView->page()->view()->children())
+#if (QT_VERSION >= QT_VERSION_CHECK(5, 6, 0))
+			QWebEngineView *webView = dynamic_cast<QWebEngineView *>(browserWidget);
+			if (NULL != webView)
 			{
-				sendMouseEvents(qobject_cast<QWidget*>(obj));
+				Q_FOREACH(QObject* obj, webView->page()->view()->children())
+				{
+					sendMouseEvents(qobject_cast<QWidget*>(obj));
+				}
 			}
+#endif
 		}
 		else
 		{
@@ -1741,8 +1752,9 @@ void ControlManager::moveMouseToAndClick(float x, float y, float offsetX /*= 5*/
 void ControlManager::moveMouseTo(float x, float y, float offsetX /*= 5*/, float offsetY /*= 3*/)
 {
 	QPointF ptAdjusted = QPointF(x + randVal(-offsetX, offsetX), y + randVal(-offsetY, offsetY));
-	if (MainWindow::mainWindow()->isUsingIE())
+	if (MainWindow::mainWindow()->getWebWidgetType() == WebWidgetType::IE)
 	{
+#ifdef Q_OS_WIN
 		INPUT input;
 		input.type = INPUT_MOUSE;
 		input.mi.dx = ptAdjusted.x()+5;
@@ -1761,6 +1773,7 @@ void ControlManager::moveMouseTo(float x, float y, float offsetX /*= 5*/, float 
 		HWND hwnd = (HWND)MainWindow::mainWindow()->winId();
 		PostMessage(hwnd, WM_MOUSEMOVE, 0, (adjx)& ((adjy) << 16));
 		*/
+#endif
 	}
 	else
 	{
@@ -1774,13 +1787,18 @@ void ControlManager::moveMouseTo(float x, float y, float offsetX /*= 5*/, float 
 		};
 
 		auto browserWidget = MainWindow::mainWindow()->getBrowserWidget();
-		QWebEngineView *webView = dynamic_cast<QWebEngineView *>(browserWidget);
-		if (NULL != webView)
+		if (MainWindow::mainWindow()->getWebWidgetType() == WebWidgetType::WebEngine)
 		{
-			Q_FOREACH(QObject* obj, webView->page()->view()->children())
+#if (QT_VERSION >= QT_VERSION_CHECK(5, 6, 0))
+			QWebEngineView *webView = dynamic_cast<QWebEngineView *>(browserWidget);
+			if (NULL != webView)
 			{
-				sendMouseEvents(qobject_cast<QWidget*>(obj));
+				Q_FOREACH(QObject* obj, webView->page()->view()->children())
+				{
+					sendMouseEvents(qobject_cast<QWidget*>(obj));
+				}
 			}
+#endif
 		}
 		else
 		{

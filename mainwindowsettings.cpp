@@ -138,20 +138,26 @@ void MainWindow::setWebSettings()
 				SLOT(slotWebViewException(int, const QString &, const QString &, const QString &)));
 		}
 		
-		QNetworkProxyFactorySet * proxies = new QNetworkProxyFactorySet();
-		proxies->init(_useport);
-//		QNetworkProxyFactory::setApplicationProxyFactory(proxies);
-		QNetworkProxy::setApplicationProxy(proxies->_proxyhttp);
+		_proxyFactory.init(_useport);
+
+		// TODO: check why
+		if (_webWidgetType == WebWidgetType::WebEngine)
+		{
+			QNetworkProxy::setApplicationProxy(_proxyFactory.getHttpProxy());
+		}
+		else
+		{
+			QNetworkProxyFactory::setApplicationProxyFactory(&_proxyFactory);
+		}
 	}
 
 	if (_webWidgetType != WebWidgetType::IE)
 	{
-		/*
 		KQWebPage * page = new KQWebPage();
 		_webView->setPage(page);
-
 		_webView->setContextMenuPolicy(Qt::PreventContextMenu);
-		/*
+
+#if (QT_VERSION < QT_VERSION_CHECK(5, 6, 0))
 		if (_proxyMode == ProxyMode::QtProxy)
 		{
 			KQNetworkAccessManager * manager = new KQNetworkAccessManager(this);
@@ -165,30 +171,27 @@ void MainWindow::setWebSettings()
 		cache->setCacheDirectory(QStandardPaths::writableLocation(QStandardPaths::CacheLocation));
 		cache->setMaximumCacheSize(1073741824); //about 1024MB
 		_webView->page()->networkAccessManager()->setCache(cache);
-		
+
+		/*
 		QDir dir(QStandardPaths::writableLocation(QStandardPaths::CacheLocation));
 		if(dir.exists()){
-			dir.removeRecursively();
+		dir.removeRecursively();
 		}
 		*/
+#endif
 
-		//    QNetworkProxyFactory::setUseSystemConfiguration(false);
-		//    updateProxyConfiguration();
 	}
 
-
+#if (QT_VERSION >= QT_VERSION_CHECK(5, 6, 0))
 	auto webSettingFunc = [](QWebEngineSettings* websetting)
 	{
 		//JavaScript関連設定
 		websetting->setAttribute(QWebEngineSettings::PluginsEnabled, true);
 		websetting->setAttribute(QWebEngineSettings::JavascriptCanOpenWindows, true);
-		//		websetting->setAttribute(QWebEngineSettings::JavascriptCanCloseWindows, true);
 		websetting->setAttribute(QWebEngineSettings::PluginsEnabled, true);
 		websetting->setAttribute(QWebEngineSettings::JavascriptEnabled, true);
 		//フォント設定
 #if defined(Q_OS_WIN32)
-		//    websetting->setFontFamily(QWebSettings::StandardFont, "ＭＳ Ｐゴシック");
-		//    websetting->setFontFamily(QWebSettings::StandardFont, "MS PGothic");
 		websetting->setFontFamily(QWebEngineSettings::StandardFont, "Meiryo UI");
 		websetting->setFontFamily(QWebEngineSettings::SerifFont, "MS PMincho");
 		websetting->setFontFamily(QWebEngineSettings::SansSerifFont, "MS PGothic");
@@ -204,12 +207,28 @@ void MainWindow::setWebSettings()
 	};
 
 	webSettingFunc(QWebEngineSettings::defaultSettings());
-	if (_webWidgetType != WebWidgetType::IE)
-	{
-		webSettingFunc(_webView->settings());
-		webSettingFunc(_webView->page()->settings());
-	}
-
+#else
+		QWebSettings *websetting = QWebSettings::globalSettings();
+		//JavaScript関連設定
+		websetting->setAttribute(QWebSettings::JavascriptCanOpenWindows, true);
+		websetting->setAttribute(QWebSettings::JavascriptCanCloseWindows, true);
+		websetting->setAttribute(QWebSettings::PluginsEnabled, true);
+		websetting->setAttribute(QWebSettings::JavascriptEnabled, true);
+	//フォント設定
+#if defined(Q_OS_WIN32)
+		websetting->setFontFamily(QWebSettings::StandardFont, "Meiryo UI");
+		websetting->setFontFamily(QWebSettings::SerifFont, "MS PMincho");
+		websetting->setFontFamily(QWebSettings::SansSerifFont, "MS PGothic");
+		websetting->setFontFamily(QWebSettings::FixedFont, "MS Gothic");
+#elif defined(Q_OS_LINUX)
+#elif defined(Q_OS_MAC)
+		websetting->setFontFamily(QWebSettings::StandardFont, "ヒラギノ角ゴPro");
+		websetting->setFontFamily(QWebSettings::SerifFont, "ヒラギノ明朝Pro");
+		websetting->setFontFamily(QWebSettings::SansSerifFont, "ヒラギノ角ゴPro");
+		websetting->setFontFamily(QWebSettings::FixedFont, "Osaka");
+#else
+#endif
+#endif
 }
 
 void MainWindow::AdjustVolume(int vol)
@@ -316,17 +335,7 @@ body {
 	z-index:1
 }
 */
-	_ieCsses[(int)QWebViewCSSIndex::Normal] = "\
-								body {\
-									margin:0;\
-									overflow:hidden;\
-								}\
-								#game_frame{\
-									position:fixed;\
-									top:-16px;\
-									left:-50px;\
-									z-index:1\
-								 }";
+	_ieCsses[(int)QWebViewCSSIndex::Normal] = "body {margin:0;overflow:hidden;} #game_frame{position:fixed;top:-16px;left:-50px;z-index:1}";
 	_webViewCsses[(int)QWebViewCSSIndex::Normal] = QUrl(QString("data:text/css;charset=utf-8;base64,") 
 		+ _ieCsses[(int)QWebViewCSSIndex::Normal].toUtf8().toBase64());
 //		(QUrl("data:text/css;charset=utf-8;base64,Ym9keSB7DQoJbWFyZ2luOjA7DQoJb3ZlcmZsb3c6aGlkZGVuDQp9DQoNCiNnYW1lX2ZyYW1lIHsNCglwb3NpdGlvbjpmaXhlZDsNCgl0b3A6LTE2cHg7DQoJbGVmdDotNTBweDsNCgl6LWluZGV4OjENCn0="));
@@ -348,17 +357,7 @@ body {
 	}
 	*/
 	
-	_ieCsses[(int)QWebViewCSSIndex::Compact] = "\
-								body {\
-									margin:0;\
-									overflow:hidden;\
-								}\
-								#game_frame{\
-									position:fixed;\
-									top:-16px;\
-									left:-50px;\
-									z-index:1\
-																										 }";
+	_ieCsses[(int)QWebViewCSSIndex::Compact] = "body {margin:0;overflow:hidden;} #game_frame{position:fixed;top:-16px;left:-50px;z-index:1}";
 	_webViewCsses[(int)QWebViewCSSIndex::Compact] = QUrl(QString("data:text/css;charset=utf-8;base64,")
 		+ _ieCsses[(int)QWebViewCSSIndex::Compact].toUtf8().toBase64());
 	/*
@@ -395,24 +394,31 @@ body {
 		QUrl("data:text/css;charset=utf-8;base64,Ym9keSB7DQoJbWFyZ2luOjA7DQoJb3ZlcmZsb3c6aGlkZGVuOw0KCW9wYWNpdHk6IDAuMjsNCn0NCg0KI2dhbWVfZnJhbWUgew0KCXBvc2l0aW9uOmZpeGVkOw0KCXRvcDotMTZweDsNCglsZWZ0Oi01MHB4Ow0KCXotaW5kZXg6MTsNCn0=");
 
 	// do not set opacity
-	_ieCsses[(int)QWebViewCSSIndex::Transparent] = "\
-										body {\
-											margin:0;\
-											overflow:visible;\
-										}\
-										#game_frame{\
-											position:fixed;\
-											top:-16px;\
-											left:-50px;\
-											z - index:1;\
-										}\
-										";
+	_ieCsses[(int)QWebViewCSSIndex::Transparent] = "body {margin:0;overflow:hidden;} #game_frame{position:fixed;top:-16px;left:-50px;z-index:1}";
 	
 	applyCss(QWebViewCSSIndex::Normal);
 }
 
 void MainWindow::loadSettings()
 {
+	// platform
+#ifdef Q_OS_WIN
+	if (QSysInfo::WindowsVersion >= QSysInfo::WV_WINDOWS8 && QSysInfo::WindowsVersion < QSysInfo::WV_WINDOWS10)
+	{
+		_platformType = PlatformType::SlowTablet;
+	}
+	else if (QSysInfo::WindowsVersion >= QSysInfo::WV_WINDOWS10)
+	{
+		_platformType = PlatformType::FastTablet;
+	}
+	else
+	{
+		_platformType = PlatformType::Windows7;
+	}
+#else
+	_platformType = PlatformType::Mac;
+#endif
+
 	QString filename = QApplication::applicationDirPath();
 	filename += "/settings.ini";
 	QSettings* setting = new QSettings(filename, QSettings::IniFormat);
@@ -429,13 +435,9 @@ void MainWindow::loadSettings()
 	setting->beginGroup("Settings");
 	if (!setting->contains(itemWebWidgetType))
 	{
-		if (QSysInfo::WindowsVersion == QSysInfo::WV_WINDOWS8)
+		if (_platformType == PlatformType::SlowTablet)
 		{
 			setting->setValue(itemWebWidgetType, "IE");
-		}
-		else if (QSysInfo::WindowsVersion >= QSysInfo::WV_WINDOWS10)
-		{
-			setting->setValue(itemWebWidgetType, "WebEngine");
 		}
 		else
 		{
@@ -456,7 +458,7 @@ void MainWindow::loadSettings()
 	}
 	if (!setting->contains(itemIntervalMul))
 	{
-		if (QSysInfo::WindowsVersion >= QSysInfo::WV_WINDOWS8)
+		if (_platformType == PlatformType::SlowTablet)
 		{
 			setting->setValue(itemIntervalMul, 150);
 		}
@@ -486,11 +488,21 @@ void MainWindow::loadSettings()
 	else if (!webWidgetType.compare("WebKit", Qt::CaseInsensitive))
 	{
 		_webWidgetType = WebWidgetType::Webkit;
+	}
+
+	if (_webWidgetType == WebWidgetType::WebEngine || _webWidgetType == WebWidgetType::Webkit)
+	{
 		if (QT_VERSION >= QT_VERSION_CHECK(5, 6, 0))
 		{
 			_webWidgetType = WebWidgetType::WebEngine;
 		}
+		else
+		{
+			_webWidgetType = WebWidgetType::Webkit;
+			_applyCssToGameFlag = false;	// close
+		}
 	}
+
 	_gameUrl = setting->value(itemGameUrl).toString();
 	_gameUrlId = setting->value(itemUrlId).toString();
 	_useport = setting->value(itemUsePort).toInt();
@@ -577,15 +589,19 @@ void MainWindow::applyCss(QWebViewCSSIndex css)
 	}
 	else
 	{
-		QString jsStr = "function addStyleString(str) {\
-			var node = document.createElement('style');\
-		node.innerHTML = str;\
-		document.body.appendChild(node);\
-	}\
-	addStyleString('body {margin:0;overflow:hidden;}');\
-	addStyleString('#game_frame{position:fixed;top:-16px;left:-50px;z-index:1}'); \
-	addStyleString('body { background: silver }'); ";
+#if (QT_VERSION >= QT_VERSION_CHECK(5, 6, 0))
+		QString jsStr = 
+			"function addStyleString(str) {\
+				var node = document.createElement('style');\
+				node.innerHTML = str;\
+				document.body.appendChild(node);\
+			}\
+			addStyleString('" + _ieCsses[(int)css] + "'); \
+			addStyleString('body { background: silver }'); ";
+
 		_webView->page()->runJavaScript(jsStr);
-//		_webView->page()->settings()->setUserStyleSheetUrl(_webViewCsses[(int)css]);
+#else
+		_webView->page()->settings()->setUserStyleSheetUrl(_webViewCsses[(int)css]);
+#endif
 	}
 }

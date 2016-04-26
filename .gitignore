@@ -2,6 +2,9 @@
 *.sdf
 debug/
 release/
+DebugWebEngine/
+ReleaseWebEngine/
+GeneratedFiles/
 *.suo
 *.user
 *.TMP

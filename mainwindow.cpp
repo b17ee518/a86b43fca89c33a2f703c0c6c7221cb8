@@ -60,10 +60,11 @@ MainWindow::MainWindow(QWidget *parent) :
 	}
 	else
 	{
-		_webView = new QWebEngineView(ui->webFrame);
 #if (QT_VERSION >= QT_VERSION_CHECK(5, 6, 0))
+		_webView = new QWebEngineView(ui->webFrame);
 		_webView->settings()->setAttribute(QWebEngineSettings::PluginsEnabled, true);
 #else
+		_webView = new QWebView(ui->webFrame);
 		_webView->settings()->setAttribute(QWebSettings::PluginsEnabled, true);
 #endif
 		_webView->setObjectName(QStringLiteral("webView"));

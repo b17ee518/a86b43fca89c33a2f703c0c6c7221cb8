@@ -19,6 +19,8 @@
 #include "ControlManager.h"
 #include "ExpeditionManager.h"
 
+#include "kqnetworkaccessmanager.h"
+
 #define SAFE_RELEASE(x) if(x) { x->Release(); x = NULL; } 
 
 void MainWindow::postInit(InfoMainWindow *pInfo, TimerMainWindow *pTimer, WeaponMainWindow* pWeapon, ShipMainWindow* pShip)
@@ -164,7 +166,7 @@ void MainWindow::setWebSettings()
 			_webView->page()->setNetworkAccessManager(manager);
 		}
 		CookieJar* jar = new CookieJar(this);
-		_webView->page()->setCookieJar(jar);
+		_webView->page()->networkAccessManager()->setCookieJar(jar);
 		
 		//WebView
 		QNetworkDiskCache *cache = new QNetworkDiskCache(this);
@@ -403,11 +405,21 @@ void MainWindow::loadSettings()
 {
 	// platform
 #ifdef Q_OS_WIN
-	if (QSysInfo::WindowsVersion >= QSysInfo::WV_WINDOWS8 && QSysInfo::WindowsVersion < QSysInfo::WV_WINDOWS10)
+	if (QSysInfo::WindowsVersion >= QSysInfo::WV_WINDOWS8 
+#if (QT_VERSION >= QT_VERSION_CHECK(5, 6, 0))
+		&& QSysInfo::WindowsVersion < QSysInfo::WV_WINDOWS10
+#endif
+		)
 	{
 		_platformType = PlatformType::SlowTablet;
 	}
-	else if (QSysInfo::WindowsVersion >= QSysInfo::WV_WINDOWS10)
+	else 
+
+#if (QT_VERSION >= QT_VERSION_CHECK(5, 6, 0))
+		if (QSysInfo::WindowsVersion >= QSysInfo::WV_WINDOWS10)
+#else 
+		if (false)
+#endif
 	{
 		_platformType = PlatformType::FastTablet;
 	}

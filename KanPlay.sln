@@ -9,8 +9,12 @@ Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
 		Debug|x64 = Debug|x64
+		DebugWebEngine|Win32 = DebugWebEngine|Win32
+		DebugWebEngine|x64 = DebugWebEngine|x64
 		Release|Win32 = Release|Win32
 		Release|x64 = Release|x64
+		ReleaseWebEngine|Win32 = ReleaseWebEngine|Win32
+		ReleaseWebEngine|x64 = ReleaseWebEngine|x64
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{F44EBE03-D5B5-3BFE-B9D0-4EF7D2E0049F}.Debug|Win32.ActiveCfg = Debug|Win32
@@ -18,10 +22,18 @@ Global
 		{F44EBE03-D5B5-3BFE-B9D0-4EF7D2E0049F}.Debug|Win32.Deploy.0 = Debug|Win32
 		{F44EBE03-D5B5-3BFE-B9D0-4EF7D2E0049F}.Debug|x64.ActiveCfg = Debug|x64
 		{F44EBE03-D5B5-3BFE-B9D0-4EF7D2E0049F}.Debug|x64.Build.0 = Debug|x64
+		{F44EBE03-D5B5-3BFE-B9D0-4EF7D2E0049F}.DebugWebEngine|Win32.ActiveCfg = DebugWebEngine|Win32
+		{F44EBE03-D5B5-3BFE-B9D0-4EF7D2E0049F}.DebugWebEngine|Win32.Build.0 = DebugWebEngine|Win32
+		{F44EBE03-D5B5-3BFE-B9D0-4EF7D2E0049F}.DebugWebEngine|x64.ActiveCfg = DebugWebEngine|x64
+		{F44EBE03-D5B5-3BFE-B9D0-4EF7D2E0049F}.DebugWebEngine|x64.Build.0 = DebugWebEngine|x64
 		{F44EBE03-D5B5-3BFE-B9D0-4EF7D2E0049F}.Release|Win32.ActiveCfg = Release|Win32
 		{F44EBE03-D5B5-3BFE-B9D0-4EF7D2E0049F}.Release|Win32.Build.0 = Release|Win32
 		{F44EBE03-D5B5-3BFE-B9D0-4EF7D2E0049F}.Release|x64.ActiveCfg = Release|x64
 		{F44EBE03-D5B5-3BFE-B9D0-4EF7D2E0049F}.Release|x64.Build.0 = Release|x64
+		{F44EBE03-D5B5-3BFE-B9D0-4EF7D2E0049F}.ReleaseWebEngine|Win32.ActiveCfg = ReleaseWebEngine|Win32
+		{F44EBE03-D5B5-3BFE-B9D0-4EF7D2E0049F}.ReleaseWebEngine|Win32.Build.0 = ReleaseWebEngine|Win32
+		{F44EBE03-D5B5-3BFE-B9D0-4EF7D2E0049F}.ReleaseWebEngine|x64.ActiveCfg = ReleaseWebEngine|x64
+		{F44EBE03-D5B5-3BFE-B9D0-4EF7D2E0049F}.ReleaseWebEngine|x64.Build.0 = ReleaseWebEngine|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

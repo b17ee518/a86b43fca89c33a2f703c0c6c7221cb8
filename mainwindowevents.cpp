@@ -4,6 +4,9 @@
 #include <QDesktopWidget>
 #include <QWinTaskbarProgress>
 #include <QMessageBox>
+#if (QT_VERSION < QT_VERSION_CHECK(5, 6, 0))
+#include <QWebFrame>
+#endif
 
 #include "ControlManager.h"
 #include "ExpeditionManager.h"

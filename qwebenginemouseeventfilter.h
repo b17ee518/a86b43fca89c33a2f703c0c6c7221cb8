@@ -2,6 +2,7 @@
 #define QWEBENGINEMOUSEEVENTFILTER_H
 
 #include <QObject>
+#include <QTime>
 
 class QWebEngineMouseEventFilter : public QObject
 {
@@ -16,7 +17,9 @@ protected:
 	bool eventFilter(QObject * obj, QEvent * event) override;
 
 private:
-	
+	QTime _pressedTime;
+	QTime _releasedTime;
+	QTime _dblClickedTime;	
 };
 
 #endif // QWEBENGINEMOUSEEVENTFILTER_H

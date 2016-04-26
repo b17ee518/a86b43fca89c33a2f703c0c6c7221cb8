@@ -63,13 +63,6 @@ MainWindow::MainWindow(QWidget *parent) :
 		_webView = new QWebEngineView(ui->webFrame);
 #if (QT_VERSION >= QT_VERSION_CHECK(5, 6, 0))
 		_webView->settings()->setAttribute(QWebEngineSettings::PluginsEnabled, true);
-
-		// install mouse event filter
-		Q_FOREACH(QObject* child, _webView->children())
-		{
-			child->installEventFilter(new QWebEngineMouseEventFilter);
-		}
-
 #else
 		_webView->settings()->setAttribute(QWebSettings::PluginsEnabled, true);
 #endif
@@ -193,6 +186,8 @@ void MainWindow::AfterSessionCompleteFunc(int sessionID, char *mimeType, int res
 		auto mainWindow = MainWindow::mainWindow();
 		if (mainWindow->_applyCssToGameFlag && mainWindow->_webWidgetType == WebWidgetType::WebEngine)
 		{
+			mainWindow->installWebEngineMouseEventFilter();
+
 			mainWindow->applyCss(QWebViewCSSIndex::Normal);
 			mainWindow->_applyCssToGameFlag = false;
 		}
@@ -301,6 +296,44 @@ void MainWindow::rebuildIE(bool bNavigate)
 	{
 		navigateTo(_gameUrl);
 	}
+}
+
+void MainWindow::installWebEngineMouseEventFilter()
+{
+#if (QT_VERSION >= QT_VERSION_CHECK(5, 6, 0))
+	if (_webEngineMouseEventFilter)
+	{
+		Q_FOREACH(QObject* child, _webView->children())
+		{
+			child->removeEventFilter(_webEngineMouseEventFilter);
+		}
+		Q_FOREACH(QObject* child, _webView->page()->children())
+		{
+			child->removeEventFilter(_webEngineMouseEventFilter);
+		}
+		Q_FOREACH(QObject* child, _webView->page()->view()->children())
+		{
+			child->removeEventFilter(_webEngineMouseEventFilter);
+		}
+		delete _webEngineMouseEventFilter;
+	}
+
+	_webEngineMouseEventFilter = new QWebEngineMouseEventFilter;
+	// install mouse event filter
+	_webView->installEventFilter(_webEngineMouseEventFilter);
+	Q_FOREACH(QObject* child, _webView->children())
+	{
+		child->installEventFilter(_webEngineMouseEventFilter);
+	}
+	Q_FOREACH(QObject* child, _webView->page()->children())
+	{
+		child->installEventFilter(_webEngineMouseEventFilter);
+	}
+	Q_FOREACH(QObject* child, _webView->page()->view()->children())
+	{
+		child->installEventFilter(_webEngineMouseEventFilter);
+	}
+#endif
 }
 
 void MainWindow::slotNavigateComplete2(IDispatch*, QVariant& url)

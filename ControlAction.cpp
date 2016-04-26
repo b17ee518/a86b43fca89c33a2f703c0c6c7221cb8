@@ -1797,7 +1797,7 @@ bool ExpeditionAction::action()
 					, 637, 170, 255, 246, 242))
 				{
 					_waiting = false;
-					if (_team == 1)
+					if (_team == 1 && MainWindow::mainWindow()->getWebWidgetType() != WebWidgetType::WebEngine)
 					{
 						setState(State::TeamSelectedChecking, "Expedition:TeamSelectedChecking");
 					}

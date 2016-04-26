@@ -27,6 +27,7 @@
 #include "nekoxy.h"
 #include "titanium_web_proxy.h"
 #include "qwindowseventfilter.h"
+#include "qwebenginemouseeventfilter.h"
 
 using namespace SHDocVw;
 
@@ -176,6 +177,8 @@ private:
 	void loadCertKey();
 	void saveCertKey();
 
+	void installWebEngineMouseEventFilter();
+
 private:
 	Ui::MainWindow *ui;
 
@@ -232,6 +235,8 @@ private:
 	PlatformType _platformType = PlatformType::Windows7;
 
 	bool _applyCssToGameFlag = true;
+
+	QWebEngineMouseEventFilter * _webEngineMouseEventFilter = NULL;
 };
 
 

@@ -1738,6 +1738,9 @@ void ControlManager::moveMouseToAndClick(float x, float y, float offsetX /*= 5*/
 					sendMouseEvents(qobject_cast<QWidget*>(obj));
 				}
 			}
+
+			// reset mouse pos for webengine
+			moveMouseTo(0, 0);
 #endif
 		}
 		else

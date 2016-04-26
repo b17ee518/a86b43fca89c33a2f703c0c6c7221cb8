@@ -1,33 +1,36 @@
 ﻿#ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
+#include <QtGlobal>
 #include <QMainWindow>
 #include "mainwindowbase.h"
 #include "infomainwindow.h"
 #include "timermainwindow.h"
 #include "weaponmainwindow.h"
 #include "shipmainwindow.h"
+
+#include "QNetworkProxyFactorySet.h"
 #include <QShowEvent>
 #include <QWinTaskbarButton>
 #include <QNetworkReply>
+
+#if (QT_VERSION >= QT_VERSION_CHECK(5, 6, 0))
+#include <QWebEngineView>
+#else
 #include <QWebView>
+#endif
+
 #include <QAxWidget>
 #include "shdocvw.h"
 
 #include "fidcom.h"
 #include "nekoxy.h"
 #include "titanium_web_proxy.h"
+#include "qwindowseventfilter.h"
+#include "qwebenginemouseeventfilter.h"
 
 using namespace SHDocVw;
 
-#include <QAbstractNativeEventFilter>
-
-class QWindowsEventFilter : public QAbstractNativeEventFilter
-{
-public:
-	QWindowsEventFilter();
-	virtual bool nativeEventFilter(const QByteArray &eventType, void *message, long *result);
-};
 enum class ProgressBarState
 {
 	Normal,
@@ -54,6 +57,20 @@ enum class ProxyMode
 	Titanium,
 };
 
+enum class WebWidgetType
+{
+	Webkit,
+	WebEngine,	// Qt5.6
+	IE,
+};
+
+enum class PlatformType
+{
+	Windows7,
+	SlowTablet,		// windows8
+	FastTablet,		// surface
+	Mac,
+};
 
 namespace Ui {
 class MainWindow;
@@ -66,7 +83,7 @@ class MainWindow : public MainWindowBase
 public:
 	explicit MainWindow(QWidget *parent = 0);
 	~MainWindow();
-
+	
 	static inline MainWindow * mainWindow(){return s_pMainWindow;}
 	static inline void setMainWindow(MainWindow * pWindow){s_pMainWindow = pWindow;}
     void postInit(InfoMainWindow * pInfo, TimerMainWindow * pTimer, WeaponMainWindow *pWeapon, ShipMainWindow* pShip);
@@ -87,11 +104,12 @@ public:
 	QWidget* getBrowserWidget();
 	void navigateTo(const QString& urlString);
 	void navigateReload();
-
-	bool isUsingIE();
-
+	
 	void setPauseNextChanged(bool bVal);
 	void setJobTerminated();
+
+	WebWidgetType getWebWidgetType() { return _webWidgetType; }
+	PlatformType getPlatformType() { return _platformType; }
 
 signals:
 	void sigParse(const QString &PathAndQuery, const QString &requestBody, const QString &responseBody);
@@ -159,6 +177,8 @@ private:
 	void loadCertKey();
 	void saveCertKey();
 
+	void installWebEngineMouseEventFilter();
+
 private:
 	Ui::MainWindow *ui;
 
@@ -194,17 +214,29 @@ private:
 	bool _bSleep = false;
 
 	QWindowsEventFilter _windowsEventfilter;
+	QNetworkProxyFactorySet _proxyFactory;
 
+#if (QT_VERSION >= QT_VERSION_CHECK(5, 6, 0))
+	QWebEngineView* _webView = NULL;
+#else
 	QWebView* _webView = NULL;
+#endif
 	WebBrowser* _axWidget = NULL;
 
 	// settings
-	bool _bUseIE = false;
 	QString _gameUrl;
 	QString _gameUrlId;
 
 	QString _certStr;
 	QString _keyStr;
+
+	// need to be set
+	WebWidgetType _webWidgetType = WebWidgetType::Webkit;
+	PlatformType _platformType = PlatformType::Windows7;
+
+	bool _applyCssToGameFlag = true;
+
+	QWebEngineMouseEventFilter * _webEngineMouseEventFilter = NULL;
 };
 
 

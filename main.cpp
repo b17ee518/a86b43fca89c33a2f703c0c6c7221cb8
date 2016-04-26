@@ -11,6 +11,10 @@
 #include "kandataconnector.h"
 #include <QWinTaskbarProgress>
 
+#if (QT_VERSION < QT_VERSION_CHECK(5, 6, 0))
+#pragma comment(lib, "Qt5WebKitd.lib")
+#endif
+
 int main(int argc, char *argv[])
 {
 	QApplication a(argc, argv);

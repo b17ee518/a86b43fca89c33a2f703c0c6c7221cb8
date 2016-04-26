@@ -1,5 +1,5 @@
 #include "ControlManager.h"
-#include <QTestEventList>
+//#include <QTestEventList>
 #include "mainwindow.h"
 #include <QMouseEvent>
 #include <QGraphicsSceneMouseEvent>
@@ -8,6 +8,11 @@
 #include "kandatacalc.h"
 #include <QtMath>
 #include "ExpeditionManager.h"
+#include <QApplication>
+
+#ifdef Q_OS_WIN
+#include <windows.h>
+#endif
 
 #define COL_ALLOWRANCE 3
 #define COND_DAIHATSU	80
@@ -1680,13 +1685,14 @@ void ControlManager::setStateStr(const QString& str)
 	_stateStr = str;
 	MainWindow::mainWindow()->timerWindow()->setTitle(str);
 }
-#include <windows.h>
+
 void ControlManager::moveMouseToAndClick(float x, float y, float offsetX /*= 5*/, float offsetY /*= 3*/)
 {
 	QPointF ptAdjusted = QPointF(x+randVal(-offsetX, offsetX), y+randVal(-offsetY, offsetY));
 
-	if (MainWindow::mainWindow()->isUsingIE())
+	if (MainWindow::mainWindow()->getWebWidgetType() == WebWidgetType::IE)
 	{
+#ifdef Q_OS_WIN
 		INPUT input;
 		input.type = INPUT_MOUSE;
 		input.mi.dx = ptAdjusted.x()+5;
@@ -1705,14 +1711,43 @@ void ControlManager::moveMouseToAndClick(float x, float y, float offsetX /*= 5*/
 		PostMessage(hwnd, WM_LBUTTONDOWN, 0, (adjx) & ((adjy) << 16));
 		PostMessage(hwnd, WM_LBUTTONUP, 0, (adjx) & ((adjy) << 16));
 		*/
+#endif
 	}
 	else
 	{
-		QMouseEvent e(QEvent::MouseButtonPress, ptAdjusted, Qt::LeftButton, Qt::LeftButton, Qt::NoModifier);
-		QApplication::sendEvent(MainWindow::mainWindow()->getBrowserWidget(), &e);
+		auto sendMouseEvents = [this, ptAdjusted](QWidget* w){
+			if (!w)
+			{
+				return;
+			}
+			QMouseEvent e(QEvent::MouseButtonPress, ptAdjusted, Qt::LeftButton, Qt::LeftButton, Qt::NoModifier);
+			QApplication::sendEvent(w, &e);
 
-		QMouseEvent e2(QEvent::MouseButtonRelease, ptAdjusted, Qt::LeftButton, Qt::LeftButton, Qt::NoModifier);
-		QApplication::sendEvent(MainWindow::mainWindow()->getBrowserWidget(), &e2);
+			QMouseEvent e2(QEvent::MouseButtonRelease, ptAdjusted, Qt::LeftButton, Qt::LeftButton, Qt::NoModifier);
+			QApplication::sendEvent(w, &e2);
+		};
+
+		auto browserWidget = MainWindow::mainWindow()->getBrowserWidget();
+		if (MainWindow::mainWindow()->getWebWidgetType() == WebWidgetType::WebEngine)
+		{
+#if (QT_VERSION >= QT_VERSION_CHECK(5, 6, 0))
+			QWebEngineView *webView = dynamic_cast<QWebEngineView *>(browserWidget);
+			if (NULL != webView)
+			{
+				Q_FOREACH(QObject* obj, webView->page()->view()->children())
+				{
+					sendMouseEvents(qobject_cast<QWidget*>(obj));
+				}
+			}
+
+			// reset mouse pos for webengine
+			moveMouseTo(0, 0);
+#endif
+		}
+		else
+		{
+			sendMouseEvents(browserWidget);
+		}
 
 	}
 
@@ -1721,8 +1756,9 @@ void ControlManager::moveMouseToAndClick(float x, float y, float offsetX /*= 5*/
 void ControlManager::moveMouseTo(float x, float y, float offsetX /*= 5*/, float offsetY /*= 3*/)
 {
 	QPointF ptAdjusted = QPointF(x + randVal(-offsetX, offsetX), y + randVal(-offsetY, offsetY));
-	if (MainWindow::mainWindow()->isUsingIE())
+	if (MainWindow::mainWindow()->getWebWidgetType() == WebWidgetType::IE)
 	{
+#ifdef Q_OS_WIN
 		INPUT input;
 		input.type = INPUT_MOUSE;
 		input.mi.dx = ptAdjusted.x()+5;
@@ -1741,11 +1777,37 @@ void ControlManager::moveMouseTo(float x, float y, float offsetX /*= 5*/, float 
 		HWND hwnd = (HWND)MainWindow::mainWindow()->winId();
 		PostMessage(hwnd, WM_MOUSEMOVE, 0, (adjx)& ((adjy) << 16));
 		*/
+#endif
 	}
 	else
 	{
-		QMouseEvent e(QEvent::MouseMove, ptAdjusted, Qt::LeftButton, Qt::LeftButton, Qt::NoModifier);
-		QApplication::sendEvent(MainWindow::mainWindow()->getBrowserWidget(), &e);
+		auto sendMouseEvents = [this, ptAdjusted](QWidget* w){
+			if (!w)
+			{
+				return;
+			}
+			QMouseEvent e(QEvent::MouseButtonPress, ptAdjusted, Qt::LeftButton, Qt::LeftButton, Qt::NoModifier);
+			QApplication::sendEvent(w, &e);
+		};
+
+		auto browserWidget = MainWindow::mainWindow()->getBrowserWidget();
+		if (MainWindow::mainWindow()->getWebWidgetType() == WebWidgetType::WebEngine)
+		{
+#if (QT_VERSION >= QT_VERSION_CHECK(5, 6, 0))
+			QWebEngineView *webView = dynamic_cast<QWebEngineView *>(browserWidget);
+			if (NULL != webView)
+			{
+				Q_FOREACH(QObject* obj, webView->page()->view()->children())
+				{
+					sendMouseEvents(qobject_cast<QWidget*>(obj));
+				}
+			}
+#endif
+		}
+		else
+		{
+			sendMouseEvents(browserWidget);
+		}
 
 	}
 }

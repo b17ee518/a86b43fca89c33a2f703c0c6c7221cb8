@@ -77,7 +77,8 @@ void TimerMainWindow::setExpeditionTime(int n, qint64 destms/*=-1*/, qint64 tota
 		pItem->setText(comment);
 		pItem->setTextColor(col);
 	}
-	if (QSysInfo::WindowsVersion >= QSysInfo::WV_WINDOWS8 /*&& MainWindow::mainWindow()->isUsingIE()*/)
+	auto platformType = MainWindow::mainWindow()->getPlatformType();
+	if (platformType == PlatformType::FastTablet || platformType == PlatformType::SlowTablet)
 	{
 		// output ini
 		QSettings * setting = new QSettings("C:/KanAlarm/KanAlarm/bin/Release/AppX/KanPlayExpeditionTime.ini", QSettings::IniFormat);

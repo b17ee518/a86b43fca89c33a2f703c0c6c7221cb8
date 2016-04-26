@@ -1,5 +1,5 @@
 #include "ControlManager.h"
-#include <QTestEventList>
+//#include <QTestEventList>
 #include "mainwindow.h"
 #include <QMouseEvent>
 #include <QGraphicsSceneMouseEvent>
@@ -8,6 +8,7 @@
 #include "kandatacalc.h"
 #include <QtMath>
 #include "ExpeditionManager.h"
+#include <QApplication>
 
 #ifdef Q_OS_WIN
 #include <windows.h>

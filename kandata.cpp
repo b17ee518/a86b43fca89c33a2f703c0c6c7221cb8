@@ -653,6 +653,8 @@ bool kcsapi_mst_slotitem::ReadFromJObj(const QJsonObject &jobj)
 	_AIREAD(api_broken);
 	_SREAD(api_info);
 	_SREAD(api_usebull);
+	_IREAD(api_cost);
+	_IREAD(api_distance);
 
 	return _bParseRet;
 
@@ -848,6 +850,28 @@ bool kcsapi_ship_deck::ReadFromJObj(const QJsonObject &jobj)
 
 	return _bParseRet;
 
+}
+
+bool kcsapi_air_base_corps_plane_info::ReadFromJObj(const QJsonObject &jobj)
+{
+	_IREAD(api_squadron_id);
+	_IREAD(api_state);
+	_IREAD(api_slotid);
+	_IREAD(api_count);
+	_IREAD(api_max_count);
+	_IREAD(api_cond);
+
+	return _bParseRet;
+}
+
+bool kcsapi_air_base_corps::ReadFromJObj(const QJsonObject &jobj)
+{
+	_IREAD(api_rid);
+	_SREAD(api_name);
+	_IREAD(api_distance);
+	_IREAD(api_action_kind);
+	_ACREAD(api_plane_info, kcsapi_air_base_corps_plane_info);
+	return _bParseRet;
 }
 
 bool kcsapi_slot_data::ReadFromJObj(const QJsonObject &jobj)
@@ -1105,6 +1129,8 @@ bool Api_Mst_Slotitem::ReadFromJObj(const QJsonObject &jobj)
 	_AIREAD(api_broken);
 	_SREAD(api_info);
 	_SREAD(api_usebull);
+	_IREAD(api_cost);
+	_IREAD(api_distance);
 	return _bParseRet;
 }
 
@@ -1289,10 +1315,24 @@ bool kcsapi_next_enemy::ReadFromJObj(const QJsonObject &jobj)
 	return _bParseRet;
 }
 
+bool kcsapi_eventmap::ReadFromJObj(const QJsonObject &jobj)
+{
+	_IREAD(api_max_maphp);
+	_IREAD(api_now_maphp);
+	_IREAD(api_dmg);
+	return _bParseRet;
+}
+
+bool kcsapi_airsearch::ReadFromJObj(const QJsonObject &jobj)
+{
+	_IREAD(api_plane_type);
+	_IREAD(api_result);
+	return _bParseRet;
+}
+
 
 bool kcsapi_next::ReadFromJObj(const QJsonObject &jobj)
 {
-
 	_IREAD(api_rashin_flg);
 	_IREAD(api_rashin_id);
 	_IREAD(api_maparea_id);
@@ -1304,9 +1344,12 @@ bool kcsapi_next::ReadFromJObj(const QJsonObject &jobj)
 	_IREAD(api_next);
 	_IREAD(api_bosscell_no);
 	_IREAD(api_bosscomp);
-//    int api_comment_kind;
-//    int api_production_kind;
+	_IREAD(api_comment_kind);
+    _IREAD(api_production_kind);
 	_CREAD(api_enemy, kcsapi_next_enemy);
+	_CREAD(api_airsearch, kcsapi_airsearch);
+	_CREAD(api_eventmap, kcsapi_eventmap);
+	_CREAD(api_destruction_battle, kcsapi_battle);
 	return _bParseRet;
 }
 
@@ -1348,6 +1391,28 @@ bool kcsapi_battle_kouku_stage3::ReadFromJObj(const QJsonObject &jobj)
 	_AIREAD(api_ecl_flag);
 	_AFREAD(api_fdam);
 	_AFREAD(api_edam);
+
+	return _bParseRet;
+}
+
+bool kcsapi_battle_base_attack_squadron::ReadFromJObj(const QJsonObject &jobj)
+{
+	_IREAD(api_mst_id);
+	_IREAD(api_count);
+
+	return _bParseRet;
+}
+
+bool kcsapi_battle_base_attack::ReadFromJObj(const QJsonObject &jobj)
+{
+	_IREAD(api_base_id);
+	_ACREAD(api_squadron_plane, kcsapi_battle_base_attack_squadron);
+
+	_AIREAD(api_stage_flag);
+	_AAIREAD(api_plane_from); //? f, e list
+	_CREAD(api_stage1, kcsapi_battle_kouku_stage1);
+	_CREAD(api_stage2, kcsapi_battle_kouku_stage2);
+	_CREAD(api_stage3, kcsapi_battle_kouku_stage3);
 
 	return _bParseRet;
 }
@@ -1428,6 +1493,9 @@ bool kcsapi_battle::ReadFromJObj(const QJsonObject &jobj)
 	// combined
 	_AIREAD(api_nowhps_combined);
 	_AIREAD(api_maxhps_combined);
+
+	// air base attack
+	_ACREAD(api_air_base_attack, kcsapi_battle_base_attack);
 
 	_IREAD(api_midnight_flag);
 	_AAIREAD(api_eSlot); // from #0

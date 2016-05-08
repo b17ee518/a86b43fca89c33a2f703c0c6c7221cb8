@@ -249,6 +249,32 @@ public:
 	kcsapi_battle_support_airatack_stage3 api_stage3;
 };
 
+class kcsapi_battle_base_attack_squadron : public KAPIBaseData
+{
+public:
+	kcsapi_battle_base_attack_squadron(){}
+	virtual bool ReadFromJObj(const QJsonObject &jobj);
+
+	int api_mst_id;	// master id
+	int api_count;
+};
+
+class kcsapi_battle_base_attack : public KAPIBaseData
+{
+public:
+	kcsapi_battle_base_attack(){}
+	virtual bool ReadFromJObj(const QJsonObject &jobj);
+
+	int api_base_id;
+	QList<kcsapi_battle_base_attack_squadron> api_squadron_plane;
+
+	QList<int> api_stage_flag;
+	QList<QList<int>> api_plane_from;
+	kcsapi_battle_support_airatack_stage1 api_stage1;
+	kcsapi_battle_support_airatack_stage2 api_stage2;
+	kcsapi_battle_support_airatack_stage3 api_stage3;
+};
+
 class kcsapi_battle_support_hourai : public KAPIBaseData
 {
 public:
@@ -368,6 +394,9 @@ public:
 	QList<int> api_nowhps_combined;
 	QList<int> api_maxhps_combined;
 	//
+
+	// air base attack
+	QList<kcsapi_battle_base_attack> api_air_base_attack;
 
 	int api_midnight_flag;
 	QList<QList<int>> api_eSlot; // from #0
@@ -930,6 +959,8 @@ public:
 	QList<int> api_broken;
 	QString api_info;
 	QString api_usebull;
+	int api_cost;
+	int api_distance;
 };
 
 /**
@@ -1128,6 +1159,39 @@ public:
 
 	QList<kcsapi_ship2> api_ship_data;
 	QList<kcsapi_deck> api_deck_data;
+};
+
+class kcsapi_air_base_corps_plane_info : public KAPIBaseData
+{
+public:
+	kcsapi_air_base_corps_plane_info(){}
+	virtual bool ReadFromJObj(const QJsonObject &jobj);
+
+	int api_squadron_id = -1;	// team id
+	int api_state = -1;
+	int api_slotid = -1;
+	int api_count = 0;
+	int api_max_count = 0;
+	int api_cond = -1;	// 1 normal
+};
+
+class kcsapi_air_base_corps : public KAPIBaseData
+{
+public:
+	kcsapi_air_base_corps(){}
+	virtual bool ReadFromJObj(const QJsonObject &jobj);
+
+	// for supply
+	/*
+	int api_after_fuel;	 // ignore
+	int api_after_bauxite;	// ignore
+	*/
+
+	int api_rid = -1;
+	QString api_name = "";
+	int api_distance = 0;
+	int api_action_kind = -1;
+	QList<kcsapi_air_base_corps_plane_info> api_plane_info;
 };
 
 class kcsapi_slot_data: public KAPIBaseData
@@ -1386,6 +1450,8 @@ virtual bool ReadFromJObj(const QJsonObject &jobj);
 	QList<int> api_broken;
 	QString api_info;
 	QString api_usebull;
+	int api_cost;
+	int api_distance;
 };
 
 class Api_Mst_Slotitemgraph: public KAPIBaseData
@@ -1646,6 +1712,25 @@ public:
 	QString api_result_str;
 };
 
+class kcsapi_airsearch : public KAPIBaseData
+{
+public:
+	kcsapi_airsearch(){}
+	virtual bool ReadFromJObj(const QJsonObject &jobj);
+	int api_plane_type;
+	int api_result;
+};
+
+class kcsapi_eventmap : public KAPIBaseData
+{
+public:
+	kcsapi_eventmap(){}
+	virtual bool ReadFromJObj(const QJsonObject &jobj);
+	int api_max_maphp = 0;
+	int api_now_maphp;
+	int api_dmg;	// last?
+};
+
 /**
  * @brief The kcsapi_next class
  */
@@ -1666,9 +1751,12 @@ public:
 	int api_next;
 	int api_bosscell_no;
 	int api_bosscomp;
-//    int api_comment_kind;
-//    int api_production_kind;
+    int api_comment_kind;
+    int api_production_kind;
 	kcsapi_next_enemy api_enemy;
+	kcsapi_airsearch api_airsearch;
+	kcsapi_eventmap api_eventmap;
+	kcsapi_battle api_destruction_battle;
 };
 
 /**

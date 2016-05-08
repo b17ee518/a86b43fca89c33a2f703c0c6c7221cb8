@@ -466,6 +466,46 @@ void KanDataConnector::checkWoundQuit()
 	}
 }
 
+void KanDataConnector::checkAirBase()
+{
+	pksd->airBaseNeedSupply = false;
+	pksd->airBaseBadCond = false;
+	for (const auto& corp : pksd->airbasedata)
+	{
+		if (corp.api_rid < 0)
+		{
+			continue;
+		}
+		for (const auto& plane : corp.api_plane_info)
+		{
+			if (plane.api_squadron_id < 0)
+			{
+				continue;
+			}
+			if (plane.api_count < plane.api_max_count)
+			{
+				pksd->airBaseNeedSupply = true;
+			}
+			if (plane.api_cond > 1)
+			{
+				pksd->airBaseBadCond = true;
+			}
+
+			if (pksd->airBaseBadCond && pksd->airBaseNeedSupply)
+			{
+				break;
+			}
+		}
+		if (pksd->airBaseBadCond && pksd->airBaseNeedSupply)
+		{
+			break;
+		}
+	}
+
+	// update team
+	updateFleetTable();
+}
+
 QString KanDataConnector::logBattleResult(bool bWrite/*=true*/)
 {
 	int maparea_id = pksd->nextdata.api_maparea_id;

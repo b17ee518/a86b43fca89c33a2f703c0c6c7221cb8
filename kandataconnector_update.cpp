@@ -547,6 +547,22 @@ void KanDataConnector::updateFleetTable()
 			.arg(alltaiku+alltaikubonus)
 			.arg(allsakuteki)
 			.arg((int)allsakuteki_sp);
+
+
+		if (v.api_id == 1 && (pksd->airBaseBadCond || pksd->airBaseNeedSupply))
+		{
+			strtitle += QString::fromLocal8Bit(" --航基 ");
+			if (pksd->airBaseBadCond)
+			{
+				strtitle += QString::fromLocal8Bit("疲");
+			}
+			if (pksd->airBaseNeedSupply)
+			{
+				strtitle += QString::fromLocal8Bit("補");
+				bRed = true;
+			}
+		}
+
 		MainWindow::infoWindow()->updateFleetTable(v.api_id-1, strtitle, colindex, bRed, rows);
 	}
 
@@ -672,6 +688,13 @@ void KanDataConnector::updateInfoTitleBattle(bool bBattle, QList<int> * enemyhps
 		strtitle = QString::fromLocal8Bit("現:%1 ボス:%2")
 			.arg(pksd->nextdata.api_no)
 			.arg(pksd->nextdata.api_bosscell_no);
+		if (!bBattle && pksd->nextdata.api_eventmap.api_max_maphp > 0)
+		{
+			strtitle += QString::fromLocal8Bit(" (%1/%2, DMG:%3)")
+				.arg(pksd->nextdata.api_eventmap.api_now_maphp)
+				.arg(pksd->nextdata.api_eventmap.api_max_maphp)
+				.arg(pksd->nextdata.api_eventmap.api_dmg);
+		}
 	}
 
 	if (bBattle)
@@ -1033,6 +1056,39 @@ QList<int> KanDataConnector::updateBattle(const kcsapi_battle &api_battle, KanBa
 
 		QList<int> api_nowhps = api_battle.api_nowhps;
 		QList<int> api_nowhps_combined = api_battle.api_nowhps_combined;
+
+		// air base attack
+		if (!api_battle.api_air_base_attack.isEmpty())
+		{
+			for (const auto& item : api_battle.api_air_base_attack)
+			{
+				//　航空ダメージ (enemy only)
+				if (item.api_stage_flag.size() >= 2 && item.api_stage_flag[2] > 0)
+				{
+					/*
+					for (int i = 1; i < item.api_stage3.api_fdam.count(); i++)
+					{
+						totalfdamage[i] += item.api_stage3.api_fdam[i];
+					}
+					*/
+					for (int i = 1; i < item.api_stage3.api_edam.count(); i++)
+					{
+						totaledamage[i] += item.api_stage3.api_edam[i];
+					}
+					/*
+					if (bCombined)
+					{
+						for (int i = 1; i < item.api_stage3_combined.api_fdam.count(); i++)
+						{
+							totalfdamage_combined[i] += item.api_stage3_combined.api_fdam[i];
+						}
+					}
+					*/
+				}
+
+			}
+		}
+
 		//TODO: formation
 		int stageflagcount = api_battle.api_stage_flag.count();
 		if (stageflagcount >= 3)

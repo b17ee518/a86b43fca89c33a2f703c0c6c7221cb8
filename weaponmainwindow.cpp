@@ -47,10 +47,10 @@ void WeaponMainWindow::clearWeaponData()
 	_needRebuildTable = true;
 }
 
-void WeaponMainWindow::addWeaponData(int slotitemId, const QString& itemname, int type, int rare, bool bLocked, int level, int alv, const QString& shipname, int shiplv)
+void WeaponMainWindow::addWeaponData(int slotitemId, const QString& itemname, int type, int rare, bool bLocked, int level, int alv, const QString& shipname, int shiplv, int distance)
 {
     UIWeaponData data;
-    data.setData(bLocked, level, shipname, shiplv, alv);
+    data.setData(bLocked, level, shipname, shiplv, alv, distance);
     bool bDone = false;
     for (QList<UIWeaponGroupData>::iterator it=_weaponGroupList.begin(); it!=_weaponGroupList.end(); ++it)
     {
@@ -113,6 +113,8 @@ void WeaponMainWindow::buildTable()
 		int level = v.api_level;
 		int alv = v.api_alv;
 		int slotitemId = v.api_slotitem_id;
+		int distance = 0;
+
 		auto pslotitem = pkdc->findMstSlotItemFromSlotitemid(slotitemId);
 		QString itemname;
 		int rare = 0;
@@ -128,6 +130,7 @@ void WeaponMainWindow::buildTable()
 				{
 					type = pmstslotitem->api_type[2];
 				}
+				distance = pmstslotitem->api_distance;
 			}
 		}
 		QString shipname;
@@ -158,7 +161,7 @@ void WeaponMainWindow::buildTable()
 			}
 		}
 
-		MainWindow::weaponWindow()->addWeaponData(slotitemId, itemname, type, rare, bLocked, level, alv, shipname, shiplv);
+		MainWindow::weaponWindow()->addWeaponData(slotitemId, itemname, type, rare, bLocked, level, alv, shipname, shiplv, distance);
 	}
 	//
 
@@ -292,7 +295,17 @@ void WeaponMainWindow::buildSingleTable(const UIWeaponGroupData& groupData)
 		{
 			colAlv = colAqua;
 		}
+		QColor colDist = colWhite;
+		if (it.distance > 6)
+		{
+			colDist = colYellow;
+		}
+		else if (it.distance > 4)
+		{
+			colDist = colAqua;
+		}
 		rd.appendCell(KQRowCellData(QString::fromLocal8Bit("熟%1").arg(it.alv), colAlv));
+		rd.appendCell(KQRowCellData(it.distance > 0? QString::fromLocal8Bit("距%1").arg(it.distance) : "", colDist));
         rd.appendCell(KQRowCellData(it.shipname));
         rd.appendCell(KQRowCellData(QString::fromLocal8Bit("Lv.%1").arg(it.shiplv)));
         if (it.bLocked)
@@ -362,13 +375,14 @@ void WeaponMainWindow::setWeaponColumnFormat(KQUI_CollapsibleFrame *pFrame)
 {
     auto pTableWidget = pFrame->tableWidget();
     pTableWidget->setRowCount(0);
-	pTableWidget->setColumnCount(5);
+	pTableWidget->setColumnCount(6);
 	pTableWidget->setColumnWidth(0, 40);
 	pTableWidget->setColumnWidth(1, 40);
-    pTableWidget->setColumnWidth(2, 120);
-    pTableWidget->setColumnWidth(3, 60);
-    pTableWidget->setColumnWidth(4, 18);
-    pTableWidget->setSeparatorColumn(2);
+	pTableWidget->setColumnWidth(2, 40);
+    pTableWidget->setColumnWidth(3, 120);
+    pTableWidget->setColumnWidth(4, 60);
+    pTableWidget->setColumnWidth(5, 18);
+    pTableWidget->setSeparatorColumn(3);
 }
 
 void WeaponMainWindow::slotOnTableSizeChanged()

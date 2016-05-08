@@ -158,6 +158,10 @@ public:
 
 	CreateShipSaveData createshipdata;
 
+	QList<kcsapi_air_base_corps> airbasedata;
+	bool airBaseNeedSupply = false;
+	bool airBaseBadCond = false;
+
 	QList<int> enemyhpdata;
 
 	int shipcountoffset = 0;
@@ -187,7 +191,7 @@ public:
 	int totalBossSRank = 0;
 	int totalSortie = 0;
 	int totalSouthEastWin = 0;
-
+	
 public:
 	void logAllExport();
 

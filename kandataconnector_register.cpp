@@ -208,6 +208,11 @@ KanDataConnector::KanDataConnector(void)
 	req_furniture_music_play_flag = PARSEFLAG_NORMAL;
 	req_furniture_set_portbgm_flag = PARSEFLAG_NORMAL;
 	req_map_select_eventmap_rank_flag = PARSEFLAG_NORMAL;
+	get_member_base_air_corps_flag = PARSEFLAG_NORMAL;
+	req_air_corps_set_action_flag = PARSEFLAG_NORMAL;
+	req_map_start_air_base_flag = PARSEFLAG_NORMAL;
+	req_air_corps_supply_flag = PARSEFLAG_NORMAL;
+	req_air_corps_set_action_flag = PARSEFLAG_NORMAL;
 
 
 	/************************************************************************/
@@ -368,6 +373,11 @@ bool KanDataConnector::Parse(const QString& pathAndQuery, const QString& request
 		PARSEAPI("/kcsapi/api_req_kaisou/open_exslot", req_kaisou_open_exslot)
 		PARSEAPI("/kcsapi/api_req_kaisou/slotset_ex", req_kaisou_slotset_ex)
 		PARSEAPI("/kcsapi/api_req_member/itemuse_cond", req_member_itemuse_cond)
+		PARSEAPI("/kcsapi/api_get_member/base_air_corps", get_member_base_air_corps)
+		PARSEAPI("/kcsapi/api_req_air_corps/set_plane", req_air_corps_set_plane)
+		PARSEAPI("/kcsapi/api_req_map/start_air_base", req_map_start_air_base)
+		PARSEAPI("/kcsapi/api_req_air_corps/supply", req_air_corps_supply)
+		PARSEAPI("/kcsapi/api_req_air_corps/set_action", req_air_corps_set_action)
 
 	if (!bRet)
 	{

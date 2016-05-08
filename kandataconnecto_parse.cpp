@@ -1439,3 +1439,113 @@ bool KanDataConnector::req_kaisou_slotset_ex_parse()
 	return true;
 }
 
+bool KanDataConnector::get_member_base_air_corps_parse()
+{
+	QList<kcsapi_air_base_corps> tcorps;
+	tcorps.append(kcsapi_air_base_corps());
+	tcorps.append(kcsapi_air_base_corps());
+	tcorps.append(kcsapi_air_base_corps());
+
+	auto jarray = _jdoc.object()["api_data"].toArray();
+	for (int i = 0; i < jarray.count(); i++)
+	{
+		auto corp = jarray[i].toObject();
+		kcsapi_air_base_corps tcorp;
+		tcorp.api_plane_info.append(kcsapi_air_base_corps_plane_info());
+		tcorp.api_plane_info.append(kcsapi_air_base_corps_plane_info());
+		tcorp.api_plane_info.append(kcsapi_air_base_corps_plane_info());
+		tcorp.api_plane_info.append(kcsapi_air_base_corps_plane_info());
+		tcorp.ReadFromJObj(corp);
+
+		tcorps[tcorp.api_rid - 1] = tcorp;
+	}
+
+	pksd->airbasedata = tcorps;
+
+	checkAirBase();
+
+	return true;
+}
+
+bool KanDataConnector::req_air_corps_set_plane_parse()
+{
+//	api_base_id = 1 & api_item_id = 63064 & api_squadron_id = 4
+	int baseid = _req.GetItemAsString("api_base_id").toInt();
+//	int itemid = _req.GetItemAsString("api_item_id").toInt();
+	int squadronid = _req.GetItemAsString("api_squadron_id").toInt();
+
+	while (pksd->airbasedata.size() < baseid)
+	{
+		pksd->airbasedata.append(kcsapi_air_base_corps());
+	}
+
+	while (pksd->airbasedata[baseid-1].api_plane_info.size() < squadronid)
+	{
+		pksd->airbasedata[baseid - 1].api_plane_info.append(kcsapi_air_base_corps_plane_info());
+	}
+	
+	kcsapi_air_base_corps tcorps;
+	tcorps.ReadFromJObj(_jobj);
+	for (const auto& item : tcorps.api_plane_info)
+	{
+		pksd->airbasedata[baseid - 1].api_plane_info[item.api_squadron_id - 1] = item;
+	}
+	pksd->airbasedata[baseid - 1].api_distance = tcorps.api_distance;
+	
+	checkAirBase();
+
+	return true;
+}
+
+bool KanDataConnector::req_map_start_air_base_parse()
+{
+	return true;
+}
+
+bool KanDataConnector::req_air_corps_supply_parse()
+{
+	//api_base_id=1&api_squadron_id=1,2,3,4
+	int baseid = _req.GetItemAsString("api_base_id").toInt();
+	QList<QString> squadronIds = _req.GetItemAsString("api_squadron_id").split(",");
+
+	kcsapi_air_base_corps tcorp;
+	tcorp.api_plane_info.append(kcsapi_air_base_corps_plane_info());
+	tcorp.api_plane_info.append(kcsapi_air_base_corps_plane_info());
+	tcorp.api_plane_info.append(kcsapi_air_base_corps_plane_info());
+	tcorp.api_plane_info.append(kcsapi_air_base_corps_plane_info());
+	tcorp.ReadFromJObj(_jobj);
+
+	while (pksd->airbasedata.size() < baseid)
+	{
+		pksd->airbasedata.append(kcsapi_air_base_corps());
+	}
+	
+	for (const auto& idStr : squadronIds)
+	{
+		int squadronid = idStr.toInt();
+		while (pksd->airbasedata[baseid - 1].api_plane_info.size() < squadronid)
+		{
+			pksd->airbasedata[baseid - 1].api_plane_info.append(kcsapi_air_base_corps_plane_info());
+		}
+		if (tcorp.api_plane_info.size() >= squadronid)
+		{
+			for (const auto& plane : tcorp.api_plane_info)
+			{
+				if (plane.api_squadron_id == squadronid)
+				{
+					pksd->airbasedata[baseid - 1].api_plane_info[squadronid - 1] = plane;
+					break;
+				}
+			}
+		}
+	}
+
+	checkAirBase();
+
+	return true;
+}
+
+bool KanDataConnector::req_air_corps_set_action_parse()
+{
+	return true;
+}

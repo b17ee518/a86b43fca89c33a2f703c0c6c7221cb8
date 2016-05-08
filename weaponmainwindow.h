@@ -14,13 +14,14 @@ class UIWeaponData{
 public:
     UIWeaponData(){}
 
-    void setData(bool bLocked, int level, QString shipname, int shiplv, int alv)
+    void setData(bool bLocked, int level, QString shipname, int shiplv, int alv, int distance)
     {
         this->bLocked = bLocked;
         this->level = level;
         this->shipname = shipname;
         this->shiplv = shiplv;
 		this->alv = alv;
+		this->distance = distance;
     }
 
     bool bLocked = false;
@@ -28,6 +29,7 @@ public:
     QString shipname;
     int shiplv = 0;
 	int alv = 0;
+	int distance = 0;
 };
 
 class UIWeaponGroupData{
@@ -71,7 +73,8 @@ public:
 		int level, 
 		int alv, 
 		const QString& shipname,
-		int shiplv);
+		int shiplv,
+		int distance);
 
 	void buildTable();
 

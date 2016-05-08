@@ -86,6 +86,8 @@ private:
 	bool AddShip(int shipid, const QList<int>& slotitems);
 	bool AddSlotItem(int id, int slotitemId);
 
+	void checkAirBase();
+
 private:
 
 	bool start2_parse();
@@ -187,6 +189,12 @@ private:
 	bool dmm_payment_paycheck_parse();
 	bool req_kaisou_open_exslot_parse();
 	bool req_kaisou_slotset_ex_parse();
+	bool get_member_base_air_corps_parse();	// air base list
+	bool req_air_corps_set_plane_parse();
+	bool req_map_start_air_base_parse();
+	bool req_air_corps_supply_parse();
+	bool req_air_corps_set_action_parse();
+
 
 private:
 	int start2_flag;
@@ -288,6 +296,11 @@ private:
 	int dmm_payment_paycheck_flag;
 	int req_kaisou_open_exslot_flag;
 	int req_kaisou_slotset_ex_flag;
+	int get_member_base_air_corps_flag;	// air base list
+	int req_air_corps_set_plane_flag;
+	int req_map_start_air_base_flag;
+	int req_air_corps_supply_flag;
+	int req_air_corps_set_action_flag;
 
 private:
 	QColor _colWhite;

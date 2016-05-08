@@ -738,6 +738,7 @@ bool ControlManager::LoadToDoShipList_Kira()
 					}
 				}
 			}
+			file->close();
 		}
 	}
 	return true;

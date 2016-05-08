@@ -406,6 +406,9 @@ public:
 	QList<QList<int>> api_fParam_combined; // from #0
 	QList<QList<int>> api_eParam; // from #0
 
+	// boss damaged
+	int api_boss_damaged = 0;
+
 	// escape
 	QList<int> api_escape_idx;
 	QList<int> api_escape_idx_combined;

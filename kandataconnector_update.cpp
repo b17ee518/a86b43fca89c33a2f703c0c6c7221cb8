@@ -803,6 +803,12 @@ void KanDataConnector::updateInfoTitleBattle(bool bBattle, QList<int> * enemyhps
 			loseStr = QString::fromLocal8Bit("敗");
 		}
 
+		QString bossDamagedStr = "";
+		if (pksd->battledata.api_boss_damaged > 0)
+		{
+			bossDamagedStr = QString::fromLocal8Bit("★");
+		}
+		loseStr = bossDamagedStr+loseStr;
 		strtitle += QString::fromLocal8Bit(" - %1残:%2%3, 輸%4(%5), 航:%6(%7), 潜%8(%9)")
 			.arg(loseStr)
 			.arg(totalremain)

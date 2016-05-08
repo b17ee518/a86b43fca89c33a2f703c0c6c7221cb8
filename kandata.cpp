@@ -1494,6 +1494,8 @@ bool kcsapi_battle::ReadFromJObj(const QJsonObject &jobj)
 	_AIREAD(api_nowhps_combined);
 	_AIREAD(api_maxhps_combined);
 
+	_IREAD(api_boss_damaged);
+
 	// air base attack
 	_ACREAD(api_air_base_attack, kcsapi_battle_base_attack);
 

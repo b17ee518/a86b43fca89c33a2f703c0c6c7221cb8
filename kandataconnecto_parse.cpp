@@ -1506,7 +1506,7 @@ bool KanDataConnector::req_air_corps_supply_parse()
 {
 	//api_base_id=1&api_squadron_id=1,2,3,4
 	int baseid = _req.GetItemAsString("api_base_id").toInt();
-	QList<QString> squadronIds = _req.GetItemAsString("api_squadron_id").split(",");
+	QList<QString> squadronIds = _req.GetItemAsString("api_squadron_id").split("%2C");
 
 	kcsapi_air_base_corps tcorp;
 	tcorp.api_plane_info.append(kcsapi_air_base_corps_plane_info());

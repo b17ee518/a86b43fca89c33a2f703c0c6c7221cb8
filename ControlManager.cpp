@@ -66,7 +66,8 @@ bool ControlManager::BuildNext_Kira(bool bForceCurrent/*=false*/)
 		|| hasSlotitem(togoShipId, SlotitemType::BaKuRai)
 		|| hasSlotitem(togoShipId, SlotitemType::Sonar_L)
 		|| hasSlotitem(togoShipId, SlotitemType::YuSou, 3)
-		|| noSlotitem(togoShipId))
+		|| noSlotitem(togoShipId)
+		|| (!bForceCurrent&&isLowCond(togoShipId)))
 	{
 		_todoShipids.removeAt(0);
 		if (_todoShipids.empty())
@@ -1099,6 +1100,20 @@ bool ControlManager::isShipKiraDone(int shipno)
 					return true;
 				}
 			}
+		}
+	}
+	return false;
+}
+
+bool ControlManager::isLowCond(int shipno)
+{
+	KanDataConnector* pkdc = &KanDataConnector::getInstance();
+	auto pship = pkdc->findShipFromShipno(shipno);
+	if (pship)
+	{
+		if (KanDataCalc::GetCondState(pship->api_cond-1) >= CondState::Middle)
+		{
+			return true;
 		}
 	}
 	return false;

@@ -110,6 +110,7 @@ public:
 	bool isShipFull();
 	bool findPagePosByShipId(int shipno, int& page, int& pos, int& lastPage);
 	bool isShipKiraDone(int shipno);
+	bool isLowCond(int shipno);
 	bool isShipInOtherTeam(int shipno, int team);
 	bool isShipInDock(int shipno);
 	bool isShipDamaged(int shipno);

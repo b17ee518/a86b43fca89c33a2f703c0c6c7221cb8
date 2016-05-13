@@ -212,7 +212,7 @@ void InfoMainWindow::setOverviewColumnFormat()
 	ui->overviewTable->setRowCount(3);
 	ui->overviewTable->setColumnCount(2);
 	ui->overviewTable->setColumnWidth(0, 175);
-	ui->overviewTable->setColumnWidth(1, 145);
+	ui->overviewTable->setColumnWidth(1, 155);
 	ui->overviewTable->setSpan(2, 0, 1, 2);
 	for (int i=0; i<2; i++)
 	{

@@ -49,12 +49,13 @@ void ExpeditionManager::BuildByPreset(ExpeditionPreset preset)
 	{
 		ExpeditionSchedule* pschedule = NULL;
 		SingleExpedition exp;
-		// first team 20 -> tokyuu1 -> 3last
+		// first team 20 -> tokyuu1 ->padding 20 -> 3last
 		{
 			pschedule = &(_schedules[0]);
 
 			BuildSingle20(pschedule, 19, 0);
-			BuildSingleTokyu1(pschedule, 22, 30);
+			BuildSingleTokyu1(pschedule, 22, 29);
+			BuildSingle20(pschedule, 22, 30);
 			BuildSingle3last(pschedule, -1, -1);
 		}
 		// second team 2:20 -> padding30 ->2last

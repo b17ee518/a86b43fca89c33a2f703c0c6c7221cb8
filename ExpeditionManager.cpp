@@ -371,11 +371,11 @@ void ExpeditionManager::BuildSingle2last(ExpeditionSchedule* pschedule, int toHo
 
 	exp.Clear();
 	exp.addShip((int)ShipType::KeiJun, true, 0);
+	exp.addShip((int)ShipType::KuChiKu, true, 1);
+	exp.addShip((int)ShipType::KuChiKu, true, 1);
+	exp.addShip((int)ShipType::KuChiKu, true, 1);
+	exp.addShip((int)ShipType::KuChiKu, true, 1);
 	exp.addShip((int)ShipType::YouRiKu, true, 0);
-	exp.addShip((int)ShipType::KuChiKu, true, 1);
-	exp.addShip((int)ShipType::KuChiKu, true, 1);
-	exp.addShip((int)ShipType::KuChiKu, true, 1);
-	exp.addShip((int)ShipType::KuChiKu, true, 1);
 	exp.addSpecialExcludes(SPSHIP_AKIGUMO);
 	exp.addSpecialExcludes(SPSHIP_YUGUMO);
 	exp.addSpecialExcludes(SPSHIP_MAKIGUMO);
@@ -495,11 +495,11 @@ void ExpeditionManager::BuildSingleBauxiteYusou(ExpeditionSchedule* pschedule, i
 	SingleExpedition exp;
 
 	exp.addShip((int)ShipType::KuChiKu, true, 1);
+	exp.addShip((int)ShipType::KuChiKu, true, 1);
+	exp.addShip((int)ShipType::KuChiKu, true, 1);
+	exp.addShip((int)ShipType::KuChiKu, true, 1);
+	exp.addShip((int)ShipType::KuChiKu, true, 1);
 	exp.addShip((int)ShipType::YouRiKu, true, 0);
-	exp.addShip((int)ShipType::KuChiKu, true, 1);
-	exp.addShip((int)ShipType::KuChiKu, true, 1);
-	exp.addShip((int)ShipType::KuChiKu, true, 1);
-	exp.addShip((int)ShipType::KuChiKu, true, 1);
 	exp.addSpecialExcludes(SPSHIP_AKIGUMO);
 	exp.addSpecialExcludes(SPSHIP_YUGUMO);
 	exp.addSpecialExcludes(SPSHIP_MAKIGUMO);

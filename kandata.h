@@ -1837,6 +1837,29 @@ public:
 
 	int api_locked;
 };
+
+class kcsapi_kaisou_deprive_ship_data : public KAPIBaseData
+{
+public:
+	kcsapi_kaisou_deprive_ship_data(){}
+
+	virtual bool ReadFromJObj(const QJsonObject &jobj);
+
+	kcsapi_ship2 api_set_ship;
+	kcsapi_ship2 api_unset_ship;
+};
+
+class kcsapi_kaisou_deprive : public KAPIBaseData
+{
+public:
+	kcsapi_kaisou_deprive(){}
+
+	virtual bool ReadFromJObj(const QJsonObject& jobj);
+
+	kcsapi_kaisou_deprive_ship_data api_ship_data;
+	// api_unset_list
+};
+
 /**
 * @brief The kcsapi_remodel_slot class
 */

@@ -1692,6 +1692,22 @@ bool kcsapi_kaisou_lock::ReadFromJObj(const QJsonObject &jobj)
 	return _bParseRet;
 }
 
+bool kcsapi_kaisou_deprive::ReadFromJObj(const QJsonObject& jobj)
+{
+	_CREAD(api_ship_data, kcsapi_kaisou_deprive_ship_data);
+
+	return _bParseRet;
+}
+
+bool kcsapi_kaisou_deprive_ship_data::ReadFromJObj(const QJsonObject &jobj)
+{
+	_CREAD(api_set_ship, kcsapi_ship2);
+	_CREAD(api_unset_ship, kcsapi_ship2);
+
+	return _bParseRet;
+}
+
+
 bool kcsapi_remodel_slot::ReadFromJObj(const QJsonObject &jobj)
 {
 	_IREAD(api_remodel_flag);

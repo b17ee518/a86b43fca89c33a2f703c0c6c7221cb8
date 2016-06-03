@@ -149,6 +149,7 @@ KanDataConnector::KanDataConnector(void)
 	req_kaisou_slotset_flag = PARSEFLAG_NORMAL;
 	req_kaisou_slot_exchange_index_flag = PARSEFLAG_NORMAL;
 	req_kaisou_remodeling_flag = PARSEFLAG_NORMAL;
+	req_kaisou_slot_deprive_flag = PARSEFLAG_NORMAL;
 	req_mission_start_flag = PARSEFLAG_NORMAL;
 	req_mission_result_flag = PARSEFLAG_NORMAL;
 	get_member_mission_flag = PARSEFLAG_NORMAL;
@@ -310,6 +311,7 @@ bool KanDataConnector::Parse(const QString& pathAndQuery, const QString& request
 		PARSEAPI("/kcsapi/api_req_kaisou/slotset", req_kaisou_slotset)
 		PARSEAPI("/kcsapi/api_req_kaisou/slot_exchange_index", req_kaisou_slot_exchange_index)
 		PARSEAPI("/kcsapi/api_req_kaisou/remodeling", req_kaisou_remodeling)
+		PARSEAPI("/kcsapi/api_req_kaisou/slot_deprive", req_kaisou_slot_deprive)
 		PARSEAPI("/kcsapi/api_req_mission/start", req_mission_start)
 		PARSEAPI("/kcsapi/api_req_mission/result", req_mission_result)
 		PARSEAPI("/kcsapi/api_get_member/mission", get_member_mission)

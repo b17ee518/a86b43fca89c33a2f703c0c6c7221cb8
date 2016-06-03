@@ -127,6 +127,7 @@ private:
 	bool req_kaisou_slotset_parse();
 	bool req_kaisou_slot_exchange_index_parse();
 	bool req_kaisou_remodeling_parse();
+	bool req_kaisou_slot_deprive_parse();
 	bool req_mission_start_parse();
 	bool req_mission_result_parse();
 	bool get_member_mission_parse();
@@ -234,6 +235,7 @@ private:
 	int req_kaisou_slotset_flag;
 	int req_kaisou_slot_exchange_index_flag;
 	int req_kaisou_remodeling_flag;
+	int req_kaisou_slot_deprive_flag;
 	int req_mission_start_flag;
 	int req_mission_result_flag;
 	int get_member_mission_flag;

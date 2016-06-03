@@ -853,6 +853,36 @@ bool KanDataConnector::req_kaisou_remodeling_parse()
 	return true;
 }
 
+bool KanDataConnector::req_kaisou_slot_deprive_parse()
+{
+	kcsapi_kaisou_deprive api_ship_data;
+	api_ship_data.ReadFromJObj(_jobj);
+
+	QList<kcsapi_ship2>::iterator it;
+	int doneCount = 0;
+	for (it = pksd->portdata.api_ship.begin(); it != pksd->portdata.api_ship.end(); ++it)
+	{
+		if (api_ship_data.api_ship_data.api_set_ship.api_id == it->api_id)
+		{
+			*it = api_ship_data.api_ship_data.api_set_ship;
+			doneCount++;
+		}
+		else if (api_ship_data.api_ship_data.api_unset_ship.api_id == it->api_id)
+		{
+			*it = api_ship_data.api_ship_data.api_unset_ship;
+			doneCount++;
+		}
+		if (doneCount >= 2)
+		{
+			break;
+		}
+	}
+
+	updateWeaponTable();
+
+	return true;
+}
+
 bool KanDataConnector::req_mission_start_parse()
 {
 	// expedition

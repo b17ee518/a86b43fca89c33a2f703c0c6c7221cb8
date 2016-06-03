@@ -397,7 +397,7 @@ bool ControlManager::BuildNext_Level()
 				{
 					const kcsapi_mst_ship* pmstship = pkdc->findMstShipFromShipid(pship->api_ship_id);
 					WoundState ws = KanDataCalc::GetWoundState(pship->api_nowhp, pship->api_maxhp);
-					if (pship->api_maxhp < 8 && pmstship->api_stype == (int)ShipType::SenSui)
+					if (pship->api_maxhp < 10 && pmstship->api_stype == (int)ShipType::SenSui)
 					{
 						if (bHaveMaruyu)
 						{

@@ -140,7 +140,16 @@ bool ControlManager::BuildNext_Fuel()
 		setToTerminate("Termination:StopWhenDone");
 		return false;
 	}
-	if (!isFlagshipOnly(0))
+
+	int flagshipid = getCurrentFlagshipId();
+	/*
+	if (!isShipType(flagshipid, ShipType::SenSui))
+	{
+		setToTerminate("Terminated:Ship type");
+		return false;
+	}
+	*/
+	if (!isFlagshipOnly(0) || !isShipType(flagshipid, ShipType::SenSui))
 	{
 		// southeast
 		return BuildNext_SouthEast();
@@ -152,12 +161,6 @@ bool ControlManager::BuildNext_Fuel()
 		return false;
 	}
 
-	int flagshipid = getCurrentFlagshipId();
-	if (!isShipType(flagshipid, ShipType::SenSui))
-	{
-		setToTerminate("Terminated:Ship type");
-		return false;
-	}
 
 	if (isShipFull())
 	{
@@ -1683,6 +1686,7 @@ void ControlManager::setState(State state, const char* str)
 		_state = state;
 		if (_state == State::Terminated || _state == State::ToTerminate)
 		{
+			_target = SortieTarget::None;
 			MainWindow::mainWindow()->timerWindow()->playSound(TimerMainWindow::SoundIndex::Terminated);
 			QTimer::singleShot(4000, Qt::PreciseTimer, [this]()
 			{

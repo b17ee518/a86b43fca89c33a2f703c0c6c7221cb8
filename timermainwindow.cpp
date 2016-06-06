@@ -582,7 +582,10 @@ bool TimerMainWindow::updateDisplay(int &mintdiff, qint64 ct, qint64 dt, qint64 
 
 void TimerMainWindow::playSound(SoundIndex i)
 {
-	MainWindow::mainWindow()->AdjustVolume(75);
+	if (!ControlManager::getInstance().isExpeditionMode())
+	{
+		MainWindow::mainWindow()->AdjustVolume(75);
+	}
 	_pPlaylist->setCurrentIndex((int)i);
 	_pPlayer->play();
 //	qint64 dur = pPlayer->duration();

@@ -168,7 +168,7 @@ public:
 	inline bool isSouthEastMode(){ return _target == SortieTarget::SouthEast; }
 	inline bool isLevelMode(){ return _target == SortieTarget::Level; }
 	inline bool isExpeditionMode(){ return _target == SortieTarget::Expedition; }
-
+	
 	void setState(State state, const char* str);
 	void setInactiveWaiting(bool waiting){ _inactiveWaiting = waiting; }
 

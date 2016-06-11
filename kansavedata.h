@@ -198,6 +198,8 @@ public:
 	void resetTotals();
 	void adjustSouthEast(int addval);
 
+	void clearQuestByType(int type, int beginIndex, int endIndex, int page=-1);
+
 private:
 	KanSaveData(void);
 public:

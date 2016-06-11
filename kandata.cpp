@@ -752,6 +752,7 @@ bool kcsapi_quest::ReadFromJObj(const QJsonObject &jobj)
 	_AIREAD(api_get_material);
 	_IREAD(api_bonus_flag);
 	_IREAD(api_progress_flag);
+	_IREAD(api_invalid_flag);
 
 	return _bParseRet;
 

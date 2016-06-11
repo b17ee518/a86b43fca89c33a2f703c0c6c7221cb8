@@ -128,6 +128,61 @@ void KanSaveData::adjustSouthEast(int addval)
 	}
 }
 
+void KanSaveData::clearQuestByType(int type, int beginIndex, int endIndex, int page)
+{
+	if (!questdata.size())
+	{
+		return;
+	}
+
+	const int questPerPage = 5;
+
+	// for normal remove beginIndex = 0
+
+	if (beginIndex < 0 && page > 0)
+	{
+		// remove all out of page
+		QList<kcsapi_quest>::iterator it;
+		int count = 0;
+		for (it = questdata.begin(); it != questdata.end();)
+		{
+			if (it->api_type == type || type == 0 || type == 9)
+			{
+				count++;
+				if (count > page*questPerPage)
+				{
+					it = questdata.erase(it);
+				}
+				else
+				{
+					++it;
+				}
+			}
+		}
+		return;
+	}
+
+	if (endIndex < 0)
+	{
+		endIndex = std::numeric_limits<int>::max();
+	}
+	
+	QList<kcsapi_quest>::iterator it;
+	for (it = questdata.begin(); it != questdata.end();)
+	{
+		if ((it->api_type == type || type == 0 || type == 9)
+			&& it->api_no >= beginIndex && it->api_no <= endIndex)
+		{
+			it = questdata.erase(it);
+		}
+		else
+		{
+			++it;
+		}
+	}
+
+}
+
 void CreateShipSaveData::setValue(int fuel, int bull, int steel, int bauxite, int dev, int kdock)
 {
 	_usefuel = fuel;

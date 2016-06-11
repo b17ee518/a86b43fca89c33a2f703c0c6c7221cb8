@@ -1102,15 +1102,16 @@ public:
 
 	virtual bool ReadFromJObj(const QJsonObject &jobj);
 
-	int api_no;
+	int api_no = -1;
 	int api_category;
 	int api_type;
-	int api_state;
+	int api_state = -1;
 	QString api_title;
 	QString api_detail;
 	QList<int> api_get_material;
 	int api_bonus_flag;
 	int api_progress_flag;
+	int api_invalid_flag;
 };
 
 /**

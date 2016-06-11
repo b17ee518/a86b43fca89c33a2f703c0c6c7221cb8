@@ -1136,11 +1136,92 @@ bool KanDataConnector::req_practice_battle_result_parse()
 
 bool KanDataConnector::get_member_questlist_parse()
 {
+	int api_tab_id = _req.GetItemAsString("api_tab_id").toInt();
+	// 0 all, 9 current, 1 daily, 2 weekly, 3 monthly, 4 once, 5 other
+	// api_type matches
+
 	// TODO: remove quest
 	kcsapi_questlist api_questlist;
 	api_questlist.ReadFromJObj(_jobj);
 
-	int questcount = api_questlist.api_count - 5 * (api_questlist.api_disp_page - 1);
+	QList<kcsapi_quest>::iterator it = api_questlist.api_list.begin();
+	for (; it != api_questlist.api_list.end();)
+	{
+		if (it->api_no <= 0)
+		{
+			it = api_questlist.api_list.erase(it);
+		}
+		else
+		{
+			++it;
+		}
+	}
+	
+	if (!api_questlist.api_list.size())
+	{
+		// nothing in current
+		if (api_tab_id == 0 || api_tab_id == 9)
+		{
+			pksd->questdata.clear();
+		}
+		else
+		{
+			// first page nothing: clear type
+			if (api_questlist.api_disp_page == 1)
+			{
+				pksd->clearQuestByType(api_tab_id, 0, -1);
+			}
+			// last page nothing: clear all later
+			else if (api_questlist.api_disp_page == api_questlist.api_page_count)
+			{
+				pksd->clearQuestByType(api_tab_id, -1, -1);
+			}
+		}
+	}
+	else
+	{
+		int beginIndex = std::numeric_limits<int>::max();
+		int endIndex = -1;
+		for (const auto& quest : api_questlist.api_list)
+		{
+			if (quest.api_no < beginIndex)
+			{
+				beginIndex = quest.api_no;
+			}
+			if (quest.api_no > endIndex)
+			{
+				endIndex = quest.api_no;
+			}
+		}
+		// TODO:? do not know if prev page's last state
+		// should be ok
+
+		// last page: remove all later
+		if (api_questlist.api_disp_page == api_questlist.api_page_count)
+		{
+			endIndex = -1;
+		}
+
+		// first clear all
+		pksd->clearQuestByType(api_tab_id, beginIndex, endIndex);
+		// then add back
+		for (int i = 0; i < api_questlist.api_list.size(); i++)
+		{
+			if (api_questlist.api_list[i].api_state > 1)
+			{
+				pksd->questdata.append(api_questlist.api_list[i]);
+			}
+		}
+		qSort(pksd->questdata.begin(), pksd->questdata.end(), questDataSort);
+	}
+
+	if (pksd->questdata.size() > api_questlist.api_exec_count)
+	{
+		DAPILOG();
+	}
+
+	/*
+	int questcount = api_questlist.api_count - questPerPage * (api_questlist.api_disp_page - 1);
 	if (questcount > api_questlist.api_list.count())
 	{
 		questcount = api_questlist.api_list.count();
@@ -1148,23 +1229,16 @@ bool KanDataConnector::get_member_questlist_parse()
 
 	if (!questcount)
 	{
-		pksd->questdata.removeLast();
+		if (pksd->questdata.size())
+		{
+			pksd->questdata.removeLast();
+		}
 		// when last page nothing??
 	}
 	else
 	{
 		int beginindex = api_questlist.api_list[0].api_no;
 		int endindex = api_questlist.api_list[questcount - 1].api_no;
-		/*
-		if (api_questlist.api_disp_page == 1)
-		{
-		beginindex = -1;
-		}
-		else if (api_questlist.api_disp_page == api_questlist.api_page_count)
-		{
-		endindex = 10000000;
-		}
-		*/
 
 		//delete all in questdata
 		QList<kcsapi_quest>::iterator it;
@@ -1190,7 +1264,7 @@ bool KanDataConnector::get_member_questlist_parse()
 		}
 		qSort(pksd->questdata.begin(), pksd->questdata.end(), questDataSort);
 	}
-
+	*/
 
 	updateMissionTable();
 	return true;

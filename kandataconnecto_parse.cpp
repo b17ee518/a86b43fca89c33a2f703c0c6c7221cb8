@@ -1174,7 +1174,7 @@ bool KanDataConnector::get_member_questlist_parse()
 			// last page nothing: clear all later
 			else if (api_questlist.api_disp_page >= api_questlist.api_page_count)
 			{
-				pksd->clearQuestByType(api_tab_id, -1, -1);
+				pksd->clearQuestByType(api_tab_id, -1, -1, api_questlist.api_page_count);
 			}
 		}
 	}

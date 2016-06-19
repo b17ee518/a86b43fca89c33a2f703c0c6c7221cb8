@@ -7,6 +7,8 @@
 #include "ControlManager.h"
 #include "ExpeditionManager.h"
 
+#define TIMESHIFT_MIN	30
+
 void MainWindow::onDoJobFuel()
 {
 	auto& cm = ControlManager::getInstance();
@@ -301,3 +303,19 @@ void MainWindow::onDecreaseSouthEast()
 	KanSaveData::getInstance().adjustSouthEast(-1);
 	KanDataConnector::getInstance().callUpdateOverviewTable();
 }
+
+void MainWindow::onIncreaseTimeShift()
+{
+	setTimeShift(ExpeditionManager::getInstance().getTimeShiftMin() + TIMESHIFT_MIN);
+}
+
+void MainWindow::onDecreaseTimeShift()
+{
+	setTimeShift(ExpeditionManager::getInstance().getTimeShiftMin() - TIMESHIFT_MIN);
+}
+void MainWindow::setTimeShift(int min)
+{
+	ui->lbTimeShift->setText(QString::number(min));
+	ExpeditionManager::getInstance().setTimeShiftMin(min);
+}
+

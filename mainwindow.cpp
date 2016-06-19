@@ -22,6 +22,9 @@ MainWindow::MainWindow(QWidget *parent) :
 	MainWindowBase(parent),
 	ui(new Ui::MainWindow)
 {
+	ui->setupUi(this);
+	ui->retranslateUi(this);
+
 	loadSettings();
 
 	_pScreenshotTimer = new QTimer(this);
@@ -30,8 +33,6 @@ MainWindow::MainWindow(QWidget *parent) :
 	connect(_panicTimer, SIGNAL(timeout()), this, SLOT(onPanic()));
 	
 	setMainWindow(this);
-	ui->setupUi(this);
-	ui->retranslateUi(this);
 
 	if (_webWidgetType == WebWidgetType::IE)
 	{
@@ -110,6 +111,17 @@ MainWindow::MainWindow(QWidget *parent) :
 
 	QShortcut * shortcutDecreaseSouthEast = new QShortcut(QKeySequence("Ctrl+PgDown"), this);
 	connect(shortcutDecreaseSouthEast, SIGNAL(activated()), this, SLOT(onDecreaseSouthEast()));
+
+	auto shortcutIncreseTimeShift = new QShortcut(QKeySequence("Ctrl+Shift+Up"), this);
+	connect(shortcutIncreseTimeShift,
+		SIGNAL(activated()),
+		this,
+		SLOT(onIncreaseTimeShift));
+	auto shortcutDecreseTimeShift = new QShortcut(QKeySequence("Ctrl+Shift+Down"), this);
+	connect(shortcutDecreseTimeShift,
+		SIGNAL(activated()),
+		this,
+		SLOT(onDecreaseTimeShift));
 
 	_jobTimer = new QTimer(this);
 	connect(_jobTimer, SIGNAL(timeout()), this, SLOT(slotJobtTimeout()));

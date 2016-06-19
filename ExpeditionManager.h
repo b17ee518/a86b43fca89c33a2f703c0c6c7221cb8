@@ -82,9 +82,14 @@ public:
 	void BuildSingleNezumiYusou(ExpeditionSchedule* pschedule, int toHour, int toMin);
 	void BuildSingleBauxiteYusou(ExpeditionSchedule* pschedule, int toHour, int toMin);
 
+	int getTimeShiftMin(){ return _timeShiftMin; }
+	// should only be called by mainwindow!!
+	void setTimeShiftMin(int min);
+
 private:
 	QList<ExpeditionSchedule> _schedules;	// each team
 
+	int _timeShiftMin = 0;
 }; 
 
 

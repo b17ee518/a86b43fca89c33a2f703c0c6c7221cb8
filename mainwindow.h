@@ -156,6 +156,9 @@ private slots:
 	void onTerminateJob();
 	void onIncreaseSouthEast();
 	void onDecreaseSouthEast();
+	void onIncreaseTimeShift();
+	void onDecreaseTimeShift();
+	void setTimeShift(int min);
 
 	void slotSetLogAll(bool bSet);
 

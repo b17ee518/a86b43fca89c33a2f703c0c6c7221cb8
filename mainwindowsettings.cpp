@@ -443,6 +443,7 @@ void MainWindow::loadSettings()
 	const QString itemIntervalMul = "IntervalMul";
 	const QString itemProxyMode = "ProxyMode";
 	const QString itemExpeditionMode = "ExpeditionMode";
+	const QString itemTimeShift = "TimeShift";
 	
 	setting->beginGroup("Settings");
 	if (!setting->contains(itemWebWidgetType))
@@ -486,6 +487,10 @@ void MainWindow::loadSettings()
 	if (!setting->contains(itemExpeditionMode))
 	{
 		setting->setValue(itemExpeditionMode, "General");
+	}
+	if (!setting->contains(itemTimeShift))
+	{
+		setting->setValue(itemTimeShift, 0);
 	}
 
 	QString webWidgetType = setting->value(itemWebWidgetType).toString();
@@ -543,6 +548,8 @@ void MainWindow::loadSettings()
 	}
 
 	ExpeditionManager::getInstance().BuildByPreset(setting->value(itemExpeditionMode).toString());
+
+	setTimeShift(setting->value(itemTimeShift).toInt());
 
 	setting->endGroup();
 

@@ -188,6 +188,10 @@ SingleExpedition* ExpeditionManager::getShouldNextSchedule(int team, qint64 ct, 
 		return NULL;
 	}
 
+	// time shift
+	ct -= _timeShiftMin * 60 * 1000;
+	bt -= _timeShiftMin * 60 * 1000;
+
 	QDateTime currentTime = QDateTime::fromMSecsSinceEpoch(ct);
 	QDateTime backTime = QDateTime::fromMSecsSinceEpoch(bt);
 	QDateTime zeroToday = QDateTime::currentDateTime();
@@ -518,6 +522,11 @@ void ExpeditionManager::BuildSingleBauxiteYusou(ExpeditionSchedule* pschedule, i
 	{
 		pschedule->addExpedition(QTime(toHour, toMin), exp);
 	}
+}
+
+void ExpeditionManager::setTimeShiftMin(int min)
+{
+	_timeShiftMin = min;
 }
 
 void SingleExpedition::Clear()

@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>800</width>
+    <width>803</width>
     <height>500</height>
    </rect>
   </property>
@@ -575,15 +575,19 @@
         <widget class="QLabel" name="lbTimeShift">
          <property name="minimumSize">
           <size>
-           <width>18</width>
+           <width>25</width>
            <height>20</height>
           </size>
          </property>
          <property name="maximumSize">
           <size>
-           <width>18</width>
+           <width>25</width>
            <height>20</height>
           </size>
+         </property>
+         <property name="styleSheet">
+          <string notr="true">background-color: rgb(45, 45, 48);
+border: none;</string>
          </property>
          <property name="text">
           <string>0</string>

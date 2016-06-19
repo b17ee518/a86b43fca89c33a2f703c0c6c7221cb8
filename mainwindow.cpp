@@ -116,12 +116,12 @@ MainWindow::MainWindow(QWidget *parent) :
 	connect(shortcutIncreseTimeShift,
 		SIGNAL(activated()),
 		this,
-		SLOT(onIncreaseTimeShift));
+		SLOT(onIncreaseTimeShift()));
 	auto shortcutDecreseTimeShift = new QShortcut(QKeySequence("Ctrl+Shift+Down"), this);
 	connect(shortcutDecreseTimeShift,
 		SIGNAL(activated()),
 		this,
-		SLOT(onDecreaseTimeShift));
+		SLOT(onDecreaseTimeShift()));
 
 	_jobTimer = new QTimer(this);
 	connect(_jobTimer, SIGNAL(timeout()), this, SLOT(slotJobtTimeout()));

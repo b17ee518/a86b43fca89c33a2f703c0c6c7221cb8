@@ -527,6 +527,15 @@ void ExpeditionManager::BuildSingleBauxiteYusou(ExpeditionSchedule* pschedule, i
 void ExpeditionManager::setTimeShiftMin(int min)
 {
 	_timeShiftMin = min;
+	ControlManager* cm = &ControlManager::getInstance();
+	if (cm->isExpeditionMode() && !cm->isActiveRunning())
+	{
+		cm->Terminate();
+		if (cm->BuildNext_Expedition())
+		{
+			cm->StartJob();
+		}
+	}
 }
 
 void SingleExpedition::Clear()

@@ -8,10 +8,10 @@
 #define SPSHIP_YUGUMO	5012
 #define SPSHIP_MAKIGUMO	1703
 #define SPSHIP_NAGANAMI	4774
-#define SPSHIP_SATSUKI	56
 #define SPSHIP_FUMITSUKI	34
 #define SPSHIP_NAGATSUKI	157
-#define SPSHIP_KIKUDUKI	3142
+#define SPSHIP_KIKUZUKI	3142
+#define SPSHIP_MIKAZUKI	3175
 
 void ExpeditionManager::BuildByPreset(ExpeditionPreset preset)
 {
@@ -247,10 +247,10 @@ void ExpeditionManager::BuildSingle20(ExpeditionSchedule* pschedule, int toHour,
 	exp.addSpecialExcludes(SPSHIP_YUGUMO);
 	exp.addSpecialExcludes(SPSHIP_MAKIGUMO);
 	exp.addSpecialExcludes(SPSHIP_NAGANAMI);
-	exp.addSpecialExcludes(SPSHIP_SATSUKI);
 	exp.addSpecialExcludes(SPSHIP_FUMITSUKI);
 	exp.addSpecialExcludes(SPSHIP_NAGATSUKI);
-	exp.addSpecialExcludes(SPSHIP_KIKUDUKI);
+	exp.addSpecialExcludes(SPSHIP_KIKUZUKI);
+	exp.addSpecialExcludes(SPSHIP_MIKAZUKI);
 	exp.setInfo(QTime(0, 19), 0, 2);
 
 	if (toHour < 0)
@@ -267,10 +267,10 @@ void ExpeditionManager::BuildSingle30(ExpeditionSchedule* pschedule, int toHour,
 {
 	SingleExpedition exp;
 	exp.Clear();
-	exp.addShip(-SPSHIP_SATSUKI, false, 0);
 	exp.addShip(-SPSHIP_FUMITSUKI, false, 0);
 	exp.addShip(-SPSHIP_NAGATSUKI, false, 0);
-	exp.addShip(-SPSHIP_KIKUDUKI, false, 0);
+	exp.addShip(-SPSHIP_KIKUZUKI, false, 0);
+	exp.addShip(-SPSHIP_MIKAZUKI, false, 0);
 	exp.setInfo(QTime(0, 29), 0, 1);
 
 	if (toHour < 0)
@@ -296,10 +296,10 @@ void ExpeditionManager::BuildSingle40(ExpeditionSchedule* pschedule, int toHour,
 	exp.addSpecialExcludes(SPSHIP_YUGUMO);
 	exp.addSpecialExcludes(SPSHIP_MAKIGUMO);
 	exp.addSpecialExcludes(SPSHIP_NAGANAMI);
-	exp.addSpecialExcludes(SPSHIP_SATSUKI);
 	exp.addSpecialExcludes(SPSHIP_FUMITSUKI);
 	exp.addSpecialExcludes(SPSHIP_NAGATSUKI);
-	exp.addSpecialExcludes(SPSHIP_KIKUDUKI);
+	exp.addSpecialExcludes(SPSHIP_KIKUZUKI);
+	exp.addSpecialExcludes(SPSHIP_MIKAZUKI);
 	exp.setInfo(QTime(0, 39), 0, 5);
 
 	if (toHour < 0)
@@ -324,10 +324,10 @@ void ExpeditionManager::BuildSingleTokyu1(ExpeditionSchedule* pschedule, int toH
 	exp.addShip((int)ShipType::KuChiKu, true, 1);
 	exp.addSpecialExcludes(SPSHIP_MAKIGUMO);
 	exp.addSpecialExcludes(SPSHIP_NAGANAMI);
-	exp.addSpecialExcludes(SPSHIP_SATSUKI);
 	exp.addSpecialExcludes(SPSHIP_FUMITSUKI);
 	exp.addSpecialExcludes(SPSHIP_NAGATSUKI);
-	exp.addSpecialExcludes(SPSHIP_KIKUDUKI);
+	exp.addSpecialExcludes(SPSHIP_KIKUZUKI);
+	exp.addSpecialExcludes(SPSHIP_MIKAZUKI);
 	exp.setInfo(QTime(2, 44), 4, 4);
 
 	if (toHour < 0)
@@ -353,10 +353,10 @@ void ExpeditionManager::BuildSingleTokyu2(ExpeditionSchedule* pschedule, int toH
 	exp.addShip((int)ShipType::KuChiKu, true, 1);
 	exp.addSpecialExcludes(SPSHIP_AKIGUMO);
 	exp.addSpecialExcludes(SPSHIP_YUGUMO);
-	exp.addSpecialExcludes(SPSHIP_SATSUKI);
 	exp.addSpecialExcludes(SPSHIP_FUMITSUKI);
 	exp.addSpecialExcludes(SPSHIP_NAGATSUKI);
-	exp.addSpecialExcludes(SPSHIP_KIKUDUKI);
+	exp.addSpecialExcludes(SPSHIP_KIKUZUKI);
+	exp.addSpecialExcludes(SPSHIP_MIKAZUKI);
 	exp.setInfo(QTime(2, 54), 4, 5);
 
 	if (toHour < 0)
@@ -384,10 +384,10 @@ void ExpeditionManager::BuildSingle2last(ExpeditionSchedule* pschedule, int toHo
 	exp.addSpecialExcludes(SPSHIP_YUGUMO);
 	exp.addSpecialExcludes(SPSHIP_MAKIGUMO);
 	exp.addSpecialExcludes(SPSHIP_NAGANAMI);
-	exp.addSpecialExcludes(SPSHIP_SATSUKI);
 	exp.addSpecialExcludes(SPSHIP_FUMITSUKI);
 	exp.addSpecialExcludes(SPSHIP_NAGATSUKI);
-	exp.addSpecialExcludes(SPSHIP_KIKUDUKI);
+	exp.addSpecialExcludes(SPSHIP_KIKUZUKI);
+	exp.addSpecialExcludes(SPSHIP_MIKAZUKI);
 	exp.setInfo(QTime(14, 59), 1, 7);
 
 	if (toHour < 0)
@@ -415,10 +415,10 @@ void ExpeditionManager::BuildSingle3last(ExpeditionSchedule* pschedule, int toHo
 	exp.addSpecialExcludes(SPSHIP_YUGUMO);
 	exp.addSpecialExcludes(SPSHIP_MAKIGUMO);
 	exp.addSpecialExcludes(SPSHIP_NAGANAMI);
-	exp.addSpecialExcludes(SPSHIP_SATSUKI);
 	exp.addSpecialExcludes(SPSHIP_FUMITSUKI);
 	exp.addSpecialExcludes(SPSHIP_NAGATSUKI);
-	exp.addSpecialExcludes(SPSHIP_KIKUDUKI);
+	exp.addSpecialExcludes(SPSHIP_KIKUZUKI);
+	exp.addSpecialExcludes(SPSHIP_MIKAZUKI);
 	exp.setInfo(QTime(8, 19), 2, 7);
 
 	if (toHour < 0)
@@ -447,10 +447,10 @@ void ExpeditionManager::BuildSingle5last(ExpeditionSchedule* pschedule, int toHo
 	exp.addSpecialExcludes(SPSHIP_YUGUMO);
 	exp.addSpecialExcludes(SPSHIP_MAKIGUMO);
 	exp.addSpecialExcludes(SPSHIP_NAGANAMI);
-	exp.addSpecialExcludes(SPSHIP_SATSUKI);
 	exp.addSpecialExcludes(SPSHIP_FUMITSUKI);
 	exp.addSpecialExcludes(SPSHIP_NAGATSUKI);
-	exp.addSpecialExcludes(SPSHIP_KIKUDUKI);
+	exp.addSpecialExcludes(SPSHIP_KIKUZUKI);
+	exp.addSpecialExcludes(SPSHIP_MIKAZUKI);
 	exp.setInfo(QTime(6, 49), 4, 7);
 
 	if (toHour < 0)
@@ -478,10 +478,10 @@ void ExpeditionManager::BuildSingleNezumiYusou(ExpeditionSchedule* pschedule, in
 	exp.addSpecialExcludes(SPSHIP_YUGUMO);
 	exp.addSpecialExcludes(SPSHIP_MAKIGUMO);
 	exp.addSpecialExcludes(SPSHIP_NAGANAMI);
-	exp.addSpecialExcludes(SPSHIP_SATSUKI);
 	exp.addSpecialExcludes(SPSHIP_FUMITSUKI);
 	exp.addSpecialExcludes(SPSHIP_NAGATSUKI);
-	exp.addSpecialExcludes(SPSHIP_KIKUDUKI);
+	exp.addSpecialExcludes(SPSHIP_KIKUZUKI);
+	exp.addSpecialExcludes(SPSHIP_MIKAZUKI);
 	exp.setInfo(QTime(2, 19), 2, 4);
 
 	if (toHour < 0)
@@ -508,10 +508,10 @@ void ExpeditionManager::BuildSingleBauxiteYusou(ExpeditionSchedule* pschedule, i
 	exp.addSpecialExcludes(SPSHIP_YUGUMO);
 	exp.addSpecialExcludes(SPSHIP_MAKIGUMO);
 	exp.addSpecialExcludes(SPSHIP_NAGANAMI);
-	exp.addSpecialExcludes(SPSHIP_SATSUKI);
 	exp.addSpecialExcludes(SPSHIP_FUMITSUKI);
 	exp.addSpecialExcludes(SPSHIP_NAGATSUKI);
-	exp.addSpecialExcludes(SPSHIP_KIKUDUKI);
+	exp.addSpecialExcludes(SPSHIP_KIKUZUKI);
+	exp.addSpecialExcludes(SPSHIP_MIKAZUKI);
 	exp.setInfo(QTime(4, 59), 1, 2);
 
 	if (toHour < 0)

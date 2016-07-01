@@ -428,6 +428,8 @@ public:
 
 	int api_support_flag; //空爆1　砲撃2　雷撃3
 	kcsapi_battle_support_info api_support_info;
+	int api_opening_taisen_flag;
+	kcsapi_battle_hougeki api_opening_taisen;
 	int api_opening_flag;
 	kcsapi_battle_opening_atack api_opening_atack;
 	QList<int> api_hourai_flag; // hougeki1, hougeki2, hougeki3, raigeki

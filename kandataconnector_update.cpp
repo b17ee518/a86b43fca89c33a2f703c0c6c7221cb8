@@ -1184,6 +1184,20 @@ QList<int> KanDataConnector::updateBattle(const kcsapi_battle &api_battle, KanBa
 				}
 			}
 
+			// opening taisen
+			if (api_battle.api_opening_taisen_flag)
+			{
+				// copied from below
+				// combined?
+				bool bCombineDamage = bCombined;
+				if (type == KanBattleType::Combined_KouKu || type == KanBattleType::Combined_Day)
+				{
+					bCombineDamage = false;
+				}
+				processHouraiDamages(&(api_battle.api_opening_taisen), &totalfdamage, &totaledamage, &totalfdamage_combined, bCombineDamage);
+			}
+
+
 			// opening
 			// TODO: combined?
 			if (api_battle.api_opening_flag > 0)

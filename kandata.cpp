@@ -1527,6 +1527,8 @@ bool kcsapi_battle::ReadFromJObj(const QJsonObject &jobj)
 
 	_IREAD(api_support_flag);
 	_CREAD(api_support_info, kcsapi_battle_support_info);
+	_IREAD(api_opening_taisen_flag);
+	_CREAD(api_opening_taisen, kcsapi_battle_hougeki);
 	_IREAD(api_opening_flag);
 	_CREAD(api_opening_atack, kcsapi_battle_opening_atack);
 	_AIREAD(api_hourai_flag); // hougeki1, hougeki2, hougeki3, raigeki

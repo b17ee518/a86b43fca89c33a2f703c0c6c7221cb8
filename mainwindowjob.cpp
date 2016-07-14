@@ -13,6 +13,7 @@ void MainWindow::onDoJobFuel()
 {
 	auto& cm = ControlManager::getInstance();
 	cm.Terminate();
+	cm.clearLastTarget();
 
 	if (!(QApplication::queryKeyboardModifiers()&Qt::ShiftModifier))
 	{
@@ -68,6 +69,7 @@ void MainWindow::onDoJobKira()
 {
 	auto& cm = ControlManager::getInstance();
 	cm.Terminate();
+	cm.clearLastTarget();
 
 	cm.LoadToDoShipList_Kira();
 
@@ -87,6 +89,7 @@ void MainWindow::onDoJobLevel()
 {
 	auto& cm = ControlManager::getInstance();
 	cm.Terminate();
+	cm.clearLastTarget();
 
 	if (QApplication::queryKeyboardModifiers()&Qt::ShiftModifier)
 	{
@@ -102,10 +105,24 @@ void MainWindow::onDoJobLevel()
 	}
 }
 
+void MainWindow::onDoJobRank()
+{
+	auto& cm = ControlManager::getInstance();
+	cm.Terminate();
+	cm.clearLastTarget();
+
+	if (cm.BuildNext_Rank())
+	{
+		cm.StartJob();
+	}
+}
+
+
 void MainWindow::onDoJobExpedition(bool bDo)
 {
 	auto& cm = ControlManager::getInstance();
 	cm.Terminate();
+	cm.clearLastTarget();
 	if (bDo)
 	{
 		if (cm.BuildNext_Expedition())
@@ -243,7 +260,9 @@ void MainWindow::onExportAllList()
 
 void MainWindow::onTerminateJob()
 {
-	ControlManager::getInstance().Terminate();
+	auto& cm = ControlManager::getInstance();
+	cm.Terminate();
+	cm.clearLastTarget();
 }
 
 void MainWindow::slotSetLogAll(bool bSet)

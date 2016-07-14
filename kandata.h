@@ -660,7 +660,7 @@ public:
 	int api_id;
 	QString api_name;
 	QString api_name_id;
-	QList<qint64> api_mission;
+	QList<qint64> api_mission;	// api_mission[0] : 0 port / 1 exp / 2 coming back
 	QString api_flagship;
 	QList<int> api_ship;
 };

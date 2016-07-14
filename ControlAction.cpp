@@ -140,6 +140,7 @@ bool WaitCondAction::action()
 		{
 			cm.moveMouseTo(400, 200);
 			setState(State::Done, "Wait:Done");
+			cm.setupAutoExpedition();
 		}
 		break;
 	case WaitCondAction::State::Done:
@@ -183,6 +184,7 @@ bool WaitNextPortAction::action()
 			cm.moveMouseTo(400, 200);
 			cm.setInactiveWaiting(false);
 			setState(State::Done, "Wait:Done");
+			cm.setupAutoExpedition();
 		}
 		else if (!_waiting)
 		{
@@ -690,6 +692,7 @@ bool ChangeHenseiAction::action()
 		{
 			cm.moveMouseTo(400, 200);
 			setState(State::Done, "Hensei:Done");
+			cm.setupAutoExpedition();
 		}
 		break;
 	case ChangeHenseiAction::State::Done:
@@ -867,16 +870,16 @@ bool ChargeAction::action()
 					_teamChanged = true;
 				}
 				else
-				{
-					if (cm.isSouthEastMode() || cm.isFuelMode() || cm.isExpeditionMode() || cm.isLevelMode())
-					{
-						cm.moveMouseToAndClick(117, 120, 2, 2); // all ships
-						setState(State::OKToChargeDone, "Charge:OKToChargeDone");
-					}
-					else
+				{					
+					if (cm.isKiraMode())
 					{
 						cm.moveMouseToAndClick(117, 167, 2, 2); // first ship
 						setState(State::OKToChargeChecking, "Charge:OKToChargeChecking");
+					}
+					else
+					{
+						cm.moveMouseToAndClick(117, 120, 2, 2); // all ships
+						setState(State::OKToChargeDone, "Charge:OKToChargeDone");
 					}
 				}
 				resetRetryAndWainting();
@@ -953,6 +956,7 @@ bool ChargeAction::action()
 		{
 			cm.moveMouseTo(400, 200);
 			setState(State::Done, "Charge:Done");
+			cm.setupAutoExpedition();
 		}
 		break;
 	case ChargeAction::State::Done:
@@ -1004,7 +1008,7 @@ bool SortieAction::action()
 				return false;
 			}
 		}
-		else if (cm.isLevelMode())
+		else if (cm.isLevelMode() || cm.isRankMode())
 		{
 			if (cm.needChargeAnyShip(0) || cm.hugestDamageInTeam(0) > WoundState::Middle)
 			{
@@ -1148,6 +1152,20 @@ bool SortieAction::action()
 			}
 			// selec 3
 		}
+		else if (cm.isRankMode())
+		{
+			if (!_waiting)
+			{
+				_waiting = true;
+				QTimer::singleShot(DELAY_TIME_CLICK, Qt::PreciseTimer, this, [this, &cm]()
+				{
+					cm.moveMouseToAndClick(452, 445, 14, 9); // area 3
+					setState(State::SelectMapChecking, "Sortie:SelectMapChecking");
+					resetRetryAndWainting();
+				});
+			}
+			// selec 5
+		}
 		else if (cm.isKiraMode())
 		{
 			// skip to select map
@@ -1161,14 +1179,26 @@ bool SortieAction::action()
 			_waiting = true;
 			QTimer::singleShot(DELAY_TIME, Qt::PreciseTimer, this, [this, &cm]()
 			{
-				if ((cm.isLevelMode() 
+				if (
+					(cm.isLevelMode() 
 					&& cm.checkColors(
 					512, 263, 84, 90, 107
-					, 618, 190, 179, 211, 206)) ||
+					, 618, 190, 179, 211, 206)) 
+					
+					||
+
 				 ((cm.isSouthEastMode() || cm.isFuelMode()) &&
 					cm.checkColors(
 					246, 326, 197, 106, 166
-					, 354, 370, 244, 206, 94)))
+					, 354, 370, 244, 206, 94))
+
+					||
+
+					(cm.isRankMode()
+					&& cm.checkColors(
+					520, 365, 24, 32, 72
+					, 657, 327, 122, 139, 123))
+					)
 				{
 					_waiting = false;
 					setState(State::SelectMapDone, "Sortie:SelectMapDone");
@@ -1208,6 +1238,20 @@ bool SortieAction::action()
 				});
 			}
 			// level mode select 2
+		}
+		else if (cm.isRankMode())
+		{
+			if (!_waiting)
+			{
+				_waiting = true;
+				QTimer::singleShot(DELAY_TIME_CLICK, Qt::PreciseTimer, this, [this, &cm]()
+				{
+					cm.moveMouseToAndClick(600, 350, 60, 36); // map 4
+					setState(State::SortieCheckChecking, "Sortie:SortieCheckChecking");
+					resetRetryAndWainting();
+				});
+			}
+			// rank mode select 4
 		}
 		else if (cm.isKiraMode())
 		{
@@ -1330,6 +1374,7 @@ bool SortieAdvanceAction::action()
 				if (_expectingRequest == "")
 				{
 					setState(State::Done, "Advance:Done");
+					cm.setupAutoExpedition();
 				}
 				else
 				{
@@ -1373,6 +1418,7 @@ bool SortieCommonAdvanceAction::action()
 			if (_expectingRequest == "")
 			{
 				setState(State::Done, "Advance:Done");
+				cm.setupAutoExpedition();
 				break;
 			}
 			if (!_shouldRetrieve)
@@ -1438,7 +1484,9 @@ bool SortieCommonAdvanceAction::action()
 		if (!_waiting)
 		{
 			_waiting = true;
-			if (_shouldRetrieve && !cm.isLevelMode())
+			if (_shouldRetrieve 
+				&& !cm.isLevelMode()	// level mode always set to retrieve
+				)
 			{
 				cm.setToTerminate("Terminated:Fatal");
 				emit sigFatal();
@@ -1546,6 +1594,11 @@ bool RepeatAction::action()
 		}
 		else if (cm.isExpeditionMode())
 		{
+			if (cm.isAutoExpeditioning())
+			{
+				cm.switchBackToLastAction();
+				return action();
+			}
 			if (cm.BuildNext_Expedition())
 			{
 				setState(State::Done, "Repeat:Done");
@@ -1555,6 +1608,14 @@ bool RepeatAction::action()
 		else if (cm.isLevelMode())
 		{
 			if (cm.BuildNext_Level())
+			{
+				setState(State::Done, "Repeat:Done");
+				cm.StartJob();
+			}
+		}
+		else if (cm.isRankMode())
+		{
+			if (cm.BuildNext_Rank())
 			{
 				setState(State::Done, "Repeat:Done");
 				cm.StartJob();
@@ -1877,6 +1938,7 @@ bool ExpeditionAction::action()
 		{
 			cm.moveMouseTo(400, 200);
 			setState(State::Done, "Expedition:Done");
+			cm.setupAutoExpedition();
 		}
 		break;
 	case ExpeditionAction::State::Done:

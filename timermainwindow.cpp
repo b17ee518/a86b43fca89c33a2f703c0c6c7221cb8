@@ -580,9 +580,9 @@ bool TimerMainWindow::updateDisplay(int &mintdiff, qint64 ct, qint64 dt, qint64 
 	return bUpdated;
 }
 
-void TimerMainWindow::playSound(SoundIndex i)
+void TimerMainWindow::playSound(SoundIndex i, bool bSilent/*=false*/)
 {
-	if (!ControlManager::getInstance().isExpeditionMode())
+	if (!ControlManager::getInstance().isExpeditionMode() && !bSilent)
 	{
 		MainWindow::mainWindow()->AdjustVolume(75);
 	}

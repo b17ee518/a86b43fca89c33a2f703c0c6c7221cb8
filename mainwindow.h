@@ -150,6 +150,7 @@ private slots:
 	void onDoJobFuel();
 	void onDoJobKira();
 	void onDoJobLevel();
+	void onDoJobRank();
 	void onDoJobExpedition(bool bDo);
 	void onToggleJobExpedition();
 	void onExportAllList();

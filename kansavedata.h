@@ -143,6 +143,16 @@ public:
 class KanSaveData
 {
 public:
+
+	struct DeckSaveData
+	{
+		int totalLevel = 0;
+		int totalTaiku = 0;
+		int taikuWithoutBonus = 0;
+		int totalSakuteki = 0;
+		int sakutekiSp = 0;
+	};
+
 	// public member without _
 
 	kcsapi_port portdata;
@@ -163,6 +173,8 @@ public:
 	bool airBaseBadCond = false;
 
 	QList<int> enemyhpdata;
+
+	QList<DeckSaveData> deckSaveData;
 
 	int shipcountoffset = 0;
 	int slotitemcountoffset = 0;
@@ -191,6 +203,7 @@ public:
 	int totalBossSRank = 0;
 	int totalSortie = 0;
 	int totalSouthEastWin = 0;
+	int totalTokyuWin = 0;
 	
 public:
 	void logAllExport();

@@ -28,6 +28,8 @@ ControlManager::~ControlManager()
 
 bool ControlManager::BuildNext_Kira(bool bForceCurrent/*=false*/)
 {
+	_kiraSetting.forceCurrent = bForceCurrent;
+	pushPreSupplyCheck();
 	if (stopWhenCheck())
 	{
 		setToTerminate("Termination:StopWhenDone");
@@ -49,7 +51,7 @@ bool ControlManager::BuildNext_Kira(bool bForceCurrent/*=false*/)
 		return false;
 	}
 
-	_target = SortieTarget::Kira;
+	_target = ActionTarget::Kira;
 	if (isShipFull())
 	{
 		setToTerminate("Terminated:ShipFull");
@@ -134,7 +136,8 @@ bool ControlManager::BuildNext_Fuel()
 		return;
 	}
 	*/
-
+	
+	pushPreSupplyCheck();
 	if (stopWhenCheck())
 	{
 		setToTerminate("Termination:StopWhenDone");
@@ -169,7 +172,7 @@ bool ControlManager::BuildNext_Fuel()
 //		_actionList.append(new DestroyShipAction());
 	}
 	
-	_target = SortieTarget::Fuel;
+	_target = ActionTarget::Fuel;
 
 	_actionList.append(new SortieAction());
 	_actionList.append(new SortieAdvanceAction());
@@ -182,6 +185,7 @@ bool ControlManager::BuildNext_Fuel()
 
 bool ControlManager::BuildNext_SouthEast()
 {
+	pushPreSupplyCheck();
 	if (stopWhenCheck())
 	{
 		setToTerminate("Termination:StopWhenDone");
@@ -347,7 +351,7 @@ bool ControlManager::BuildNext_SouthEast()
 	}
 
 
-	_target = SortieTarget::SouthEast;
+	_target = ActionTarget::SouthEast;
 
 	// change hensei sort
 	auto chSortAction = new ChangeHenseiAction();
@@ -370,7 +374,8 @@ bool ControlManager::BuildNext_SouthEast()
 
 bool ControlManager::BuildNext_Level()
 {
-	_target = SortieTarget::Level;
+	pushPreSupplyCheck();
+	_target = ActionTarget::Level;
 
 	KanSaveData* pksd = &KanSaveData::getInstance();
 	KanDataConnector* pkdc = &KanDataConnector::getInstance();
@@ -518,9 +523,109 @@ bool ControlManager::BuildNext_Level()
 	return true;
 }
 
+bool ControlManager::BuildNext_Rank()
+{
+	pushPreSupplyCheck();
+	_target = ActionTarget::Rank;
+
+	KanSaveData* pksd = &KanSaveData::getInstance();
+	KanDataConnector* pkdc = &KanDataConnector::getInstance();
+
+	if (isShipFull())
+	{
+		setToTerminate("Terminated:ShipFull");
+		return false;
+	}
+
+	int totalYusou = 0;
+	bool allSS = true;
+	int minCond = std::numeric_limits<int>::max();
+	int shipCount = 0;
+
+	if (pksd->portdata.api_deck_port.size())
+	{
+		auto& firstFleet = pksd->portdata.api_deck_port.first();
+		for (auto id : firstFleet.api_ship)
+		{
+			if (id >= 0)
+			{
+				const kcsapi_ship2* pship = pkdc->findShipFromShipno(id);
+				if (pship)
+				{
+					shipCount++;
+					const kcsapi_mst_ship* pmstship = pkdc->findMstShipFromShipid(pship->api_ship_id);
+					if (pmstship->api_stype != (int)ShipType::SenSui &&
+						pmstship->api_stype != (int)ShipType::SenBou)
+					{
+						allSS = false;
+					}
+
+					if (pship->api_cond < minCond)
+					{
+						minCond = pship->api_cond;
+					}
+
+					WoundState ws = KanDataCalc::GetWoundState(pship->api_nowhp, pship->api_maxhp);
+
+					if (ws >= WoundState::Middle)
+					{
+						setToTerminate("Terminated:Damage");
+						return false;
+					}
+
+					int yusouCount = 0;
+					pkdc->isShipHasSlotitem(pship, SlotitemType::YuSou, 1, &yusouCount);
+					totalYusou += yusouCount;
+				}
+			}
+		}
+	}
+
+	if (shipCount < 6)
+	{
+		setToTerminate("Terminated:ShipCount");
+		return false;
+	}
+
+	if (!allSS)
+	{
+		if (!pksd->deckSaveData.empty())
+		{
+			if (pksd->deckSaveData.first().totalTaiku < 380)
+			{
+				setToTerminate("Terminated:Taiku");
+				return false;
+			}
+		}
+		if (totalYusou < 4)
+		{
+			setToTerminate("Terminated:Yusou");
+			return false;
+		}
+	}
+
+	if (minCond <= _sortieMinCond)
+	{
+		// wait
+		qint64 waitMS = qCeil((_sortieWaitCond - minCond) / 3.0) * 3 * 60 * 1000;
+		auto waitAction = new WaitCondAction();
+		waitAction->setWaitMS(waitMS);
+		_actionList.append(waitAction);
+	}
+
+	_actionList.append(new SortieAction());
+	_actionList.append(new SortieCommonAdvanceAction());
+	_actionList.append(new ChargeAction());
+	_actionList.append(new RepeatAction());
+	setState(State::Ready, "Ready");
+	return true;
+}
+
 bool ControlManager::BuildNext_Expedition()
 {
-	_target = SortieTarget::Expedition;
+	// no check on pushPreSupplyCheck();
+
+	_target = ActionTarget::Expedition;
 	int team = -1;
 	auto timerWindow = MainWindow::mainWindow()->timerWindow();
 	qint64 waitMS = timerWindow->getMinExpeditionMS(team);
@@ -628,7 +733,7 @@ bool ControlManager::BuildNext_Expedition()
 	chargeAction->setSkipExpedition(true);
 	chargeAction->setTeam(team);
 	_actionList.append(chargeAction);
-
+	
 	// change hensei
 	if (needChangeHensei)
 	{
@@ -642,7 +747,7 @@ bool ControlManager::BuildNext_Expedition()
 	auto expeditionAction = new ExpeditionAction();
 	expeditionAction->setTeamAndTarget(team, pExp->destPage, pExp->destIndex);
 	_actionList.append(expeditionAction);
-
+	
 	_actionList.append(new RepeatAction());
 
 	setState(State::Ready, "Ready");
@@ -652,7 +757,7 @@ bool ControlManager::BuildNext_Expedition()
 bool ControlManager::stopWhenCheck()
 {
 
-	switch (_stopwhen)
+	switch (_southEastSetting.stopWhen)
 	{
 	case ControlManager::StopWhen::None:
 		return false;
@@ -748,6 +853,16 @@ bool ControlManager::LoadToDoShipList_Kira()
 	return true;
 }
 
+void ControlManager::pushPreSupplyCheck()
+{
+	if (needChargeFlagship(0))
+	{
+		ChargeAction* action = new ChargeAction();
+		action->setTeam(0);
+		_actionList.append(action);
+	}
+}
+
 void ControlManager::Run()
 {
 	if (_state == State::ToTerminate)
@@ -791,21 +906,23 @@ void ControlManager::Resume()
 	setPauseNextVal(false);
 }
 
-void ControlManager::Terminate()
+void ControlManager::Terminate(bool bSilent)
 {
 	qDeleteAll(_actionList);
 	_actionList.clear();
 	setPauseNextVal(false);
 	setInactiveWaiting(false);
+	_target = ActionTarget::None;
+	_autoExpeditioningFlag = false;
 	MainWindow::mainWindow()->setJobTerminated();
-	_stopwhen = StopWhen::None;
+	_southEastSetting.stopWhen = StopWhen::None;
 	if (_state != State::ToTerminate)
 	{
-		setState(State::Terminated, "Terminated");
+		setState(State::Terminated, "Terminated", bSilent);
 	}
 	else
 	{
-		setState(State::Terminated, _stateStr.toStdString().c_str());
+		setState(State::Terminated, _stateStr.toStdString().c_str(), bSilent);
 	}
 }
 
@@ -827,6 +944,58 @@ void ControlManager::togglePauseNext()
 	if (_state == State::Started)
 	{
 		setPauseNextVal(!_pauseNext);
+	}
+}
+
+bool ControlManager::checkShouldAutoWait()
+{
+	if (!_shouldAutoSwitchToExpeditionFlag)
+	{
+		return false;
+	}
+
+	int team;
+	qint64 ms = MainWindow::mainWindow()->timerWindow()->getMinExpeditionMS(team);
+	if (ms <= 0)
+	{
+		return true;
+	}
+
+	KanSaveData* pksd = &KanSaveData::getInstance();
+	bool bFirst = true;
+	for (const auto& deck : pksd->portdata.api_deck_port)
+	{
+		if (bFirst)
+		{
+			bFirst = false;
+			continue;
+		}
+		if (!deck.api_mission.empty())
+		{
+			if (deck.api_mission.first() != 1)
+			{
+				return true;
+			}
+		}
+	}
+
+	return false;
+}
+
+void ControlManager::setupAutoExpedition()
+{
+	if (checkShouldAutoWait())
+	{
+		if (_target != ActionTarget::Expedition)
+		{
+			_lastTarget = _target;
+		}
+		Terminate(true);
+		_autoExpeditioningFlag = true;
+		if (BuildNext_Expedition())
+		{
+			StartJob();
+		}
 	}
 }
 
@@ -1033,12 +1202,12 @@ int ControlManager::getOneWasteShipId(int exclude1/*=-1*/, int exclude2/*=-1*/)
 	return getOneWasteShipId(excludes);
 }
 
-bool ControlManager::isShipFull()
+bool ControlManager::isShipFull(int keep)
 {
 	KanSaveData* pksd = &KanSaveData::getInstance();
 	int kancount = pksd->portdata.api_ship.count() + pksd->shipcountoffset;
 	int kanmaxcount = pksd->portdata.api_basic.api_max_chara;
-	if (kancount+3 <= kanmaxcount)
+	if (kancount+keep <= kanmaxcount)
 	{
 		return false;
 	}
@@ -1389,7 +1558,7 @@ bool ControlManager::shouldNightBattle()
 
 bool ControlManager::shouldRetrieve()
 {
-	if (_target == SortieTarget::Level)
+	if (_target == ActionTarget::Level)
 	{
 		return true;
 	}
@@ -1445,7 +1614,7 @@ WoundState ControlManager::hugestDamageInTeam(int team)
 
 void ControlManager::setStopWhen(StopWhen stopwhen)
 {
-	_stopwhen = stopwhen;
+	_southEastSetting.stopWhen = stopwhen;
 }
 
 bool ControlManager::isActiveRunning()
@@ -1679,15 +1848,16 @@ int ControlManager::getCurrentSecondshipId()
 
 }
 
-void ControlManager::setState(State state, const char* str)
+void ControlManager::setState(State state, const char* str, bool bSilent)
 {
 	if (_state != state)
 	{
 		_state = state;
 		if (_state == State::Terminated || _state == State::ToTerminate)
 		{
-			_target = SortieTarget::None;
-			MainWindow::mainWindow()->timerWindow()->playSound(TimerMainWindow::SoundIndex::Terminated);
+			_autoExpeditioningFlag = false;
+			_target = ActionTarget::None;
+			MainWindow::mainWindow()->timerWindow()->playSound(TimerMainWindow::SoundIndex::Terminated, bSilent);
 			QTimer::singleShot(4000, Qt::PreciseTimer, [this]()
 			{
 				if (this->_state == State::Terminated)
@@ -1704,6 +1874,17 @@ void ControlManager::setStateStr(const QString& str)
 {
 	_stateStr = str;
 	MainWindow::mainWindow()->timerWindow()->setTitle(str);
+}
+
+void ControlManager::switchBackToLastAction()
+{
+	_target = _lastTarget;
+	_autoExpeditioningFlag = false;
+}
+
+void ControlManager::clearLastTarget()
+{
+	_lastTarget = ActionTarget::None;
 }
 
 void ControlManager::moveMouseToAndClick(float x, float y, float offsetX /*= 5*/, float offsetY /*= 3*/)

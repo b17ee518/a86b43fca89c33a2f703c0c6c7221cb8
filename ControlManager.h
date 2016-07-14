@@ -18,7 +18,7 @@ public:
 		Terminated,
 	};
 
-	enum class SortieTarget
+	enum class ActionTarget
 	{
 		None,
 		Kira,
@@ -26,6 +26,7 @@ public:
 		SouthEast,
 		Expedition,
 		Level,
+		Rank,
 	};
 
 	enum class StopWhen
@@ -51,6 +52,24 @@ public:
 		int _b;
 	};
 
+	struct KiraSetting
+	{
+		bool forceCurrent = false;
+	};
+	struct SouthEastSetting
+	{
+		StopWhen stopWhen = StopWhen::Yusou3;
+	};
+	struct ExpeditionSetting 
+	{
+	};
+	struct LevelSetting
+	{
+	};
+	struct RankSetting
+	{
+	};
+
 public:
 	static ControlManager& getInstance() { 
 		static ControlManager instance; 
@@ -67,6 +86,9 @@ public:
 	void setDoneRequest(const QString& api);
 
 	bool LoadToDoShipList_Kira();
+
+	void pushPreSupplyCheck();
+
 	bool BuildNext_Kira(bool bForceCurrent=false);
 
 	bool BuildNext_Fuel();
@@ -74,6 +96,8 @@ public:
 	bool BuildNext_SouthEast();
 
 	bool BuildNext_Level();
+
+	bool BuildNext_Rank();
 
 	bool LoadExpeditionPossibleList(); // TODO
 	bool BuildNext_Expedition();
@@ -85,11 +109,14 @@ public:
 	void Run();
 	void Pause();
 	void Resume();
-	void Terminate();
+	void Terminate(bool bSilent=false);
 
 	bool isPaused();
 	void PauseNext();
 	void togglePauseNext();
+
+	bool checkShouldAutoWait();
+	void setupAutoExpedition();
 
 	bool isTerminated(){ return _state == State::Terminated; }
 
@@ -107,7 +134,7 @@ public:
 	bool needChargeAnyShip(int team);
 	int getOneWasteShipId(int exclude1=-1, int exclude2=-1);
 	int getOneWasteShipId(const QList<int>& excludes);
-	bool isShipFull();
+	bool isShipFull(int keep=3);
 	bool findPagePosByShipId(int shipno, int& page, int& pos, int& lastPage);
 	bool isShipKiraDone(int shipno);
 	bool isLowCond(int shipno);
@@ -163,13 +190,14 @@ public:
 		return checkColors(lst);
 	}
 
-	inline bool isKiraMode(){ return _target == SortieTarget::Kira; }
-	inline bool isFuelMode(){ return _target == SortieTarget::Fuel; }
-	inline bool isSouthEastMode(){ return _target == SortieTarget::SouthEast; }
-	inline bool isLevelMode(){ return _target == SortieTarget::Level; }
-	inline bool isExpeditionMode(){ return _target == SortieTarget::Expedition; }
+	inline bool isKiraMode(){ return _target == ActionTarget::Kira; }
+	inline bool isFuelMode(){ return _target == ActionTarget::Fuel; }
+	inline bool isSouthEastMode(){ return _target == ActionTarget::SouthEast; }
+	inline bool isLevelMode(){ return _target == ActionTarget::Level; }
+	inline bool isExpeditionMode(){ return _target == ActionTarget::Expedition; }
+	inline bool isRankMode(){ return _target == ActionTarget::Rank; }
 	
-	void setState(State state, const char* str);
+	void setState(State state, const char* str, bool bSilent=false);
 	void setInactiveWaiting(bool waiting){ _inactiveWaiting = waiting; }
 
 	void setStateStr(const QString& str);
@@ -188,6 +216,14 @@ public:
 	inline void setLevelNoWait(bool bNoWait){ _levelNoWait = bNoWait; }
 	inline bool getLevelNoWait(){ return _levelNoWait; }
 
+	inline void setShouldAutoExpedition(bool bAuto){ _shouldAutoSwitchToExpeditionFlag = bAuto; }
+	inline bool shouldAutoExpedition(){ return _shouldAutoSwitchToExpeditionFlag; }
+
+	inline bool isAutoExpeditioning(){ return _autoExpeditioningFlag; }
+
+	void switchBackToLastAction();
+	void clearLastTarget();
+
 //private:
 	void moveMouseToAndClick(float x, float y, float offsetX = 5, float offsetY = 3);
 	void moveMouseTo(float x, float y, float offsetX = 5, float offsetY = 3);
@@ -205,7 +241,9 @@ public:
 	
 	State _state = State::None;
 	bool _inactiveWaiting = false;
-	SortieTarget _target = SortieTarget::None;
+	ActionTarget _target = ActionTarget::None;
+	ActionTarget _lastTarget = ActionTarget::None;
+	bool _autoExpeditioningFlag = false;
 
 	QString _stateStr;
 	bool _pauseNext = false;
@@ -217,9 +255,13 @@ public:
 	int _sortieWaitCond = 40;
 
 	bool _levelNoWait = false;
-
-	StopWhen _stopwhen = StopWhen::None;
-
+	
 	double _intervalMul = 1.0f;
+
+	bool _shouldAutoSwitchToExpeditionFlag = true;
+	KiraSetting _kiraSetting;
+	SouthEastSetting _southEastSetting;
+	LevelSetting _levelSetting;
+	ExpeditionSetting _expeditionSetting;
 }; 
 

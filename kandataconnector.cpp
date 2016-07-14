@@ -369,13 +369,13 @@ const kcsapi_mst_slotitem * KanDataConnector::findMstSlotItemFromSlotitemid(int 
 }
 
 
-bool KanDataConnector::isShipHasSlotitem(const kcsapi_ship2* pship, SlotitemType sitype, int count/*=1*/)
+bool KanDataConnector::isShipHasSlotitem(const kcsapi_ship2* pship, SlotitemType sitype, int count/*=1*/, int* hasCount/* = NULL*/)
 {
 	if (!pship)
 	{
 		return false;
 	}
-	if (count <= 0)
+	if (count <= 0 && !hasCount)
 	{
 		return true;
 	}
@@ -397,7 +397,7 @@ bool KanDataConnector::isShipHasSlotitem(const kcsapi_ship2* pship, SlotitemType
 						if ((int)sitype == type)
 						{
 							nowCount++;
-							if (nowCount >= count)
+							if (nowCount >= count && !hasCount)
 							{
 								return true;
 							}
@@ -406,6 +406,14 @@ bool KanDataConnector::isShipHasSlotitem(const kcsapi_ship2* pship, SlotitemType
 				}
 			}
 		}
+	}
+	if (hasCount)
+	{
+		*hasCount = nowCount;
+	}
+	if (nowCount >= count)
+	{
+		return true;
 	}
 	return false;
 }
@@ -534,6 +542,10 @@ QString KanDataConnector::logBattleResult(bool bWrite/*=true*/)
 			if (maparea_id == 2 && mapinfo_no > 1)
 			{
 				pksd->totalSouthEastWin++;
+			}
+			else if (maparea_id == 5 && mapinfo_no == 4)
+			{
+				pksd->totalTokyuWin++;
 			}
 		}
 		pksd->totalBossReached++;

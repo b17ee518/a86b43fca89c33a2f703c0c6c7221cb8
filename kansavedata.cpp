@@ -98,6 +98,7 @@ void KanSaveData::resetTotals()
 	totalBossSRank = 0;
 	totalSortie = 0;
 	totalSouthEastWin = 0;
+	totalTokyuWin = 0;
 }
 
 KanSaveData::KanSaveData()

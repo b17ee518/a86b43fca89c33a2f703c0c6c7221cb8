@@ -27,7 +27,7 @@ void KanDataConnector::updateOverviewTable()
 	lst.append(QString::fromLocal8Bit("高速修復材: %1").arg(instantrepaircount));
 //	lst.append(QString::fromLocal8Bit("高速建造材: %1").arg(instantbuildcount));
 //	lst.append(QString::fromLocal8Bit("家具コイン: %1").arg(fcoin));
-	lst.append(QString::fromLocal8Bit("ボス: %1(%2/%3) 南西: %4 輸: %5 航: %6 潜: %7 出撃:%8")
+	lst.append(QString::fromLocal8Bit("ボス: %1(%2/%3) 南西: %4 輸: %5 航: %6 潜: %7 出撃:%8 東急:%9")
 		.arg(pksd->totalBossReached)
 		.arg(pksd->totalBossWin)
 		.arg(pksd->totalBossSRank)
@@ -35,7 +35,8 @@ void KanDataConnector::updateOverviewTable()
 		.arg(pksd->totalKilledYusou)
 		.arg(pksd->totalKilledKubou)
 		.arg(pksd->totalKilledSensui)
-		.arg(pksd->totalSortie));
+		.arg(pksd->totalSortie)
+		.arg(pksd->totalTokyuWin));
 
 	//
 	if (kanmaxcount == kancount)
@@ -539,6 +540,17 @@ void KanDataConnector::updateFleetTable()
 		{
 			colindex = 1;
 		}
+		
+		while (pksd->deckSaveData.size() < v.api_id)
+		{
+			pksd->deckSaveData.append(KanSaveData::DeckSaveData());
+		}
+		KanSaveData::DeckSaveData* pdsd = &(pksd->deckSaveData[v.api_id - 1]);
+		pdsd->totalLevel = alllv;
+		pdsd->totalTaiku = alltaiku + alltaikubonus;
+		pdsd->taikuWithoutBonus = alltaiku;
+		pdsd->totalSakuteki = allsakuteki;
+		pdsd->sakutekiSp = (int)allsakuteki_sp;
 
 		QString strtitle = QString::fromLocal8Bit("%1 (Lv計:%2 制空:%3[%4] 索敵:%5[%6])")
 			.arg(v.api_name)
@@ -821,6 +833,16 @@ void KanDataConnector::updateInfoTitleBattle(bool bBattle, QList<int> * enemyhps
 			.arg(subtotal);
 
 		pksd->wasLastBossCell = (pksd->nextdata.api_no == pksd->nextdata.api_bosscell_no);
+
+		// special for calc 5-4
+		if (pksd->nextdata.api_maparea_id == 5 && pksd->nextdata.api_mapinfo_no == 4)
+		{
+			if (pksd->nextdata.api_no == pksd->nextdata.api_bosscell_no-1)
+			{
+				pksd->wasLastBossCell = true;
+			}
+		}
+
 		pksd->lastKilledYusou = transtotal - transremain;
 		pksd->lastKilledKubou = actotal - acremain;
 		pksd->lastKilledSensui = subtotal - subremain;

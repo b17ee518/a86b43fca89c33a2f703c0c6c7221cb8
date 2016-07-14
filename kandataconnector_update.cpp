@@ -27,7 +27,7 @@ void KanDataConnector::updateOverviewTable()
 	lst.append(QString::fromLocal8Bit("高速修復材: %1").arg(instantrepaircount));
 //	lst.append(QString::fromLocal8Bit("高速建造材: %1").arg(instantbuildcount));
 //	lst.append(QString::fromLocal8Bit("家具コイン: %1").arg(fcoin));
-	lst.append(QString::fromLocal8Bit("ボス: %1(%2/%3) 南西: %4 輸: %5 航: %6 潜: %7 出撃:%8 東急:%9")
+	lst.append(QString::fromLocal8Bit("ボス: %1(%2/%3) 南西: %4 輸: %5 航: %6 潜: %7 出撃: %8 東急: %9")
 		.arg(pksd->totalBossReached)
 		.arg(pksd->totalBossWin)
 		.arg(pksd->totalBossSRank)

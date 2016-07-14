@@ -989,12 +989,12 @@ void ControlManager::setupAutoExpedition()
 		if (_target != ActionTarget::Expedition)
 		{
 			_lastTarget = _target;
-		}
-		Terminate(true);
-		_autoExpeditioningFlag = true;
-		if (BuildNext_Expedition())
-		{
-			StartJob();
+			Terminate(true);
+			_autoExpeditioningFlag = true;
+			if (BuildNext_Expedition())
+			{
+				StartJob();
+			}
 		}
 	}
 }

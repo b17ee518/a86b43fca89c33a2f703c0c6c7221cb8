@@ -837,7 +837,7 @@ void KanDataConnector::updateInfoTitleBattle(bool bBattle, QList<int> * enemyhps
 		// special for calc 5-4
 		if (pksd->nextdata.api_maparea_id == 5 && pksd->nextdata.api_mapinfo_no == 4)
 		{
-			if (pksd->nextdata.api_no == pksd->nextdata.api_bosscell_no-1)
+			if (pksd->nextdata.api_no == 19)
 			{
 				pksd->wasLastBossCell = true;
 			}

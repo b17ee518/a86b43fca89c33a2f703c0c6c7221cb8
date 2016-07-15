@@ -61,7 +61,7 @@ InfoMainWindow::~InfoMainWindow()
 	delete ui;
 }
 
-void InfoMainWindow::updateOverviewTable(const QList<QString>& lst, const QList<QColor>& cols)
+void InfoMainWindow::updateOverviewTable(const QList<QString>& lst, const QList<QColor>& cols, const QString& tip)
 {
 	if (lst.count() == 5 && cols.count() == 5)
 	{
@@ -78,6 +78,7 @@ void InfoMainWindow::updateOverviewTable(const QList<QString>& lst, const QList<
 	QTableWidgetItem * pItem = ui->overviewTable->item(2, 0);
 	pItem->setText(lst[4]);
 	pItem->setTextColor(cols[4]);
+	pItem->setToolTip(tip);
 }
 
 void InfoMainWindow::updateMissionTable(const QString& buttonTitle, const QList<KQRowData>& rows)

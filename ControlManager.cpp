@@ -954,6 +954,11 @@ bool ControlManager::checkShouldAutoWait()
 		return false;
 	}
 
+	if (_pauseNext)
+	{
+		return false;
+	}
+
 	int team;
 	qint64 ms = MainWindow::mainWindow()->timerWindow()->getMinExpeditionMS(team);
 	if (ms <= 0)

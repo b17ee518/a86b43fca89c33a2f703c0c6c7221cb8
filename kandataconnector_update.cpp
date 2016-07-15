@@ -9,6 +9,7 @@ void KanDataConnector::updateOverviewTable()
 {
 	QList<QString> lst;
 	QList<QColor> cols;
+	QString tip;
 	KanSaveData * pksd = &KanSaveData::getInstance();
 
 	int kancount = pksd->portdata.api_ship.count()+pksd->shipcountoffset;
@@ -27,16 +28,18 @@ void KanDataConnector::updateOverviewTable()
 	lst.append(QString::fromLocal8Bit("高速修復材: %1").arg(instantrepaircount));
 //	lst.append(QString::fromLocal8Bit("高速建造材: %1").arg(instantbuildcount));
 //	lst.append(QString::fromLocal8Bit("家具コイン: %1").arg(fcoin));
-	lst.append(QString::fromLocal8Bit("ボス: %1(%2/%3) 南西: %4 輸: %5 航: %6 潜: %7 出撃: %8 東急: %9")
+	lst.append(QString::fromLocal8Bit("ボス: %1(%2/%3) 南西: %4 輸: %5 潜: %6 東急: %7")
 		.arg(pksd->totalBossReached)
 		.arg(pksd->totalBossWin)
 		.arg(pksd->totalBossSRank)
 		.arg(pksd->totalSouthEastWin)
 		.arg(pksd->totalKilledYusou)
-		.arg(pksd->totalKilledKubou)
 		.arg(pksd->totalKilledSensui)
-		.arg(pksd->totalSortie)
 		.arg(pksd->totalTokyuWin));
+
+	tip = QString::fromLocal8Bit("航: %1 出撃: %2")
+		.arg(pksd->totalKilledKubou)
+		.arg(pksd->totalSortie);
 
 	//
 	if (kanmaxcount == kancount)
@@ -88,7 +91,7 @@ void KanDataConnector::updateOverviewTable()
 		cols.append(_colWhite);
 	}
 
-	MainWindow::infoWindow()->updateOverviewTable(lst, cols);
+	MainWindow::infoWindow()->updateOverviewTable(lst, cols, tip);
 }
 
 void KanDataConnector::updateMissionTable()

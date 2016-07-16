@@ -56,7 +56,7 @@ private:
 	void updateExpeditionTable();
 	void updateRepairDockTable();
 	void updateBuildDockTable();
-	void updateInfoTitleBattle(bool bBattle=false, QList<int> *enemyhps=0, bool bSelfDamaged=false);
+	void updateInfoTitleBattle(bool bBattle=false, bool bSelfDamaged=false);
 	void updateInfoTitleCond();
 	void updateWeaponTable();
 

@@ -81,7 +81,12 @@ enum class SlotitemType
 	TanSyouTou_L = 42,	//	大型探照灯
 	SenTouRyouSyoKu = 43,	//	戦闘糧食
 	HoKyuBuShi = 44,	//	補給物資
-	DenTan_L_II = 93,	//	大型電探（II）
+	SuiJouSenTouKi = 45,	// 水上戦闘機
+	ToKuGaTaUChiBiTei = 46,	// 特型内火艇
+	RiKuJouKouGeKiKi = 47,	// 陸上攻撃機
+	KyoKuChiSenTouKi = 48,	// 局地戦闘機
+	DenTan_L_II = 93,	// 大型電探（II）
+	KanJouTeiSaTsuKi = 94,	// 艦上偵察機(II)
 };
 
 enum class ShipType
@@ -189,7 +194,17 @@ public:
 	int lastIntercept = -1;
 
 	bool lastWonAssumption = false;
+	// all from index 1
+	struct LastBattleHpSaveData
+	{
+		QList<int> self;
+		QList<int> combinedSelf;
+		QList<int> enemy;
+	};
 
+	LastBattleHpSaveData beginLastBattleHPs;
+	LastBattleHpSaveData remainLastBattleHPs;
+	
 	int lastKilledYusou = 0;
 	int lastKilledKubou = 0;
 	int lastKilledSensui = 0;

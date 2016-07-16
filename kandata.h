@@ -951,9 +951,9 @@ public:
 	int api_tyku;
 	int api_tais;
 	int api_atap;
-	int api_houm;
+	int api_houm; // taibaku when 48
 	int api_raim;
-	int api_houk;
+	int api_houk; // geigeki when 48
 	int api_raik;
 	int api_bakk;
 	int api_saku;

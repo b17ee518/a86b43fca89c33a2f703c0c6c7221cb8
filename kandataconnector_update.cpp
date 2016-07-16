@@ -340,14 +340,31 @@ void KanDataConnector::updateFleetTable()
 								
 								// taiku
 								if (type == SlotitemType::KanSen
+									|| type == SlotitemType::SuiJouSenTouKi
 									|| type == SlotitemType::KanBaKu
 									|| type == SlotitemType::KanKou
-									|| type == SlotitemType::SuiBaKu)
+									|| type == SlotitemType::SuiBaKu
+									|| type == SlotitemType::RiKuJouKouGeKiKi
+									|| type == SlotitemType::KyoKuChiSenTouKi)
 								{
-									taiku += (int)(pmstslotitem->api_tyku*sqrt((double)pship->api_onslot[i]));
-									// bonus
+									double taikuBase = pmstslotitem->api_tyku*sqrt((double)pship->api_onslot[i]);
+									// geigeki
+									if (type == SlotitemType::KyoKuChiSenTouKi)
+									{
+										taikuBase += pmstslotitem->api_houk*1.5;
+									}
+									// hoshi
+									else if (type == SlotitemType::KanSen 
+										|| type == SlotitemType::SuiJouSenTouKi)
+									{
+										taikuBase += v.api_level*0.2;
+									}
+									taiku += (int)taikuBase;
+
+									// >> bonus
 									int alv = v.api_alv;
-									if (type == SlotitemType::KanSen)
+									if (type == SlotitemType::KanSen
+										|| type == SlotitemType::SuiJouSenTouKi)
 									{
 										switch (alv)
 										{
@@ -376,7 +393,9 @@ void KanDataConnector::updateFleetTable()
 											break;
 										}
 									}
-									else if (type == SlotitemType::KanKou || type == SlotitemType::KanBaKu)
+									else if (type == SlotitemType::KanKou 
+										|| type == SlotitemType::KanBaKu 
+										|| type == SlotitemType::RiKuJouKouGeKiKi)
 									{
 										if (alv >= 7)
 										{
@@ -688,14 +707,16 @@ void KanDataConnector::updateBuildDockTable()
 
 }
 
-void KanDataConnector::updateInfoTitleBattle(bool bBattle, QList<int> * enemyhps, bool bSelfDamaged)
+void KanDataConnector::updateInfoTitleBattle(bool bBattle, bool bSelfDamaged)
 {
 	KanSaveData * pksd = &KanSaveData::getInstance();
+	/*
 	if (pksd->nextdata.api_no < 0 && !enemyhps)
 	{
 		MainWindow::infoWindow()->updateTitle("", false);
 		return;
 	}
+	*/
 	QString strtitle;
 
 	if (pksd->nextdata.api_no >= 0)
@@ -734,7 +755,7 @@ void KanDataConnector::updateInfoTitleBattle(bool bBattle, QList<int> * enemyhps
 				if (pmstship)
 				{
 					totalecount++;
-					if ((*enemyhps)[i] > 0)
+					if (pksd->remainLastBattleHPs.enemy[i] > 0)
 					{
 						totalremain++;
 					}
@@ -748,7 +769,7 @@ void KanDataConnector::updateInfoTitleBattle(bool bBattle, QList<int> * enemyhps
 					case ShipType::KeiKuBou:
 					case ShipType::SouKaKuBou:
 						actotal++;
-						if ((*enemyhps)[i] > 0)
+						if (pksd->remainLastBattleHPs.enemy[i] > 0)
 						{
 							acremain++;
 						}
@@ -756,7 +777,7 @@ void KanDataConnector::updateInfoTitleBattle(bool bBattle, QList<int> * enemyhps
 					case ShipType::HoKyu:
 					case ShipType::HoKyu_HaYaSuI:
 						transtotal++;
-						if ((*enemyhps)[i] > 0)
+						if (pksd->remainLastBattleHPs.enemy[i] > 0)
 						{
 							transremain++;
 						}
@@ -764,7 +785,7 @@ void KanDataConnector::updateInfoTitleBattle(bool bBattle, QList<int> * enemyhps
 					case ShipType::SenSui:
 					case ShipType::SenBou:
 						subtotal++;
-						if ((*enemyhps)[i] > 0)
+						if (pksd->remainLastBattleHPs.enemy[i] > 0)
 						{
 							subremain++;
 						}
@@ -776,7 +797,8 @@ void KanDataConnector::updateInfoTitleBattle(bool bBattle, QList<int> * enemyhps
 		}
 
 		QString eflagshipremainstr = "";
-		if ((*enemyhps)[1] > 0)
+		if (pksd->remainLastBattleHPs.enemy.count() > 1 &&
+			pksd->remainLastBattleHPs.enemy[1] > 0)
 		{
 			eflagshipremainstr = QString::fromLocal8Bit("旗");
 		}
@@ -808,6 +830,45 @@ void KanDataConnector::updateInfoTitleBattle(bool bBattle, QList<int> * enemyhps
 					break;
 				default:
 					break;
+				}
+			}
+		}
+
+		if (!pksd->lastWonAssumption && totalecount > totalremain)
+		{
+			int selfTotalDamage = 0;
+			int enemyTotalDamage = 0;
+			int selfBeginTotalHP = 0;
+			int enemyBeginTotalHP = 0;
+
+			int sCount = pksd->beginLastBattleHPs.self.count();
+//			int sCombinedCount = pksd->beginLastBattleHPs.combinedSelf.count();
+			int eCount = pksd->beginLastBattleHPs.enemy.count();
+			if (sCount == pksd->remainLastBattleHPs.self.count()
+//				&& sCombinedCount == pksd->remainLastBattleHPs.combinedSelf.count()
+				&& eCount == pksd->remainLastBattleHPs.enemy.count())
+			{
+				for (int i = 1; i < sCount; i++)
+				{
+					selfTotalDamage += pksd->beginLastBattleHPs.self[i] - pksd->remainLastBattleHPs.self[i];
+					selfBeginTotalHP += pksd->beginLastBattleHPs.self[i];
+				}
+				/*
+				for (int i = 1; i < sCombinedCount; i++)
+				{
+					selfTotalDamage += pksd->beginLastBattleHPs.combinedSelf[i] - pksd->remainLastBattleHPs.combinedSelf[i];
+				}
+				*/
+				for (int i = 1; i < eCount; i++)
+				{
+					enemyTotalDamage += pksd->beginLastBattleHPs.enemy[i] - pksd->remainLastBattleHPs.enemy[i];
+					enemyBeginTotalHP += pksd->beginLastBattleHPs.enemy[i];
+				}
+
+				if (((int)(enemyTotalDamage * 100.0 / enemyBeginTotalHP)) >
+					((int)(selfTotalDamage * 100.0 / selfBeginTotalHP))*2.5)
+				{
+					pksd->lastWonAssumption = true;
 				}
 			}
 		}
@@ -994,6 +1055,15 @@ QList<int> KanDataConnector::updateBattle(const kcsapi_battle &api_battle, KanBa
 	int dockid = 0;
 	int dockid_combined = -1;
 	bool bCombined = false;
+
+	pksd->remainLastBattleHPs.enemy.clear();
+	pksd->remainLastBattleHPs.self.clear();
+	pksd->remainLastBattleHPs.combinedSelf.clear();
+
+	pksd->beginLastBattleHPs.enemy.clear();
+	pksd->beginLastBattleHPs.self.clear();
+	pksd->beginLastBattleHPs.combinedSelf.clear();
+
 	if (type < KanBattleType::Combined_Begin)
 	{
 		dockid = api_battle.api_dock_id - 1;
@@ -1010,9 +1080,7 @@ QList<int> KanDataConnector::updateBattle(const kcsapi_battle &api_battle, KanBa
 		dockid_combined = dockid+1;
 		pksd->bCombined = bCombined;
 	}
-
-	QList<int> enemyhps;
-
+	
 	if (dockid >= 0)
 	{
 		pksd->lastbattletype = type;
@@ -1084,9 +1152,27 @@ QList<int> KanDataConnector::updateBattle(const kcsapi_battle &api_battle, KanBa
 		{
 			totaledamage.append(0);
 		}
-
+		/*
 		QList<int> api_nowhps = api_battle.api_nowhps;
 		QList<int> api_nowhps_combined = api_battle.api_nowhps_combined;
+		*/
+		pksd->beginLastBattleHPs.self.append(0);
+		pksd->beginLastBattleHPs.combinedSelf.append(0);
+		pksd->beginLastBattleHPs.enemy.append(0);
+
+		for (int i = 0; i < pships.count(); i++)
+		{
+			pksd->beginLastBattleHPs.self.append(api_battle.api_nowhps[i + 1]);
+		}
+		for (int i = 1; i < api_battle.api_ship_ke.count(); i++)
+		{
+			pksd->beginLastBattleHPs.enemy.append(api_battle.api_nowhps[i + 6]);
+		}
+		for (int i = 0; i < pships_combined.count(); i++)
+		{
+			pksd->beginLastBattleHPs.combinedSelf.append(api_battle.api_nowhps_combined[i + 1]);
+		}
+
 
 		// air base attack
 		if (!api_battle.api_air_base_attack.isEmpty())
@@ -1325,11 +1411,25 @@ QList<int> KanDataConnector::updateBattle(const kcsapi_battle &api_battle, KanBa
 		}
 		updateFleetTable();
 
-		enemyhps.append(0);
+		pksd->remainLastBattleHPs.enemy.append(0);
 		for (int i = 1; i < api_battle.api_ship_ke.count(); i++)
 		{
 			int nowhp = api_battle.api_nowhps[i + 6] - (int)totaledamage[i];
-			enemyhps.append(nowhp);
+			if (nowhp < 0)
+			{
+				nowhp = 0;
+			}
+			pksd->remainLastBattleHPs.enemy.append(nowhp);
+		}
+		pksd->remainLastBattleHPs.self.append(0);
+		for (int i = 0; i < pships.count(); i++)
+		{
+			pksd->remainLastBattleHPs.self.append(pships[i]->api_nowhp);
+		}
+		pksd->remainLastBattleHPs.combinedSelf.append(0);
+		for (int i = 0; i < pships_combined.count(); i++)
+		{
+			pksd->remainLastBattleHPs.combinedSelf.append(pships_combined[i]->api_nowhp);
 		}
 
 		bool bSelfDamaged = false;
@@ -1352,10 +1452,10 @@ QList<int> KanDataConnector::updateBattle(const kcsapi_battle &api_battle, KanBa
 				}
 			}
 		}
-		updateInfoTitleBattle(true, &enemyhps, bSelfDamaged);
+		updateInfoTitleBattle(true, bSelfDamaged);
 
 	}
-	return enemyhps;
+	return pksd->remainLastBattleHPs.enemy;
 	
 }
 

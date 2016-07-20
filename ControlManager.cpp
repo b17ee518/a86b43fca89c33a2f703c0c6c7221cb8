@@ -26,16 +26,15 @@ ControlManager::~ControlManager()
 {
 }
 
-bool ControlManager::BuildNext_Kira(bool bForceCurrent/*=false*/)
+bool ControlManager::BuildNext_Kira()
 {
-	_kiraSetting.forceCurrent = bForceCurrent;
 	pushPreSupplyCheck();
 	if (stopWhenCheck())
 	{
 		setToTerminate("Termination:StopWhenDone");
 		return false;
 	}
-	if (bForceCurrent)
+	if (_kiraSetting.forceCurrent)
 	{
 		_todoShipids.clear();
 		_todoShipids.push_front(getCurrentFlagshipId());
@@ -69,7 +68,7 @@ bool ControlManager::BuildNext_Kira(bool bForceCurrent/*=false*/)
 		|| hasSlotitem(togoShipId, SlotitemType::Sonar_L)
 		|| hasSlotitem(togoShipId, SlotitemType::YuSou, 3)
 		|| noSlotitem(togoShipId)
-		|| (!bForceCurrent&&isLowCond(togoShipId)))
+		|| (!_kiraSetting.forceCurrent&&isLowCond(togoShipId)))
 	{
 		_todoShipids.removeAt(0);
 		if (_todoShipids.empty())
@@ -1617,9 +1616,14 @@ WoundState ControlManager::hugestDamageInTeam(int team)
 	return maxState;
 }
 
-void ControlManager::setStopWhen(StopWhen stopwhen)
+void ControlManager::setSouthEastSetting(const SouthEastSetting& southEastSetting)
 {
-	_southEastSetting.stopWhen = stopwhen;
+	_southEastSetting = southEastSetting;
+}
+
+void ControlManager::setKiraSetting(const KiraSetting& kiraSetting)
+{
+	_kiraSetting = kiraSetting;
 }
 
 bool ControlManager::isActiveRunning()

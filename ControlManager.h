@@ -89,7 +89,7 @@ public:
 
 	void pushPreSupplyCheck();
 
-	bool BuildNext_Kira(bool bForceCurrent=false);
+	bool BuildNext_Kira();
 
 	bool BuildNext_Fuel();
 
@@ -158,7 +158,8 @@ public:
 	bool shouldRetrieve();
 	WoundState hugestDamageInTeam(int team);
 
-	void setStopWhen(StopWhen stopwhen);
+	void setSouthEastSetting(const SouthEastSetting& southEastSetting);
+	void setKiraSetting(const KiraSetting& kiraSetting);
 
 	bool isRunning(){ return _state == State::Started; }
 	bool isActiveRunning();
@@ -224,6 +225,12 @@ public:
 	void switchBackToLastAction();
 	void clearLastTarget();
 
+	const KiraSetting& getKiraSetting(){ return _kiraSetting; }
+	const SouthEastSetting& getSouthEastSetting(){ return _southEastSetting; }
+	const LevelSetting& getLevelSetting(){ return _levelSetting; }
+	const ExpeditionSetting& getExpeditionSetting(){ return _expeditionSetting; }
+	const RankSetting& getRankSetting() { return _rankSetting; }
+
 //private:
 	void moveMouseToAndClick(float x, float y, float offsetX = 5, float offsetY = 3);
 	void moveMouseTo(float x, float y, float offsetX = 5, float offsetY = 3);
@@ -263,5 +270,6 @@ public:
 	SouthEastSetting _southEastSetting;
 	LevelSetting _levelSetting;
 	ExpeditionSetting _expeditionSetting;
+	RankSetting _rankSetting;
 }; 
 

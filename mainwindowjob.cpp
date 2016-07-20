@@ -36,20 +36,27 @@ void MainWindow::onDoJobFuel()
 		pMessageBox->exec();
 
 		auto clickedButton = pMessageBox->clickedButton();
+		ControlManager::SouthEastSetting southEastSetting;
 		if (clickedButton == resetButton)
 		{
 			KanSaveData::getInstance().resetTotals();
 			KanDataConnector::getInstance().callUpdateOverviewTable();
+			delete pMessageBox;
 			return;
 		}
 		else if (clickedButton == yusouButton)
 		{
-			cm.setStopWhen(ControlManager::StopWhen::Yusou3);
+			southEastSetting.stopWhen = ControlManager::StopWhen::Yusou3;
 		}
 		else if (clickedButton == southEastButton)
 		{
-			cm.setStopWhen(ControlManager::StopWhen::SouthEast5);
+			southEastSetting.stopWhen = ControlManager::StopWhen::SouthEast5;
 		}
+		else
+		{
+			southEastSetting.stopWhen = ControlManager::StopWhen::None;
+		}
+		cm.setSouthEastSetting(southEastSetting);
 		delete pMessageBox;
 	}
 
@@ -73,14 +80,13 @@ void MainWindow::onDoJobKira()
 
 	cm.LoadToDoShipList_Kira();
 
+	ControlManager::KiraSetting kiraSetting;
 	if (QApplication::queryKeyboardModifiers()&Qt::ShiftModifier)
 	{
-		cm.BuildNext_Kira(true);
+		kiraSetting.forceCurrent = true;
 	}
-	else
-	{
-		cm.BuildNext_Kira();
-	}
+	cm.setKiraSetting(kiraSetting);
+	cm.BuildNext_Kira();
 	cm.StartJob();
 
 }

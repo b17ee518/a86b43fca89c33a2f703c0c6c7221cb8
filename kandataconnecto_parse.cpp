@@ -1138,6 +1138,7 @@ bool KanDataConnector::get_member_questlist_parse()
 {
 	int api_tab_id = _req.GetItemAsString("api_tab_id").toInt();
 	// 0 all, 9 current, 1 daily, 2 weekly, 3 monthly, 4 once, 5 other
+	// 32 ??
 	// api_type matches
 
 	// TODO: remove quest
@@ -1159,6 +1160,7 @@ bool KanDataConnector::get_member_questlist_parse()
 	
 	if (!api_questlist.api_list.size())
 	{
+		/*
 		// nothing in current
 		if (api_tab_id == 0 || api_tab_id == 9)
 		{
@@ -1166,6 +1168,7 @@ bool KanDataConnector::get_member_questlist_parse()
 		}
 		else
 		{
+		*/
 			// first page nothing: clear type
 			if (api_questlist.api_disp_page == 1)
 			{
@@ -1176,7 +1179,7 @@ bool KanDataConnector::get_member_questlist_parse()
 			{
 				pksd->clearQuestByType(api_tab_id, -1, -1, api_questlist.api_page_count);
 			}
-		}
+//		}
 	}
 	else
 	{

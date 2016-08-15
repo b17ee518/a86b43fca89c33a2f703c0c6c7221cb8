@@ -1558,10 +1558,12 @@ bool KanDataConnector::get_member_base_air_corps_parse()
 	{
 		auto corp = jarray[i].toObject();
 		kcsapi_air_base_corps tcorp;
+		/*
 		tcorp.api_plane_info.append(kcsapi_air_base_corps_plane_info());
 		tcorp.api_plane_info.append(kcsapi_air_base_corps_plane_info());
 		tcorp.api_plane_info.append(kcsapi_air_base_corps_plane_info());
 		tcorp.api_plane_info.append(kcsapi_air_base_corps_plane_info());
+		*/
 		tcorp.ReadFromJObj(corp);
 
 		tcorps[tcorp.api_rid - 1] = tcorp;
@@ -1616,10 +1618,12 @@ bool KanDataConnector::req_air_corps_supply_parse()
 	QList<QString> squadronIds = _req.GetItemAsString("api_squadron_id").split("%2C");
 
 	kcsapi_air_base_corps tcorp;
+	/*
 	tcorp.api_plane_info.append(kcsapi_air_base_corps_plane_info());
 	tcorp.api_plane_info.append(kcsapi_air_base_corps_plane_info());
 	tcorp.api_plane_info.append(kcsapi_air_base_corps_plane_info());
 	tcorp.api_plane_info.append(kcsapi_air_base_corps_plane_info());
+	*/
 	tcorp.ReadFromJObj(_jobj);
 
 	while (pksd->airbasedata.size() < baseid)
@@ -1634,15 +1638,12 @@ bool KanDataConnector::req_air_corps_supply_parse()
 		{
 			pksd->airbasedata[baseid - 1].api_plane_info.append(kcsapi_air_base_corps_plane_info());
 		}
-		if (tcorp.api_plane_info.size() >= squadronid)
+		for (const auto& plane : tcorp.api_plane_info)
 		{
-			for (const auto& plane : tcorp.api_plane_info)
+			if (plane.api_squadron_id == squadronid)
 			{
-				if (plane.api_squadron_id == squadronid)
-				{
-					pksd->airbasedata[baseid - 1].api_plane_info[squadronid - 1] = plane;
-					break;
-				}
+				pksd->airbasedata[baseid - 1].api_plane_info[squadronid - 1] = plane;
+				break;
 			}
 		}
 	}

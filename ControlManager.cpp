@@ -404,7 +404,8 @@ bool ControlManager::BuildNext_Level()
 				{
 					const kcsapi_mst_ship* pmstship = pkdc->findMstShipFromShipid(pship->api_ship_id);
 					WoundState ws = KanDataCalc::GetWoundState(pship->api_nowhp, pship->api_maxhp);
-					if (pship->api_maxhp < 10 && pmstship->api_stype == (int)ShipType::SenSui)
+					if ((pmstship->api_stype == (int)ShipType::SenSui || pmstship->api_stype == (int)ShipType::SenBou)
+						&& (pship->api_maxhp < 10 || (pship->api_lv < 99 && pship->api_locked)))
 					{
 						if (bHaveMaruyu)
 						{
@@ -466,7 +467,8 @@ bool ControlManager::BuildNext_Level()
 			{
 				continue;
 			}
-			if (pmstship->api_stype == (int)ShipType::SenSui && ship.api_maxhp < 8)
+			if ((pmstship->api_stype == (int)ShipType::SenSui || pmstship->api_stype == (int)ShipType::SenBou)
+				&& (ship.api_maxhp < 10 || (ship.api_lv < 99 && ship.api_locked)))
 			{
 				if (isShipCharged(ship.api_id)
 					&& !isShipDamaged(ship.api_id)

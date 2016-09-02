@@ -592,7 +592,7 @@ bool ControlManager::BuildNext_Rank()
 	{
 		if (!pksd->deckSaveData.empty())
 		{
-			if (pksd->deckSaveData.first().totalTaiku < 380)
+			if (pksd->deckSaveData.first().totalTaiku < 360)
 			{
 				setToTerminate("Terminated:Taiku");
 				return false;

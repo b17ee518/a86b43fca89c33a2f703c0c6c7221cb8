@@ -1329,6 +1329,14 @@ bool KanDataConnector::req_quest_clearitemget_parse()
 			{
 				// mamiya/ presentbox
 			}
+			else if (pbonus->api_type == 14)
+			{
+				// ??
+			}
+			else if (pbonus->api_type == 15)
+			{
+				// change item
+			}
 			else if (pbonus->api_type == 99)
 			{
 				// ?
@@ -1417,6 +1425,11 @@ bool KanDataConnector::get_member_record_parse()
 }
 
 bool KanDataConnector::req_ranking_getlist_parse()
+{
+	return true;
+}
+
+bool KanDataConnector::req_ranking_mxltvkpyuklh_parse()
 {
 	return true;
 }

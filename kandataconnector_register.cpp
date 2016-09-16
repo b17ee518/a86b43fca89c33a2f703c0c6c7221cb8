@@ -89,6 +89,7 @@
  /kcsapi/api_req_member/itemuse_cond
  /kcsapi/api_get_member/record
  /kcsapi/api_req_ranking/getlist
+ /kcsapi/api_req_ranking/mxltvkpyuklh
  /kcsapi/api_get_member/picture_book
  /kcsapi/api_get_member/book2
  /kcsapi/api_req_member/get_incentive
@@ -194,6 +195,7 @@ KanDataConnector::KanDataConnector(void)
 	req_member_itemuse_cond_flag = PARSEFLAG_NORMAL;
 	get_member_record_flag = PARSEFLAG_NORMAL;
 	req_ranking_getlist_flag = PARSEFLAG_NORMAL;
+	req_ranking_mxltvkpyuklh_flag = PARSEFLAG_NORMAL;
 	get_member_picture_book_flag = PARSEFLAG_NORMAL;
 	get_member_book2_flag = PARSEFLAG_NORMAL;
 	req_member_get_incentive_flag = PARSEFLAG_NORMAL;
@@ -356,6 +358,7 @@ bool KanDataConnector::Parse(const QString& pathAndQuery, const QString& request
 		PARSEAPI("/kcsapi/api_req_member/itemuse_cond", req_member_itemuse_cond)
 		PARSEAPI("/kcsapi/api_get_member/record", get_member_record)
 		PARSEAPI("/kcsapi/api_req_ranking/getlist", req_ranking_getlist)
+		PARSEAPI("/kcsapi/api_req_ranking/mxltvkpyuklh", req_ranking_mxltvkpyuklh)
 		PARSEAPI("/kcsapi/api_get_member/picture_book", get_member_picture_book)
 		PARSEAPI("/kcsapi/api_get_member/book2", get_member_book2)
 		PARSEAPI("/kcsapi/api_req_member/get_incentive", req_member_get_incentive)

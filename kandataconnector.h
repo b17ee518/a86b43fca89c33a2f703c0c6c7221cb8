@@ -172,6 +172,7 @@ private:
 	bool req_member_itemuse_cond_parse();
 	bool get_member_record_parse();
 	bool req_ranking_getlist_parse();
+	bool req_ranking_mxltvkpyuklh_parse();
 	bool get_member_picture_book_parse();
 	bool get_member_book2_parse();
 	bool req_member_get_incentive_parse();
@@ -280,6 +281,7 @@ private:
 	int req_member_itemuse_cond_flag;
 	int get_member_record_flag;
 	int req_ranking_getlist_flag;
+	int req_ranking_mxltvkpyuklh_flag;	// getlist
 	int get_member_picture_book_flag;
 	int get_member_book2_flag;
 	int req_member_get_incentive_flag;

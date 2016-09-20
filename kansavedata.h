@@ -45,7 +45,7 @@ enum class SlotitemType
 	KanSen = 6,	//	艦上戦闘機
 	KanBaKu = 7,	//	艦上爆撃機
 	KanKou = 8,	//	艦上攻撃機
-	TeiSaTsu = 9,	//	艦上偵察機
+	KanJouTeiSaTsu = 9,	//	艦上偵察機
 	SuiTei = 10,	//	水上偵察機
 	SuiBaKu = 11,	//	水上爆撃機
 	DenTan_S = 12,	//	小型電探
@@ -86,7 +86,7 @@ enum class SlotitemType
 	RiKuJouKouGeKiKi = 47,	// 陸上攻撃機
 	KyoKuChiSenTouKi = 48,	// 局地戦闘機
 	DenTan_L_II = 93,	// 大型電探（II）
-	KanJouTeiSaTsuKi = 94,	// 艦上偵察機(II)
+	KanJouTeiSaTsu_II = 94,	// 艦上偵察機(II)
 };
 
 enum class ShipType
@@ -155,7 +155,7 @@ public:
 		int totalTaiku = 0;
 		int taikuWithoutBonus = 0;
 		int totalSakuteki = 0;
-		int sakutekiSp = 0;
+		int sakutekiSp33 = 0;
 	};
 
 	// public member without _

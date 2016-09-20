@@ -464,7 +464,7 @@ public:
 
 	virtual bool ReadFromJObj(const QJsonObject &jobj);
 
-	int api_ship_id;
+	int api_ship_id = -1;
 	QString api_ship_type;
 	QString api_ship_name;
 	QString api_ship_getmes;

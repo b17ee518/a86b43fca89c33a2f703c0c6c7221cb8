@@ -551,6 +551,11 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='ReleaseWebEngine|Win32'">true</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="DebugWebEngine\moc_kqnetworkreply.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='ReleaseWebEngine|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="DebugWebEngine\moc_kqtablewidget.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
@@ -628,6 +633,11 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='ReleaseWebEngine|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DebugWebEngine|Win32'">true</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="Debug\moc_kqnetworkreply.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='ReleaseWebEngine|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DebugWebEngine|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="Debug\moc_kqtablewidget.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='ReleaseWebEngine|Win32'">true</ExcludedFromBuild>
@@ -696,6 +706,7 @@
     <ClCompile Include="kansavedata.cpp" />
     <ClCompile Include="klog.cpp" />
     <ClCompile Include="kqnetworkaccessmanager.cpp" />
+    <ClCompile Include="kqnetworkreply.cpp" />
     <ClCompile Include="kqrowdata.cpp" />
     <ClCompile Include="kqtablewidget.cpp" />
     <ClCompile Include="kqtime.cpp" />
@@ -728,6 +739,11 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DebugWebEngine|Win32'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="ReleaseWebEngine\moc_kqnetworkaccessmanager.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DebugWebEngine|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="ReleaseWebEngine\moc_kqnetworkreply.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DebugWebEngine|Win32'">true</ExcludedFromBuild>
@@ -803,6 +819,11 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='ReleaseWebEngine|Win32'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="Release\moc_kqnetworkaccessmanager.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DebugWebEngine|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='ReleaseWebEngine|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="Release\moc_kqnetworkreply.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DebugWebEngine|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='ReleaseWebEngine|Win32'">true</ExcludedFromBuild>
@@ -1172,6 +1193,40 @@
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='ReleaseWebEngine|x64'">$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>
       <Message Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Moc%27ing kqnetworkaccessmanager.h...</Message>
       <Message Condition="'$(Configuration)|$(Platform)'=='ReleaseWebEngine|x64'">Moc%27ing kqnetworkaccessmanager.h...</Message>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(OutputDirectory)\moc_%(Filename).cpp</Outputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='ReleaseWebEngine|x64'">$(OutputDirectory)\moc_%(Filename).cpp</Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o "$(OutputDirectory)\moc_%(Filename).cpp"  -D_WINDOWS -DNDEBUG -DQT_AXBASE_LIB -DQT_AXCONTAINER_LIB -DQT_CORE_LIB -DQT_GUI_LIB -DQT_NETWORK_LIB -DQT_NO_DEBUG -DQT_OPENGL_ES_2 -DQT_OPENGL_ES_2_ANGLE -DQT_POSITIONING_LIB -DQT_WEBKIT_LIB -DQT_WIDGETS_LIB -DQT_WINEXTRAS_LIB -DUNICODE -DWIN32 -DWIN64 -DQT_DLL -DQT_MULTIMEDIA_LIB -DQT_MULTIMEDIAWIDGETS_LIB  "-I$(QTDIR)\include" "-I$(QTDIR)\include\QtWebKitWidgets" "-I$(QTDIR)\include\QtWinExtras" "-I$(QTDIR)\include\QtWidgets" "-I$(QTDIR)\include\QtPositioning" "-I$(QTDIR)\include\QtNetwork" "-I$(QTDIR)\include\QtGui" "-I$(QTDIR)\include\QtANGLE" "-I$(QTDIR)\include\QtCore" "-I.\release" "-I." "-I$(QTDIR)\mkspecs\win32-msvc2010" "-I.\GeneratedFiles" "-I$(QTDIR)\include\ActiveQt" "-I$(QTDIR)\include\QtMultimedia" "-I$(QTDIR)\include\QtMultimediaWidgets"</Command>
+      <Command Condition="'$(Configuration)|$(Platform)'=='ReleaseWebEngine|x64'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o "$(OutputDirectory)\moc_%(Filename).cpp"  -D_WINDOWS -DNDEBUG -DQT_AXBASE_LIB -DQT_AXCONTAINER_LIB -DQT_CORE_LIB -DQT_GUI_LIB -DQT_NETWORK_LIB -DQT_NO_DEBUG -DQT_OPENGL_ES_2 -DQT_OPENGL_ES_2_ANGLE -DQT_POSITIONING_LIB -DQT_WEBKIT_LIB -DQT_WIDGETS_LIB -DQT_WINEXTRAS_LIB -DUNICODE -DWIN32 -DWIN64 -DQT_DLL -DQT_MULTIMEDIA_LIB -DQT_MULTIMEDIAWIDGETS_LIB  "-I$(QTDIR)\include" "-I$(QTDIR)\include\QtWebKitWidgets" "-I$(QTDIR)\include\QtWinExtras" "-I$(QTDIR)\include\QtWidgets" "-I$(QTDIR)\include\QtPositioning" "-I$(QTDIR)\include\QtNetwork" "-I$(QTDIR)\include\QtGui" "-I$(QTDIR)\include\QtANGLE" "-I$(QTDIR)\include\QtCore" "-I.\release" "-I." "-I$(QTDIR)\mkspecs\win32-msvc2010" "-I.\GeneratedFiles" "-I$(QTDIR)\include\ActiveQt" "-I$(QTDIR)\include\QtMultimedia" "-I$(QTDIR)\include\QtMultimediaWidgets"</Command>
+    </CustomBuild>
+    <CustomBuild Include="kqnetworkreply.h">
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='DebugWebEngine|Win32'">$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Moc%27ing kqnetworkreply.h...</Message>
+      <Message Condition="'$(Configuration)|$(Platform)'=='DebugWebEngine|Win32'">Moc%27ing kqnetworkreply.h...</Message>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(OutputDirectory)\moc_%(Filename).cpp</Outputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='DebugWebEngine|Win32'">$(OutputDirectory)\moc_%(Filename).cpp</Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o "$(OutputDirectory)\moc_%(Filename).cpp"  -D_WINDOWS -DNOMINMAX -DUNICODE -DWIN32 -DQT_AXCONTAINER_LIB -DQT_WEBKIT_LIB -DQT_WINEXTRAS_LIB -DQT_AXBASE_LIB -DQT_WIDGETS_LIB -DQT_POSITIONING_LIB -DQT_NETWORK_LIB -DQT_GUI_LIB -DQT_CORE_LIB -DQT_OPENGL_ES_2 -DQT_OPENGL_ES_2_ANGLE -DQT_DLL -DQT_MULTIMEDIA_LIB -DQT_MULTIMEDIAWIDGETS_LIB  "-I$(QTDIR_5_4_1)\include" "-I$(QTDIR_5_4_1)\include\QtWebEngineWidgets" "-I$(QTDIR_5_4_1)\include\QtWebEngine" "-I$(QTDIR_5_4_1)\include\QtWinExtras" "-I$(QTDIR_5_4_1)\include\QtWidgets" "-I$(QTDIR_5_4_1)\include\QtPositioning" "-I$(QTDIR_5_4_1)\include\QtNetwork" "-I$(QTDIR_5_4_1)\include\QtGui" "-I$(QTDIR_5_4_1)\include\QtANGLE" "-I$(QTDIR_5_4_1)\include\QtCore" "-I.\debug" "-I." "-I$(QTDIR_5_4_1)\mkspecs\win32-msvc2010" "-I.\GeneratedFiles" "-I$(QTDIR_5_4_1)\include\ActiveQt" "-I$(QTDIR_5_4_1)\include\QtMultimedia" "-I$(QTDIR_5_4_1)\include\QtMultimediaWidgets" "-I$(QTDIR_5_4_1)\include\QtWebKit" "-I$(QTDIR_5_4_1)\include\QtWebKitWidgets"</Command>
+      <Command Condition="'$(Configuration)|$(Platform)'=='DebugWebEngine|Win32'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o "$(OutputDirectory)\moc_%(Filename).cpp"  -D_WINDOWS -DNOMINMAX -DUNICODE -DWIN32 -DQT_AXCONTAINER_LIB -DQT_WEBKIT_LIB -DQT_WINEXTRAS_LIB -DQT_AXBASE_LIB -DQT_WIDGETS_LIB -DQT_POSITIONING_LIB -DQT_NETWORK_LIB -DQT_GUI_LIB -DQT_CORE_LIB -DQT_OPENGL_ES_2 -DQT_OPENGL_ES_2_ANGLE -DQT_DLL -DQT_MULTIMEDIA_LIB -DQT_MULTIMEDIAWIDGETS_LIB  "-I$(QTDIR)\include" "-I$(QTDIR)\include\QtWebEngineWidgets" "-I$(QTDIR)\include\QtWebEngine" "-I$(QTDIR)\include\QtWinExtras" "-I$(QTDIR)\include\QtWidgets" "-I$(QTDIR)\include\QtPositioning" "-I$(QTDIR)\include\QtNetwork" "-I$(QTDIR)\include\QtGui" "-I$(QTDIR)\include\QtANGLE" "-I$(QTDIR)\include\QtCore" "-I.\debug" "-I." "-I$(QTDIR)\mkspecs\win32-msvc2010" "-I.\GeneratedFiles" "-I$(QTDIR)\include\ActiveQt" "-I$(QTDIR)\include\QtMultimedia" "-I$(QTDIR)\include\QtMultimediaWidgets"</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='DebugWebEngine|x64'">$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Moc%27ing kqnetworkreply.h...</Message>
+      <Message Condition="'$(Configuration)|$(Platform)'=='DebugWebEngine|x64'">Moc%27ing kqnetworkreply.h...</Message>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(OutputDirectory)\moc_%(Filename).cpp</Outputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='DebugWebEngine|x64'">$(OutputDirectory)\moc_%(Filename).cpp</Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o "$(OutputDirectory)\moc_%(Filename).cpp"  -D_DEBUG -D_WINDOWS -DQT_AXBASE_LIB -DQT_AXCONTAINER_LIB -DQT_CORE_LIB -DQT_GUI_LIB -DQT_NETWORK_LIB -DQT_OPENGL_ES_2 -DQT_OPENGL_ES_2_ANGLE -DQT_POSITIONING_LIB -DQT_WEBKIT_LIB -DQT_WIDGETS_LIB -DQT_WINEXTRAS_LIB -DUNICODE -DWIN32 -DWIN64 -DQT_DLL -DQT_MULTIMEDIA_LIB -DQT_MULTIMEDIAWIDGETS_LIB  "-I$(QTDIR)\include" "-I$(QTDIR)\include\QtWebEngineWidgets" "-I$(QTDIR)\include\QtWinExtras" "-I$(QTDIR)\include\QtWidgets" "-I$(QTDIR)\include\QtPositioning" "-I$(QTDIR)\include\QtNetwork" "-I$(QTDIR)\include\QtGui" "-I$(QTDIR)\include\QtANGLE" "-I$(QTDIR)\include\QtCore" "-I.\debug" "-I." "-I$(QTDIR)\mkspecs\win32-msvc2010" "-I.\GeneratedFiles" "-I$(QTDIR)\include\ActiveQt" "-I$(QTDIR)\include\QtMultimedia" "-I$(QTDIR)\include\QtMultimediaWidgets"</Command>
+      <Command Condition="'$(Configuration)|$(Platform)'=='DebugWebEngine|x64'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o "$(OutputDirectory)\moc_%(Filename).cpp"  -D_DEBUG -D_WINDOWS -DQT_AXBASE_LIB -DQT_AXCONTAINER_LIB -DQT_CORE_LIB -DQT_GUI_LIB -DQT_NETWORK_LIB -DQT_OPENGL_ES_2 -DQT_OPENGL_ES_2_ANGLE -DQT_POSITIONING_LIB -DQT_WEBKIT_LIB -DQT_WIDGETS_LIB -DQT_WINEXTRAS_LIB -DUNICODE -DWIN32 -DWIN64 -DQT_DLL -DQT_MULTIMEDIA_LIB -DQT_MULTIMEDIAWIDGETS_LIB  "-I$(QTDIR)\include" "-I$(QTDIR)\include\QtWebEngineWidgets" "-I$(QTDIR)\include\QtWinExtras" "-I$(QTDIR)\include\QtWidgets" "-I$(QTDIR)\include\QtPositioning" "-I$(QTDIR)\include\QtNetwork" "-I$(QTDIR)\include\QtGui" "-I$(QTDIR)\include\QtANGLE" "-I$(QTDIR)\include\QtCore" "-I.\debug" "-I." "-I$(QTDIR)\mkspecs\win32-msvc2010" "-I.\GeneratedFiles" "-I$(QTDIR)\include\ActiveQt" "-I$(QTDIR)\include\QtMultimedia" "-I$(QTDIR)\include\QtMultimediaWidgets"</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='ReleaseWebEngine|Win32'">$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Moc%27ing kqnetworkreply.h...</Message>
+      <Message Condition="'$(Configuration)|$(Platform)'=='ReleaseWebEngine|Win32'">Moc%27ing kqnetworkreply.h...</Message>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(OutputDirectory)\moc_%(Filename).cpp</Outputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='ReleaseWebEngine|Win32'">$(OutputDirectory)\moc_%(Filename).cpp</Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o "$(OutputDirectory)\moc_%(Filename).cpp"  -D_WINDOWS -DNOMINMAX -DUNICODE -DWIN32 -DQT_NO_DEBUG -DQT_AXCONTAINER_LIB -DQT_WEBKIT_LIB -DQT_WINEXTRAS_LIB -DQT_AXBASE_LIB -DQT_WIDGETS_LIB -DQT_POSITIONING_LIB -DQT_NETWORK_LIB -DQT_GUI_LIB -DQT_CORE_LIB -DQT_OPENGL_ES_2 -DQT_OPENGL_ES_2_ANGLE -DNDEBUG -DQT_DLL -DQT_MULTIMEDIA_LIB -DQT_MULTIMEDIAWIDGETS_LIB  "-I$(QTDIR_5_4_1)\include" "-I$(QTDIR_5_4_1)\include\QtWebEngineWidgets" "-I$(QTDIR_5_4_1)\include\QtWebEngine" "-I$(QTDIR_5_4_1)\include\QtWinExtras" "-I$(QTDIR_5_4_1)\include\QtWidgets" "-I$(QTDIR_5_4_1)\include\QtPositioning" "-I$(QTDIR_5_4_1)\include\QtNetwork" "-I$(QTDIR_5_4_1)\include\QtGui" "-I$(QTDIR_5_4_1)\include\QtANGLE" "-I$(QTDIR_5_4_1)\include\QtCore" "-I.\debug" "-I." "-I$(QTDIR_5_4_1)\mkspecs\win32-msvc2010" "-I.\GeneratedFiles" "-I$(QTDIR_5_4_1)\include\ActiveQt" "-I$(QTDIR_5_4_1)\include\QtMultimedia" "-I$(QTDIR_5_4_1)\include\QtMultimediaWidgets" "-I$(QTDIR_5_4_1)\include\QtWebKit" "-I$(QTDIR_5_4_1)\include\QtWebKitWidgets"</Command>
+      <Command Condition="'$(Configuration)|$(Platform)'=='ReleaseWebEngine|Win32'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o "$(OutputDirectory)\moc_%(Filename).cpp"  -D_WINDOWS -DNOMINMAX -DUNICODE -DWIN32 -DQT_NO_DEBUG -DQT_AXCONTAINER_LIB -DQT_WEBKIT_LIB -DQT_WINEXTRAS_LIB -DQT_AXBASE_LIB -DQT_WIDGETS_LIB -DQT_POSITIONING_LIB -DQT_NETWORK_LIB -DQT_GUI_LIB -DQT_CORE_LIB -DQT_OPENGL_ES_2 -DQT_OPENGL_ES_2_ANGLE -DNDEBUG -DQT_DLL -DQT_MULTIMEDIA_LIB -DQT_MULTIMEDIAWIDGETS_LIB  "-I$(QTDIR)\include" "-I$(QTDIR)\include\QtWebEngineWidgets" "-I$(QTDIR)\include\QtWinExtras" "-I$(QTDIR)\include\QtWidgets" "-I$(QTDIR)\include\QtPositioning" "-I$(QTDIR)\include\QtNetwork" "-I$(QTDIR)\include\QtGui" "-I$(QTDIR)\include\QtANGLE" "-I$(QTDIR)\include\QtCore" "-I.\release" "-I." "-I$(QTDIR)\mkspecs\win32-msvc2010" "-I.\GeneratedFiles" "-I$(QTDIR)\include\ActiveQt" "-I$(QTDIR)\include\QtMultimedia" "-I$(QTDIR)\include\QtMultimediaWidgets" "-I$(QTDIR)\include\QtWebKitWidgets"</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='ReleaseWebEngine|x64'">$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Moc%27ing kqnetworkreply.h...</Message>
+      <Message Condition="'$(Configuration)|$(Platform)'=='ReleaseWebEngine|x64'">Moc%27ing kqnetworkreply.h...</Message>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(OutputDirectory)\moc_%(Filename).cpp</Outputs>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='ReleaseWebEngine|x64'">$(OutputDirectory)\moc_%(Filename).cpp</Outputs>
       <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o "$(OutputDirectory)\moc_%(Filename).cpp"  -D_WINDOWS -DNDEBUG -DQT_AXBASE_LIB -DQT_AXCONTAINER_LIB -DQT_CORE_LIB -DQT_GUI_LIB -DQT_NETWORK_LIB -DQT_NO_DEBUG -DQT_OPENGL_ES_2 -DQT_OPENGL_ES_2_ANGLE -DQT_POSITIONING_LIB -DQT_WEBKIT_LIB -DQT_WIDGETS_LIB -DQT_WINEXTRAS_LIB -DUNICODE -DWIN32 -DWIN64 -DQT_DLL -DQT_MULTIMEDIA_LIB -DQT_MULTIMEDIAWIDGETS_LIB  "-I$(QTDIR)\include" "-I$(QTDIR)\include\QtWebKitWidgets" "-I$(QTDIR)\include\QtWinExtras" "-I$(QTDIR)\include\QtWidgets" "-I$(QTDIR)\include\QtPositioning" "-I$(QTDIR)\include\QtNetwork" "-I$(QTDIR)\include\QtGui" "-I$(QTDIR)\include\QtANGLE" "-I$(QTDIR)\include\QtCore" "-I.\release" "-I." "-I$(QTDIR)\mkspecs\win32-msvc2010" "-I.\GeneratedFiles" "-I$(QTDIR)\include\ActiveQt" "-I$(QTDIR)\include\QtMultimedia" "-I$(QTDIR)\include\QtMultimediaWidgets"</Command>

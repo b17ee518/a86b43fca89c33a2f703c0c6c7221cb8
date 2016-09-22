@@ -12,7 +12,7 @@ public:
     explicit KQNetworkAccessManager(QObject *parent = 0);
 
 protected:
-    virtual QNetworkReply * createRequest(Operation op, const QNetworkRequest &request, QIODevice *outgoingData);
+    virtual QNetworkReply * createRequest(Operation op, const QNetworkRequest &req, QIODevice *outgoingData);
 
 signals:
 

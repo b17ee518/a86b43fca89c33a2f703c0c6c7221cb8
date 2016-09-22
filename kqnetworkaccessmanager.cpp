@@ -1,6 +1,7 @@
 #include "kqnetworkaccessmanager.h"
 #include <QFile>
 #include "mainwindow.h"
+#include "kqnetworkreply.h"
 
 KQNetworkAccessManager::KQNetworkAccessManager(QObject *parent) :
     QNetworkAccessManager(parent)
@@ -8,10 +9,20 @@ KQNetworkAccessManager::KQNetworkAccessManager(QObject *parent) :
 	qDebug("");
 }
 
-QNetworkReply *KQNetworkAccessManager::createRequest(QNetworkAccessManager::Operation op, const QNetworkRequest &request, QIODevice *outgoingData)
+QNetworkReply *KQNetworkAccessManager::createRequest(QNetworkAccessManager::Operation op, const QNetworkRequest &req, QIODevice *outgoingData)
 {
-    QNetworkReply * reply = QNetworkAccessManager::createRequest(op, request, outgoingData);
-	
+	QNetworkRequest request = req;
+
+	if (op == PostOperation) {
+		//qDebug() << "POST" << request.url().path();
+		// If the request addressed to API - translate this request
+		if (request.url().host() != "localhost" && request.url().host() != "127.0.0.1" && !request.url().host().contains(".dmm.com")) {
+			QNetworkReply *r = QNetworkAccessManager::createRequest(op, request, outgoingData);
+			KQNetworkReply *reply = new KQNetworkReply(r->parent(), r, this);
+			return reply;
+		}
+	}
+	/*
 	if (outgoingData)
 	{
 		QString requestBody = outgoingData->peek(outgoingData->size() + 1);
@@ -19,7 +30,8 @@ QNetworkReply *KQNetworkAccessManager::createRequest(QNetworkAccessManager::Oper
 	}
 //	reply->setUserData()
     connect(reply, SIGNAL(readyRead()), this, SLOT(slotReadyRead()));
-
+	*/
+	QNetworkReply * reply = QNetworkAccessManager::createRequest(op, request, outgoingData);
     return reply;
 }
 

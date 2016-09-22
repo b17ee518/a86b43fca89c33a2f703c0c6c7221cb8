@@ -246,6 +246,11 @@ void MainWindow::onGetNetworkReply(QNetworkReply * reply)
 	}
 }
 
+void MainWindow::onGetNetworkReply(const QString& PathAndQuery, const QString& requestBody, const QString& responseBody)
+{
+	emit MainWindow::mainWindow()->sigParse(PathAndQuery, requestBody, responseBody);
+}
+
 QWidget* MainWindow::getBrowserWidget()
 {
 	if (_webWidgetType == WebWidgetType::IE)

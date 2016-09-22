@@ -35,10 +35,6 @@
       <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
       <Extensions>cpp;c;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
     </Filter>
-    <Filter Include="CPP">
-      <UniqueIdentifier>{E0D8C965-CC5F-43d7-AD63-FAEF0BBC0F85}-dumpcpp_impl</UniqueIdentifier>
-      <ParseFiles>false</ParseFiles>
-    </Filter>
     <Filter Include="Generated Files\Debug">
       <UniqueIdentifier>{02a113d9-921d-4161-9648-b51bbc53be41}</UniqueIdentifier>
       <Extensions>cpp;moc</Extensions>
@@ -366,6 +362,21 @@
     <ClCompile Include="ReleaseWebEngine\moc_weaponmainwindow.cpp">
       <Filter>Generated Files\ReleaseWebEngine</Filter>
     </ClCompile>
+    <ClCompile Include="DebugWebEngine\moc_kqnetworkreply.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="Debug\moc_kqnetworkreply.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="kqnetworkreply.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="ReleaseWebEngine\moc_kqnetworkreply.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="Release\moc_kqnetworkreply.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="cookiejar.h">
@@ -457,6 +468,9 @@
     </CustomBuild>
     <CustomBuild Include="qwebenginemouseeventfilter.h">
       <Filter>Header Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="kqnetworkreply.h">
+      <Filter>Generated Files</Filter>
     </CustomBuild>
   </ItemGroup>
   <ItemGroup>

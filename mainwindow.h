@@ -97,6 +97,7 @@ public:
 	void SetProgressBarPos(int pos, ProgressBarState state);
 
 	void onGetNetworkReply(QNetworkReply * reply);
+	void onGetNetworkReply(const QString& PathAndQuery, const QString& requestBody, const QString& responseBody);
 
 	void setSleepMode(bool val);
 	bool isSleepMode();

@@ -35,6 +35,7 @@ SOURCES += main.cpp\
     KQWebPage.cpp \
     klog.cpp \
     kqnetworkaccessmanager.cpp \
+    kqnetworkreply.cpp \
     weaponmainwindow.cpp
 
 HEADERS  += mainwindow.h \
@@ -58,6 +59,7 @@ HEADERS  += mainwindow.h \
     KQWebPage.h \
     klog.h \
     kqnetworkaccessmanager.h \
+    kqnetworkreply.h \
     weaponmainwindow.h
 
 FORMS    += mainwindow.ui \

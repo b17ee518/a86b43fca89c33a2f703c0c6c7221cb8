@@ -6,7 +6,9 @@
 
 QT       += core gui multimedia
 
-greaterThan(QT_MAJOR_VERSION, 4): QT += widgets axcontainer webkitwidgets winextras
+greaterThan(QT_MAJOR_VERSION, 4): QT += widgets axcontainer webkitwidgets winextras webenginewidgets
+
+DEFINES += NOMINMAX
 
 TARGET = KanPlay
 TEMPLATE = app
@@ -36,7 +38,25 @@ SOURCES += main.cpp\
     klog.cpp \
     kqnetworkaccessmanager.cpp \
     kqnetworkreply.cpp \
-    weaponmainwindow.cpp
+    weaponmainwindow.cpp \
+    ControlAction.cpp \
+    ControlManager.cpp \
+    ExpeditionManager.cpp \
+    fidcom.cpp \
+    kandataconnecto_parse.cpp \
+    kandataconnector_register.cpp \
+    kandataconnector_update.cpp \
+    kqmaintitleframe.cpp \
+    kqwebpage.cpp \
+    mainwindowevents.cpp \
+    mainwindowjob.cpp \
+    mainwindowsettings.cpp \
+    nekoxy.cpp \
+    qwebenginemouseeventfilter.cpp \
+    qwindowseventfilter.cpp \
+    shdocvw.cpp \
+    shipmainwindow.cpp \
+    titanium_web_proxy.cpp
 
 HEADERS  += mainwindow.h \
     infomainwindow.h \
@@ -60,10 +80,23 @@ HEADERS  += mainwindow.h \
     klog.h \
     kqnetworkaccessmanager.h \
     kqnetworkreply.h \
-    weaponmainwindow.h
+    weaponmainwindow.h \
+    ControlAction.h \
+    ControlManager.h \
+    ExpeditionManager.h \
+    fidcom.h \
+    kqmaintitleframe.h \
+    kqwebpage.h \
+    nekoxy.h \
+    qwebenginemouseeventfilter.h \
+    qwindowseventfilter.h \
+    shdocvw.h \
+    shipmainwindow.h \
+    titanium_web_proxy.h
 
 FORMS    += mainwindow.ui \
     infomainwindow.ui \
     kqui_collapsibleframe.ui \
     timermainwindow.ui \
-    weaponmainwindow.ui
+    weaponmainwindow.ui \
+    shipmainwindow.ui

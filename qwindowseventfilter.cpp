@@ -1,7 +1,9 @@
 #include "qwindowseventfilter.h"
 #include "MainWindow.h"
 
+#ifdef Q_OS_WIN
 #include <windows.h>
+#endif
 
 #include <QMessageLogger>
 #include <QFile>
@@ -38,6 +40,7 @@ bool QWindowsEventFilter::nativeEventFilter(const QByteArray &eventType, void *m
 {
 	Q_UNUSED(result);
 
+#ifdef Q_OS_WIN
 	if (eventType == "windows_generic_MSG")
 	{
 		MSG *msg = static_cast<MSG *>(message);
@@ -108,5 +111,6 @@ bool QWindowsEventFilter::nativeEventFilter(const QByteArray &eventType, void *m
 			return false;
 		}
 	}
+#endif
 	return false;
 }

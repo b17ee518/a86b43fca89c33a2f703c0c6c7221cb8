@@ -39,7 +39,8 @@ MainWindow::MainWindow(QWidget *parent) :
 		setAttribute(Qt::WA_TranslucentBackground, false);
 
 		rebuildIE(false);
-		
+
+#ifdef Q_OS_WIN
 		HWND hWnd = (HWND)this->winId();
 		LONG lStyle = ::GetWindowLong(hWnd, GWL_STYLE);
 		lStyle &= ~(WS_CAPTION | WS_THICKFRAME | WS_MINIMIZE | WS_MAXIMIZE | WS_SYSMENU);
@@ -58,6 +59,7 @@ MainWindow::MainWindow(QWidget *parent) :
 			}
 			FreeLibrary(hins);
 		}
+#endif
 	}
 	else
 	{

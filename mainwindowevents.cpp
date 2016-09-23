@@ -105,7 +105,7 @@ void MainWindow::closeEvent(QCloseEvent *e)
 		QMessageBox * pMessageBox = new QMessageBox(
 			QMessageBox::NoIcon
 			, QString::fromLocal8Bit("")
-			, QString::fromLocal8Bit("æœ¬å½“ã«çµ‚äº†ã—ã¾ã™ã‹ï¼Ÿ")
+			, QString::fromLocal8Bit("–{“–‚ÉI—¹‚µ‚Ü‚·‚©H")
 			, QMessageBox::Yes | QMessageBox::No
 			, this
 			, Qt::Dialog | Qt::MSWindowsFixedSizeDialogHint | Qt::FramelessWindowHint);
@@ -364,7 +364,7 @@ void MainWindow::on_pbRefresh_clicked()
 	QMessageBox * pMessageBox = new QMessageBox(
 		QMessageBox::NoIcon
 		, QString::fromLocal8Bit("")
-		, QString::fromLocal8Bit("ãƒªãƒ­ãƒ¼ãƒ‰ã—ã¾ã™ã‹ï¼Ÿ")
+		, QString::fromLocal8Bit("ƒŠƒ[ƒh‚µ‚Ü‚·‚©H")
 		, QMessageBox::Yes | QMessageBox::No
 		, this
 		, Qt::Dialog | Qt::MSWindowsFixedSizeDialogHint | Qt::FramelessWindowHint);
@@ -403,14 +403,14 @@ void MainWindow::slotTogglePanicTimer(int timeVal)
 
 void MainWindow::onPanic()
 {
-	QString jsstr = QString::fromLocal8Bit("window.alert('%1'); ").arg(QString::fromLocal8Bit("ãƒ‘ãƒ‹ãƒƒã‚¯ï¼"));
+	QString jsstr = QString::fromLocal8Bit("window.alert('%1'); ").arg(QString::fromLocal8Bit("ƒpƒjƒbƒNI"));
 	if (_webWidgetType == WebWidgetType::IE)
 	{
 		// TODO
 		QMessageBox* pMessageBox = new QMessageBox(
 			QMessageBox::NoIcon
 			, QString::fromLocal8Bit("")
-			, QString::fromLocal8Bit("ãƒ‘ãƒ‹ãƒƒã‚¯ï¼")
+			, QString::fromLocal8Bit("ƒpƒjƒbƒNI")
 			, QMessageBox::Ok
 			, this
 			, Qt::Dialog | Qt::MSWindowsFixedSizeDialogHint | Qt::FramelessWindowHint);

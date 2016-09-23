@@ -699,9 +699,9 @@
     <ClCompile Include="kandata.cpp" />
     <ClCompile Include="kandatacalc.cpp" />
     <ClCompile Include="kandataconnector.cpp" />
+    <ClCompile Include="kandataconnector_parse.cpp" />
     <ClCompile Include="kandataconnector_register.cpp" />
     <ClCompile Include="kandataconnector_update.cpp" />
-    <ClCompile Include="kandataconnecto_parse.cpp" />
     <ClCompile Include="kanreqdata.cpp" />
     <ClCompile Include="kansavedata.cpp" />
     <ClCompile Include="klog.cpp" />

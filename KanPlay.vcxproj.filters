@@ -236,9 +236,6 @@
     <ClCompile Include="kandataconnector_register.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="kandataconnecto_parse.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="nekoxy.cpp">
       <Filter>NekoxyCOM</Filter>
     </ClCompile>
@@ -376,6 +373,9 @@
     </ClCompile>
     <ClCompile Include="Release\moc_kqnetworkreply.cpp">
       <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="kandataconnector_parse.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

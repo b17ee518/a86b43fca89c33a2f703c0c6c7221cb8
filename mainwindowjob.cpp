@@ -20,15 +20,15 @@ void MainWindow::onDoJobFuel()
 		QMessageBox* pMessageBox = new QMessageBox(
 			QMessageBox::NoIcon
 			, QString::fromLocal8Bit("")
-			, QString::fromLocal8Bit("çµ‚äº†æ¡ä»¶")
+			, QString::fromLocal8Bit("I—¹ðŒ")
 			, QMessageBox::NoButton
 			, this
 			, Qt::Dialog | Qt::MSWindowsFixedSizeDialogHint | Qt::FramelessWindowHint);
 
-		auto resetButton = pMessageBox->addButton(QString::fromLocal8Bit("ã‚¯ãƒªã‚¢"), QMessageBox::ResetRole);
-		auto yusouButton = pMessageBox->addButton(QString::fromLocal8Bit("è¼¸é€Ã—3"), QMessageBox::AcceptRole);
-		auto southEastButton = pMessageBox->addButton(QString::fromLocal8Bit("å—è¥¿Ã—5"), QMessageBox::ActionRole);
-		auto foreverButton = pMessageBox->addButton(QString::fromLocal8Bit("æ°¸ä¹…"), QMessageBox::RejectRole);
+		auto resetButton = pMessageBox->addButton(QString::fromLocal8Bit("ƒNƒŠƒA"), QMessageBox::ResetRole);
+		auto yusouButton = pMessageBox->addButton(QString::fromLocal8Bit("—A‘—~3"), QMessageBox::AcceptRole);
+		auto southEastButton = pMessageBox->addButton(QString::fromLocal8Bit("“ì¼~5"), QMessageBox::ActionRole);
+		auto foreverButton = pMessageBox->addButton(QString::fromLocal8Bit("‰i‹v"), QMessageBox::RejectRole);
 		Q_UNUSED(foreverButton);
 
 		pMessageBox->setDefaultButton(QMessageBox::NoButton);

@@ -44,7 +44,7 @@ SOURCES += main.cpp\
     ControlAction.cpp \
     ControlManager.cpp \
     ExpeditionManager.cpp \
-    kandataconnecto_parse.cpp \
+    kandataconnector_parse.cpp \
     kandataconnector_register.cpp \
     kandataconnector_update.cpp \
     kqmaintitleframe.cpp \

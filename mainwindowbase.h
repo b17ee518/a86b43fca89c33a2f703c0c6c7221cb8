@@ -14,13 +14,12 @@ public:
 
 	void mwbPostInit();
 
+	virtual void minimizeWindow();
+	virtual void restoreWindow();
+
 protected:
 	virtual void closeEvent(QCloseEvent *event);
 	virtual void changeEvent(QEvent *event);
-    
-    virtual void minimizeWindow();
-    virtual void restoreWindow();
-
 
 public slots:
 	virtual void slotActivate(QWidget* w , bool bActivate);

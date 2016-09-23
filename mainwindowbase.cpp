@@ -1,4 +1,4 @@
-﻿#include "mainwindowbase.h"
+#include "mainwindowbase.h"
 #include <QSettings>
 
 MainWindowBase::MainWindowBase(QWidget *parent) :
@@ -12,7 +12,6 @@ MainWindowBase::MainWindowBase(QWidget *parent) :
 void MainWindowBase::changeEvent( QEvent* e )
 {
 	QMainWindow::changeEvent(e);
-#ifdef Q_OS_WIN
 	if (e->type() == QEvent::WindowStateChange)
 	{
 		QWindowStateChangeEvent* event = static_cast<QWindowStateChangeEvent*>(e);
@@ -24,7 +23,7 @@ void MainWindowBase::changeEvent( QEvent* e )
 		{
 			emit this->sigRestoreMinimizeToggled(false);
 		}
-	}
+    }
 	else if( e->type() == QEvent::ActivationChange )
 	{
 		if (this->isActiveWindow())
@@ -36,14 +35,15 @@ void MainWindowBase::changeEvent( QEvent* e )
 			emit this->sigActivated( this, false);
 		}
 	}
-#endif
 }
 
 void MainWindowBase::slotActivate( QWidget* w, bool bActivate )
 {
-	Q_UNUSED(bActivate);
-	this->raise();
-	this->stackUnder( w );
+    if (bActivate)
+    {
+        this->raise();
+        this->stackUnder( w );
+    }
 }
 
 void MainWindowBase::slotToggleRestoreMinimize(bool bRestore)
@@ -65,3 +65,14 @@ void MainWindowBase::closeEvent(QCloseEvent *event)
 	settings.setValue(objectName()+"/windowState", saveState());
 	QMainWindow::closeEvent(event);
 }
+
+#ifdef Q_OS_WIN
+void MainWindowBase::minimizeWindow()
+{
+    setWindowState(Qt::WindowMinimized);
+}
+void MainWindowBase::restoreWindow()
+{
+    setWindowState(Qt::WindowNoState);
+}
+#endif

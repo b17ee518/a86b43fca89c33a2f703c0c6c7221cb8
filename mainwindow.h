@@ -123,7 +123,6 @@ signals:
 	void sigToggleSleepMode(bool bSleep);
 
 public slots:
-	virtual void slotActivate(QWidget* w, bool bActivate);
 	virtual void slotToggleRestoreMinimize(bool bRestore);
 	virtual void slotSelfToggleRestoreMinimize(bool bRestore);
 	void slotParse(const QString &PathAndQuery, const QString &requestBody, const QString &responseBody);

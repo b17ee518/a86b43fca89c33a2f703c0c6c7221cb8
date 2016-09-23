@@ -1,4 +1,4 @@
-﻿#include "mainwindow.h"
+#include "mainwindow.h"
 #include "ui_mainwindow.h"
 
 #include <QDesktopWidget>
@@ -189,27 +189,20 @@ void MainWindow::mouseReleaseEvent(QMouseEvent *event)
 	MainWindowBase::mouseReleaseEvent(event);
 }
 
-void MainWindow::slotActivate(QWidget *w, bool bActivate)
-{
-	Q_UNUSED(bActivate);
-	this->raise();
-	w->stackUnder(this);
-}
-
 void MainWindow::slotToggleRestoreMinimize(bool bRestore)
 {
 	if (bRestore)
 	{
 		if (isMinimized())
 		{
-			this->setWindowState(Qt::WindowNoState);
+            restoreWindow();
 		}
 	}
 	if (!bRestore)
 	{
 		if (!isMinimized())
-		{
-			this->setWindowState(Qt::WindowMinimized);
+        {
+            minimizeWindow();
 		}
 	}
 }
@@ -233,7 +226,7 @@ void MainWindow::on_pbClose_clicked()
 
 void MainWindow::on_pbMinimize_clicked()
 {
-	setWindowState(Qt::WindowMinimized);
+    minimizeWindow();
 }
 
 void MainWindow::on_pbCheckTransparent_toggled(bool checked)

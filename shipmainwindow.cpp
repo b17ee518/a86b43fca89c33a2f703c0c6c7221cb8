@@ -469,7 +469,7 @@ void ShipMainWindow::on_pbClose_clicked()
 
 void ShipMainWindow::on_pbMinimize_clicked()
 {
-	setWindowState(Qt::WindowMinimized);
+    minimizeWindow();
 }
 
 void ShipMainWindow::slotToggled(bool bValue)

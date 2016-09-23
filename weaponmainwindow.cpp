@@ -423,7 +423,7 @@ void WeaponMainWindow::on_pbClose_clicked()
 
 void WeaponMainWindow::on_pbMinimize_clicked()
 {
-	setWindowState(Qt::WindowMinimized);
+    minimizeWindow();
 }
 
 void WeaponMainWindow::slotToggled(bool bValue)

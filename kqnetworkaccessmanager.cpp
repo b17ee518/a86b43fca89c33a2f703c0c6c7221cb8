@@ -3,22 +3,30 @@
 #include "mainwindow.h"
 #include "kqnetworkreply.h"
 
+#define REQBODY_BUFFER_SIZE    1024*16
+
 KQNetworkAccessManager::KQNetworkAccessManager(QObject *parent) :
     QNetworkAccessManager(parent)
 {
-	qDebug("");
 }
 
 QNetworkReply *KQNetworkAccessManager::createRequest(QNetworkAccessManager::Operation op, const QNetworkRequest &req, QIODevice *outgoingData)
 {
 	QNetworkRequest request = req;
-
+    
+    
 	if (op == PostOperation) {
 		//qDebug() << "POST" << request.url().path();
 		// If the request addressed to API - translate this request
 		if (request.url().host() != "localhost" && request.url().host() != "127.0.0.1" && !request.url().host().contains(".dmm.com")) {
 			QNetworkReply *r = QNetworkAccessManager::createRequest(op, request, outgoingData);
-			KQNetworkReply *reply = new KQNetworkReply(r->parent(), r, this);
+            
+            KQNetworkReply *reply = new KQNetworkReply(r->parent(), r, this);
+            if (outgoingData)
+            {
+                QString requestBody = outgoingData->peek(REQBODY_BUFFER_SIZE);
+                reply->setProperty("requestBody", requestBody);
+            }
 			return reply;
 		}
 	}

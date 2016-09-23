@@ -352,7 +352,7 @@ void InfoMainWindow::on_pbClose_clicked()
 
 void InfoMainWindow::on_pbMinimize_clicked()
 {
-	setWindowState(Qt::WindowMinimized);
+    minimizeWindow();
 }
 
 void InfoMainWindow::onToggleSleepMode(bool bSleep)

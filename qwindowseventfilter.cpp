@@ -66,7 +66,7 @@ bool QWindowsEventFilter::nativeEventFilter(const QByteArray &eventType, void *m
 			if (msg->wParam == PBT_APMSUSPEND)
 			{
 				// sleep
-				mainWindow->setWindowState(Qt::WindowMinimized);
+				mainWindow->minimizeWindow();
 				mainWindow->setSleepMode(true);
 				return false;
 			}
@@ -95,7 +95,7 @@ bool QWindowsEventFilter::nativeEventFilter(const QByteArray &eventType, void *m
 					DWORD dw = *(DWORD*)(ps->Data);
 					if (dw == 0x0)
 					{
-						mainWindow->setWindowState(Qt::WindowMinimized);
+						mainWindow->minimizeWindow();
 						// off
 						//						mainWindow->setSleepMode(true);
 						return false;

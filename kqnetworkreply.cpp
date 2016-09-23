@@ -28,7 +28,7 @@ QNetworkReply(parent) {
 	d->finished = false;
 	d->copied = toCopy;
 	d->manager = mgr;
-
+    
 	setOperation(d->copied->operation());
 	setRequest(d->copied->request());
 	setUrl(d->copied->url());
@@ -86,11 +86,11 @@ void KQNetworkReply::handleResponse() {
 	if (mimetype.contains("text/plain"))
 	{
 		QUrl url = d->copied->request().url();
-		QString PathAndQuery = url.path();
+        QString PathAndQuery = url.path();
 		if (PathAndQuery.startsWith("/kcsapi"))
 		{
-			QString requestBody = d->copied->property("requestBody").toString();
-			QString responseBody = QString::fromUtf8(d->content.constData(), d->content.size());
+            QString responseBody = QString::fromUtf8(d->content.constData(), d->content.size());
+            QString requestBody = property("requestBody").toString();
 			MainWindow::mainWindow()->onGetNetworkReply(PathAndQuery, requestBody, responseBody);
 		}
 	}

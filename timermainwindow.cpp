@@ -172,7 +172,7 @@ void TimerMainWindow::on_pbClose_clicked()
 
 void TimerMainWindow::on_pbMinimize_clicked()
 {
-	setWindowState(Qt::WindowMinimized);
+    minimizeWindow();
 }
 
 void TimerMainWindow::slotUpdateTimer()

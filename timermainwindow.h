@@ -15,10 +15,10 @@ namespace Ui {
 class TimerMainWindow;
 }
 
-class TimeRecord
+class TimeRecorder
 {
 public:
-	TimeRecord(){}
+	TimeRecorder(){}
 
     void setValue(qint64 dtime, qint64 ttime, QString cmt, bool bAlarm=false)
 	{
@@ -96,9 +96,9 @@ private:
     Ui::TimerMainWindow *ui;
     QList<QTableWidget *> _lstTables;
 
-    TimeRecord _exptimerecord[3];
-    TimeRecord _repairtimerecord[4];
-    TimeRecord _buildtimerecord[2];
+    TimeRecorder _exptimerecord[3];
+    TimeRecorder _repairtimerecord[4];
+    TimeRecorder _buildtimerecord[2];
 
     QTimer * _pUpdateTimer = NULL;
 

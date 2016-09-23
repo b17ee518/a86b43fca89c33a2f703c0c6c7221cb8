@@ -17,6 +17,9 @@ public:
 protected:
 	virtual void closeEvent(QCloseEvent *event);
 	virtual void changeEvent(QEvent *event);
+    
+    virtual void minimizeWindow();
+    virtual void restoreWindow();
 
 
 public slots:

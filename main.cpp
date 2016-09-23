@@ -26,7 +26,11 @@ int main(int argc, char *argv[])
 	a.setApplicationName("KanPlay");
 	a.setWindowIcon(QIcon(QApplication::applicationDirPath()+"/icon.ico"));
 
+#ifdef Q_OS_WIN
 	QFont newFont("Meiryo UI", 9.5f, QFont::Bold);
+#else
+    QFont newFont("", 12.5f);
+#endif
 	a.setFont(newFont);
 
 	QString style = "   \

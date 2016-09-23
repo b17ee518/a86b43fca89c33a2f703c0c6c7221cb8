@@ -12,7 +12,7 @@ MainWindowBase::MainWindowBase(QWidget *parent) :
 void MainWindowBase::changeEvent( QEvent* e )
 {
 	QMainWindow::changeEvent(e);
-
+#ifdef Q_OS_WIN
 	if (e->type() == QEvent::WindowStateChange)
 	{
 		QWindowStateChangeEvent* event = static_cast<QWindowStateChangeEvent*>(e);
@@ -36,6 +36,7 @@ void MainWindowBase::changeEvent( QEvent* e )
 			emit this->sigActivated( this, false);
 		}
 	}
+#endif
 }
 
 void MainWindowBase::slotActivate( QWidget* w, bool bActivate )

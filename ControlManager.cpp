@@ -1998,7 +1998,7 @@ void ControlManager::moveMouseTo(float x, float y, float offsetX /*= 5*/, float 
 			{
 				return;
 			}
-			QMouseEvent e(QEvent::MouseButtonPress, ptAdjusted, Qt::LeftButton, Qt::LeftButton, Qt::NoModifier);
+			QMouseEvent e(QEvent::MouseMove, ptAdjusted, Qt::NoButton, Qt::NoButton, Qt::NoModifier);
 			QApplication::sendEvent(w, &e);
 		};
 

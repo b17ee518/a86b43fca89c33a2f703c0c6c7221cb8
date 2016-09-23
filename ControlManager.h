@@ -255,7 +255,7 @@ public:
 	QString _stateStr;
 	bool _pauseNext = false;
 
-	QList<QList<int>> _ssShips;
+    QList<QList<int> > _ssShips;
 	int _southEastTeamSize = 5;
 
 	int _sortieMinCond = 30;

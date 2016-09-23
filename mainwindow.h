@@ -11,7 +11,9 @@
 
 #include "QNetworkProxyFactorySet.h"
 #include <QShowEvent>
+#ifdef Q_OS_WIN
 #include <QWinTaskbarButton>
+#endif
 #include <QNetworkReply>
 
 #if (QT_VERSION >= QT_VERSION_CHECK(5, 6, 0))
@@ -20,16 +22,19 @@
 #include <QWebView>
 #endif
 
+#ifdef Q_OS_WIN
 #include <QAxWidget>
 #include "shdocvw.h"
 
 #include "fidcom.h"
 #include "nekoxy.h"
 #include "titanium_web_proxy.h"
+using namespace SHDocVw;
+#endif
+
 #include "qwindowseventfilter.h"
 #include "qwebenginemouseeventfilter.h"
 
-using namespace SHDocVw;
 
 enum class ProgressBarState
 {
@@ -145,7 +150,9 @@ private slots:
 	void slotJobtTimeout();
 	void on_pbCheckLowVol_toggled(bool checked);
 
+#ifdef Q_OS_WIN
 	void slotNavigateComplete2(IDispatch*, QVariant&);
+#endif
 	void slotWebViewException(int code, const QString & source, const QString & desc, const QString & help);
 	void onPanic();
 	void onDoJobFuel();
@@ -190,9 +197,11 @@ private:
 	ProxyMode _proxyMode = ProxyMode::Nekoxy;
 
 	int _useport = 0;
+#ifdef Q_OS_WIN
 	FidCOM::FidCOMClass * _pFid = NULL;
 	Nekoxy::HttpProxy * _pNekoxy = NULL;
 	Titanium_Web_Proxy::ProxyServer* _pTitanium = NULL;
+#endif
 
 	bool _bIEPageLoaded = false;
 	QWebViewCSSIndex _applyCssWhenLoaded = QWebViewCSSIndex::Invalid;
@@ -206,8 +215,9 @@ private:
 	
 	static MainWindow * s_pMainWindow;
 
+#ifdef Q_OS_WIN
 	QWinTaskbarButton * _pTaskbarButton = NULL;
-
+#endif
 	bool _bMoveSubTogether = true;
 
 	QTimer * _pScreenshotTimer = NULL;
@@ -226,7 +236,10 @@ private:
 #else
 	QWebView* _webView = NULL;
 #endif
+
+#ifdef Q_OS_WIN
 	WebBrowser* _axWidget = NULL;
+#endif
 
 	// settings
 	QString _gameUrl;

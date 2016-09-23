@@ -2,7 +2,9 @@
 #include "ui_mainwindow.h"
 
 #include <QDesktopWidget>
+#ifdef Q_OS_WIN
 #include <QWinTaskbarProgress>
+#endif
 #include <QMessageBox>
 #if (QT_VERSION < QT_VERSION_CHECK(5, 6, 0))
 #include <QWebFrame>
@@ -118,6 +120,7 @@ void MainWindow::closeEvent(QCloseEvent *e)
 		}
 	}
 
+#ifdef Q_OS_WIN
 	if (_proxyMode == ProxyMode::Fid && _pFid)
 	{
 		_pFid->Shutdown();
@@ -130,7 +133,7 @@ void MainWindow::closeEvent(QCloseEvent *e)
 	{
 		_pTitanium->Shutdown();
 	}
-
+#endif
 	ControlManager::getInstance().Terminate();
 
 	MainWindowBase::closeEvent(e);
@@ -341,6 +344,8 @@ void MainWindow::slotSoundEnded()
 void MainWindow::showEvent(QShowEvent *event)
 {
 	MainWindowBase::showEvent(event);
+
+#ifdef Q_OS_WIN
 	if (!_pTaskbarButton)
 	{
 		_pTaskbarButton = new QWinTaskbarButton(this);
@@ -353,6 +358,7 @@ void MainWindow::showEvent(QShowEvent *event)
 		pTaskbarProgress->setValue(0);
 		pTaskbarProgress->show();
 	}
+#endif
 }
 
 void MainWindow::on_pbMoveTogether_toggled(bool checked)

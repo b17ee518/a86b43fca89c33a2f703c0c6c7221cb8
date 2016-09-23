@@ -147,6 +147,8 @@ MainWindow::MainWindow(QWidget *parent) :
 
 MainWindow::~MainWindow()
 {
+
+#ifdef Q_OS_WIN
 	if (_pFid)
 	{
 		delete _pFid;
@@ -159,6 +161,7 @@ MainWindow::~MainWindow()
 	{
 		delete _pTitanium;
 	}
+#endif
 	delete ui;
 }
 
@@ -257,8 +260,10 @@ QWidget* MainWindow::getBrowserWidget()
 {
 	if (_webWidgetType == WebWidgetType::IE)
 	{
-		return _axWidget;
-	}
+#ifdef Q_OS_WIN
+        return _axWidget;
+#endif
+    }
 	return _webView;
 }
 
@@ -266,7 +271,9 @@ void MainWindow::navigateTo(const QString& urlString)
 {
 	if (_webWidgetType == WebWidgetType::IE)
 	{
+#ifdef Q_OS_WIN
 		_axWidget->Navigate(urlString);
+#endif
 	}
 	else
 	{
@@ -291,6 +298,8 @@ void MainWindow::navigateReload()
 
 void MainWindow::rebuildIE(bool bNavigate)
 {
+
+#ifdef Q_OS_WIN
 	if (_axWidget)
 	{
 		WebBrowser* toDelete = _axWidget;
@@ -316,6 +325,7 @@ void MainWindow::rebuildIE(bool bNavigate)
 	{
 		navigateTo(_gameUrl);
 	}
+#endif
 }
 
 void MainWindow::installWebEngineMouseEventFilter()
@@ -356,6 +366,7 @@ void MainWindow::installWebEngineMouseEventFilter()
 #endif
 }
 
+#ifdef Q_OS_WIN
 void MainWindow::slotNavigateComplete2(IDispatch*, QVariant& url)
 {
 	// warning : does not work with 5.6
@@ -371,3 +382,4 @@ void MainWindow::slotNavigateComplete2(IDispatch*, QVariant& url)
 		applyCss(_applyCssWhenLoaded);
 	}
 }
+#endif

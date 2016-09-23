@@ -9,8 +9,8 @@
 #define _SIREAD(name)\
 	if (jobj[#name].isString())\
 	{\
-		##name##_s = jobj[#name].toString();\
-		name = ##name##_s.toInt();\
+        name##_s = jobj[#name].toString();\
+        name = name##_s.toInt();\
 	}\
 	else\
 	{\

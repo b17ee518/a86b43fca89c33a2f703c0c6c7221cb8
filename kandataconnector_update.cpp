@@ -4,6 +4,7 @@
 
 #include "infomainwindow.h"
 #include "mainwindow.h"
+#include <cmath>
 
 void KanDataConnector::updateOverviewTable()
 {

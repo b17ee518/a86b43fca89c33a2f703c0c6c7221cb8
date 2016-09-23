@@ -8,13 +8,17 @@
 #include "qnetworkproxyfactoryset.h"
 #include "KQWebPage.h"
 
+#ifdef Q_OS_WIN
 #include <QWinTaskbarProgress>
+#endif
 #include <QWebEngineSettings>
 
+#ifdef Q_OS_WIN
 #include <Audiopolicy.h>
 #include <Mmdeviceapi.h>
 
 #include <QAxWidget>
+#endif
 #include <QSettings>
 #include "ControlManager.h"
 #include "ExpeditionManager.h"
@@ -71,9 +75,11 @@ void MainWindow::postInit(InfoMainWindow *pInfo, TimerMainWindow *pTimer, Weapon
 
 	AdjustVolume(-1);
 
+#ifdef Q_OS_WIN
 	HWND hwnd = (HWND)effectiveWinId();
 	RegisterPowerSettingNotification(hwnd, &GUID_CONSOLE_DISPLAY_STATE, DEVICE_NOTIFY_WINDOW_HANDLE);
 	RegisterPowerSettingNotification(hwnd, &GUID_SYSTEM_AWAYMODE, DEVICE_NOTIFY_WINDOW_HANDLE);
+#endif
 }
 
 void MainWindow::setSleepMode(bool val)
@@ -97,6 +103,7 @@ void MainWindow::setWebSettings()
 	QObject * exceptionSender = NULL;
 	if (_proxyMode == ProxyMode::Fid)
 	{
+#ifdef Q_OS_WIN
 		_pFid = new FidCOM::FidCOMClass(this);
 
 		loadCertKey();
@@ -109,24 +116,29 @@ void MainWindow::setWebSettings()
 		_pFid->SetAfterSessionComplete((int)&MainWindow::AfterSessionCompleteFunc);
 
 		_pFid->Startup(_useport, false, true);
+#endif
 	}
 	else if (_proxyMode == ProxyMode::Nekoxy)
 	{
+#ifdef Q_OS_WIN
 		_pNekoxy = new Nekoxy::HttpProxy(this);
 		exceptionSender = _pNekoxy;
 
 		_pNekoxy->SetAfterSessionComplete((int)&MainWindow::AfterSessionCompleteFunc);
 
 		_pNekoxy->Startup(_useport, false, true);
+#endif
 	}
 	else if (_proxyMode == ProxyMode::Titanium)
 	{
+#ifdef Q_OS_WIN
 		_pTitanium = new Titanium_Web_Proxy::ProxyServer(this);
 		exceptionSender = _pTitanium;
 		_pTitanium->SetMakecertPath(QApplication::applicationDirPath() + "/makecert.exe");
 
 		_pTitanium->SetAfterSessionComplete((int)&MainWindow::AfterSessionCompleteFunc);
 		_pTitanium->Startup(_useport);
+#endif
 	}
 
 	if (_proxyMode != ProxyMode::NoProxy && _proxyMode != ProxyMode::QtProxy)
@@ -235,6 +247,8 @@ void MainWindow::setWebSettings()
 
 void MainWindow::AdjustVolume(int vol)
 {
+
+#ifdef Q_OS_WIN
 	HRESULT hr = S_OK;
 
 	IMMDevice* pDevice = NULL;
@@ -282,10 +296,13 @@ void MainWindow::AdjustVolume(int vol)
 	SAFE_RELEASE(pSessionManager);
 	SAFE_RELEASE(pEnumerator);
 	SAFE_RELEASE(pDevice);
+#endif
 }
 
 void MainWindow::SetProgressBarPos(int pos, ProgressBarState state)
 {
+
+#ifdef Q_OS_WIN
 	if (_pTaskbarButton)
 	{
 		QWinTaskbarProgress * pProgress = _pTaskbarButton->progress();
@@ -320,6 +337,7 @@ void MainWindow::SetProgressBarPos(int pos, ProgressBarState state)
 			break;
 		}
 	}
+#endif
 }
 void MainWindow::setupCss()
 {	
@@ -482,7 +500,14 @@ void MainWindow::loadSettings()
 	}
 	if (!setting->contains(itemProxyMode))
 	{
-		setting->setValue(itemProxyMode, "Nekoxy");
+        if (_platformType == PlatformType::Mac)
+        {
+            setting->setValue(itemProxyMode, "QtProxy");
+        }
+        else
+        {
+            setting->setValue(itemProxyMode, "Nekoxy");
+        }
 	}
 	if (!setting->contains(itemExpeditionMode))
 	{
@@ -578,6 +603,7 @@ void MainWindow::applyCss(QWebViewCSSIndex css)
 	}
 	if (_webWidgetType == WebWidgetType::IE)
 	{
+#ifdef Q_OS_WIN
 		_applyCssWhenLoaded = css;
 		if (!_bIEPageLoaded)
 		{
@@ -605,6 +631,7 @@ void MainWindow::applyCss(QWebViewCSSIndex css)
 		styleSheetObj->dynamicCall("setCssText(QString)", _ieCsses[(int)css]);
 		_applyCssWhenLoaded = QWebViewCSSIndex::Invalid;
 		delete htmlDocObj;
+#endif
 	}
 	else
 	{

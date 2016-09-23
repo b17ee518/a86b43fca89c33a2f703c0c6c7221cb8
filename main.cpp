@@ -9,7 +9,10 @@
 #include "kandata.h"
 #include "kanreqdata.h"
 #include "kandataconnector.h"
+
+#ifdef Q_OS_WIN
 #include <QWinTaskbarProgress>
+#endif
 
 #if (QT_VERSION < QT_VERSION_CHECK(5, 6, 0))
 #pragma comment(lib, "Qt5WebKitd.lib")

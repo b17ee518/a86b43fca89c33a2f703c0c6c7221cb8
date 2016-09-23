@@ -265,13 +265,13 @@ bool KanDataConnector::Parse(const QString& pathAndQuery, const QString& request
 #define PARSEAPIF(apistr, api)\
 	if (_pathAndQuery == apistr)\
 	{\
-		if ((##api##_flag & PARSEFLAG_IGNORE) == 0)\
+        if ((api##_flag & PARSEFLAG_IGNORE) == 0)\
 		{\
-			if (##api##_flag & PARSEFLAG_OUTPUT)\
+            if (api##_flag & PARSEFLAG_OUTPUT)\
 			{\
 				DAPILOG();\
 			}\
-			bRet = ##api##_parse();\
+            bRet = api##_parse();\
 		}\
 	}
 #define PARSEAPI(apistr, api) else PARSEAPIF(apistr, api)

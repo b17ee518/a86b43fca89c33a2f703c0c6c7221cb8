@@ -5,8 +5,11 @@
 #-------------------------------------------------
 
 QT       += core gui multimedia
+CONFIG += c++11
 
-greaterThan(QT_MAJOR_VERSION, 4): QT += widgets axcontainer webkitwidgets winextras webenginewidgets
+greaterThan(QT_MAJOR_VERSION, 4): QT += widgets webkitwidgets webenginewidgets
+
+win: QT += axcontainer winextras
 
 DEFINES += NOMINMAX
 
@@ -34,7 +37,6 @@ SOURCES += main.cpp\
     qnetworkproxyfactoryset.cpp \
     kandataconnector.cpp \
     kandatacalc.cpp \
-    KQWebPage.cpp \
     klog.cpp \
     kqnetworkaccessmanager.cpp \
     kqnetworkreply.cpp \
@@ -42,7 +44,6 @@ SOURCES += main.cpp\
     ControlAction.cpp \
     ControlManager.cpp \
     ExpeditionManager.cpp \
-    fidcom.cpp \
     kandataconnecto_parse.cpp \
     kandataconnector_register.cpp \
     kandataconnector_update.cpp \
@@ -51,11 +52,14 @@ SOURCES += main.cpp\
     mainwindowevents.cpp \
     mainwindowjob.cpp \
     mainwindowsettings.cpp \
-    nekoxy.cpp \
     qwebenginemouseeventfilter.cpp \
     qwindowseventfilter.cpp \
-    shdocvw.cpp \
     shipmainwindow.cpp \
+
+win: SOURCES += \
+    shdocvw.cpp \
+    nekoxy.cpp \
+    fidcom.cpp \
     titanium_web_proxy.cpp
 
 HEADERS  += mainwindow.h \
@@ -76,7 +80,6 @@ HEADERS  += mainwindow.h \
     qnetworkproxyfactoryset.h \
     kandataconnector.h \
     kandatacalc.h \
-    KQWebPage.h \
     klog.h \
     kqnetworkaccessmanager.h \
     kqnetworkreply.h \
@@ -84,14 +87,16 @@ HEADERS  += mainwindow.h \
     ControlAction.h \
     ControlManager.h \
     ExpeditionManager.h \
-    fidcom.h \
     kqmaintitleframe.h \
     kqwebpage.h \
-    nekoxy.h \
     qwebenginemouseeventfilter.h \
     qwindowseventfilter.h \
-    shdocvw.h \
     shipmainwindow.h \
+
+win: HEADERS += \
+    shdocvw.h \
+    nekoxy.h \
+    fidcom.h \
     titanium_web_proxy.h
 
 FORMS    += mainwindow.ui \

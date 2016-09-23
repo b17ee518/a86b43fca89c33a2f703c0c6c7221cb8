@@ -507,7 +507,7 @@ void TimerMainWindow::setProgressColor(QProgressBar *pBar, qint64 tdiff, bool bY
 		stylei = 0;
 	}
 
-	int i = (int)pBar->userData(Qt::UserRole);
+    int i = (uintptr_t)pBar->userData(Qt::UserRole);
 	if (i != stylei)
 	{
 		pBar->setUserData(Qt::UserRole, (QObjectUserData*)i);

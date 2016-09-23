@@ -193,7 +193,7 @@ public:
 	kcsapi_battle_kouku(){}
 	virtual bool ReadFromJObj(const QJsonObject &jobj);
 
-	QList<QList<int>> api_plane_from; //? f, e list
+    QList< QList<int> > api_plane_from; //? f, e list
 	kcsapi_battle_kouku_stage1 api_stage1;
 	kcsapi_battle_kouku_stage2 api_stage2;
 	kcsapi_battle_kouku_stage3 api_stage3;
@@ -243,7 +243,7 @@ public:
 	QList<int> api_ship_id;
 	QList<int> api_undressing_flag; //??
 	QList<int> api_stage_flag;
-	QList<QList<int>> api_plane_from;
+    QList< QList<int> > api_plane_from;
 	kcsapi_battle_support_airatack_stage1 api_stage1;
 	kcsapi_battle_support_airatack_stage2 api_stage2;
 	kcsapi_battle_support_airatack_stage3 api_stage3;
@@ -269,7 +269,7 @@ public:
 	QList<kcsapi_battle_base_attack_squadron> api_squadron_plane;
 
 	QList<int> api_stage_flag;
-	QList<QList<int>> api_plane_from;
+    QList<QList<int> > api_plane_from;
 	kcsapi_battle_support_airatack_stage1 api_stage1;
 	kcsapi_battle_support_airatack_stage2 api_stage2;
 	kcsapi_battle_support_airatack_stage3 api_stage3;
@@ -336,9 +336,9 @@ public:
 	8　爆雷
 	*/
 	// must skip #0
-	QList<QList<int>> api_df_list;
-	QList<QList<int>> api_si_list;
-	QList<QList<int>> api_cl_list;
+    QList<QList<int> > api_df_list;
+    QList<QList<int> > api_si_list;
+    QList<QList<int> > api_cl_list;
 
 	// midnight
 	QList<int> api_sp_list;
@@ -351,7 +351,7 @@ public:
 	5　主砲主砲主砲
 	*/
 
-	QList<QList<float>> api_damage;
+    QList<QList<float> > api_damage;
 };
 
 class kcsapi_battle_raigeki : public KAPIBaseData
@@ -399,12 +399,12 @@ public:
 	QList<kcsapi_battle_base_attack> api_air_base_attack;
 
 	int api_midnight_flag;
-	QList<QList<int>> api_eSlot; // from #0
-	QList<QList<int>> api_eKyouka; // from #0
-	QList<QList<int>> api_fParam; // from #0
+    QList<QList<int> > api_eSlot; // from #0
+    QList<QList<int> > api_eKyouka; // from #0
+    QList<QList<int> > api_fParam; // from #0
 	// combined
-	QList<QList<int>> api_fParam_combined; // from #0
-	QList<QList<int>> api_eParam; // from #0
+    QList<QList<int> > api_fParam_combined; // from #0
+    QList<QList<int> > api_eParam; // from #0
 
 	// boss damaged
 	int api_boss_damaged = 0;
@@ -503,10 +503,10 @@ public:
 	int api_member_exp;
 	int api_get_base_exp;
 	QList<int> api_get_ship_exp;
-	QList<QList<int>> api_get_exp_lvup;
+    QList<QList<int> > api_get_exp_lvup;
 	// combined
 	QList<int> api_get_ship_exp_combined;
-	QList<QList<int>> api_get_exp_lvup_combined;
+    QList<QList<int> > api_get_exp_lvup_combined;
 
 	int api_dests;
 	int api_destsf;

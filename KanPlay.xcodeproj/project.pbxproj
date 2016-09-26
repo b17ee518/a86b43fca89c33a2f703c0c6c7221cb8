@@ -38,6 +38,7 @@
 		326F87FD7340E3460C53DF3D /* ControlAction.cpp in Compile Sources */ = {isa = PBXBuildFile; fileRef = C2BC99AF0A856602EF443368 /* ControlAction.cpp */; settings = {ATTRIBUTES = (); }; };
 		3AD3A12EAED73771DEF6F23F /* QtQuick.framework in Link Binary With Libraries */ = {isa = PBXBuildFile; fileRef = DF484E4ACC830718139E4257 /* QtQuick.framework */; };
 		3E5B71D01D94FC080025AC6E /* MainWindow_Mac.mm in Compile Sources */ = {isa = PBXBuildFile; fileRef = 3E5B71CF1D94FC080025AC6E /* MainWindow_Mac.mm */; };
+		3EB4A76D1D98BD6600FBE603 /* AppKit.framework in Link Binary With Libraries */ = {isa = PBXBuildFile; fileRef = 3EB4A76C1D98BD6600FBE603 /* AppKit.framework */; };
 		4A7A6E2E72B24153C04BD287 /* kqui_collapsibleframe.cpp in Compile Sources */ = {isa = PBXBuildFile; fileRef = E1A42E9AF65D460955338916 /* kqui_collapsibleframe.cpp */; settings = {ATTRIBUTES = (); }; };
 		4ADA3694F0BD280F9ACEBAA2 /* moc_submainwindow.cpp in Compile Sources */ = {isa = PBXBuildFile; fileRef = AF07A2E6C06A153C08D5CA7C /* moc_submainwindow.cpp */; settings = {ATTRIBUTES = (); }; };
 		4B8755C7C0DC3C066020F019 /* mainwindowjob.cpp in Compile Sources */ = {isa = PBXBuildFile; fileRef = 4E0AD7C516C795CEF4F36686 /* mainwindowjob.cpp */; settings = {ATTRIBUTES = (); }; };
@@ -132,6 +133,7 @@
 		3C77C97CE4CA6B74CE8461C6 /* kandata.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = kandata.cpp; path = /Users/cf4146/a86b43fca89c33a2f703c0c6c7221cb8/kandata.cpp; sourceTree = "<absolute>"; };
 		3E5B71CF1D94FC080025AC6E /* MainWindow_Mac.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = MainWindow_Mac.mm; sourceTree = SOURCE_ROOT; };
 		3EAADF89607056CC00B7B79B /* weaponmainwindow.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = weaponmainwindow.cpp; path = /Users/cf4146/a86b43fca89c33a2f703c0c6c7221cb8/weaponmainwindow.cpp; sourceTree = "<absolute>"; };
+		3EB4A76C1D98BD6600FBE603 /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = System/Library/Frameworks/AppKit.framework; sourceTree = SDKROOT; };
 		3F853B081E54CA5B60CE3B13 /* infomainwindow.ui */ = {isa = PBXFileReference; lastKnownFileType = text.xml; name = infomainwindow.ui; path = /Users/cf4146/a86b43fca89c33a2f703c0c6c7221cb8/infomainwindow.ui; sourceTree = "<absolute>"; };
 		3FB90B3A318EE329D234A2AF /* QtWebEngine.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QtWebEngine.framework; path = ../Qt5.4.1/5.4/clang_64/lib/QtWebEngine.framework; sourceTree = "<absolute>"; };
 		3FD027F4E0E2D8E86607BFB6 /* shipmainwindow.ui */ = {isa = PBXFileReference; lastKnownFileType = text.xml; name = shipmainwindow.ui; path = /Users/cf4146/a86b43fca89c33a2f703c0c6c7221cb8/shipmainwindow.ui; sourceTree = "<absolute>"; };
@@ -226,6 +228,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				3EB4A76D1D98BD6600FBE603 /* AppKit.framework in Link Binary With Libraries */,
 				F8C0A425EEAF2446E61EBF8D /* QtMultimedia.framework in Link Binary With Libraries */,
 				75CCF3ADA8DD9CF2B70CD403 /* QtNetwork.framework in Link Binary With Libraries */,
 				56EE076B4EB8844BA7C214D1 /* QtCore.framework in Link Binary With Libraries */,
@@ -384,6 +387,7 @@
 		AF39DD055C3EF8226FBE929D /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				3EB4A76C1D98BD6600FBE603 /* AppKit.framework */,
 				93A89FDC9921458D66DCC568 /* QtMultimedia.framework */,
 				3A36C597D198BDF4FAEB0A6B /* QtNetwork.framework */,
 				EF00A5D4E48A1CC441C1B3EC /* QtCore.framework */,

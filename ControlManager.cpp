@@ -639,7 +639,11 @@ bool ControlManager::BuildNext_Expedition()
 		setToTerminate("Termination:Fatal");
 		return false;
 	}
-
+    
+    if (team < 0)
+    {
+        return true;
+    }
 	// set pexp
 
 	KanSaveData* pksd = &KanSaveData::getInstance();
@@ -1932,11 +1936,19 @@ void ControlManager::moveMouseToAndClick(float x, float y, float offsetX /*= 5*/
 			{
 				return;
 			}
+#ifdef Q_OS_WIN
 			QMouseEvent e(QEvent::MouseButtonPress, ptAdjusted, Qt::LeftButton, Qt::LeftButton, Qt::NoModifier);
 			QApplication::sendEvent(w, &e);
 
 			QMouseEvent e2(QEvent::MouseButtonRelease, ptAdjusted, Qt::LeftButton, Qt::LeftButton, Qt::NoModifier);
 			QApplication::sendEvent(w, &e2);
+#else
+            QPoint ptG = w->mapToGlobal(QPoint(ptAdjusted.x(), ptAdjusted.y()));
+            MainWindow::mainWindow()->clickAtGlobalPos(ptG);
+            
+#endif
+            
+            
 		};
 
 		auto browserWidget = MainWindow::mainWindow()->getBrowserWidget();
@@ -1957,7 +1969,7 @@ void ControlManager::moveMouseToAndClick(float x, float y, float offsetX /*= 5*/
 #endif
 		}
 		else
-		{
+        {
 			sendMouseEvents(browserWidget);
 		}
 

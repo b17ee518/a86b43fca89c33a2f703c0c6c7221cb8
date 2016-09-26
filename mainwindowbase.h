@@ -16,6 +16,8 @@ public:
 
 	virtual void minimizeWindow();
 	virtual void restoreWindow();
+    
+    void clickAtGlobalPos(const QPoint& pt);
 
 protected:
 	virtual void closeEvent(QCloseEvent *event);

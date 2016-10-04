@@ -637,6 +637,7 @@ bool ControlManager::BuildNext_Expedition()
 	if (!pExp)
 	{
 		setToTerminate("Termination:Fatal");
+		// date may change here
 		return false;
 	}
     
@@ -730,6 +731,7 @@ bool ControlManager::BuildNext_Expedition()
 		waitMS += 5000+randVal(-1000, 1000);
 		auto waitAction = new WaitCondAction();
 		waitAction->setWaitMS(waitMS);
+		waitAction->setWaitName(QString("W:%1").arg(ExpeditionManager::getInstance().getCurrentPreset()).toLocal8Bit());
 		_actionList.append(waitAction);
 	}
 
@@ -818,7 +820,7 @@ void ControlManager::setDoneRequest(const QString& api)
 bool ControlManager::LoadToDoShipList_Kira()
 {
 	_todoShipids.clear();
-	QFile * file = new QFile(QApplication::applicationDirPath() + "/action/" + "inport.table");
+	QFile * file = new QFile(QApplication::applicationDirPath() + "/action/" + "import.table");
 	if (file)
 	{
 		if (file->open(QIODevice::ReadOnly | QIODevice::Text))
@@ -854,6 +856,7 @@ bool ControlManager::LoadToDoShipList_Kira()
 			}
 			file->close();
 		}
+		delete file;
 	}
 	return true;
 }

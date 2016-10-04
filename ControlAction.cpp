@@ -51,7 +51,7 @@ bool WaitCondAction::action()
 	switch (_state)
 	{
 	case WaitCondAction::State::None:
-		setState(State::Waiting, "Wait:Waiting");
+		setState(State::Waiting, _waitName.toLocal8Bit());
 		resetRetryAndWainting();
 		break;
 	case WaitCondAction::State::Waiting:
@@ -159,6 +159,11 @@ void WaitCondAction::setWaitMS(qint64 waitms)
 	{
 		_waitMS = 1;
 	}
+}
+
+void WaitCondAction::setWaitName(const QString& name)
+{
+	_waitName = name;
 }
 
 void WaitCondAction::setState(State state, const char* str)

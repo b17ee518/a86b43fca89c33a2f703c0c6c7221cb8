@@ -62,9 +62,12 @@ public:
 
 public:
 	void setWaitMS(qint64 waitms);
-	qint64 _waitMS = 1;
+	void setWaitName(const QString& name);
 
 private:
+	qint64 _waitMS = 1;
+	QString _waitName = "Wait:Waiting";
+
 	State _state = State::None;
 	void setState(State state, const char* str);
 

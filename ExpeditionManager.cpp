@@ -2,6 +2,10 @@
 #include "kansavedata.h"
 #include "ControlManager.h"
 
+#include <QFile>
+#include <QTextStream>
+#include <QApplication>
+
 //#include <QDebug>
 
 #define SPSHIP_AKIGUMO	4767
@@ -12,6 +16,11 @@
 #define SPSHIP_NAGATSUKI	157
 #define SPSHIP_KIKUZUKI	3142
 #define SPSHIP_MIKAZUKI	3175
+
+ExpeditionManager::ExpeditionManager()
+{
+	_expeditionDefineFileName = QApplication::applicationDirPath() + "/action/" + "expedition.txt";
+}
 
 void ExpeditionManager::BuildByPreset(ExpeditionPreset preset)
 {
@@ -143,22 +152,154 @@ void ExpeditionManager::BuildByPreset(ExpeditionPreset preset)
 
 void ExpeditionManager::BuildByPreset(const QString& preset)
 {
-	if (!preset.compare("Bauxite", Qt::CaseInsensitive))
+	if (!ParsePresetBySettingFileAndRebuild())
 	{
-		BuildByPreset(ExpeditionPreset::Bauxite);
-		return;
+		_currentPreset = preset;
+		if (!preset.compare("Bauxite", Qt::CaseInsensitive))
+		{
+			BuildByPreset(ExpeditionPreset::Bauxite);
+			return;
+		}
+		else if (!preset.compare("RepairAndBauxite", Qt::CaseInsensitive))
+		{
+			BuildByPreset(ExpeditionPreset::RepairAndBauxite);
+			return;
+		}
+		else if (!preset.compare("Fuel", Qt::CaseInsensitive))
+		{
+			BuildByPreset(ExpeditionPreset::Fuel);
+			return;
+		}
+		BuildByPreset(ExpeditionPreset::General);
 	}
-	else if (!preset.compare("RepairAndBauxite", Qt::CaseInsensitive))
+}
+
+bool ExpeditionManager::ParsePresetBySettingFileAndRebuild()
+{
+	QFile * file = new QFile(_expeditionDefineFileName);
+	if (file)
 	{
-		BuildByPreset(ExpeditionPreset::RepairAndBauxite);
-		return;
+		if (file->open(QIODevice::ReadOnly | QIODevice::Text))
+		{
+			bool error = false;
+
+			QTextStream instream(file);
+
+			QString currentPreset;
+			QMap<QString, QList<ExpeditionSchedule> > presets;
+
+			QString enterSection;
+			int currentTeam = 0;
+
+			while (!instream.atEnd())
+			{
+				QString line = instream.readLine().trimmed();
+				if (line.isEmpty())
+				{
+					continue;
+				}
+
+				if (line.startsWith('@'))
+				{
+					currentPreset = line.remove(0, 1);
+				}
+				else if (line.startsWith('#'))
+				{
+					if (enterSection.isEmpty())
+					{
+						enterSection = line.remove(0, 1);
+						currentTeam = 0;
+					}
+					else
+					{
+						enterSection = "";
+						currentTeam = 0;
+					}
+				}
+				else
+				{
+					if (enterSection.isEmpty())
+					{
+						error = true;
+						break;
+					}
+
+					//
+					QRegExp rx("[\\s:]");
+					QStringList strlist = line.split(rx, QString::SkipEmptyParts);
+
+					if (strlist.size() != 3)
+					{
+						error = true;
+						break;
+					}
+
+					bool bOk = false;
+					int hour = strlist[1].toInt(&bOk);
+					if (!bOk)
+					{
+						error = true;
+						break;
+					}
+					int minute = strlist[2].toInt(&bOk);
+					if (!bOk)
+					{
+						error = true;
+						break;
+					}
+
+					if (presets[enterSection].empty())
+					{
+						presets[enterSection].push_back(ExpeditionSchedule());
+						presets[enterSection].push_back(ExpeditionSchedule());
+						presets[enterSection].push_back(ExpeditionSchedule());
+					}
+					if (currentTeam > 2)
+					{
+						error = true;
+						break;
+					}
+					buildSingleByPresetLine(&(presets[enterSection][currentTeam]), strlist[0], hour, minute);
+
+					if (hour < 0 || minute < 0)
+					{
+						currentTeam++;
+					}
+				}
+			}
+
+			if (error)
+			{
+				delete file;
+				return error;
+			}
+
+			if (!error)
+			{
+				if (currentPreset.isEmpty() || presets[currentPreset].count() != 3)
+				{
+					error = true;
+				}
+
+			}
+			if (error)
+			{
+				delete file;
+				return false;
+			}
+
+			// replace presets
+			_currentPreset = currentPreset;
+			_presetSchedules.clear();
+			_presetSchedules = presets;
+			_schedules.clear();
+			_schedules = _presetSchedules[_currentPreset];
+			delete file;
+			return true;
+		}
+		delete file;
 	}
-	else if (!preset.compare("Fuel", Qt::CaseInsensitive))
-	{
-		BuildByPreset(ExpeditionPreset::Fuel);
-		return;
-	}
-	BuildByPreset(ExpeditionPreset::General);
+	return false;
 }
 
 void ExpeditionManager::Clear()
@@ -185,6 +326,7 @@ SingleExpedition* ExpeditionManager::getShouldNextSchedule(int team, qint64 ct, 
 	auto pSchedule = getSchedule(team);
 	if (!pSchedule)
 	{
+		dateChange();
 		return NULL;
 	}
 
@@ -199,6 +341,7 @@ SingleExpedition* ExpeditionManager::getShouldNextSchedule(int team, qint64 ct, 
 
 	if (backTime > zeroToday.addDays(1))
 	{
+		dateChange();
 		return NULL;
 	}
 
@@ -231,7 +374,7 @@ SingleExpedition* ExpeditionManager::getShouldNextSchedule(int team, qint64 ct, 
 		++it;
 	}
 
-
+	dateChange();
 	return NULL;
 }
 
@@ -534,6 +677,116 @@ void ExpeditionManager::setTimeShiftMin(int min)
 		if (cm->BuildNext_Expedition())
 		{
 			cm->StartJob();
+		}
+	}
+}
+
+void ExpeditionManager::buildSingleByPresetLine(ExpeditionSchedule* pschedule, const QString& presetName, int hour, int minute)
+{
+	if (!presetName.compare("TK1", Qt::CaseInsensitive))
+	{
+		BuildSingleTokyu1(pschedule, hour, minute);
+	}
+	else if (!presetName.compare("TK2", Qt::CaseInsensitive))
+	{
+		BuildSingleTokyu2(pschedule, hour, minute);
+	}
+
+	else if (!presetName.compare("20", Qt::CaseInsensitive))
+	{
+		BuildSingle20(pschedule, hour, minute);
+	}
+	else if (!presetName.compare("30", Qt::CaseInsensitive))
+	{
+		BuildSingle30(pschedule, hour, minute);
+	}
+	else if (!presetName.compare("40", Qt::CaseInsensitive))
+	{
+		BuildSingle40(pschedule, hour, minute);
+	}
+
+	else if (!presetName.compare("2L", Qt::CaseInsensitive))
+	{
+		BuildSingle2last(pschedule, hour, minute);
+	}
+	else if (!presetName.compare("3L", Qt::CaseInsensitive))
+	{
+		BuildSingle3last(pschedule, hour, minute);
+	}
+	else if (!presetName.compare("5L", Qt::CaseInsensitive))
+	{
+		BuildSingle5last(pschedule, hour, minute);
+	}
+
+	else if (!presetName.compare("NY", Qt::CaseInsensitive))
+	{
+		BuildSingleNezumiYusou(pschedule, hour, minute);
+	}
+	else if (!presetName.compare("BY", Qt::CaseInsensitive))
+	{
+		BuildSingleBauxiteYusou(pschedule, hour, minute);
+	}
+}
+
+void ExpeditionManager::dateChange()
+{
+	// date change:
+	QString exchangeName;
+	if (_currentPreset.startsWith("Pre_"))
+	{
+		exchangeName = _currentPreset.replace("Pre_", "Post_");
+	}
+	else if (_currentPreset.startsWith("Post_"))
+	{
+		_currentPreset = "General";
+	}
+
+	if (!exchangeName.isEmpty() &&
+		_presetSchedules.contains(exchangeName))
+	{
+		_currentPreset = exchangeName;
+		_schedules.clear();
+		_schedules = _presetSchedules[_currentPreset];
+		// write to expedition txt
+
+
+		QFile * file = new QFile(_expeditionDefineFileName);
+		if (file)
+		{
+			QString outstring;
+			if (file->open(QIODevice::ReadOnly | QIODevice::Text))
+			{
+				QTextStream instream(file);
+				
+				while (!instream.atEnd())
+				{
+					QString line = instream.readLine().trimmed();
+
+					if (line.startsWith('@'))
+					{
+						outstring += "@" + _currentPreset + "\n";
+					}
+					else
+					{
+						outstring += line + "\n";
+					}
+				}
+
+				file->close();
+			}
+			delete file;
+
+			if (!outstring.isEmpty())
+			{
+				file = new QFile(_expeditionDefineFileName);
+				if (file->open(QIODevice::WriteOnly | QIODevice::Truncate | QIODevice::Text))
+				{
+					file->seek(0);
+					file->write(outstring.toLocal8Bit());
+					file->close();
+				}
+				delete file;
+			}
 		}
 	}
 }

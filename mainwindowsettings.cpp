@@ -460,7 +460,7 @@ void MainWindow::loadSettings()
 	const QString itemUsePort = "UsePort";
 	const QString itemIntervalMul = "IntervalMul";
 	const QString itemProxyMode = "ProxyMode";
-	const QString itemExpeditionMode = "ExpeditionMode";
+//	const QString itemExpeditionMode = "ExpeditionMode";
 	const QString itemTimeShift = "TimeShift";
 	
 	setting->beginGroup("Settings");
@@ -509,10 +509,12 @@ void MainWindow::loadSettings()
             setting->setValue(itemProxyMode, "Nekoxy");
         }
 	}
+	/*
 	if (!setting->contains(itemExpeditionMode))
 	{
 		setting->setValue(itemExpeditionMode, "General");
 	}
+	*/
 	if (!setting->contains(itemTimeShift))
 	{
 		setting->setValue(itemTimeShift, 0);
@@ -572,7 +574,8 @@ void MainWindow::loadSettings()
 		_proxyMode = ProxyMode::Titanium;
 	}
 
-	ExpeditionManager::getInstance().BuildByPreset(setting->value(itemExpeditionMode).toString());
+	// no longer use ini file for expedition
+	ExpeditionManager::getInstance().BuildByPreset("Default");
 
 	setTimeShift(setting->value(itemTimeShift).toInt());
 

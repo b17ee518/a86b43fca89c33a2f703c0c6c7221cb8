@@ -54,8 +54,8 @@ public:
 	static ExpeditionManager& getInstance() { static ExpeditionManager instance; return instance; }
 
 private:
-	ExpeditionManager(){};
-	virtual ~ExpeditionManager(){};
+	ExpeditionManager();
+	virtual ~ExpeditionManager(){}
 	ExpeditionManager(ExpeditionManager const&);
 	void operator=(ExpeditionManager const&);
 
@@ -64,6 +64,9 @@ public:
 	void Clear();
 	void BuildByPreset(const QString& preset);
 	void BuildByPreset(ExpeditionPreset preset);
+
+	bool ParsePresetBySettingFileAndRebuild();
+
 	ExpeditionSchedule* getSchedule(int team);
 	SingleExpedition* getShouldNextSchedule(int team, qint64 ct, qint64 bt);
 
@@ -86,8 +89,18 @@ public:
 	// should only be called by mainwindow!!
 	void setTimeShiftMin(int min);
 
+	const QString& getCurrentPreset() { return _currentPreset; }
+
 private:
+	void buildSingleByPresetLine(ExpeditionSchedule* pschedule, const QString& presetName, int hour, int minute);
+	void dateChange();
+
 	QList<ExpeditionSchedule> _schedules;	// each team
+
+	QMap<QString, QList<ExpeditionSchedule> > _presetSchedules;
+	QString _currentPreset;
+
+	QString _expeditionDefineFileName;
 
 	int _timeShiftMin = 0;
 }; 

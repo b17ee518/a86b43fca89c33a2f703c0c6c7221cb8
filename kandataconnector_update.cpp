@@ -864,7 +864,7 @@ void KanDataConnector::updateInfoTitleBattle(bool bBattle, bool bSelfDamaged)
 				if (pmstship)
 				{
 					combined_totalcount++;
-					if (pksd->remainLastBattleHPs.enemy[i] > 0)
+					if (pksd->remainLastBattleHPs.combinedEnemy[i] > 0)
 					{
 						combined_remain++;
 					}
@@ -874,7 +874,7 @@ void KanDataConnector::updateInfoTitleBattle(bool bBattle, bool bSelfDamaged)
 					case ShipType::KeiKuBou:
 					case ShipType::SouKaKuBou:
 						actotal++;
-						if (pksd->remainLastBattleHPs.enemy[i] > 0)
+						if (pksd->remainLastBattleHPs.combinedEnemy[i] > 0)
 						{
 							acremain++;
 						}
@@ -882,7 +882,7 @@ void KanDataConnector::updateInfoTitleBattle(bool bBattle, bool bSelfDamaged)
 					case ShipType::HoKyu:
 					case ShipType::HoKyu_HaYaSuI:
 						transtotal++;
-						if (pksd->remainLastBattleHPs.enemy[i] > 0)
+						if (pksd->remainLastBattleHPs.combinedEnemy[i] > 0)
 						{
 							transremain++;
 						}
@@ -890,7 +890,7 @@ void KanDataConnector::updateInfoTitleBattle(bool bBattle, bool bSelfDamaged)
 					case ShipType::SenSui:
 					case ShipType::SenBou:
 						subtotal++;
-						if (pksd->remainLastBattleHPs.enemy[i] > 0)
+						if (pksd->remainLastBattleHPs.combinedEnemy[i] > 0)
 						{
 							subremain++;
 						}

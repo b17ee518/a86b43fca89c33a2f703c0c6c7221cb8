@@ -175,7 +175,7 @@ public:
 
 	CreateShipSaveData createshipdata;
 
-	QMap<int, QList<kcsapi_air_base_corps>> airbasedata;
+	QMap<int, QList<kcsapi_air_base_corps> > airbasedata;
 	bool airBaseNeedSupply = false;
 	bool airBaseBadCond = false;
 

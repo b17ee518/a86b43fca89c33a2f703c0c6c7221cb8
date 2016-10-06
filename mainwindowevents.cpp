@@ -1,4 +1,4 @@
-﻿#include "mainwindow.h"
+#include "mainwindow.h"
 #include "ui_mainwindow.h"
 
 #include <QDesktopWidget>
@@ -231,7 +231,7 @@ void MainWindow::on_pbMinimize_clicked()
 
 void MainWindow::on_pbCheckTransparent_toggled(bool checked)
 {
-	static QList<QPair<QString, QWidget*>> s_listpair;
+	static QList<QPair<QString, QWidget*> > s_listpair;
 	if (checked)
 	{
 		if (_webWidgetType != WebWidgetType::IE)

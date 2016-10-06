@@ -800,6 +800,11 @@ void KanDataConnector::updateInfoTitleBattle(bool bBattle, bool bSelfDamaged)
 		int subtotal = 0;
 
 		int totalecount = 0;
+
+		int combined_totalcount = 0;
+		int combined_remain = 0;
+
+		// only consider enemy team 1
 		for (int i = 1; i<pksd->battledata.api_ship_ke.count(); i++)
 		{
 			int shipid = pksd->battledata.api_ship_ke[i];
@@ -849,12 +854,63 @@ void KanDataConnector::updateInfoTitleBattle(bool bBattle, bool bSelfDamaged)
 				}
 			}
 		}
+		// only consider enemy team 1
+		for (int i = 1; i < pksd->battledata.api_ship_ke_combined.count(); i++)
+		{
+			int shipid = pksd->battledata.api_ship_ke_combined[i];
+			if (shipid > 0)
+			{
+				const kcsapi_mst_ship * pmstship = findMstShipFromShipid(shipid);
+				if (pmstship)
+				{
+					combined_totalcount++;
+					if (pksd->remainLastBattleHPs.enemy[i] > 0)
+					{
+						combined_remain++;
+					}
+					switch (static_cast<ShipType>(pmstship->api_stype))
+					{
+					case ShipType::KuBou:
+					case ShipType::KeiKuBou:
+					case ShipType::SouKaKuBou:
+						actotal++;
+						if (pksd->remainLastBattleHPs.enemy[i] > 0)
+						{
+							acremain++;
+						}
+						break;
+					case ShipType::HoKyu:
+					case ShipType::HoKyu_HaYaSuI:
+						transtotal++;
+						if (pksd->remainLastBattleHPs.enemy[i] > 0)
+						{
+							transremain++;
+						}
+						break;
+					case ShipType::SenSui:
+					case ShipType::SenBou:
+						subtotal++;
+						if (pksd->remainLastBattleHPs.enemy[i] > 0)
+						{
+							subremain++;
+						}
+						break;
+					}
+
+				}
+			}
+		}
 
 		QString eflagshipremainstr = "";
 		if (pksd->remainLastBattleHPs.enemy.count() > 1 &&
 			pksd->remainLastBattleHPs.enemy[1] > 0)
 		{
 			eflagshipremainstr = QString::fromLocal8Bit("旗");
+		}
+		QString eCombinedRemainStr = "";
+		if (combined_totalcount > 0)
+		{
+			eCombinedRemainStr = QString::fromLocal8Bit("(%1)").arg(combined_remain);
 		}
 
 		if (!pksd->lastWonAssumption)
@@ -939,10 +995,11 @@ void KanDataConnector::updateInfoTitleBattle(bool bBattle, bool bSelfDamaged)
 			bossDamagedStr = QString::fromLocal8Bit("★");
 		}
 		loseStr = bossDamagedStr+loseStr;
-		strtitle += QString::fromLocal8Bit(" - %1残:%2%3, 輸%4(%5), 航:%6(%7), 潜%8(%9)")
+		strtitle += QString::fromLocal8Bit(" - %1残:%2%3%4, 輸%5(%6), 航:%7(%8), 潜%9(%10)")
 			.arg(loseStr)
 			.arg(totalremain)
 			.arg(eflagshipremainstr)
+			.arg(eCombinedRemainStr)
 			.arg(transremain)
 			.arg(transtotal)
 			.arg(acremain)
@@ -1104,19 +1161,22 @@ void KanDataConnector::updateWeaponTable()
     MainWindow::weaponWindow()->buildTable();
 }
 
-QList<int> KanDataConnector::updateBattle(const kcsapi_battle &api_battle, KanBattleType type)
+void KanDataConnector::updateBattle(const kcsapi_battle &api_battle, KanBattleType type)
 {
 	int dockid = 0;
-	int dockid_combined = -1;
-	bool bCombined = false;
+	int dockid_combinedSelf = -1;
+	bool bCombinedSelf = false;
+	bool bCombinedEnemy = false;
 
 	pksd->remainLastBattleHPs.enemy.clear();
 	pksd->remainLastBattleHPs.self.clear();
 	pksd->remainLastBattleHPs.combinedSelf.clear();
+	pksd->remainLastBattleHPs.combinedEnemy.clear();
 
 	pksd->beginLastBattleHPs.enemy.clear();
 	pksd->beginLastBattleHPs.self.clear();
 	pksd->beginLastBattleHPs.combinedSelf.clear();
+	pksd->beginLastBattleHPs.combinedEnemy.clear();
 
 	if (type < KanBattleType::Combined_Begin)
 	{
@@ -1126,13 +1186,22 @@ QList<int> KanDataConnector::updateBattle(const kcsapi_battle &api_battle, KanBa
 		{
 			dockid = api_battle.api_deck_id - 1;
 		}
-		pksd->bCombined = bCombined;
+		pksd->bCombinedSelf = bCombinedSelf;
 	}
 	else
 	{
-		bCombined = true;
-		dockid_combined = dockid+1;
-		pksd->bCombined = bCombined;
+		if (type == KanBattleType::Combined_EC || type == KanBattleType::Combined_ECNight)
+		{
+			// enemy combined
+			bCombinedEnemy = true;
+			pksd->bCombinedEnemy = bCombinedEnemy;
+		}
+		else
+		{
+			bCombinedSelf = true;
+			dockid_combinedSelf = dockid + 1;
+			pksd->bCombinedSelf = bCombinedSelf;
+		}
 	}
 	
 	if (dockid >= 0)
@@ -1141,7 +1210,8 @@ QList<int> KanDataConnector::updateBattle(const kcsapi_battle &api_battle, KanBa
 
 		if (type != KanBattleType::DayToNight
 			&& type != KanBattleType::NightToDay
-			&& type != KanBattleType::Combined_DayToNight)
+			&& type != KanBattleType::Combined_DayToNight
+			&& type != KanBattleType::Combined_ECNight)
 		{
 			pksd->lastSeiku = api_battle.api_kouku.api_stage1.api_disp_seiku;
 			pksd->lastSFormation = -1;
@@ -1176,9 +1246,9 @@ QList<int> KanDataConnector::updateBattle(const kcsapi_battle &api_battle, KanBa
 			}
 		}
 		QList<kcsapi_ship2*>pships_combined;
-		if (dockid_combined >= 0)
+		if (dockid_combinedSelf >= 0)
 		{
-			foreach(int shipid, pksd->portdata.api_deck_port[dockid_combined].api_ship)
+			foreach(int shipid, pksd->portdata.api_deck_port[dockid_combinedSelf].api_ship)
 			{
 				if (shipid > 0)
 				{
@@ -1206,6 +1276,11 @@ QList<int> KanDataConnector::updateBattle(const kcsapi_battle &api_battle, KanBa
 		{
 			totaledamage.append(0);
 		}
+		QList<float> totaledamage_combined;
+		for (int i = 0; i < 7; i++)
+		{
+			totaledamage_combined.append(0);
+		}
 		/*
 		QList<int> api_nowhps = api_battle.api_nowhps;
 		QList<int> api_nowhps_combined = api_battle.api_nowhps_combined;
@@ -1213,18 +1288,23 @@ QList<int> KanDataConnector::updateBattle(const kcsapi_battle &api_battle, KanBa
 		pksd->beginLastBattleHPs.self.append(0);
 		pksd->beginLastBattleHPs.combinedSelf.append(0);
 		pksd->beginLastBattleHPs.enemy.append(0);
+		pksd->beginLastBattleHPs.combinedEnemy.append(0);
 
 		for (int i = 0; i < pships.count(); i++)
 		{
 			pksd->beginLastBattleHPs.self.append(api_battle.api_nowhps[i + 1]);
 		}
+		for (int i = 0; i < pships_combined.count(); i++)
+		{
+			pksd->beginLastBattleHPs.combinedSelf.append(api_battle.api_nowhps_combined[i + 1]);
+		}
 		for (int i = 1; i < api_battle.api_ship_ke.count(); i++)
 		{
 			pksd->beginLastBattleHPs.enemy.append(api_battle.api_nowhps[i + 6]);
 		}
-		for (int i = 0; i < pships_combined.count(); i++)
+		for (int i = 1; i < api_battle.api_ship_ke_combined.count(); i++)
 		{
-			pksd->beginLastBattleHPs.combinedSelf.append(api_battle.api_nowhps_combined[i + 1]);
+			pksd->beginLastBattleHPs.combinedEnemy.append(api_battle.api_nowhps_combined[i + 6]);
 		}
 
 
@@ -1236,27 +1316,20 @@ QList<int> KanDataConnector::updateBattle(const kcsapi_battle &api_battle, KanBa
 				//　航空ダメージ (enemy only)
 				if (item.api_stage_flag.size() >= 2 && item.api_stage_flag[2] > 0)
 				{
-					/*
-					for (int i = 1; i < item.api_stage3.api_fdam.count(); i++)
-					{
-						totalfdamage[i] += item.api_stage3.api_fdam[i];
-					}
-					*/
 					for (int i = 1; i < item.api_stage3.api_edam.count(); i++)
 					{
 						totaledamage[i] += item.api_stage3.api_edam[i];
 					}
-					/*
-					if (bCombined)
+
+					if (bCombinedEnemy)
 					{
-						for (int i = 1; i < item.api_stage3_combined.api_fdam.count(); i++)
+						// enemy combined
+						for (int i = 1; i < item.api_stage3_combined.api_edam.count(); i++)
 						{
-							totalfdamage_combined[i] += item.api_stage3_combined.api_fdam[i];
+							totaledamage_combined[i] += item.api_stage3_combined.api_edam[i];
 						}
 					}
-					*/
 				}
-
 			}
 		}
 
@@ -1275,14 +1348,20 @@ QList<int> KanDataConnector::updateBattle(const kcsapi_battle &api_battle, KanBa
 				{
 					totaledamage[i] += api_battle.api_kouku.api_stage3.api_edam[i];
 				}
-				if (bCombined)
+				if (bCombinedSelf)
 				{
 					for (int i = 1; i < api_battle.api_kouku.api_stage3_combined.api_fdam.count(); i++)
 					{
 						totalfdamage_combined[i] += api_battle.api_kouku.api_stage3_combined.api_fdam[i];
 					}
 				}
-
+				if (bCombinedEnemy)
+				{
+					for (int i = 1; i < api_battle.api_kouku.api_stage3_combined.api_edam.count(); i++)
+					{
+						totaledamage_combined[i] += api_battle.api_kouku.api_stage3_combined.api_edam[i];
+					}
+				}
 			}
 		}
 		int stageflagcount2 = api_battle.api_stage_flag2.count();
@@ -1300,7 +1379,7 @@ QList<int> KanDataConnector::updateBattle(const kcsapi_battle &api_battle, KanBa
 				{
 					totaledamage[i] += api_battle.api_kouku2.api_stage3.api_edam[i];
 				}
-				if (bCombined)
+				if (bCombinedSelf)
 				{
 					// kouku2
 					for (int i = 1; i < api_battle.api_kouku2.api_stage3_combined.api_fdam.count(); i++)
@@ -1308,11 +1387,24 @@ QList<int> KanDataConnector::updateBattle(const kcsapi_battle &api_battle, KanBa
 						totalfdamage_combined[i] += api_battle.api_kouku2.api_stage3_combined.api_fdam[i];
 					}
 				}
+				if (bCombinedEnemy)
+				{
+					// kouku2
+					for (int i = 1; i < api_battle.api_kouku2.api_stage3_combined.api_edam.count(); i++)
+					{
+						totaledamage_combined[i] += api_battle.api_kouku2.api_stage3_combined.api_edam[i];
+					}
+				}
 
 			}
 		}
 
-		if (type != KanBattleType::Night && type != KanBattleType::DayToNight && type != KanBattleType::Combined_KouKuNight && type != KanBattleType::Combined_DayToNight && type != KanBattleType::Combined_Night)
+		if (type != KanBattleType::Night 
+			&& type != KanBattleType::DayToNight 
+			&& type != KanBattleType::Combined_KouKuNight 
+			&& type != KanBattleType::Combined_DayToNight 
+			&& type != KanBattleType::Combined_Night
+			&& type != KanBattleType::Combined_ECNight)
 		{
 			// support
 			if (api_battle.api_support_flag > 0)
@@ -1330,6 +1422,14 @@ QList<int> KanDataConnector::updateBattle(const kcsapi_battle &api_battle, KanBa
 							{
 								totaledamage[i] += api_battle.api_support_info.api_support_airatack.api_stage3.api_edam[i];
 							}
+							// TODO:!!!! check here
+							if (bCombinedEnemy)
+							{
+								for (int i = 1; i < api_battle.api_support_info.api_support_airatack.api_stage3_combined.api_edam.count(); i++)
+								{
+									totaledamage_combined[i] += api_battle.api_support_info.api_support_airatack.api_stage3_combined.api_edam[i];
+								}
+							}
 						}
 					}
 
@@ -1338,9 +1438,34 @@ QList<int> KanDataConnector::updateBattle(const kcsapi_battle &api_battle, KanBa
 				case 2: // hougeki
 				case 3: // raigeki
 				{
-					for (int i = 1; i < api_battle.api_support_info.api_support_hourai.api_damage.count(); i++)
+					if (!bCombinedEnemy)
 					{
-						totaledamage[i] += api_battle.api_support_info.api_support_hourai.api_damage[i];
+						for (int i = 1; i < api_battle.api_support_info.api_support_hourai.api_damage.count(); i++)
+						{
+							totaledamage[i] += api_battle.api_support_info.api_support_hourai.api_damage[i];
+						}
+					}
+					else
+					{
+						int damageCount = api_battle.api_support_info.api_support_hourai.api_damage.count();
+						if (damageCount <= 7)
+						{
+							for (int i = 1; i < damageCount; i++)
+							{
+								totaledamage[i] += api_battle.api_support_info.api_support_hourai.api_damage[i];
+							}
+						}
+						else
+						{
+							for (int i = 1; i < 7; i++)
+							{
+								totaledamage[i] += api_battle.api_support_info.api_support_hourai.api_damage[i];
+							}
+							for (int i = 7; i < damageCount; i++)
+							{
+								totaledamage_combined[i-6] += api_battle.api_support_info.api_support_hourai.api_damage[i];
+							}
+						}
 					}
 				}
 					break;
@@ -1354,12 +1479,18 @@ QList<int> KanDataConnector::updateBattle(const kcsapi_battle &api_battle, KanBa
 			{
 				// copied from below
 				// combined?
-				bool bCombineDamage = bCombined;
+				bool bSelfCombineDamage = bCombinedSelf;
 				if (type == KanBattleType::Combined_KouKu || type == KanBattleType::Combined_Day)
 				{
-					bCombineDamage = false;
+					bSelfCombineDamage = false;
 				}
-				processHouraiDamages(&(api_battle.api_opening_taisen), &totalfdamage, &totaledamage, &totalfdamage_combined, bCombineDamage);
+				processHouraiDamages(&(api_battle.api_opening_taisen)
+					, &totalfdamage
+					, &totaledamage
+					, &totalfdamage_combined
+					, &totaledamage_combined
+					, bSelfCombineDamage
+					, false);	// no such condition?
 			}
 
 
@@ -1367,20 +1498,41 @@ QList<int> KanDataConnector::updateBattle(const kcsapi_battle &api_battle, KanBa
 			// TODO: combined?
 			if (api_battle.api_opening_flag > 0)
 			{
-				for (int i = 0; i < api_battle.api_opening_atack.api_fdam.count(); i++)
+				for (int i = 1; i < api_battle.api_opening_atack.api_fdam.count(); i++)
 				{
-					if (bCombined/*api_battle.api_formation[0] == 11*/)
+					// TODO!!!!! check
+					int damagePos = i;
+					if (damagePos > 6)
 					{
-						totalfdamage_combined[i] += api_battle.api_opening_atack.api_fdam[i];
+						damagePos -= 6;
+					}
+					if (bCombinedSelf/*api_battle.api_formation[0] == 11*/)
+					{
+						totalfdamage_combined[damagePos] += api_battle.api_opening_atack.api_fdam[i];
 					}
 					else
 					{
-						totalfdamage[i] += api_battle.api_opening_atack.api_fdam[i];
+						totalfdamage[damagePos] += api_battle.api_opening_atack.api_fdam[i];
 					}
 				}
-				for (int i = 0; i < api_battle.api_opening_atack.api_edam.count(); i++)
+				int damageCount = api_battle.api_opening_atack.api_edam.count();
+				if (bCombinedEnemy && damageCount > 7)
 				{
-					totaledamage[i] += api_battle.api_opening_atack.api_edam[i];
+					for (int i = 1; i < 7; i++)
+					{
+						totaledamage[i] += api_battle.api_opening_atack.api_edam[i];
+					}
+					for (int i = 7; i < damageCount; i++)
+					{
+						totaledamage_combined[i-6] += api_battle.api_opening_atack.api_edam[i];
+					}
+				}
+				else
+				{
+					for (int i = 1; i < damageCount; i++)
+					{
+						totaledamage[i] += api_battle.api_opening_atack.api_edam[i];
+					}
 				}
 			}
 
@@ -1392,7 +1544,8 @@ QList<int> KanDataConnector::updateBattle(const kcsapi_battle &api_battle, KanBa
 				int hougeki2flag = api_battle.api_hourai_flag[1];
 				int hougeki3flag = api_battle.api_hourai_flag[2];
 				int raigekiflag = api_battle.api_hourai_flag[3];
-				if (bCombined && type == KanBattleType::Combined_KouKu || type == KanBattleType::Combined_Day)
+				if (bCombinedSelf && 
+					(type == KanBattleType::Combined_KouKu || type == KanBattleType::Combined_Day))
 				{
 					raigekiflag = api_battle.api_hourai_flag[1];
 					hougeki2flag = api_battle.api_hourai_flag[2];
@@ -1400,33 +1553,70 @@ QList<int> KanDataConnector::updateBattle(const kcsapi_battle &api_battle, KanBa
 				}
 				if (hougeki1flag)
 				{
-					bool bCombineDamage = false;
+					bool bCombineDamageSelf = false;
+					bool bCombineDamageEnemy = bCombinedEnemy;
 					if (type == KanBattleType::Combined_KouKu || type == KanBattleType::Combined_Day)
 					{
-						bCombineDamage = bCombined;
+						bCombineDamageSelf = bCombinedSelf;
 					}
-					processHouraiDamages(&(api_battle.api_hougeki1), &totalfdamage, &totaledamage, &totalfdamage_combined, bCombineDamage);
+					processHouraiDamages(&(api_battle.api_hougeki1)
+						, &totalfdamage
+						, &totaledamage
+						, &totalfdamage_combined
+						, &totaledamage_combined
+						, bCombineDamageSelf
+						, bCombineDamageEnemy);
 				}
 				if (hougeki2flag)
 				{
-					bool bCombineDamage = false;
-					processHouraiDamages(&(api_battle.api_hougeki2), &totalfdamage, &totaledamage, &totalfdamage_combined, bCombineDamage);
+					bool bCombineDamageSelf = false;
+					bool bCombineDamageEnemy = false;
+					processHouraiDamages(&(api_battle.api_hougeki2)
+						, &totalfdamage
+						, &totaledamage
+						, &totalfdamage_combined
+						, &totaledamage_combined
+						, bCombineDamageSelf
+						, bCombineDamageEnemy);
 				}
 				if (hougeki3flag)
 				{
-					bool bCombineDamage = bCombined;
+					//TODO!!! check
+					bool bCombineDamageSelf = bCombinedSelf;
+					bool bCombineDamageEnemy = bCombinedEnemy;
 					if (type == KanBattleType::Combined_KouKu || type == KanBattleType::Combined_Day)
 					{
-						bCombineDamage = false;
+						bCombineDamageSelf = false;
 					}
-					processHouraiDamages(&(api_battle.api_hougeki3), &totalfdamage, &totaledamage, &totalfdamage_combined, bCombineDamage);
+					processHouraiDamages(&(api_battle.api_hougeki3)
+						, &totalfdamage
+						, &totaledamage
+						, &totalfdamage_combined
+						, &totaledamage_combined
+						, bCombineDamageSelf
+						, bCombineDamageEnemy);
 				}
 				// raigeki
 				if (raigekiflag)
 				{
-					for (int i = 0; i < api_battle.api_raigeki.api_fdam.count(); i++)
+					for (int i = 1; i < api_battle.api_raigeki.api_fdam.count(); i++)
 					{
-						if (bCombined)
+						// TODO!!!!! check
+						int damagePos = i;
+						if (damagePos > 6)
+						{
+							damagePos -= 6;
+						}
+						if (bCombinedSelf/*api_battle.api_formation[0] == 11*/)
+						{
+							totalfdamage_combined[damagePos] += api_battle.api_raigeki.api_fdam[i];
+						}
+						else
+						{
+							totalfdamage[damagePos] += api_battle.api_raigeki.api_fdam[i];
+						}
+						/*
+						if (bCombinedSelf)
 						{
 							totalfdamage_combined[i] += api_battle.api_raigeki.api_fdam[i];
 						}
@@ -1434,10 +1624,26 @@ QList<int> KanDataConnector::updateBattle(const kcsapi_battle &api_battle, KanBa
 						{
 							totalfdamage[i] += api_battle.api_raigeki.api_fdam[i];
 						}
+						*/
 					}
-					for (int i = 0; i < api_battle.api_raigeki.api_edam.count(); i++)
+					int damageCount = api_battle.api_raigeki.api_edam.count();
+					if (bCombinedEnemy && damageCount > 7)
 					{
-						totaledamage[i] += api_battle.api_raigeki.api_edam[i];
+						for (int i = 1; i < 7; i++)
+						{
+							totaledamage[i] += api_battle.api_raigeki.api_edam[i];
+						}
+						for (int i = 7; i < damageCount; i++)
+						{
+							totaledamage_combined[i - 6] += api_battle.api_raigeki.api_edam[i];
+						}
+					}
+					else
+					{
+						for (int i = 1; i < damageCount; i++)
+						{
+							totaledamage[i] += api_battle.api_raigeki.api_edam[i];
+						}
 					}
 				}
 			}
@@ -1446,7 +1652,25 @@ QList<int> KanDataConnector::updateBattle(const kcsapi_battle &api_battle, KanBa
 		else
 		{
 			// midnight
-			processHouraiDamages(&(api_battle.api_hougeki), &totalfdamage, &totaledamage, &totalfdamage_combined, bCombined);
+			bool bEnemyDamageCombined = false;
+			if (bCombinedEnemy)
+			{
+				//TODO!!!! check
+				if (api_battle.api_active_deck.count() >= 2)
+				{
+					if (api_battle.api_active_deck[1] != 1)
+					{
+						bEnemyDamageCombined = true;
+					}
+				}
+			}
+			processHouraiDamages(&(api_battle.api_hougeki)
+				, &totalfdamage
+				, &totaledamage
+				, &totalfdamage_combined
+				, &totaledamage_combined
+				, bCombinedSelf		// always second team
+				, bEnemyDamageCombined);
 		}
 
 		for (int i = 0; i < pships.count(); i++)
@@ -1475,6 +1699,17 @@ QList<int> KanDataConnector::updateBattle(const kcsapi_battle &api_battle, KanBa
 			}
 			pksd->remainLastBattleHPs.enemy.append(nowhp);
 		}
+		pksd->remainLastBattleHPs.combinedEnemy.append(0);
+		for (int i = 1; i < api_battle.api_ship_ke_combined.count(); i++)
+		{
+			int nowhp = api_battle.api_nowhps_combined[i + 6] - (int)totaledamage_combined[i];
+			if (nowhp < 0)
+			{
+				nowhp = 0;
+			}
+			pksd->remainLastBattleHPs.combinedEnemy.append(nowhp);
+		}
+
 		pksd->remainLastBattleHPs.self.append(0);
 		for (int i = 0; i < pships.count(); i++)
 		{
@@ -1509,54 +1744,102 @@ QList<int> KanDataConnector::updateBattle(const kcsapi_battle &api_battle, KanBa
 		updateInfoTitleBattle(true, bSelfDamaged);
 
 	}
-	return pksd->remainLastBattleHPs.enemy;
 	
 }
 
-void KanDataConnector::processHouraiDamages(const kcsapi_battle_hougeki* api_hougeki, QList<float>* totalfdamage, QList<float>* totaledamage, QList<float>* totalfdamage_combined, bool bOnlyCombined)
+void KanDataConnector::processHouraiDamages(const kcsapi_battle_hougeki* api_hougeki
+	, QList<float>* totalfdamage
+	, QList<float>* totaledamage
+	, QList<float>* totalfdamage_combined
+	, QList<float>* totaledamage_combined
+	, bool bOnlyCombinedSelf
+	, bool bOnlyCombinedEnemy)
 {
 	// must skip 0!!!
 	QList<float>* fdamage = totalfdamage;
-	if (bOnlyCombined)
-	{
-		fdamage = totalfdamage_combined;
-	}
-	for (int j = 1; j < api_hougeki->api_at_list.count(); j++)
-	{
-		bool bfattack = true;
-		bool bfdefend = true;
+	QList<float>* edamage = totaledamage;
 
-		int attackpos = api_hougeki->api_at_list[j];
-		if (attackpos > 6)
+	// without instruction
+	if (api_hougeki->api_at_eflag.isEmpty())
+	{
+		if (bOnlyCombinedSelf)
 		{
-			bfattack = false;
-			attackpos -= 6;
+			fdamage = totalfdamage_combined;
 		}
-
-		if (attackpos > 0)
+		if (bOnlyCombinedEnemy)
 		{
-			for (int k = 0; k < api_hougeki->api_df_list[j].count(); k++)
-			{
-				int defendpos = api_hougeki->api_df_list[j][k];
-				if (defendpos > 6)
-				{
-					bfdefend = false;
-					defendpos -= 6;
-				}
+			edamage = totaledamage_combined;
+		}
+		for (int j = 1; j < api_hougeki->api_at_list.count(); j++)
+		{
+			bool bfattack = true;
+			bool bfdefend = true;
 
-				if (defendpos > 0)
+			int attackpos = api_hougeki->api_at_list[j];
+			if (attackpos > 6)
+			{
+				bfattack = false;
+				attackpos -= 6;
+			}
+
+			if (attackpos > 0)
+			{
+				for (int k = 0; k < api_hougeki->api_df_list[j].count(); k++)
 				{
-					if (bfdefend)
+					int defendpos = api_hougeki->api_df_list[j][k];
+					if (defendpos > 6)
 					{
-						(*fdamage)[defendpos] += api_hougeki->api_damage[j][k];
+						bfdefend = false;
+						defendpos -= 6;
 					}
-					else
+
+					if (defendpos > 0)
 					{
-						(*totaledamage)[defendpos] += api_hougeki->api_damage[j][k];
+						if (bfdefend)
+						{
+							(*fdamage)[defendpos] += api_hougeki->api_damage[j][k];
+						}
+						else
+						{
+							(*edamage)[defendpos] += api_hougeki->api_damage[j][k];
+						}
 					}
 				}
 			}
 		}
-
 	}
+	else
+	{
+		for (int j = 1; j < api_hougeki->api_at_list.count(); j++)
+		{
+			for (int k = 0; k < api_hougeki->api_df_list[j].count(); k++)
+			{
+				int defendpos = api_hougeki->api_df_list[j][k];
+
+				if (defendpos > 0)
+				{
+					if (api_hougeki->api_at_eflag[j] > 0)
+					{
+						// from enemy
+						if (defendpos > 6)
+						{
+							fdamage = totalfdamage_combined;
+							defendpos -= 6;
+						}
+						(*fdamage)[defendpos] += api_hougeki->api_damage[j][k];
+					}
+					else
+					{
+						if (defendpos > 6)
+						{
+							edamage = totaledamage_combined;
+							defendpos -= 6;
+						}
+						(*edamage)[defendpos] += api_hougeki->api_damage[j][k];
+					}
+				}
+			}
+		}
+	}
+
 }

@@ -443,7 +443,7 @@ void KanDataConnector::checkWoundQuit()
 			}
 		}
 	}
-	if (pksd->bCombined && !bClose)
+	if (pksd->bCombinedSelf && !bClose)
 	{
 		int combineddeckid = lastdeckid + 1;
 		if (combineddeckid >=0 && combineddeckid < 4)
@@ -478,35 +478,38 @@ void KanDataConnector::checkAirBase()
 {
 	pksd->airBaseNeedSupply = false;
 	pksd->airBaseBadCond = false;
-	for (const auto& corp : pksd->airbasedata)
+	for (const auto& corps : pksd->airbasedata)
 	{
-		if (corp.api_rid < 0)
+		for (const auto& corp : corps)
 		{
-			continue;
-		}
-		for (const auto& plane : corp.api_plane_info)
-		{
-			if (plane.api_squadron_id < 0)
+			if (corp.api_rid < 0)
 			{
 				continue;
 			}
-			if (plane.api_count < plane.api_max_count)
+			for (const auto& plane : corp.api_plane_info)
 			{
-				pksd->airBaseNeedSupply = true;
-			}
-			if (plane.api_cond > 1)
-			{
-				pksd->airBaseBadCond = true;
-			}
+				if (plane.api_squadron_id < 0)
+				{
+					continue;
+				}
+				if (plane.api_count < plane.api_max_count)
+				{
+					pksd->airBaseNeedSupply = true;
+				}
+				if (plane.api_cond > 1)
+				{
+					pksd->airBaseBadCond = true;
+				}
 
+				if (pksd->airBaseBadCond && pksd->airBaseNeedSupply)
+				{
+					break;
+				}
+			}
 			if (pksd->airBaseBadCond && pksd->airBaseNeedSupply)
 			{
 				break;
 			}
-		}
-		if (pksd->airBaseBadCond && pksd->airBaseNeedSupply)
-		{
-			break;
 		}
 	}
 
@@ -835,6 +838,18 @@ void KanDataConnector::logBattleDetail(bool bCombined)
 			}
 		}
 	}
+	foreach(int shipid, pksd->battledata.api_ship_ke_combined)
+	{
+		if (shipid > 0)
+		{
+			const kcsapi_mst_ship * pmstship = findMstShipFromShipid(shipid);
+			if (pmstship)
+			{
+				eships.append(pmstship);
+			}
+		}
+	}
+
 
 	QString shipnameline = QString::fromLocal8Bit("\t艦名:\t");
 	QString lvline = QString::fromLocal8Bit("\tLv:\t");
@@ -908,7 +923,16 @@ void KanDataConnector::logBattleDetail(bool bCombined)
 	{
 		i++;
 		enemynameline += pmstship->api_name + "\t";
-		int ehp = pksd->enemyhpdata[i];
+		int ehp = 0;
+		if (i > 6)
+		{
+			ehp = pksd->remainLastBattleHPs.combinedEnemy[i-6];
+		}
+		else
+		{
+			ehp = pksd->remainLastBattleHPs.enemy[i];
+		}
+
 		if (ehp < 0)
 		{
 			ehp = 0;

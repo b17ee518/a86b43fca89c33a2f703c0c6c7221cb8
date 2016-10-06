@@ -247,6 +247,7 @@ public:
 	kcsapi_battle_support_airatack_stage1 api_stage1;
 	kcsapi_battle_support_airatack_stage2 api_stage2;
 	kcsapi_battle_support_airatack_stage3 api_stage3;
+	kcsapi_battle_support_airatack_stage3 api_stage3_combined;
 };
 
 class kcsapi_battle_base_attack_squadron : public KAPIBaseData
@@ -273,6 +274,7 @@ public:
 	kcsapi_battle_support_airatack_stage1 api_stage1;
 	kcsapi_battle_support_airatack_stage2 api_stage2;
 	kcsapi_battle_support_airatack_stage3 api_stage3;
+	kcsapi_battle_support_airatack_stage3 api_stage3_combined;
 };
 
 class kcsapi_battle_support_hourai : public KAPIBaseData
@@ -305,7 +307,7 @@ public:
 	kcsapi_battle_opening_atack(){}
 	virtual bool ReadFromJObj(const QJsonObject &jobj);
 
-	// from #1
+	// from #1~13
 	QList<int> api_frai;
 	QList<int> api_erai;
 	QList<float> api_fdam;
@@ -322,6 +324,7 @@ public:
 	kcsapi_battle_hougeki(){}
 	virtual bool ReadFromJObj(const QJsonObject &jobj);
 
+	QList<int> api_at_eflag;
 	QList<int> api_at_list;
 	QList<int> api_at_type;
 	/*
@@ -360,7 +363,7 @@ public:
 	kcsapi_battle_raigeki(){}
 	virtual bool ReadFromJObj(const QJsonObject &jobj);
 
-	// from #1
+	// from #1~13
 	QList<int> api_frai;
 	QList<int> api_erai;
 	QList<float> api_fdam;
@@ -386,25 +389,33 @@ public:
 	QString api_deck_id_s;
 
 	QList<int> api_ship_ke; //enemy ship list from #1
+	QList<int> api_ship_ke_combined; //enemy ship list from #1 (enemy combined)
 	QList<int> api_ship_lv; //enemy ship lv from #1
+	QList<int> api_ship_lv_combined; //enemy ship lv from #1
 	QList<int> api_nowhps; // both hps from #1 (13)
 	QList<int> api_maxhps;
 
 	// combined
-	QList<int> api_nowhps_combined;
+	QList<int> api_nowhps_combined; //#1~13
 	QList<int> api_maxhps_combined;
+
+	//TODO!!!! check
+	QList<int> api_active_deck;	// [0]self [1]enemy
+
 	//
 
 	// air base attack
 	QList<kcsapi_battle_base_attack> api_air_base_attack;
 
 	int api_midnight_flag;
-    QList<QList<int> > api_eSlot; // from #0
+	QList<QList<int> > api_eSlot; // from #0
+	QList<QList<int> > api_eSlot_combined; // from #0
     QList<QList<int> > api_eKyouka; // from #0
     QList<QList<int> > api_fParam; // from #0
 	// combined
-    QList<QList<int> > api_fParam_combined; // from #0
-    QList<QList<int> > api_eParam; // from #0
+	QList<QList<int> > api_fParam_combined; // from #0
+	QList<QList<int> > api_eParam; // from #0
+	QList<QList<int> > api_eParam_combined; // from #0
 
 	// boss damaged
 	int api_boss_damaged = 0;
@@ -1193,6 +1204,7 @@ public:
 	int api_after_bauxite;	// ignore
 	*/
 
+	int api_area_id = 0;
 	int api_rid = -1;
 	QString api_name = "";
 	int api_distance = 0;

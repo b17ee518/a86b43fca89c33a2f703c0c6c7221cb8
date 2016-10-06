@@ -21,6 +21,8 @@ enum class KanBattleType
 	Combined_Day,
 	Combined_Night,
 	Combined_DayToNight,
+	Combined_EC,
+	Combined_ECNight,
 };
 
 enum class MaterialDataIndex
@@ -173,7 +175,7 @@ public:
 
 	CreateShipSaveData createshipdata;
 
-	QList<kcsapi_air_base_corps> airbasedata;
+	QMap<int, QList<kcsapi_air_base_corps>> airbasedata;
 	bool airBaseNeedSupply = false;
 	bool airBaseBadCond = false;
 
@@ -186,7 +188,8 @@ public:
 	KanBattleType lastbattletype = KanBattleType::Day;
 	int lastdeckid = 0;
 	int maxslotitemid = 0;
-	bool bCombined = false;
+	bool bCombinedSelf = false;
+	bool bCombinedEnemy = false;
 
 	int lastSeiku = 0;
 	int lastSFormation = -1;
@@ -200,6 +203,7 @@ public:
 		QList<int> self;
 		QList<int> combinedSelf;
 		QList<int> enemy;
+		QList<int> combinedEnemy;
 	};
 
 	LastBattleHpSaveData beginLastBattleHPs;

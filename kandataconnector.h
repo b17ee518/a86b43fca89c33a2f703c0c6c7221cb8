@@ -1,4 +1,4 @@
-﻿#ifndef KANDATACONNECTOR_H
+#ifndef KANDATACONNECTOR_H
 #define KANDATACONNECTOR_H
 
 #include <QString>
@@ -67,7 +67,7 @@ private:
 	void logCreateItemResult(int slotitemid, int fuel, int bull, int steel, int bauxite);
 	QString getFormationStr(int formation);
 
-	QList<int> updateBattle(const kcsapi_battle &api_battle, KanBattleType type);
+	void updateBattle(const kcsapi_battle &api_battle, KanBattleType type);
 
 	void getShipColors(const kcsapi_ship2 *pship, QColor *pcolCond=0, QColor *pcolWound=0, CondState* pcondstate=0, WoundState* pwoundstate=0);
 	void getShipChargeColors(const kcsapi_ship2 *pship, const kcsapi_mst_ship *pmstship, QColor *pcolFuel, QColor *pcolBullet);
@@ -75,7 +75,13 @@ private:
 	bool isShipRepairing(const kcsapi_ship2 *pship);
 	bool isAutoRepairing(int flagshipno=-1);
 
-	void processHouraiDamages(const kcsapi_battle_hougeki* api_hougeki, QList<float>* totalfdamage, QList<float>* totaledamage, QList<float>* totalfdamage_combined, bool bCombined);
+	void processHouraiDamages(const kcsapi_battle_hougeki* api_hougeki
+		, QList<float>* totalfdamage
+		, QList<float>* totaledamage
+		, QList<float>* totalfdamage_combined
+		, QList<float>* totaledamage_combined
+		, bool bOnlyCombinedSelf
+		, bool bOnlyCombinedEnemy);
 
 	void checkWoundQuit();
 
@@ -150,6 +156,8 @@ private:
 	bool req_combined_battle_midnight_battle_parse();
 	bool req_combined_battle_sp_midnight_parse();
 	bool req_combined_battle_goback_port_parse();
+	bool req_combined_battle_ec_battle_parse();
+	bool req_combined_battle_ec_midnight_battle_parse();
 	bool get_member_practice_parse();
 	bool req_member_get_practice_enemyinfo_parse();
 	bool req_practice_battle_parse();
@@ -259,6 +267,8 @@ private:
 	int req_combined_battle_midnight_battle_flag;
 	int req_combined_battle_sp_midnight_flag;
 	int req_combined_battle_goback_port_flag;
+	int req_combined_battle_ec_battle_flag;
+	int req_combined_battle_ec_midnight_battle_flag;
 	int get_member_practice_flag;
 	int req_member_get_practice_enemyinfo_flag;
 	int req_practice_battle_flag;

@@ -738,7 +738,7 @@ void ExpeditionManager::dateChange()
 	}
 	else if (_currentPreset.startsWith("Post_"))
 	{
-		_currentPreset = "General";
+		exchangeName = "General";
 	}
 
 	if (!exchangeName.isEmpty() &&

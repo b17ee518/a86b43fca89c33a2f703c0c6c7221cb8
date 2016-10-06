@@ -1,4 +1,4 @@
-﻿#include "kandataconnector.h"
+#include "kandataconnector.h"
 #include "kandata.h"
 #include "kansavedata.h"
 #include <QJsonDocument>
@@ -914,6 +914,27 @@ bool KanDataConnector::get_member_mission_parse()
 
 bool KanDataConnector::get_member_mapinfo_parse()
 {
+	QMap<int, QList<kcsapi_air_base_corps> > tcorpsMap;
+
+	auto jarray = _jdoc.object()["api_data"].toObject()["api_air_base"].toArray();
+	for (int i = 0; i < jarray.count(); i++)
+	{
+		auto corp = jarray[i].toObject();
+		kcsapi_air_base_corps tcorp;
+		tcorp.ReadFromJObj(corp);
+
+		if (tcorpsMap[tcorp.api_area_id].isEmpty())
+		{
+			tcorpsMap[tcorp.api_area_id].append(kcsapi_air_base_corps());
+			tcorpsMap[tcorp.api_area_id].append(kcsapi_air_base_corps());
+			tcorpsMap[tcorp.api_area_id].append(kcsapi_air_base_corps());
+		}
+		tcorpsMap[tcorp.api_area_id][tcorp.api_rid - 1] = tcorp;
+		pksd->airbasedata[tcorp.api_area_id] = tcorpsMap[tcorp.api_area_id];
+	}
+
+	checkAirBase();
+
 	return true;
 }
 
@@ -975,7 +996,7 @@ bool KanDataConnector::req_sortie_battle_parse()
 {
 	pksd->battledata.ReadFromJObj(_jobj);
 
-	pksd->enemyhpdata = updateBattle(pksd->battledata, KanBattleType::Day);
+	updateBattle(pksd->battledata, KanBattleType::Day);
 	return true;
 }
 
@@ -983,7 +1004,7 @@ bool KanDataConnector::req_battle_midnight_battle_parse()
 {
 	pksd->battledata.ReadFromJObj(_jobj);
 
-	pksd->enemyhpdata = updateBattle(pksd->battledata, KanBattleType::DayToNight);
+	updateBattle(pksd->battledata, KanBattleType::DayToNight);
 	return true;
 }
 
@@ -991,7 +1012,7 @@ bool KanDataConnector::req_battle_midnight_sp_midnight_parse()
 {
 	pksd->battledata.ReadFromJObj(_jobj);
 
-	pksd->enemyhpdata = updateBattle(pksd->battledata, KanBattleType::Night);
+	updateBattle(pksd->battledata, KanBattleType::Night);
 	return true;
 }
 
@@ -1000,7 +1021,7 @@ bool KanDataConnector::req_sortie_night_to_day_parse()
 	//TODO night to day:
 	pksd->battledata.ReadFromJObj(_jobj);
 
-	pksd->enemyhpdata = updateBattle(pksd->battledata, KanBattleType::NightToDay);
+	updateBattle(pksd->battledata, KanBattleType::NightToDay);
 	return true;
 }
 
@@ -1008,7 +1029,7 @@ bool KanDataConnector::req_sortie_airbattle_parse()
 {
 	pksd->battledata.ReadFromJObj(_jobj);
 
-	pksd->enemyhpdata = updateBattle(pksd->battledata, KanBattleType::Air);
+	updateBattle(pksd->battledata, KanBattleType::Air);
 	// TODO check air???
 	return true;
 }
@@ -1017,7 +1038,7 @@ bool KanDataConnector::req_sortie_ld_airbattle_parse()
 {
 	pksd->battledata.ReadFromJObj(_jobj);
 
-	pksd->enemyhpdata = updateBattle(pksd->battledata, KanBattleType::Air);
+	updateBattle(pksd->battledata, KanBattleType::Air);
 	// TODO check air???
 	return true;
 
@@ -1027,7 +1048,7 @@ bool KanDataConnector::req_combined_battle_airbattle_parse()
 {
 	pksd->battledata.ReadFromJObj(_jobj);
 
-	pksd->enemyhpdata = updateBattle(pksd->battledata, KanBattleType::Combined_KouKu);
+	updateBattle(pksd->battledata, KanBattleType::Combined_KouKu);
 	return true;
 }
 
@@ -1035,7 +1056,7 @@ bool KanDataConnector::req_combined_battle_ld_airbattle_parse()
 {
 	pksd->battledata.ReadFromJObj(_jobj);
 
-	pksd->enemyhpdata = updateBattle(pksd->battledata, KanBattleType::Combined_KouKu);
+	updateBattle(pksd->battledata, KanBattleType::Combined_KouKu);
 	return true;
 }
 
@@ -1043,7 +1064,7 @@ bool KanDataConnector::req_combined_battle_battlewater_parse()
 {
 	pksd->battledata.ReadFromJObj(_jobj);
 
-	pksd->enemyhpdata = updateBattle(pksd->battledata, KanBattleType::Combined_Water);
+	updateBattle(pksd->battledata, KanBattleType::Combined_Water);
 	return true;
 }
 
@@ -1076,7 +1097,7 @@ bool KanDataConnector::req_combined_battle_battle_parse()
 {
 	pksd->battledata.ReadFromJObj(_jobj);
 
-	pksd->enemyhpdata = updateBattle(pksd->battledata, KanBattleType::Combined_Day);
+	updateBattle(pksd->battledata, KanBattleType::Combined_Day);
 	return true;
 }
 
@@ -1084,7 +1105,7 @@ bool KanDataConnector::req_combined_battle_midnight_battle_parse()
 {
 	pksd->battledata.ReadFromJObj(_jobj);
 
-	pksd->enemyhpdata = updateBattle(pksd->battledata, KanBattleType::Combined_DayToNight);
+	updateBattle(pksd->battledata, KanBattleType::Combined_DayToNight);
 	return true;
 }
 
@@ -1092,7 +1113,7 @@ bool KanDataConnector::req_combined_battle_sp_midnight_parse()
 {
 	pksd->battledata.ReadFromJObj(_jobj);
 
-	pksd->enemyhpdata = updateBattle(pksd->battledata, KanBattleType::Combined_Night);
+	updateBattle(pksd->battledata, KanBattleType::Combined_Night);
 	return true;
 
 }
@@ -1100,6 +1121,22 @@ bool KanDataConnector::req_combined_battle_sp_midnight_parse()
 bool KanDataConnector::req_combined_battle_goback_port_parse()
 {
 	// TODO: add flags to ship?
+	return true;
+}
+
+bool KanDataConnector::req_combined_battle_ec_battle_parse()
+{
+	pksd->battledata.ReadFromJObj(_jobj);
+
+	updateBattle(pksd->battledata, KanBattleType::Combined_EC);
+	return true;
+}
+
+bool KanDataConnector::req_combined_battle_ec_midnight_battle_parse()
+{
+	pksd->battledata.ReadFromJObj(_jobj);
+
+	updateBattle(pksd->battledata, KanBattleType::Combined_ECNight);
 	return true;
 }
 
@@ -1561,28 +1598,24 @@ bool KanDataConnector::req_kaisou_slotset_ex_parse()
 
 bool KanDataConnector::get_member_base_air_corps_parse()
 {
-	QList<kcsapi_air_base_corps> tcorps;
-	tcorps.append(kcsapi_air_base_corps());
-	tcorps.append(kcsapi_air_base_corps());
-	tcorps.append(kcsapi_air_base_corps());
+	QMap<int, QList<kcsapi_air_base_corps> > tcorpsMap;
 
 	auto jarray = _jdoc.object()["api_data"].toArray();
 	for (int i = 0; i < jarray.count(); i++)
 	{
 		auto corp = jarray[i].toObject();
 		kcsapi_air_base_corps tcorp;
-		/*
-		tcorp.api_plane_info.append(kcsapi_air_base_corps_plane_info());
-		tcorp.api_plane_info.append(kcsapi_air_base_corps_plane_info());
-		tcorp.api_plane_info.append(kcsapi_air_base_corps_plane_info());
-		tcorp.api_plane_info.append(kcsapi_air_base_corps_plane_info());
-		*/
 		tcorp.ReadFromJObj(corp);
 
-		tcorps[tcorp.api_rid - 1] = tcorp;
+		if (tcorpsMap[tcorp.api_area_id].isEmpty())
+		{
+			tcorpsMap[tcorp.api_area_id].append(kcsapi_air_base_corps());
+			tcorpsMap[tcorp.api_area_id].append(kcsapi_air_base_corps());
+			tcorpsMap[tcorp.api_area_id].append(kcsapi_air_base_corps());
+		}
+		tcorpsMap[tcorp.api_area_id][tcorp.api_rid - 1] = tcorp;
+		pksd->airbasedata[tcorp.api_area_id] = tcorpsMap[tcorp.api_area_id];
 	}
-
-	pksd->airbasedata = tcorps;
 
 	checkAirBase();
 
@@ -1595,24 +1628,25 @@ bool KanDataConnector::req_air_corps_set_plane_parse()
 	int baseid = _req.GetItemAsString("api_base_id").toInt();
 //	int itemid = _req.GetItemAsString("api_item_id").toInt();
 	int squadronid = _req.GetItemAsString("api_squadron_id").toInt();
+	int areaid = _req.GetItemAsString("api_area_id").toInt();
 
-	while (pksd->airbasedata.size() < baseid)
+	while (pksd->airbasedata[areaid].size() < baseid)
 	{
-		pksd->airbasedata.append(kcsapi_air_base_corps());
+		pksd->airbasedata[areaid].append(kcsapi_air_base_corps());
 	}
 
-	while (pksd->airbasedata[baseid-1].api_plane_info.size() < squadronid)
+	while (pksd->airbasedata[areaid][baseid - 1].api_plane_info.size() < squadronid)
 	{
-		pksd->airbasedata[baseid - 1].api_plane_info.append(kcsapi_air_base_corps_plane_info());
+		pksd->airbasedata[areaid][baseid - 1].api_plane_info.append(kcsapi_air_base_corps_plane_info());
 	}
 	
 	kcsapi_air_base_corps tcorps;
 	tcorps.ReadFromJObj(_jobj);
 	for (const auto& item : tcorps.api_plane_info)
 	{
-		pksd->airbasedata[baseid - 1].api_plane_info[item.api_squadron_id - 1] = item;
+		pksd->airbasedata[areaid][baseid - 1].api_plane_info[item.api_squadron_id - 1] = item;
 	}
-	pksd->airbasedata[baseid - 1].api_distance = tcorps.api_distance;
+	pksd->airbasedata[areaid][baseid - 1].api_distance = tcorps.api_distance;
 	
 	checkAirBase();
 
@@ -1628,6 +1662,7 @@ bool KanDataConnector::req_air_corps_supply_parse()
 {
 	//api_base_id=1&api_squadron_id=1,2,3,4
 	int baseid = _req.GetItemAsString("api_base_id").toInt();
+	int areaid = _req.GetItemAsString("api_area_id").toInt();
 	QList<QString> squadronIds = _req.GetItemAsString("api_squadron_id").split("%2C");
 
 	kcsapi_air_base_corps tcorp;
@@ -1639,23 +1674,23 @@ bool KanDataConnector::req_air_corps_supply_parse()
 	*/
 	tcorp.ReadFromJObj(_jobj);
 
-	while (pksd->airbasedata.size() < baseid)
+	while (pksd->airbasedata[areaid].size() < baseid)
 	{
-		pksd->airbasedata.append(kcsapi_air_base_corps());
+		pksd->airbasedata[areaid].append(kcsapi_air_base_corps());
 	}
 	
 	for (const auto& idStr : squadronIds)
 	{
 		int squadronid = idStr.toInt();
-		while (pksd->airbasedata[baseid - 1].api_plane_info.size() < squadronid)
+		while (pksd->airbasedata[areaid][baseid - 1].api_plane_info.size() < squadronid)
 		{
-			pksd->airbasedata[baseid - 1].api_plane_info.append(kcsapi_air_base_corps_plane_info());
+			pksd->airbasedata[areaid][baseid - 1].api_plane_info.append(kcsapi_air_base_corps_plane_info());
 		}
 		for (const auto& plane : tcorp.api_plane_info)
 		{
 			if (plane.api_squadron_id == squadronid)
 			{
-				pksd->airbasedata[baseid - 1].api_plane_info[squadronid - 1] = plane;
+				pksd->airbasedata[areaid][baseid - 1].api_plane_info[squadronid - 1] = plane;
 				break;
 			}
 		}

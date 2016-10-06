@@ -867,6 +867,7 @@ bool kcsapi_air_base_corps_plane_info::ReadFromJObj(const QJsonObject &jobj)
 
 bool kcsapi_air_base_corps::ReadFromJObj(const QJsonObject &jobj)
 {
+	_IREAD(api_area_id);
 	_IREAD(api_rid);
 	_SREAD(api_name);
 	_IREAD(api_distance);
@@ -1408,12 +1409,13 @@ bool kcsapi_battle_base_attack::ReadFromJObj(const QJsonObject &jobj)
 {
 	_IREAD(api_base_id);
 	_ACREAD(api_squadron_plane, kcsapi_battle_base_attack_squadron);
-
+	
 	_AIREAD(api_stage_flag);
 	_AAIREAD(api_plane_from); //? f, e list
-	_CREAD(api_stage1, kcsapi_battle_kouku_stage1);
-	_CREAD(api_stage2, kcsapi_battle_kouku_stage2);
-	_CREAD(api_stage3, kcsapi_battle_kouku_stage3);
+	_CREAD(api_stage1, kcsapi_battle_support_airatack_stage1);
+	_CREAD(api_stage2, kcsapi_battle_support_airatack_stage2);
+	_CREAD(api_stage3, kcsapi_battle_support_airatack_stage3);
+	_CREAD(api_stage3_combined, kcsapi_battle_support_airatack_stage3);
 
 	return _bParseRet;
 }
@@ -1454,6 +1456,7 @@ bool kcsapi_battle_opening_atack::ReadFromJObj(const QJsonObject &jobj)
 
 bool kcsapi_battle_hougeki::ReadFromJObj(const QJsonObject &jobj)
 {
+	_AIREAD(api_at_eflag);
 	_AIREAD(api_at_list);
 	_AIREAD(api_at_type);
 	_AAIREAD(api_df_list);
@@ -1487,13 +1490,17 @@ bool kcsapi_battle::ReadFromJObj(const QJsonObject &jobj)
 	_IREAD(api_dock_id);
 	_SIREAD(api_deck_id);
 	_AIREAD(api_ship_ke); //enemy ship list from #1
+	_AIREAD(api_ship_ke_combined);
 	_AIREAD(api_ship_lv); //enemy ship lv from #1
+	_AIREAD(api_ship_lv_combined); //enemy ship lv from #1
 	_AIREAD(api_nowhps); // both hps from #1 (13)
 	_AIREAD(api_maxhps);
 
 	// combined
 	_AIREAD(api_nowhps_combined);
 	_AIREAD(api_maxhps_combined);
+
+	_AIREAD(api_active_deck);
 
 	_IREAD(api_boss_damaged);
 
@@ -1502,11 +1509,13 @@ bool kcsapi_battle::ReadFromJObj(const QJsonObject &jobj)
 
 	_IREAD(api_midnight_flag);
 	_AAIREAD(api_eSlot); // from #0
+	_AAIREAD(api_eSlot_combined); // from #0
 	_AAIREAD(api_eKyouka); // from #0
 	_AAIREAD(api_fParam); // from $0
 	// combined
 	_AAIREAD(api_fParam_combined);
 	_AAIREAD(api_eParam); // from $0
+	_AAIREAD(api_eParam_combined); // from $0
 
 	_AIREAD(api_escape_idx);
 	_AIREAD(api_escape_idx_combined);
@@ -1581,6 +1590,7 @@ bool kcsapi_battle_support_airatack::ReadFromJObj(const QJsonObject &jobj)
 	_CREAD(api_stage1, kcsapi_battle_support_airatack_stage1);
 	_CREAD(api_stage2, kcsapi_battle_support_airatack_stage2);
 	_CREAD(api_stage3, kcsapi_battle_support_airatack_stage3);
+	_CREAD(api_stage3_combined, kcsapi_battle_support_airatack_stage3);
 
 	return _bParseRet;
 }

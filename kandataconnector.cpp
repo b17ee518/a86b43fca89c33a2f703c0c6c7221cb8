@@ -576,7 +576,9 @@ QString KanDataConnector::logBattleResult(bool bWrite/*=true*/)
 	bool useLast = false;
 	if (pksd->lastbattletype == KanBattleType::DayToNight
 		|| pksd->lastbattletype == KanBattleType::NightToDay
-		|| pksd->lastbattletype == KanBattleType::Combined_DayToNight)
+		|| pksd->lastbattletype == KanBattleType::Combined_DayToNight
+//		|| pksd->lastbattletype == KanBattleType::Combined_KouKuNight
+		|| pksd->lastbattletype == KanBattleType::Combined_ECNight)
 	{
 		useLast = true;
 	}
@@ -720,14 +722,25 @@ QString KanDataConnector::logBattleResult(bool bWrite/*=true*/)
 	case KanBattleType::Combined_KouKu:
 		battletypestr = QString::fromLocal8Bit("連航");
 		break;
+		/*
 	case KanBattleType::Combined_KouKuNight:
 		battletypestr = QString::fromLocal8Bit("連航夜");
+		break;
+		*/
+	case KanBattleType::Combined_Night:
+		battletypestr = QString::fromLocal8Bit("連夜");
 		break;
 	case KanBattleType::Combined_Day:
 		battletypestr = QString::fromLocal8Bit("連昼");
 		break;
 	case KanBattleType::Combined_DayToNight:
 		battletypestr = QString::fromLocal8Bit("連昼夜");
+		break;
+	case KanBattleType::Combined_EC:
+		battletypestr = QString::fromLocal8Bit("敵連");
+		break;
+	case KanBattleType::Combined_ECNight:
+		battletypestr = QString::fromLocal8Bit("敵連夜");
 		break;
 	}
 

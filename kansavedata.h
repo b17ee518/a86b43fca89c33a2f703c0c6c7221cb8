@@ -17,9 +17,9 @@ enum class KanBattleType
 
 	Combined_KouKu,
 	Combined_Water,
-	Combined_KouKuNight,
+//	Combined_KouKuNight,
 	Combined_Day,
-	Combined_Night,
+	Combined_Night,		// sp_night
 	Combined_DayToNight,
 	Combined_EC,
 	Combined_ECNight,

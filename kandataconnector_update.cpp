@@ -1211,6 +1211,7 @@ void KanDataConnector::updateBattle(const kcsapi_battle &api_battle, KanBattleTy
 		if (type != KanBattleType::DayToNight
 			&& type != KanBattleType::NightToDay
 			&& type != KanBattleType::Combined_DayToNight
+//			&& type != KanBattleType::Combined_KouKuNight
 			&& type != KanBattleType::Combined_ECNight)
 		{
 			pksd->lastSeiku = api_battle.api_kouku.api_stage1.api_disp_seiku;
@@ -1401,8 +1402,8 @@ void KanDataConnector::updateBattle(const kcsapi_battle &api_battle, KanBattleTy
 
 		if (type != KanBattleType::Night 
 			&& type != KanBattleType::DayToNight 
-			&& type != KanBattleType::Combined_KouKuNight 
-			&& type != KanBattleType::Combined_DayToNight 
+//			&& type != KanBattleType::Combined_KouKuNight 
+			&& type != KanBattleType::Combined_DayToNight
 			&& type != KanBattleType::Combined_Night
 			&& type != KanBattleType::Combined_ECNight)
 		{

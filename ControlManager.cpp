@@ -916,14 +916,6 @@ void ControlManager::Resume()
 
 void ControlManager::Terminate(bool bSilent)
 {
-	qDeleteAll(_actionList);
-	_actionList.clear();
-	setPauseNextVal(false);
-	setInactiveWaiting(false);
-	_target = ActionTarget::None;
-	_autoExpeditioningFlag = false;
-	MainWindow::mainWindow()->setJobTerminated();
-	_southEastSetting.stopWhen = StopWhen::None;
 	if (_state != State::ToTerminate)
 	{
 		setState(State::Terminated, "Terminated", bSilent);
@@ -932,6 +924,14 @@ void ControlManager::Terminate(bool bSilent)
 	{
 		setState(State::Terminated, _stateStr.toStdString().c_str(), bSilent);
 	}
+	qDeleteAll(_actionList);
+	_actionList.clear();
+	setPauseNextVal(false);
+	setInactiveWaiting(false);
+	_target = ActionTarget::None;
+	_autoExpeditioningFlag = false;
+	MainWindow::mainWindow()->setJobTerminated();
+	_southEastSetting.stopWhen = StopWhen::None;
 }
 
 bool ControlManager::isPaused()
@@ -1873,9 +1873,14 @@ void ControlManager::setState(State state, const char* str, bool bSilent)
 		_state = state;
 		if (_state == State::Terminated || _state == State::ToTerminate)
 		{
+			if (_target != ActionTarget::Expedition 
+				&& _target != ActionTarget::None)
+			{
+				MainWindow::mainWindow()->timerWindow()->playSound(TimerMainWindow::SoundIndex::Terminated, bSilent);
+			}
+
 			_autoExpeditioningFlag = false;
 			_target = ActionTarget::None;
-			MainWindow::mainWindow()->timerWindow()->playSound(TimerMainWindow::SoundIndex::Terminated, bSilent);
 			QTimer::singleShot(4000, Qt::PreciseTimer, [this]()
 			{
 				if (this->_state == State::Terminated)

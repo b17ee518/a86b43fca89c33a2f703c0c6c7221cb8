@@ -344,7 +344,7 @@ SingleExpedition* ExpeditionManager::getShouldNextSchedule(int team, qint64 ct, 
 		dateChange();
 		return NULL;
 	}
-
+	
 	QMap<QTime, SingleExpedition>::iterator it = pSchedule->expeditions.begin();
 	while (it != pSchedule->expeditions.end()) {
 		bool bOverNight = false;
@@ -361,6 +361,10 @@ SingleExpedition* ExpeditionManager::getShouldNextSchedule(int team, qint64 ct, 
 		QTime costTime = it.value().costTime;
 
 		QDateTime estNextBackTime = backTime;
+		if (estNextBackTime < currentTime)
+		{
+			estNextBackTime = currentTime;
+		}
 		estNextBackTime = estNextBackTime.addMSecs(costTime.msecsSinceStartOfDay());
 
 //		qDebug() << "estNext" << estNextBackTime.toString("dd:hh:mm:ss.zzz");

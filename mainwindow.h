@@ -114,6 +114,8 @@ public:
 	void setPauseNextChanged(bool bVal);
 	void setJobTerminated();
 
+	void switchToExpeditionWait();
+
 	WebWidgetType getWebWidgetType() { return _webWidgetType; }
 	PlatformType getPlatformType() { return _platformType; }
 

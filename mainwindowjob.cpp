@@ -62,11 +62,27 @@ void MainWindow::onDoJobFuel()
 
 	if (cm.isFlagshipOnly(0))
 	{
-		cm.BuildNext_Fuel();
+		if (cm.BuildNext_Fuel())
+		{
+			cm.StartJob();
+		}
+		else
+		{
+			switchToExpeditionWait();
+		}
+
 	}
 	else
 	{
-		cm.BuildNext_SouthEast();
+		if (cm.BuildNext_SouthEast())
+		{
+			cm.StartJob();
+		}
+		else
+		{
+			switchToExpeditionWait();
+		}
+
 	}
 
 	cm.StartJob();
@@ -86,8 +102,14 @@ void MainWindow::onDoJobKira()
 		kiraSetting.forceCurrent = true;
 	}
 	cm.setKiraSetting(kiraSetting);
-	cm.BuildNext_Kira();
-	cm.StartJob();
+	if (cm.BuildNext_Kira())
+	{
+		cm.StartJob();
+	}
+	else
+	{
+		switchToExpeditionWait();
+	}
 
 }
 
@@ -109,6 +131,10 @@ void MainWindow::onDoJobLevel()
 	{
 		cm.StartJob();
 	}
+	else
+	{
+		switchToExpeditionWait();
+	}
 }
 
 void MainWindow::onDoJobRank()
@@ -121,8 +147,27 @@ void MainWindow::onDoJobRank()
 	{
 		cm.StartJob();
 	}
+	else
+	{
+		switchToExpeditionWait();
+	}
 }
 
+void MainWindow::switchToExpeditionWait()
+{
+	auto& cm = ControlManager::getInstance();
+	cm.Terminate();
+	cm.clearLastTarget();
+	if (cm.BuildNext_Expedition())
+	{
+		cm.StartJob();
+	}
+	else
+	{
+		return;
+	}
+	ui->pbWaitExpedition->setChecked(true);
+}
 
 void MainWindow::onDoJobExpedition(bool bDo)
 {

@@ -1570,6 +1570,7 @@ void SortieCommonAdvanceAction::setState(State state, const char* str)
 bool RepeatAction::action()
 {
 	auto& cm = ControlManager::getInstance();
+	MainWindow* mainWindow = MainWindow::mainWindow();
 	switch (_state)
 	{
 	case RepeatAction::State::None:
@@ -1580,6 +1581,10 @@ bool RepeatAction::action()
 				setState(State::Done, "Repeat:Done");
 				cm.StartJob();
 			}
+			else
+			{
+				mainWindow->switchToExpeditionWait();
+			}
 		}
 		else if (cm.isKiraMode())
 		{
@@ -1588,6 +1593,10 @@ bool RepeatAction::action()
 				setState(State::Done, "Repeat:Done");
 				cm.StartJob();
 			}
+			else
+			{
+				mainWindow->switchToExpeditionWait();
+			}
 		}
 		else if (cm.isSouthEastMode())
 		{
@@ -1595,6 +1604,10 @@ bool RepeatAction::action()
 			{
 				setState(State::Done, "Repeat:Done");
 				cm.StartJob();
+			}
+			else
+			{
+				mainWindow->switchToExpeditionWait();
 			}
 		}
 		else if (cm.isExpeditionMode())
@@ -1617,6 +1630,10 @@ bool RepeatAction::action()
 				setState(State::Done, "Repeat:Done");
 				cm.StartJob();
 			}
+			else
+			{
+				mainWindow->switchToExpeditionWait();
+			}
 		}
 		else if (cm.isRankMode())
 		{
@@ -1624,6 +1641,10 @@ bool RepeatAction::action()
 			{
 				setState(State::Done, "Repeat:Done");
 				cm.StartJob();
+			}
+			else
+			{
+				mainWindow->switchToExpeditionWait();
 			}
 		}
 		break;

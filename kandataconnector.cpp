@@ -5,6 +5,8 @@
 #include "mainwindow.h"
 #include "klog.h"
 
+#include "ControlManager.h"
+
 void KanDataConnector::getShipColors(const kcsapi_ship2 *pship, QColor *pcolCond/*=0*/, QColor *pcolWound/*=0*/, CondState* pcondstate/*=0*/, WoundState* pwoundstate/*=0*/)
 {
 	if (pcolCond || pcondstate)
@@ -544,7 +546,13 @@ QString KanDataConnector::logBattleResult(bool bWrite/*=true*/)
 			pksd->totalBossWin++;
 			if (maparea_id == 2 && mapinfo_no > 1)
 			{
-				pksd->totalSouthEastWin++;
+				ControlManager& cm = ControlManager::getInstance();
+				if (!cm.isRunning()
+					|| !cm.isSouthEastMode()
+					|| cm.getSouthEastSetting().stopWhen != ControlManager::StopWhen::Yusou3)
+				{
+					pksd->totalSouthEastWin++;
+				}
 			}
 			else if (maparea_id == 5 && mapinfo_no == 4)
 			{

@@ -153,6 +153,26 @@ void MainWindow::onDoJobRank()
 	}
 }
 
+void MainWindow::onDoJobAny()
+{
+	auto& cm = ControlManager::getInstance();
+	cm.Terminate();
+	cm.clearLastTarget();
+
+	//TODO: add dialog
+	if (cm.BuildNext_Any())
+	{
+		cm.StartJob();
+	}
+	else
+	{
+		switchToExpeditionWait();
+	}
+
+}
+
+
+
 void MainWindow::switchToExpeditionWait()
 {
 	auto& cm = ControlManager::getInstance();

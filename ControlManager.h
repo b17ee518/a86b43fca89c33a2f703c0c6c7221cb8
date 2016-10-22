@@ -27,6 +27,7 @@ public:
 		Expedition,
 		Level,
 		Rank,
+		Any,
 	};
 
 	enum class StopWhen
@@ -69,6 +70,13 @@ public:
 	struct RankSetting
 	{
 	};
+	struct AnySetting
+	{
+		int area = 3;
+		int map = 3;
+		// returnPoints
+		// S
+	};
 
 public:
 	static ControlManager& getInstance() { 
@@ -98,6 +106,8 @@ public:
 	bool BuildNext_Level();
 
 	bool BuildNext_Rank();
+
+	bool BuildNext_Any();
 
 	bool LoadExpeditionPossibleList(); // TODO
 	bool BuildNext_Expedition();
@@ -160,6 +170,7 @@ public:
 
 	void setSouthEastSetting(const SouthEastSetting& southEastSetting);
 	void setKiraSetting(const KiraSetting& kiraSetting);
+	void setAnySetting(const AnySetting& anySetting);
 
 	bool isRunning(){ return _state == State::Started; }
 	bool isActiveRunning();
@@ -197,6 +208,7 @@ public:
 	inline bool isLevelMode(){ return _target == ActionTarget::Level; }
 	inline bool isExpeditionMode(){ return _target == ActionTarget::Expedition; }
 	inline bool isRankMode(){ return _target == ActionTarget::Rank; }
+	inline bool isAnyMode(){ return _target == ActionTarget::Any; }
 	
 	void setState(State state, const char* str, bool bSilent=false);
 	void setInactiveWaiting(bool waiting){ _inactiveWaiting = waiting; }
@@ -230,6 +242,7 @@ public:
 	const LevelSetting& getLevelSetting(){ return _levelSetting; }
 	const ExpeditionSetting& getExpeditionSetting(){ return _expeditionSetting; }
 	const RankSetting& getRankSetting() { return _rankSetting; }
+	const AnySetting& getAnySetting() { return _anySetting; }
 
 //private:
 	void moveMouseToAndClick(float x, float y, float offsetX = 5, float offsetY = 3);
@@ -271,5 +284,6 @@ public:
 	LevelSetting _levelSetting;
 	ExpeditionSetting _expeditionSetting;
 	RankSetting _rankSetting;
+	AnySetting _anySetting;
 }; 
 

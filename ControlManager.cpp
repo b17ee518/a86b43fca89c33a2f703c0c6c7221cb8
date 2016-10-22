@@ -117,7 +117,9 @@ bool ControlManager::BuildNext_Kira()
 	chAction->setShips(togoShipId, wasteId);
 	_actionList.append(chAction);
 
-	_actionList.append(new SortieAction());
+	SortieAction* sortieAction = new SortieAction();
+	sortieAction->setAreaAndMap(1, 1);
+	_actionList.append(sortieAction);
 	_actionList.append(new SortieAdvanceAction());
 	_actionList.append(new ChargeAction());
 	_actionList.append(new RepeatAction());
@@ -173,7 +175,9 @@ bool ControlManager::BuildNext_Fuel()
 	
 	_target = ActionTarget::Fuel;
 
-	_actionList.append(new SortieAction());
+	SortieAction* sortieAction = new SortieAction();
+	sortieAction->setAreaAndMap(2, 3);
+	_actionList.append(sortieAction);
 	_actionList.append(new SortieAdvanceAction());
 	_actionList.append(new ChargeAction());
 	_actionList.append(new RepeatAction());
@@ -361,8 +365,10 @@ bool ControlManager::BuildNext_SouthEast()
 	auto chAction = new ChangeHenseiAction();
 	chAction->setShips(ships);
 	_actionList.append(chAction);
-	
-	_actionList.append(new SortieAction());
+
+	SortieAction* sortieAction = new SortieAction();
+	sortieAction->setAreaAndMap(2, 3);
+	_actionList.append(sortieAction);
 	_actionList.append(new SortieCommonAdvanceAction());
 	_actionList.append(new ChargeAction());
 	_actionList.append(new RepeatAction());
@@ -516,7 +522,9 @@ bool ControlManager::BuildNext_Level()
 		waitAction->setWaitMS(waitMS);
 		_actionList.append(waitAction);
 	}
-	_actionList.append(new SortieAction());
+	SortieAction* sortieAction = new SortieAction();
+	sortieAction->setAreaAndMap(3, 2);
+	_actionList.append(sortieAction);
 	_actionList.append(new SortieCommonAdvanceAction());
 	_actionList.append(new ChargeAction());
 	_actionList.append(new RepeatAction());
@@ -614,13 +622,82 @@ bool ControlManager::BuildNext_Rank()
 		_actionList.append(waitAction);
 	}
 
-	_actionList.append(new SortieAction());
+	SortieAction* sortieAction = new SortieAction();
+	sortieAction->setAreaAndMap(5, 4);
+	_actionList.append(sortieAction);
 	_actionList.append(new SortieCommonAdvanceAction());
 	_actionList.append(new ChargeAction());
 	_actionList.append(new RepeatAction());
 	setState(State::Ready, "Ready");
 	return true;
 }
+
+bool ControlManager::BuildNext_Any()
+{
+	pushPreSupplyCheck();
+	_target = ActionTarget::Any;
+
+	KanSaveData* pksd = &KanSaveData::getInstance();
+	KanDataConnector* pkdc = &KanDataConnector::getInstance();
+
+	//TODO: read AnySetting
+	if (isShipFull())
+	{
+		setToTerminate("Terminated:ShipFull");
+		return false;
+	}
+
+	int minCond = std::numeric_limits<int>::max();
+	int shipCount = 0;
+
+	if (pksd->portdata.api_deck_port.size())
+	{
+		auto& firstFleet = pksd->portdata.api_deck_port.first();
+		for (auto id : firstFleet.api_ship)
+		{
+			if (id >= 0)
+			{
+				const kcsapi_ship2* pship = pkdc->findShipFromShipno(id);
+				if (pship)
+				{
+					shipCount++;
+
+					if (pship->api_cond < minCond)
+					{
+						minCond = pship->api_cond;
+					}
+
+					WoundState ws = KanDataCalc::GetWoundState(pship->api_nowhp, pship->api_maxhp);
+
+					if (ws >= WoundState::Middle)
+					{
+						setToTerminate("Terminated:Damage");
+						return false;
+					}
+				}
+			}
+		}
+	}
+
+	if (minCond <= _sortieMinCond)
+	{
+		// wait
+		qint64 waitMS = qCeil((_sortieWaitCond - minCond) / 3.0) * 3 * 60 * 1000;
+		auto waitAction = new WaitCondAction();
+		waitAction->setWaitMS(waitMS);
+		_actionList.append(waitAction);
+	}
+
+	SortieAction* sortieAction = new SortieAction();
+	sortieAction->setAreaAndMap(_anySetting.area, _anySetting.map);
+	_actionList.append(sortieAction);
+	_actionList.append(new SortieCommonAdvanceAction());
+	_actionList.append(new ChargeAction());
+	_actionList.append(new RepeatAction());
+	setState(State::Ready, "Ready");
+	return true;
+}
+
 
 bool ControlManager::BuildNext_Expedition()
 {
@@ -1633,6 +1710,11 @@ void ControlManager::setSouthEastSetting(const SouthEastSetting& southEastSettin
 void ControlManager::setKiraSetting(const KiraSetting& kiraSetting)
 {
 	_kiraSetting = kiraSetting;
+}
+
+void ControlManager::setAnySetting(const AnySetting& anySetting)
+{
+	_anySetting = anySetting;
 }
 
 bool ControlManager::isActiveRunning()

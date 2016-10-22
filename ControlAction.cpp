@@ -1129,81 +1129,55 @@ bool SortieAction::action()
 		}
 		break;
 	case SortieAction::State::SelectAreaDone:
-		if (cm.isFuelMode() || cm.isSouthEastMode())
-		{
-			if (!_waiting)
-			{
-				_waiting = true;
-				QTimer::singleShot(DELAY_TIME_CLICK, Qt::PreciseTimer, this, [this, &cm]()
-				{
-					cm.moveMouseToAndClick(235, 445, 14, 9); // area 2
-					setState(State::SelectMapChecking, "Sortie:SelectMapChecking");
-					resetRetryAndWainting();
-				});
-			}
-			// fule mode select 2
-		}
-		else if (cm.isLevelMode())
-		{
-			if (!_waiting)
-			{
-				_waiting = true;
-				QTimer::singleShot(DELAY_TIME_CLICK, Qt::PreciseTimer, this, [this, &cm]()
-				{
-					cm.moveMouseToAndClick(304, 445, 14, 9); // area 3
-					setState(State::SelectMapChecking, "Sortie:SelectMapChecking");
-					resetRetryAndWainting();
-				});
-			}
-			// selec 3
-		}
-		else if (cm.isRankMode())
-		{
-			if (!_waiting)
-			{
-				_waiting = true;
-				QTimer::singleShot(DELAY_TIME_CLICK, Qt::PreciseTimer, this, [this, &cm]()
-				{
-					cm.moveMouseToAndClick(452, 445, 14, 9); // area 3
-					setState(State::SelectMapChecking, "Sortie:SelectMapChecking");
-					resetRetryAndWainting();
-				});
-			}
-			// selec 5
-		}
-		else if (cm.isKiraMode())
+	{
+		if (_area == 1)
 		{
 			// skip to select map
 			setState(State::SelectMapDone, "Sortie:SelectMapDone");
 		}
+		else
+		{
+			if (!_waiting)
+			{
+				_waiting = true;
+				QTimer::singleShot(DELAY_TIME_CLICK, Qt::PreciseTimer, this, [this, &cm]()
+				{
+					QMap<int, QList<float>> areaPoints;
+					areaPoints[2] = { 235, 445, 14, 9 };
+					areaPoints[3] = { 304, 445, 14, 9 };
+					//TODO!!!!
+					areaPoints[5] = { 452, 445, 14, 9 };
+
+					const auto& pPoint = areaPoints[_area];
+
+					cm.moveMouseToAndClick(pPoint[0], pPoint[1], pPoint[2], pPoint[3]);
+					setState(State::SelectMapChecking, "Sortie:SelectMapChecking");
+					resetRetryAndWainting();
+				});
+			}
+		}
+	}
 		break;
 	case SortieAction::State::SelectMapChecking:
-		// only fuel mode
 		if (!_waiting)
 		{
 			_waiting = true;
 			QTimer::singleShot(DELAY_TIME, Qt::PreciseTimer, this, [this, &cm]()
 			{
-				if (
-					(cm.isLevelMode() 
-					&& cm.checkColors(
-					512, 263, 84, 90, 107
-					, 618, 190, 179, 211, 206)) 
-					
-					||
-
-				 ((cm.isSouthEastMode() || cm.isFuelMode()) &&
-					cm.checkColors(
+				QMap<int, QList<float>> areaPoints;
+				areaPoints[2] = {
 					246, 326, 197, 106, 166
-					, 354, 370, 244, 206, 94))
-
-					||
-
-					(cm.isRankMode()
-					&& cm.checkColors(
+					, 354, 370, 244, 206, 94 };
+				areaPoints[3] = {
+					512, 263, 84, 90, 107
+					, 618, 190, 179, 211, 206 };
+				areaPoints[5] = {
 					520, 365, 24, 32, 72
-					, 657, 327, 122, 139, 123))
-					)
+					, 657, 327, 122, 139, 123 };
+
+				const auto& pPoint = areaPoints[_area];
+				if (cm.checkColors(pPoint[0], pPoint[1], pPoint[2], pPoint[3], pPoint[4]
+					, pPoint[5], pPoint[6], pPoint[7], pPoint[8], pPoint[9]))
 				{
 					_waiting = false;
 					setState(State::SelectMapDone, "Sortie:SelectMapDone");
@@ -1216,61 +1190,25 @@ bool SortieAction::action()
 		}
 		break;
 	case SortieAction::State::SelectMapDone:
-		if (cm.isFuelMode() || cm.isSouthEastMode())
+
+		if (!_waiting)
 		{
-			if (!_waiting)
+			_waiting = true;
+			QTimer::singleShot(DELAY_TIME_CLICK, Qt::PreciseTimer, this, [this, &cm]()
 			{
-				_waiting = true;
-				QTimer::singleShot(DELAY_TIME_CLICK, Qt::PreciseTimer, this, [this, &cm]()
-				{
-					cm.moveMouseToAndClick(288.5f, 350, 102.5f, 36); // map 3
-					setState(State::SortieCheckChecking, "Sortie:SortieCheckChecking");
-					resetRetryAndWainting();
-				});
-			}
-			// fule mode select 3
+				QMap<int, QList<float>> mapPoints;
+				mapPoints[1] = { 281, 207, 100, 41 };
+				mapPoints[2] = { 600, 199, 60, 36 };
+				mapPoints[3] = { 288.5f, 350, 102.5f, 36 };
+				mapPoints[4] = { 600, 350, 60, 36 };
+
+				auto& pPoint = mapPoints[_map];
+				cm.moveMouseToAndClick(pPoint[0], pPoint[1], pPoint[2], pPoint[3]); // map 1
+				setState(State::SortieCheckChecking, "Sortie:SortieCheckChecking");
+				resetRetryAndWainting();
+			});
 		}
-		else if (cm.isLevelMode())
-		{
-			if (!_waiting)
-			{
-				_waiting = true;
-				QTimer::singleShot(DELAY_TIME_CLICK, Qt::PreciseTimer, this, [this, &cm]()
-				{
-					cm.moveMouseToAndClick(600, 199, 60, 36); // map 2
-					setState(State::SortieCheckChecking, "Sortie:SortieCheckChecking");
-					resetRetryAndWainting();
-				});
-			}
-			// level mode select 2
-		}
-		else if (cm.isRankMode())
-		{
-			if (!_waiting)
-			{
-				_waiting = true;
-				QTimer::singleShot(DELAY_TIME_CLICK, Qt::PreciseTimer, this, [this, &cm]()
-				{
-					cm.moveMouseToAndClick(600, 350, 60, 36); // map 4
-					setState(State::SortieCheckChecking, "Sortie:SortieCheckChecking");
-					resetRetryAndWainting();
-				});
-			}
-			// rank mode select 4
-		}
-		else if (cm.isKiraMode())
-		{
-			if (!_waiting)
-			{
-				_waiting = true;
-				QTimer::singleShot(DELAY_TIME_CLICK, Qt::PreciseTimer, this, [this, &cm]()
-				{
-					cm.moveMouseToAndClick(281, 207, 100, 41); // map 1
-					setState(State::SortieCheckChecking, "Sortie:SortieCheckChecking");
-					resetRetryAndWainting();
-				});
-			}
-		}
+
 		break;
 	case SortieAction::State::SortieCheckChecking:
 		if (!_waiting)
@@ -1359,6 +1297,12 @@ void SortieAction::setState(State state, const char* str)
 {
 	_state = state;
 	ControlManager::getInstance().setStateStr(str);
+}
+
+void SortieAction::setAreaAndMap(int area, int map)
+{
+	_area = area;
+	_map = map;
 }
 
 bool SortieAdvanceAction::action()
@@ -1638,6 +1582,18 @@ bool RepeatAction::action()
 		else if (cm.isRankMode())
 		{
 			if (cm.BuildNext_Rank())
+			{
+				setState(State::Done, "Repeat:Done");
+				cm.StartJob();
+			}
+			else
+			{
+				mainWindow->switchToExpeditionWait();
+			}
+		}
+		else if (cm.isAnyMode())
+		{
+			if (cm.BuildNext_Any())
 			{
 				setState(State::Done, "Repeat:Done");
 				cm.StartJob();

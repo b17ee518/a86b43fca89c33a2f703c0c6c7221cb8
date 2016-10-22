@@ -282,6 +282,11 @@ public:
 	{
 	}
 
+public:
+	void setAreaAndMap(int area, int map);
+	int _area = 1;
+	int _map = 1;
+
 	virtual bool action() override;
 
 private:

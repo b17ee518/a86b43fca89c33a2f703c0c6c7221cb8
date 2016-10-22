@@ -713,7 +713,7 @@ bool ControlManager::BuildNext_Expedition()
 	auto pExp = ExpeditionManager::getInstance().getShouldNextSchedule(team, ct, ct+waitMS);
 	if (!pExp)
 	{
-		setToTerminate("Termination:Fatal");
+		setToTerminate("Termination:Fatal", true);
 		// date may change here
 		return false;
 	}
@@ -727,7 +727,7 @@ bool ControlManager::BuildNext_Expedition()
 	KanSaveData* pksd = &KanSaveData::getInstance();
 	if (!pksd->portdata.api_ship.size())
 	{
-		setToTerminate("Termination:Fatal");
+		setToTerminate("Termination:Fatal", true);
 		return false;
 	}
 	QList<int> ships;
@@ -740,13 +740,13 @@ bool ControlManager::BuildNext_Expedition()
 		}
 		else
 		{
-			setToTerminate("Termination:Fatal");
+			setToTerminate("Termination:Fatal", true);
 			return false;
 		}
 	}
 	else
 	{
-		setToTerminate("Termination:Fatal");
+		setToTerminate("Termination:Fatal", true);
 		return false;
 	}
 
@@ -785,7 +785,7 @@ bool ControlManager::BuildNext_Expedition()
 		QString failReason = pExp->checkMatches(ships[i], i, team, toShipid, todoships, excludeShipids);
 		if (!failReason.isEmpty())
 		{
-			setToTerminate((QString("Termination:") + failReason).toStdString().c_str());
+			setToTerminate((QString("Termination:") + failReason).toStdString().c_str(), true);
 			return false;
 		}
 		if (toShipid < 0)
@@ -1089,9 +1089,9 @@ void ControlManager::setupAutoExpedition()
 	}
 }
 
-void ControlManager::setToTerminate(const char* title)
+void ControlManager::setToTerminate(const char* title, bool forceSound)
 {
-	setState(State::ToTerminate, title);
+	setState(State::ToTerminate, title, false, forceSound);
 }
 
 void ControlManager::createSSShipList()
@@ -1948,15 +1948,16 @@ int ControlManager::getCurrentSecondshipId()
 
 }
 
-void ControlManager::setState(State state, const char* str, bool bSilent)
+void ControlManager::setState(State state, const char* str, bool bSilent, bool forceSound)
 {
 	if (_state != state)
 	{
 		_state = state;
 		if (_state == State::Terminated || _state == State::ToTerminate)
 		{
-			if (_target != ActionTarget::Expedition 
-				&& _target != ActionTarget::None)
+			if (forceSound 
+				||	(_target != ActionTarget::Expedition && _target != ActionTarget::None)
+				)
 			{
 				MainWindow::mainWindow()->timerWindow()->playSound(TimerMainWindow::SoundIndex::Terminated, bSilent);
 			}

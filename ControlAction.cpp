@@ -40,7 +40,7 @@ void ControlAction::tryRetry()
 	}
 	else
 	{
-		ControlManager::getInstance().setToTerminate("Terminated:RetryTimeOver");
+		ControlManager::getInstance().setToTerminate("Terminated:RetryTimeOver", true);
 		emit sigCheckFail();
 	}
 }
@@ -1644,7 +1644,7 @@ bool ExpeditionAction::action()
 
 		if (cm.needChargeAnyShip(_team) || cm.hugestDamageInTeam(_team) > WoundState::Full)
 		{
-			cm.setToTerminate("Terminated:Damage");
+			cm.setToTerminate("Terminated:Damage", true);
 			emit sigFatal();
 			return false;
 		}

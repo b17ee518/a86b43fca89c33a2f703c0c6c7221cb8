@@ -130,7 +130,7 @@ public:
 
 	bool isTerminated(){ return _state == State::Terminated; }
 
-	void setToTerminate(const char* title);
+	void setToTerminate(const char* title, bool forceSound=false);
 
 	void createSSShipList();
 	bool isTreatedSameShip(int shipno, int oshipno);
@@ -210,7 +210,7 @@ public:
 	inline bool isRankMode(){ return _target == ActionTarget::Rank; }
 	inline bool isAnyMode(){ return _target == ActionTarget::Any; }
 	
-	void setState(State state, const char* str, bool bSilent=false);
+	void setState(State state, const char* str, bool bSilent=false, bool forceSound=false);
 	void setInactiveWaiting(bool waiting){ _inactiveWaiting = waiting; }
 
 	void setStateStr(const QString& str);

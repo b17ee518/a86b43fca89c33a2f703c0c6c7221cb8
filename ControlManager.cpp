@@ -29,11 +29,6 @@ ControlManager::~ControlManager()
 bool ControlManager::BuildNext_Kira()
 {
 	pushPreSupplyCheck();
-	if (stopWhenCheck())
-	{
-		setToTerminate("Termination:StopWhenDone");
-		return false;
-	}
 	if (_kiraSetting.forceCurrent)
 	{
 		_todoShipids.clear();
@@ -840,6 +835,10 @@ bool ControlManager::BuildNext_Expedition()
 
 bool ControlManager::stopWhenCheck()
 {
+	if (!isFuelMode() && !isSouthEastMode())
+	{
+		return false;
+	}
 
 	switch (_southEastSetting.stopWhen)
 	{

@@ -1008,7 +1008,7 @@ void ControlManager::Terminate(bool bSilent)
 	_target = ActionTarget::None;
 	_autoExpeditioningFlag = false;
 	MainWindow::mainWindow()->setJobTerminated();
-	_southEastSetting.stopWhen = StopWhen::None;
+//	_southEastSetting.stopWhen = StopWhen::None;
 }
 
 bool ControlManager::isPaused()

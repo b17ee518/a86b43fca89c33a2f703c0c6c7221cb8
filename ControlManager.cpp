@@ -1955,7 +1955,7 @@ void ControlManager::setState(State state, const char* str, bool bSilent, bool f
 		if (_state == State::Terminated || _state == State::ToTerminate)
 		{
 			if (forceSound 
-				||	(_target != ActionTarget::Expedition && _target != ActionTarget::None)
+				||	(_target != ActionTarget::Expedition)
 				)
 			{
 				MainWindow::mainWindow()->timerWindow()->playSound(TimerMainWindow::SoundIndex::Terminated, bSilent);

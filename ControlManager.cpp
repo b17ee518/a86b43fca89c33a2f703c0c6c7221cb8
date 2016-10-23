@@ -28,6 +28,7 @@ ControlManager::~ControlManager()
 
 bool ControlManager::BuildNext_Kira()
 {
+	_target = ActionTarget::Kira;
 	pushPreSupplyCheck();
 	if (_kiraSetting.forceCurrent)
 	{
@@ -45,7 +46,6 @@ bool ControlManager::BuildNext_Kira()
 		return false;
 	}
 
-	_target = ActionTarget::Kira;
 	if (isShipFull())
 	{
 		setToTerminate("Terminated:ShipFull");
@@ -132,6 +132,7 @@ bool ControlManager::BuildNext_Fuel()
 		return;
 	}
 	*/
+	_target = ActionTarget::Fuel;
 	
 	pushPreSupplyCheck();
 	if (stopWhenCheck())
@@ -160,15 +161,12 @@ bool ControlManager::BuildNext_Fuel()
 		return false;
 	}
 
-
 	if (isShipFull())
 	{
 		setToTerminate("Terminated:ShipFull");
 		return false;
 //		_actionList.append(new DestroyShipAction());
-	}
-	
-	_target = ActionTarget::Fuel;
+	}	
 
 	SortieAction* sortieAction = new SortieAction();
 	sortieAction->setAreaAndMap(2, 3);
@@ -183,6 +181,8 @@ bool ControlManager::BuildNext_Fuel()
 
 bool ControlManager::BuildNext_SouthEast()
 {
+	_target = ActionTarget::SouthEast;
+
 	pushPreSupplyCheck();
 	if (stopWhenCheck())
 	{
@@ -348,9 +348,6 @@ bool ControlManager::BuildNext_SouthEast()
 		}
 	}
 
-
-	_target = ActionTarget::SouthEast;
-
 	// change hensei sort
 	auto chSortAction = new ChangeHenseiAction();
 	chSortAction->setShips(sortInTeamShips);
@@ -374,8 +371,8 @@ bool ControlManager::BuildNext_SouthEast()
 
 bool ControlManager::BuildNext_Level()
 {
-	pushPreSupplyCheck();
 	_target = ActionTarget::Level;
+	pushPreSupplyCheck();
 
 	KanSaveData* pksd = &KanSaveData::getInstance();
 	KanDataConnector* pkdc = &KanDataConnector::getInstance();
@@ -529,8 +526,8 @@ bool ControlManager::BuildNext_Level()
 
 bool ControlManager::BuildNext_Rank()
 {
-	pushPreSupplyCheck();
 	_target = ActionTarget::Rank;
+	pushPreSupplyCheck();
 
 	KanSaveData* pksd = &KanSaveData::getInstance();
 	KanDataConnector* pkdc = &KanDataConnector::getInstance();
@@ -629,8 +626,8 @@ bool ControlManager::BuildNext_Rank()
 
 bool ControlManager::BuildNext_Any()
 {
-	pushPreSupplyCheck();
 	_target = ActionTarget::Any;
+	pushPreSupplyCheck();
 
 	KanSaveData* pksd = &KanSaveData::getInstance();
 	KanDataConnector* pkdc = &KanDataConnector::getInstance();
@@ -1955,7 +1952,7 @@ void ControlManager::setState(State state, const char* str, bool bSilent, bool f
 		if (_state == State::Terminated || _state == State::ToTerminate)
 		{
 			if (forceSound 
-				||	(_target != ActionTarget::Expedition)
+				||	(_target != ActionTarget::Expedition && _target != ActionTarget::None)
 				)
 			{
 				MainWindow::mainWindow()->timerWindow()->playSound(TimerMainWindow::SoundIndex::Terminated, bSilent);

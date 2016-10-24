@@ -1951,6 +1951,7 @@ void ControlManager::setState(State state, const char* str, bool bSilent, bool f
 		_state = state;
 		if (_state == State::Terminated || _state == State::ToTerminate)
 		{
+			_lastTerminationReason = str;
 			if (forceSound 
 				||	(_target != ActionTarget::Expedition && _target != ActionTarget::None)
 				)
@@ -1960,13 +1961,25 @@ void ControlManager::setState(State state, const char* str, bool bSilent, bool f
 
 			_autoExpeditioningFlag = false;
 			_target = ActionTarget::None;
-			QTimer::singleShot(4000, Qt::PreciseTimer, [this]()
+			if (!_lastTerminationReason.isEmpty())
 			{
-				if (this->_state == State::Terminated)
+				QTimer::singleShot(4000, Qt::PreciseTimer, [this]()
 				{
-					setStateStr("");
-				}
-			});
+					if (_stateStr.startsWith(_lastTerminationReason) && !_lastTerminationReason.isEmpty())
+					{
+						_stateStr = _stateStr.replace(0, _lastTerminationReason.count() + 1, "");
+					}
+					_lastTerminationReason = "";
+					if (this->_state == State::Terminated)
+					{
+						setStateStr("");
+					}
+					else
+					{
+						setStateStr(_stateStr);
+					}
+				});
+			}
 		}
 	}
 	setStateStr(str);
@@ -1975,7 +1988,11 @@ void ControlManager::setState(State state, const char* str, bool bSilent, bool f
 void ControlManager::setStateStr(const QString& str)
 {
 	_stateStr = str;
-	MainWindow::mainWindow()->timerWindow()->setTitle(str);
+	if (!_stateStr.startsWith(_lastTerminationReason))
+	{
+		_stateStr = _lastTerminationReason + " " + _stateStr;
+	}
+	MainWindow::mainWindow()->timerWindow()->setTitle(_stateStr);
 }
 
 void ControlManager::switchBackToLastAction()

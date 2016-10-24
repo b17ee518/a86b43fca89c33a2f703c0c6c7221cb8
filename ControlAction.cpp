@@ -264,6 +264,7 @@ bool ChangeHenseiAction::action()
 			else
 			{
 				cm.setToTerminate("Terminated:HenseiError");
+				emit sigCheckFail();
 			}
 		}
 		resetRetryAndWainting();
@@ -650,8 +651,8 @@ bool ChangeHenseiAction::action()
 						else
 						{
 							qDebug() << "hensei error";
-							emit sigCheckFail();
 							cm.setToTerminate("Terminated:HenseiError");
+							emit sigCheckFail();
 						}
 					});
 				}
@@ -707,8 +708,8 @@ bool ChangeHenseiAction::action()
 		}
 		else
 		{
-			emit sigCheckFail();
 			cm.setToTerminate("Terminated:HenseiError");
+			emit sigCheckFail();
 		}
 		break;
 	default:

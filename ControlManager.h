@@ -255,6 +255,8 @@ public:
 	
 	qreal randVal(qreal min, qreal max);
 
+	QString _lastTerminationReason;
+
 	QList<int> _todoShipids;
 	int _toCond = 70;
 	QList<ControlAction*> _actionList;

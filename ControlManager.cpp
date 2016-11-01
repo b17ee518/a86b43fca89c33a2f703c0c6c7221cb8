@@ -722,6 +722,7 @@ bool ControlManager::BuildNext_Any()
 	if (_anySetting.count >= 0 && _anySetting.count <= pksd->totalAnyCount)
 	{
 		setToTerminate("Terminated:CountReached");
+		return false;
 	}
 
 	int minCond = std::numeric_limits<int>::max();

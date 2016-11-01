@@ -1146,8 +1146,9 @@ bool SortieAction::action()
 					QMap<int, QList<float>> areaPoints;
 					areaPoints[2] = { 235, 445, 14, 9 };
 					areaPoints[3] = { 304, 445, 14, 9 };
-					//TODO!!!!
+					areaPoints[4] = { 377, 445, 14, 9 };
 					areaPoints[5] = { 452, 445, 14, 9 };
+					areaPoints[6] = { 528, 445, 14, 9 };
 
 					const auto& pPoint = areaPoints[_area];
 
@@ -1169,12 +1170,22 @@ bool SortieAction::action()
 				areaPoints[2] = {
 					246, 326, 197, 106, 166
 					, 354, 370, 244, 206, 94 };
+
 				areaPoints[3] = {
 					512, 263, 84, 90, 107
 					, 618, 190, 179, 211, 206 };
+
+				areaPoints[4] = {
+					384, 197, 206, 227, 147
+					, 340, 340, 155, 90, 93 };
+
 				areaPoints[5] = {
 					520, 365, 24, 32, 72
 					, 657, 327, 122, 139, 123 };
+
+				areaPoints[6] = {
+					215, 251, 28, 104, 209
+					, 215, 362, 87, 117, 102 };
 
 				const auto& pPoint = areaPoints[_area];
 				if (cm.checkColors(pPoint[0], pPoint[1], pPoint[2], pPoint[3], pPoint[4]
@@ -1202,15 +1213,88 @@ bool SortieAction::action()
 				mapPoints[2] = { 600, 199, 60, 36 };
 				mapPoints[3] = { 288.5f, 350, 102.5f, 36 };
 				mapPoints[4] = { 600, 350, 60, 36 };
+				mapPoints[5] = mapPoints[6] = { 720, 275, 54, 58 };
 
 				auto& pPoint = mapPoints[_map];
 				cm.moveMouseToAndClick(pPoint[0], pPoint[1], pPoint[2], pPoint[3]); // map 1
+
+				if (_map > 4)
+				{
+					setState(State::SelectExMapChecking, "Sortie:SelectExMapChecking");
+				}
+				else
+				{
+					setState(State::SortieCheckChecking, "Sortie:SortieCheckChecking");
+				}
+
+				resetRetryAndWainting();
+			});
+		}
+
+		break;
+
+
+	case SortieAction::State::SelectExMapChecking:
+		if (!_waiting)
+		{
+			_waiting = true;
+			QTimer::singleShot(DELAY_TIME_LONG, Qt::PreciseTimer, this, [this, &cm]()
+			{
+				QMap<int, QList<float>> areaPoints;
+				areaPoints[1] = {
+					160, 291, 250, 43, 43
+					, 162, 279, 255, 255, 255 };
+				areaPoints[2] = {
+					160, 291, 250, 43, 43
+					, 162, 279, 255, 255, 255 };
+				areaPoints[3] = {
+					160, 291, 250, 43, 43
+					, 162, 279, 255, 255, 255 };
+				areaPoints[4] = {
+					160, 291, 250, 43, 43
+					, 162, 279, 255, 255, 255 };
+				areaPoints[5] = {
+					160, 291, 250, 43, 43
+					, 162, 279, 255, 255, 255 };
+				areaPoints[6] = {
+					160, 291, 250, 43, 43
+					, 162, 279, 255, 255, 255 };
+				
+				const auto& pPoint = areaPoints[_area];
+				if (cm.checkColors(pPoint[0], pPoint[1], pPoint[2], pPoint[3], pPoint[4]
+					, pPoint[5], pPoint[6], pPoint[7], pPoint[8], pPoint[9]))
+				{
+					_waiting = false;
+					setState(State::SelectExMapDone, "Sortie:SelectExMapDone");
+				}
+				else
+				{
+					tryRetry();
+				}
+			});
+		}
+		break;
+	case SortieAction::State::SelectExMapDone:
+
+		if (!_waiting)
+		{
+			_waiting = true;
+			QTimer::singleShot(DELAY_TIME_CLICK, Qt::PreciseTimer, this, [this, &cm]()
+			{
+				QMap<int, QList<float>> mapPoints;
+				mapPoints[5] = { 482, 208, 252, 82 };
+				mapPoints[6] = { 466, 349, 242, 102 };
+
+				auto& pPoint = mapPoints[_map];
+				cm.moveMouseToAndClick(pPoint[0], pPoint[1], pPoint[2], pPoint[3]); // map 1
+				
 				setState(State::SortieCheckChecking, "Sortie:SortieCheckChecking");
 				resetRetryAndWainting();
 			});
 		}
 
 		break;
+
 	case SortieAction::State::SortieCheckChecking:
 		if (!_waiting)
 		{
@@ -1446,7 +1530,28 @@ bool SortieCommonAdvanceAction::action()
 			{
 				QTimer::singleShot(DELAY_TIME_CLICK, Qt::PreciseTimer, this, [this, &cm]()
 				{
-					cm.moveMouseToAndClick(445, 184); // formation button
+					QMap<int, QList<float>> points;
+					points[1] = { 445, 184 };
+					points[2] = { 577, 184 };
+					points[3] = { 706, 184 };
+					points[4] = { 513, 341 };
+					points[5] = { 646, 341 };
+					int formation = 1;
+
+					if (cm.isAnyMode())
+					{
+						const auto& setting = cm.getAnySetting();
+						int cell = KanSaveData::getInstance().nextdata.api_no;
+						if (setting.cells.contains(cell))
+						{
+							formation = setting.cells[cell].formation;
+							if (formation > 5 || formation < 1)
+							{
+								formation = 1;
+							}
+						}
+					}
+					cm.moveMouseToAndClick(points[formation][0], points[formation][1]); // formation button
 					setStateToChecking();
 					resetRetryAndWainting();
 				});

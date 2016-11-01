@@ -269,7 +269,9 @@ public:
 		SelectAreaChecking,
 		SelectAreaDone, // click area
 		SelectMapChecking,
-		SelectMapDone, // click map
+		SelectMapDone, // click map or ex
+		SelectExMapChecking,
+		SelectExMapDone, // click ex map
 		SortieCheckChecking,
 		SortieCheckDone, // click ok
 		TeamSelectChecking,

@@ -55,6 +55,7 @@ SOURCES += main.cpp\
     qwebenginemouseeventfilter.cpp \
     qwindowseventfilter.cpp \
     shipmainwindow.cpp \
+    anyactionselectdialog.cpp
 
 win: SOURCES += \
     shdocvw.cpp \
@@ -92,6 +93,7 @@ HEADERS  += mainwindow.h \
     qwebenginemouseeventfilter.h \
     qwindowseventfilter.h \
     shipmainwindow.h \
+    anyactionselectdialog.h
 
 win: HEADERS += \
     shdocvw.h \
@@ -104,4 +106,5 @@ FORMS    += mainwindow.ui \
     kqui_collapsibleframe.ui \
     timermainwindow.ui \
     weaponmainwindow.ui \
-    shipmainwindow.ui
+    shipmainwindow.ui \
+    anyactionselectdialog.ui

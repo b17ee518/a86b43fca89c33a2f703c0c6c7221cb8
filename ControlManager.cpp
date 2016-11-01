@@ -9,6 +9,7 @@
 #include <QtMath>
 #include "ExpeditionManager.h"
 #include <QApplication>
+#include <QSettings>
 
 #ifdef Q_OS_WIN
 #include <windows.h>
@@ -624,6 +625,85 @@ bool ControlManager::BuildNext_Rank()
 	return true;
 }
 
+void ControlManager::LoadAnyTemplateSettings()
+{
+	_anyTemplateSettings.clear();
+
+	QString filename = QApplication::applicationDirPath();
+	filename += "/action/anysettings.ini";
+	QSettings* setting = new QSettings(filename, QSettings::IniFormat);
+	setting->setIniCodec("UTF-8");
+
+	auto groups = setting->childGroups();
+	Q_FOREACH(QString group, groups)
+	{
+		QStringList strlist = group.split('-');
+		if (strlist.size() != 2)
+		{
+			continue;
+		}
+		bool bOk = false;
+		int area = strlist[0].toInt(&bOk);
+		if (!bOk)
+		{
+			continue;
+		}
+		int map = strlist[1].toInt(&bOk);
+		if (!bOk)
+		{
+			continue;
+		}
+
+		setting->beginGroup(group);
+		QPair<int, int> pair = QPair<int, int>(area, map);
+		_anyTemplateSettings[pair].area = area;
+		_anyTemplateSettings[pair].map = map;
+		Q_FOREACH(QString key, setting->childKeys())
+		{
+			int cell = key.toInt(&bOk);
+			if (!bOk)
+			{
+				continue;
+			}
+
+			QString settingStr = setting->value(key).toString();
+			if (settingStr.isEmpty())
+			{
+				continue;
+			}
+			QString formationStr = settingStr.left(1);
+			int formation = formationStr.toInt(&bOk);
+			if (!bOk)
+			{
+				continue;
+			}
+			_anyTemplateSettings[pair].cells[cell].formation = formation;
+			if (settingStr.contains('C') || settingStr.contains('c'))
+			{
+				_anyTemplateSettings[pair].cells[cell].bCount = true;
+			}
+			if (settingStr.contains('R') || settingStr.contains('r'))
+			{
+				_anyTemplateSettings[pair].cells[cell].bReturnNext = true;
+			}
+			if (settingStr.contains('S') || settingStr.contains('s'))
+			{
+				_anyTemplateSettings[pair].cells[cell].bNeedS = true;
+			}
+			if (settingStr.contains('F') || settingStr.contains('f'))
+			{
+				_anyTemplateSettings[pair].cells[cell].bKillFlagship = true;
+			}
+			if (settingStr.contains('W') || settingStr.contains('w'))
+			{
+				_anyTemplateSettings[pair].cells[cell].bNeedWin = true;
+			}
+		}
+		setting->endGroup();
+
+	}
+}
+
 bool ControlManager::BuildNext_Any()
 {
 	_target = ActionTarget::Any;
@@ -637,6 +717,11 @@ bool ControlManager::BuildNext_Any()
 	{
 		setToTerminate("Terminated:ShipFull");
 		return false;
+	}
+
+	if (_anySetting.count >= 0 && _anySetting.count <= pksd->totalAnyCount)
+	{
+		setToTerminate("Terminated:CountReached");
 	}
 
 	int minCond = std::numeric_limits<int>::max();
@@ -1635,6 +1720,26 @@ bool ControlManager::flagshipSevereDamaged()
 bool ControlManager::shouldNightBattle()
 {
 	KanSaveData* pksd = &KanSaveData::getInstance();
+	if (_target == ActionTarget::Any)
+	{
+		auto it = _anySetting.cells.find(pksd->nextdata.api_no);
+		if (it != _anySetting.cells.end())
+		{
+			if (it->bNeedS)
+			{
+				return true;
+			}
+			if (it->bKillFlagship && !pksd->lastFlagshipKilled)
+			{
+				return true;
+			}
+			if (it->bNeedWin && !pksd->lastWonAssumption)
+			{
+				return true;
+			}
+		}
+		return false;
+	}
 	if (pksd->lastWonAssumption)
 	{
 		return false;
@@ -1648,6 +1753,20 @@ bool ControlManager::shouldRetrieve()
 	{
 		return true;
 	}
+
+	if (_target == ActionTarget::Any)
+	{
+		KanSaveData* pksd = &KanSaveData::getInstance();
+		auto it = _anySetting.cells.find(pksd->nextdata.api_no);
+		if (it != _anySetting.cells.end())
+		{
+			if (it->bReturnNext)
+			{
+				return true;
+			}
+		}
+	}
+
 	return (hugestDamageInTeam(0) >= WoundState::Big);
 }
 
@@ -2004,6 +2123,19 @@ void ControlManager::switchBackToLastAction()
 void ControlManager::clearLastTarget()
 {
 	_lastTarget = ActionTarget::None;
+}
+
+ControlManager::AnySetting ControlManager::getAnyTemplateSetting(int area, int map)
+{
+	QPair<int, int> pair = QPair<int, int>(area, map);
+	if (_anyTemplateSettings.contains(pair))
+	{
+		return _anyTemplateSettings[pair];
+	}
+	AnySetting setting;
+	setting.area = area;
+	setting.map = map;
+	return setting;
 }
 
 void ControlManager::moveMouseToAndClick(float x, float y, float offsetX /*= 5*/, float offsetY /*= 3*/)

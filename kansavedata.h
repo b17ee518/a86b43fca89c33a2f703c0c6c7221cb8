@@ -197,6 +197,7 @@ public:
 	int lastIntercept = -1;
 
 	bool lastWonAssumption = false;
+	bool lastFlagshipKilled = false;
 	// all from index 1
 	struct LastBattleHpSaveData
 	{
@@ -223,6 +224,7 @@ public:
 	int totalSortie = 0;
 	int totalSouthEastWin = 0;
 	int totalTokyuWin = 0;
+	int totalAnyCount = 0;
 	
 public:
 	void logAllExport();

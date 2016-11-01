@@ -29,14 +29,15 @@ void KanDataConnector::updateOverviewTable()
 	lst.append(QString::fromLocal8Bit("高速修復材: %1").arg(instantrepaircount));
 //	lst.append(QString::fromLocal8Bit("高速建造材: %1").arg(instantbuildcount));
 //	lst.append(QString::fromLocal8Bit("家具コイン: %1").arg(fcoin));
-	lst.append(QString::fromLocal8Bit("ボス: %1(%2/%3) 南西: %4 輸: %5 潜: %6 東急: %7")
+	lst.append(QString::fromLocal8Bit("ボス: %1(%2/%3) 南西: %4 輸: %5 潜: %6 東急: %7 Any: %8")
 		.arg(pksd->totalBossReached)
 		.arg(pksd->totalBossWin)
 		.arg(pksd->totalBossSRank)
 		.arg(pksd->totalSouthEastWin)
 		.arg(pksd->totalKilledYusou)
 		.arg(pksd->totalKilledSensui)
-		.arg(pksd->totalTokyuWin));
+		.arg(pksd->totalTokyuWin)
+		.arg(pksd->totalAnyCount));
 
 	tip = QString::fromLocal8Bit("航: %1 出撃: %2")
 		.arg(pksd->totalKilledKubou)
@@ -790,6 +791,7 @@ void KanDataConnector::updateInfoTitleBattle(bool bBattle, bool bSelfDamaged)
 	if (bBattle)
 	{
 		pksd->lastWonAssumption = false;
+		pksd->lastFlagshipKilled = false;
 
 		int totalremain = 0;
 		int acremain = 0;
@@ -821,6 +823,7 @@ void KanDataConnector::updateInfoTitleBattle(bool bBattle, bool bSelfDamaged)
 					else if (i == 1)
 					{
 						pksd->lastWonAssumption = true;
+						pksd->lastFlagshipKilled = true;
 					}
 					switch (static_cast<ShipType>(pmstship->api_stype))
 					{

@@ -535,7 +535,7 @@ QString KanDataConnector::logBattleResult(bool bWrite/*=true*/)
 			bSWon = true;
 		}
 	}
-	if (pksd->wasLastBossCell)
+	if (pksd->wasLastBossCell && bWrite)
 	{
 		if (bWon)
 		{
@@ -561,15 +561,51 @@ QString KanDataConnector::logBattleResult(bool bWrite/*=true*/)
 		}
 		pksd->totalBossReached++;
 	}
-	pksd->totalKilledYusou += pksd->lastKilledYusou;
-	pksd->totalKilledKubou += pksd->lastKilledKubou;
-	pksd->totalKilledSensui += pksd->lastKilledSensui;
 
-	pksd->wasLastBossCell = false;
-	pksd->lastWonAssumption = false;
-	pksd->lastKilledYusou = 0;
-	pksd->lastKilledKubou = 0;
-	pksd->lastKilledSensui = 0;
+	ControlManager& cm = ControlManager::getInstance();
+	// add count
+	if (cm.isAnyMode() && bWrite)
+	{
+		const auto& anySetting = cm.getAnySetting();
+		auto it = anySetting.cells.find(pksd->nextdata.api_no);
+		if (it != anySetting.cells.end())
+		{
+			if (it->bCount)
+			{
+				if (it->bKillFlagship)
+				{
+					if (pksd->lastFlagshipKilled)
+					{
+						pksd->totalAnyCount++;
+					}
+				}
+				else if (it->bNeedS)
+				{
+					if (bSWon)
+					{
+						pksd->totalAnyCount++;
+					}
+				}
+				else
+				{
+					pksd->totalAnyCount++;
+				}
+			}
+		}
+	}
+
+	if (bWrite)
+	{
+		pksd->totalKilledYusou += pksd->lastKilledYusou;
+		pksd->totalKilledKubou += pksd->lastKilledKubou;
+		pksd->totalKilledSensui += pksd->lastKilledSensui;
+
+		pksd->wasLastBossCell = false;
+		pksd->lastWonAssumption = false;
+		pksd->lastKilledYusou = 0;
+		pksd->lastKilledKubou = 0;
+		pksd->lastKilledSensui = 0;
+	}
 
 	QString mapareastr = "";
 	QString mapinfostr = "";
@@ -769,10 +805,9 @@ QString KanDataConnector::logBattleResult(bool bWrite/*=true*/)
 	{
 		QString filename = QString("Result_%1_%2").arg(maparea_id).arg(mapinfo_no);
 		RECLOG(filename, writestr);
+		// for total info
+		updateOverviewTable();
 	}
-
-	// for total info
-	updateOverviewTable();
 
 	return writestr;
 }

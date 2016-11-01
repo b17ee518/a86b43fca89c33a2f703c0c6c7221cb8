@@ -35,16 +35,6 @@
       <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
       <Extensions>cpp;c;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
     </Filter>
-    <Filter Include="Generated Files\Debug">
-      <UniqueIdentifier>{02a113d9-921d-4161-9648-b51bbc53be41}</UniqueIdentifier>
-      <Extensions>cpp;moc</Extensions>
-      <SourceControlFiles>False</SourceControlFiles>
-    </Filter>
-    <Filter Include="Generated Files\Release">
-      <UniqueIdentifier>{fcf6b446-d162-42c3-970d-2aeb7b3308b0}</UniqueIdentifier>
-      <Extensions>cpp;moc</Extensions>
-      <SourceControlFiles>False</SourceControlFiles>
-    </Filter>
     <Filter Include="IECOM">
       <UniqueIdentifier>{ea4ed6d2-399d-483e-abcc-3a36cab3830b}</UniqueIdentifier>
     </Filter>
@@ -56,12 +46,6 @@
     </Filter>
     <Filter Include="TitaniumCOM">
       <UniqueIdentifier>{007cd908-f165-4d55-9d71-128e13cc611a}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Generated Files\DebugWebEngine">
-      <UniqueIdentifier>{a0b9000c-b741-433e-a77b-7caa8acdfcc1}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Generated Files\ReleaseWebEngine">
-      <UniqueIdentifier>{58afa2fd-ca96-43ea-8cd7-11c2b905f73c}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -125,74 +109,8 @@
     <ClCompile Include="timermainwindow.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Debug\moc_cookiejar.cpp">
-      <Filter>Generated Files\Debug</Filter>
-    </ClCompile>
-    <ClCompile Include="Release\moc_cookiejar.cpp">
-      <Filter>Generated Files\Release</Filter>
-    </ClCompile>
-    <ClCompile Include="Debug\moc_infomainwindow.cpp">
-      <Filter>Generated Files\Debug</Filter>
-    </ClCompile>
-    <ClCompile Include="Release\moc_infomainwindow.cpp">
-      <Filter>Generated Files\Release</Filter>
-    </ClCompile>
-    <ClCompile Include="Debug\moc_kqtablewidget.cpp">
-      <Filter>Generated Files\Debug</Filter>
-    </ClCompile>
-    <ClCompile Include="Release\moc_kqtablewidget.cpp">
-      <Filter>Generated Files\Release</Filter>
-    </ClCompile>
-    <ClCompile Include="Debug\moc_kqtitleframe.cpp">
-      <Filter>Generated Files\Debug</Filter>
-    </ClCompile>
-    <ClCompile Include="Release\moc_kqtitleframe.cpp">
-      <Filter>Generated Files\Release</Filter>
-    </ClCompile>
-    <ClCompile Include="Debug\moc_kqui_collapsibleframe.cpp">
-      <Filter>Generated Files\Debug</Filter>
-    </ClCompile>
-    <ClCompile Include="Release\moc_kqui_collapsibleframe.cpp">
-      <Filter>Generated Files\Release</Filter>
-    </ClCompile>
-    <ClCompile Include="Debug\moc_kqwebpage.cpp">
-      <Filter>Generated Files\Debug</Filter>
-    </ClCompile>
-    <ClCompile Include="Release\moc_kqwebpage.cpp">
-      <Filter>Generated Files\Release</Filter>
-    </ClCompile>
-    <ClCompile Include="Debug\moc_mainwindow.cpp">
-      <Filter>Generated Files\Debug</Filter>
-    </ClCompile>
-    <ClCompile Include="Release\moc_mainwindow.cpp">
-      <Filter>Generated Files\Release</Filter>
-    </ClCompile>
-    <ClCompile Include="Debug\moc_mainwindowbase.cpp">
-      <Filter>Generated Files\Debug</Filter>
-    </ClCompile>
-    <ClCompile Include="Release\moc_mainwindowbase.cpp">
-      <Filter>Generated Files\Release</Filter>
-    </ClCompile>
-    <ClCompile Include="Debug\moc_submainwindow.cpp">
-      <Filter>Generated Files\Debug</Filter>
-    </ClCompile>
-    <ClCompile Include="Release\moc_submainwindow.cpp">
-      <Filter>Generated Files\Release</Filter>
-    </ClCompile>
-    <ClCompile Include="Debug\moc_timermainwindow.cpp">
-      <Filter>Generated Files\Debug</Filter>
-    </ClCompile>
-    <ClCompile Include="Release\moc_timermainwindow.cpp">
-      <Filter>Generated Files\Release</Filter>
-    </ClCompile>
     <ClCompile Include="klog.cpp">
       <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Debug\moc_kqnetworkaccessmanager.cpp">
-      <Filter>Generated Files\Debug</Filter>
-    </ClCompile>
-    <ClCompile Include="Release\moc_kqnetworkaccessmanager.cpp">
-      <Filter>Generated Files\Release</Filter>
     </ClCompile>
     <ClCompile Include="kqnetworkaccessmanager.cpp">
       <Filter>Source Files</Filter>
@@ -200,35 +118,17 @@
     <ClCompile Include="weaponmainwindow.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Debug\moc_weaponmainwindow.cpp">
-      <Filter>Generated Files\Debug</Filter>
-    </ClCompile>
-    <ClCompile Include="Release\moc_weaponmainwindow.cpp">
-      <Filter>Generated Files\Release</Filter>
-    </ClCompile>
     <ClCompile Include="shdocvw.cpp">
       <Filter>IECOM</Filter>
     </ClCompile>
     <ClCompile Include="shipmainwindow.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Debug\moc_shipmainwindow.cpp">
-      <Filter>Generated Files\Debug</Filter>
-    </ClCompile>
-    <ClCompile Include="Release\moc_shipmainwindow.cpp">
-      <Filter>Generated Files\Release</Filter>
-    </ClCompile>
     <ClCompile Include="ControlAction.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="ControlManager.cpp">
       <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Debug\moc_ControlAction.cpp">
-      <Filter>Generated Files\Debug</Filter>
-    </ClCompile>
-    <ClCompile Include="Release\moc_ControlAction.cpp">
-      <Filter>Generated Files\Release</Filter>
     </ClCompile>
     <ClCompile Include="kandataconnector_update.cpp">
       <Filter>Source Files</Filter>
@@ -263,118 +163,64 @@
     <ClCompile Include="qwebenginemouseeventfilter.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Debug\moc_qwebenginemouseeventfilter.cpp">
-      <Filter>Generated Files\Debug</Filter>
+    <ClCompile Include="kandataconnector_parse.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Release\moc_qwebenginemouseeventfilter.cpp">
-      <Filter>Generated Files\Release</Filter>
+    <ClCompile Include="anyactionselectdialog.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="DebugWebEngine\moc_ControlAction.cpp">
-      <Filter>Generated Files\DebugWebEngine</Filter>
+    <ClCompile Include="GeneratedFiles\moc_ControlAction.cpp">
+      <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="DebugWebEngine\moc_cookiejar.cpp">
-      <Filter>Generated Files\DebugWebEngine</Filter>
+    <ClCompile Include="GeneratedFiles\moc_cookiejar.cpp">
+      <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="DebugWebEngine\moc_infomainwindow.cpp">
-      <Filter>Generated Files\DebugWebEngine</Filter>
+    <ClCompile Include="GeneratedFiles\moc_infomainwindow.cpp">
+      <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="DebugWebEngine\moc_kqnetworkaccessmanager.cpp">
-      <Filter>Generated Files\DebugWebEngine</Filter>
+    <ClCompile Include="GeneratedFiles\moc_kqnetworkaccessmanager.cpp">
+      <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="DebugWebEngine\moc_kqtablewidget.cpp">
-      <Filter>Generated Files\DebugWebEngine</Filter>
+    <ClCompile Include="GeneratedFiles\moc_kqnetworkreply.cpp">
+      <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="DebugWebEngine\moc_kqtitleframe.cpp">
-      <Filter>Generated Files\DebugWebEngine</Filter>
+    <ClCompile Include="GeneratedFiles\moc_kqtablewidget.cpp">
+      <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="DebugWebEngine\moc_kqui_collapsibleframe.cpp">
-      <Filter>Generated Files\DebugWebEngine</Filter>
+    <ClCompile Include="GeneratedFiles\moc_kqtitleframe.cpp">
+      <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="DebugWebEngine\moc_kqwebpage.cpp">
-      <Filter>Generated Files\DebugWebEngine</Filter>
+    <ClCompile Include="GeneratedFiles\moc_kqui_collapsibleframe.cpp">
+      <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="DebugWebEngine\moc_mainwindow.cpp">
-      <Filter>Generated Files\DebugWebEngine</Filter>
+    <ClCompile Include="GeneratedFiles\moc_kqwebpage.cpp">
+      <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="DebugWebEngine\moc_mainwindowbase.cpp">
-      <Filter>Generated Files\DebugWebEngine</Filter>
+    <ClCompile Include="GeneratedFiles\moc_mainwindow.cpp">
+      <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="DebugWebEngine\moc_qwebenginemouseeventfilter.cpp">
-      <Filter>Generated Files\DebugWebEngine</Filter>
+    <ClCompile Include="GeneratedFiles\moc_mainwindowbase.cpp">
+      <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="DebugWebEngine\moc_shipmainwindow.cpp">
-      <Filter>Generated Files\DebugWebEngine</Filter>
+    <ClCompile Include="GeneratedFiles\moc_qwebenginemouseeventfilter.cpp">
+      <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="DebugWebEngine\moc_submainwindow.cpp">
-      <Filter>Generated Files\DebugWebEngine</Filter>
+    <ClCompile Include="GeneratedFiles\moc_shipmainwindow.cpp">
+      <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="DebugWebEngine\moc_timermainwindow.cpp">
-      <Filter>Generated Files\DebugWebEngine</Filter>
+    <ClCompile Include="GeneratedFiles\moc_submainwindow.cpp">
+      <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="DebugWebEngine\moc_weaponmainwindow.cpp">
-      <Filter>Generated Files\DebugWebEngine</Filter>
+    <ClCompile Include="GeneratedFiles\moc_timermainwindow.cpp">
+      <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="ReleaseWebEngine\moc_ControlAction.cpp">
-      <Filter>Generated Files\ReleaseWebEngine</Filter>
+    <ClCompile Include="GeneratedFiles\moc_weaponmainwindow.cpp">
+      <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="ReleaseWebEngine\moc_cookiejar.cpp">
-      <Filter>Generated Files\ReleaseWebEngine</Filter>
-    </ClCompile>
-    <ClCompile Include="ReleaseWebEngine\moc_infomainwindow.cpp">
-      <Filter>Generated Files\ReleaseWebEngine</Filter>
-    </ClCompile>
-    <ClCompile Include="ReleaseWebEngine\moc_kqnetworkaccessmanager.cpp">
-      <Filter>Generated Files\ReleaseWebEngine</Filter>
-    </ClCompile>
-    <ClCompile Include="ReleaseWebEngine\moc_kqtablewidget.cpp">
-      <Filter>Generated Files\ReleaseWebEngine</Filter>
-    </ClCompile>
-    <ClCompile Include="ReleaseWebEngine\moc_kqtitleframe.cpp">
-      <Filter>Generated Files\ReleaseWebEngine</Filter>
-    </ClCompile>
-    <ClCompile Include="ReleaseWebEngine\moc_kqui_collapsibleframe.cpp">
-      <Filter>Generated Files\ReleaseWebEngine</Filter>
-    </ClCompile>
-    <ClCompile Include="ReleaseWebEngine\moc_kqwebpage.cpp">
-      <Filter>Generated Files\ReleaseWebEngine</Filter>
-    </ClCompile>
-    <ClCompile Include="ReleaseWebEngine\moc_mainwindow.cpp">
-      <Filter>Generated Files\ReleaseWebEngine</Filter>
-    </ClCompile>
-    <ClCompile Include="ReleaseWebEngine\moc_mainwindowbase.cpp">
-      <Filter>Generated Files\ReleaseWebEngine</Filter>
-    </ClCompile>
-    <ClCompile Include="ReleaseWebEngine\moc_qwebenginemouseeventfilter.cpp">
-      <Filter>Generated Files\ReleaseWebEngine</Filter>
-    </ClCompile>
-    <ClCompile Include="ReleaseWebEngine\moc_shipmainwindow.cpp">
-      <Filter>Generated Files\ReleaseWebEngine</Filter>
-    </ClCompile>
-    <ClCompile Include="ReleaseWebEngine\moc_submainwindow.cpp">
-      <Filter>Generated Files\ReleaseWebEngine</Filter>
-    </ClCompile>
-    <ClCompile Include="ReleaseWebEngine\moc_timermainwindow.cpp">
-      <Filter>Generated Files\ReleaseWebEngine</Filter>
-    </ClCompile>
-    <ClCompile Include="ReleaseWebEngine\moc_weaponmainwindow.cpp">
-      <Filter>Generated Files\ReleaseWebEngine</Filter>
-    </ClCompile>
-    <ClCompile Include="DebugWebEngine\moc_kqnetworkreply.cpp">
-      <Filter>Generated Files\Debug</Filter>
-    </ClCompile>
-    <ClCompile Include="Debug\moc_kqnetworkreply.cpp">
-      <Filter>Generated Files\Debug</Filter>
+    <ClCompile Include="GeneratedFiles\moc_anyactionselectdialog.cpp">
+      <Filter>Generated Files</Filter>
     </ClCompile>
     <ClCompile Include="kqnetworkreply.cpp">
-      <Filter>Generated Files\Debug</Filter>
-    </ClCompile>
-    <ClCompile Include="ReleaseWebEngine\moc_kqnetworkreply.cpp">
-      <Filter>Generated Files\Debug</Filter>
-    </ClCompile>
-    <ClCompile Include="Release\moc_kqnetworkreply.cpp">
-      <Filter>Generated Files\Debug</Filter>
-    </ClCompile>
-    <ClCompile Include="kandataconnector_parse.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -470,7 +316,13 @@
       <Filter>Header Files</Filter>
     </CustomBuild>
     <CustomBuild Include="kqnetworkreply.h">
-      <Filter>Generated Files</Filter>
+      <Filter>Header Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="anyactionselectdialog.h">
+      <Filter>Header Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="anyactionselectdialog.ui">
+      <Filter>Form Files</Filter>
     </CustomBuild>
   </ItemGroup>
   <ItemGroup>
@@ -517,6 +369,9 @@
     </ClInclude>
     <ClInclude Include="ExpeditionManager.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="GeneratedFiles\ui_anyactionselectdialog.h">
+      <Filter>Generated Files</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

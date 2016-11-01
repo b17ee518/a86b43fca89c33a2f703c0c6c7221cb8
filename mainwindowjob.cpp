@@ -7,6 +7,8 @@
 #include "ControlManager.h"
 #include "ExpeditionManager.h"
 
+#include "anyactionselectdialog.h"
+
 #define TIMESHIFT_MIN	30
 
 void MainWindow::onDoJobFuel()
@@ -159,7 +161,38 @@ void MainWindow::onDoJobAny()
 	cm.Terminate();
 	cm.clearLastTarget();
 
-	//TODO: add dialog
+	cm.LoadAnyTemplateSettings();
+	AnyActionSelectDialog* dialog = new AnyActionSelectDialog();
+	dialog->setPositionTo(this->geometry().center().x(), this->geometry().center().y());
+
+	ControlManager::AnySetting setting = cm.getAnySetting();
+	int area = setting.area;
+	int map = setting.map;
+	dialog->setSelections(setting.area, setting.map);
+
+	int result = dialog->exec();
+	if (result == QDialog::Accepted)
+	{
+		dialog->getMapAndArea(area, map);
+	}
+	else
+	{
+		switchToExpeditionWait();
+		return;
+	}
+
+	if (area < 1 || area > 6 || map < 1 || map > 6)
+	{
+		switchToExpeditionWait();
+		return;
+	}
+
+	setting = cm.getAnyTemplateSetting(area, map);
+	setting.count = dialog->getCountSet();
+	delete dialog;
+
+	cm.setAnySetting(setting);
+
 	if (cm.BuildNext_Any())
 	{
 		cm.StartJob();

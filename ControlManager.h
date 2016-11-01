@@ -70,12 +70,22 @@ public:
 	struct RankSetting
 	{
 	};
+	struct CellAnySetting
+	{
+//		int cellId;
+		int formation = 1;
+		bool bCount = false;
+		bool bReturnNext = false;
+		bool bNeedS = false;
+		bool bKillFlagship = false;
+		bool bNeedWin = false;
+	};
 	struct AnySetting
 	{
-		int area = 3;
-		int map = 3;
-		// returnPoints
-		// S
+		int area = 1;
+		int map = 5;
+		int count = 1;
+		QMap<int, CellAnySetting> cells;
 	};
 
 public:
@@ -107,6 +117,7 @@ public:
 
 	bool BuildNext_Rank();
 
+	void LoadAnyTemplateSettings();
 	bool BuildNext_Any();
 
 	bool LoadExpeditionPossibleList(); // TODO
@@ -243,6 +254,7 @@ public:
 	const ExpeditionSetting& getExpeditionSetting(){ return _expeditionSetting; }
 	const RankSetting& getRankSetting() { return _rankSetting; }
 	const AnySetting& getAnySetting() { return _anySetting; }
+	AnySetting getAnyTemplateSetting(int area, int map);
 
 //private:
 	void moveMouseToAndClick(float x, float y, float offsetX = 5, float offsetY = 3);
@@ -287,5 +299,7 @@ public:
 	ExpeditionSetting _expeditionSetting;
 	RankSetting _rankSetting;
 	AnySetting _anySetting;
+
+	QMap<QPair<int, int>, AnySetting> _anyTemplateSettings;
 }; 
 

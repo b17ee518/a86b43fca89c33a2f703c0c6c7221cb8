@@ -4,6 +4,7 @@
 #include <QDialogButtonBox>
 #include "kansavedata.h"
 #include "ControlManager.h"
+#include "kandataconnector.h"
 
 AnyActionSelectDialog::AnyActionSelectDialog(QWidget *parent) :
     QDialog(parent),
@@ -75,5 +76,5 @@ void AnyActionSelectDialog::slotOnReset()
 {
 	KanSaveData* pksd = &KanSaveData::getInstance();
 	pksd->totalAnyCount = 0;
-	this->reject();
+	KanDataConnector::getInstance().callUpdateOverviewTable();
 }

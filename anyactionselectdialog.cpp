@@ -32,6 +32,7 @@ AnyActionSelectDialog::AnyActionSelectDialog(QWidget *parent) :
 	connect(resetButton, SIGNAL(clicked()), this, SLOT(slotOnReset()));
 
 	ui->leCount->setText(QString::number(ControlManager::getInstance().getAnySetting().count));
+	ui->cbAirBaseCount->setChecked(ControlManager::getInstance().getAnySetting().checkAirBaseCond);
 }
 
 AnyActionSelectDialog::~AnyActionSelectDialog()
@@ -77,4 +78,9 @@ void AnyActionSelectDialog::slotOnReset()
 	KanSaveData* pksd = &KanSaveData::getInstance();
 	pksd->totalAnyCount = 0;
 	KanDataConnector::getInstance().callUpdateOverviewTable();
+}
+
+bool AnyActionSelectDialog::isCheckAirBaseCond()
+{
+	return ui->cbAirBaseCount->isChecked();
 }

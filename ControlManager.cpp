@@ -1531,10 +1531,10 @@ bool ControlManager::isShipCharged(int shipno)
 	return false;
 }
 
-bool ControlManager::needChargeCondAirBase()
+bool ControlManager::needChargeCondAirBase(bool checkCond)
 {
 	KanSaveData* pksd = &KanSaveData::getInstance();
-	if (pksd->airBaseBadCond || pksd->airBaseNeedSupply)
+	if ((checkCond&&pksd->airBaseBadCond) || pksd->airBaseNeedSupply)
 	{
 		return true;
 	}

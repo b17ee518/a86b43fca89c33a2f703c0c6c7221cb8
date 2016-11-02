@@ -85,6 +85,7 @@ public:
 		int area = 1;
 		int map = 5;
 		int count = 1;
+		bool checkAirBaseCond = false;
 		QMap<int, CellAnySetting> cells;
 	};
 
@@ -163,7 +164,7 @@ public:
 	bool isShipInDock(int shipno);
 	bool isShipDamaged(int shipno);
 	bool isShipCharged(int shipno);
-	bool needChargeCondAirBase();
+	bool needChargeCondAirBase(bool checkCond);
 
 	bool isHenseiDone(const QList<int>& ships, int team, int index = -1);
 	bool isFlagshipOnly(int team);

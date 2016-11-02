@@ -20,6 +20,7 @@ public:
 	void setPositionTo(int x, int y);
 
 	int getCountSet();
+	bool isCheckAirBaseCond();
 
 private:
     Ui::AnyActionSelectDialog *ui;

@@ -1207,7 +1207,8 @@ bool SortieAction::action()
 		{
 			_waiting = true;
 
-			if (cm.needChargeCondAirBase())
+			// use in every mode
+			if (cm.needChargeCondAirBase(cm.getAnySetting().checkAirBaseCond))
 			{
 				cm.setToTerminate("Terminated:AirBase");
 				emit sigFatal();

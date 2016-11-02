@@ -189,6 +189,7 @@ void MainWindow::onDoJobAny()
 
 	setting = cm.getAnyTemplateSetting(area, map);
 	setting.count = dialog->getCountSet();
+	setting.checkAirBaseCond = dialog->isCheckAirBaseCond();
 	delete dialog;
 
 	cm.setAnySetting(setting);

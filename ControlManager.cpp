@@ -702,6 +702,7 @@ void ControlManager::LoadAnyTemplateSettings()
 		setting->endGroup();
 
 	}
+	delete setting;
 }
 
 bool ControlManager::BuildNext_Any()
@@ -2208,19 +2209,19 @@ void ControlManager::moveMouseToAndClick(float x, float y, float offsetX /*= 5*/
 				Q_FOREACH(QObject* obj, webView->page()->view()->children())
 				{
 					sendMouseEvents(qobject_cast<QWidget*>(obj));
-		}
-	}
+				}
+			}
 
 			// reset mouse pos for webengine
 			moveMouseTo(0, 0);
 #endif
-}
+	}
 		else
 		{
 			sendMouseEvents(browserWidget);
 		}
 
-	}
+}
 
 }
 
@@ -2272,9 +2273,9 @@ void ControlManager::moveMouseTo(float x, float y, float offsetX /*= 5*/, float 
 				{
 					sendMouseEvents(qobject_cast<QWidget*>(obj));
 				}
-		}
-#endif
 	}
+#endif
+}
 		else
 		{
 			sendMouseEvents(browserWidget);

@@ -13,7 +13,7 @@
 #define DELAY_TIME_SKIP	(7000*_intervalMul)
 
 ControlAction::ControlAction(QObject* parent /*= NULL*/)
-:QObject(parent)
+	:QObject(parent)
 {
 	_intervalMul = ControlManager::getInstance().getIntervalMul();
 }
@@ -36,7 +36,7 @@ void ControlAction::tryRetry()
 			.arg(_retryTime)
 			.arg(ControlManager::getInstance().getStateStr());
 		ControlManager::getInstance().setStateStr(str);
-		
+
 	}
 	else
 	{
@@ -344,7 +344,7 @@ bool ChangeHenseiAction::action()
 			_waiting = true;
 			QTimer::singleShot(DELAY_TIME_CLICK, Qt::PreciseTimer, this, [this, &cm]()
 			{
-				cm.moveMouseToAndClick(135+30*_team, 118); // Fleet
+				cm.moveMouseToAndClick(135 + 30 * _team, 118); // Fleet
 
 				setState(State::HenseiChecking, "Hensei:HenseiChecking");
 				resetRetryAndWainting();
@@ -404,7 +404,7 @@ bool ChangeHenseiAction::action()
 
 				setState(State::FindShipChecking, "Hensei:FindShipChecking");
 				resetRetryAndWainting();
-			});			
+			});
 		}
 		break;
 	case ChangeHenseiAction::State::RemoveAllOtherChecking:
@@ -632,7 +632,7 @@ bool ChangeHenseiAction::action()
 			QTimer::singleShot(DELAY_TIME_CLICK, Qt::PreciseTimer, this, [this, &cm]()
 			{
 				cm.moveMouseToAndClick(691, 443, 40, 12); // change button
-				if (_nowIndex == _ships.size()-1)
+				if (_nowIndex == _ships.size() - 1)
 				{
 					setState(State::ReturnToPortChecking, "Hensei:ReturnToPortChecking");
 					resetRetryAndWainting();
@@ -732,7 +732,7 @@ void ChangeHenseiAction::setShips(int ship0, int ship1)
 
 void ChangeHenseiAction::setShips(const QList<int>& ships)
 {
-	for (int shipno: ships)
+	for (int shipno : ships)
 	{
 		if (shipno < 0)
 		{
@@ -871,12 +871,12 @@ bool ChargeAction::action()
 			{
 				if (_team > 0 && !_teamChanged)
 				{
-					cm.moveMouseToAndClick(148+_team*30, 119); // team
+					cm.moveMouseToAndClick(148 + _team * 30, 119); // team
 					setState(State::NeedChargeChecking, "Charge:NeedChargeChecking");
 					_teamChanged = true;
 				}
 				else
-				{					
+				{
 					if (cm.isKiraMode())
 					{
 						cm.moveMouseToAndClick(117, 167, 2, 2); // first ship
@@ -1080,7 +1080,7 @@ bool SortieAction::action()
 			{
 				// sortie select
 				if (cm.checkColors(
-//					468, 224, 115, 182, 85
+					//					468, 224, 115, 182, 85
 					468, 224, 108, 175, 78
 					, 625, 156, 88, 194, 179))
 				{
@@ -1117,7 +1117,7 @@ bool SortieAction::action()
 				if (cm.checkColors(
 					562, 119, 255, 184, 103
 					, 644, 246, 137, 143, 154))
-//					, 648, 118, 118, 180, 72))
+					//					, 648, 118, 118, 180, 72))
 				{
 					_waiting = false;
 					setState(State::SelectAreaDone, "Sortie:SelectAreaDone");
@@ -1159,7 +1159,7 @@ bool SortieAction::action()
 			}
 		}
 	}
-		break;
+	break;
 	case SortieAction::State::SelectMapChecking:
 		if (!_waiting)
 		{
@@ -1206,6 +1206,14 @@ bool SortieAction::action()
 		if (!_waiting)
 		{
 			_waiting = true;
+
+			if (cm.needChargeCondAirBase())
+			{
+				cm.setToTerminate("Terminated:AirBase");
+				emit sigFatal();
+				return false;
+			}
+
 			QTimer::singleShot(DELAY_TIME_CLICK, Qt::PreciseTimer, this, [this, &cm]()
 			{
 				QMap<int, QList<float>> mapPoints;
@@ -1259,7 +1267,7 @@ bool SortieAction::action()
 				areaPoints[6] = {
 					160, 291, 250, 43, 43
 					, 162, 279, 255, 255, 255 };
-				
+
 				const auto& pPoint = areaPoints[_area];
 				if (cm.checkColors(pPoint[0], pPoint[1], pPoint[2], pPoint[3], pPoint[4]
 					, pPoint[5], pPoint[6], pPoint[7], pPoint[8], pPoint[9]))
@@ -1287,7 +1295,7 @@ bool SortieAction::action()
 
 				auto& pPoint = mapPoints[_map];
 				cm.moveMouseToAndClick(pPoint[0], pPoint[1], pPoint[2], pPoint[3]); // map 1
-				
+
 				setState(State::SortieCheckChecking, "Sortie:SortieCheckChecking");
 				resetRetryAndWainting();
 			});
@@ -1448,7 +1456,7 @@ bool SortieCommonAdvanceAction::action()
 	case SortieCommonAdvanceAction::State::Checking:
 		if (!_waiting)
 		{
-			_waiting = true; 
+			_waiting = true;
 			if (_expectingRequest == "")
 			{
 				setState(State::Done, "Advance:Done");
@@ -1491,7 +1499,7 @@ bool SortieCommonAdvanceAction::action()
 				else if (cm.checkColors(
 					78, 112, 52, 81, 99
 					, 579, 133, 38, 87, 115
-					,  511, 288, 238, 255, 255))
+					, 511, 288, 238, 255, 255))
 				{
 					_waiting = false;
 					// click left or right
@@ -1518,7 +1526,7 @@ bool SortieCommonAdvanceAction::action()
 		if (!_waiting)
 		{
 			_waiting = true;
-			if (_shouldRetrieve 
+			if (_shouldRetrieve
 				&& !cm.isLevelMode()	// level mode always set to retrieve
 				)
 			{
@@ -1802,7 +1810,7 @@ bool ExpeditionAction::action()
 			{
 				// sortie select
 				if (cm.checkColors(
-//					468, 224, 115, 182, 85
+					//					468, 224, 115, 182, 85
 					468, 224, 108, 175, 78
 					, 625, 156, 88, 194, 179))
 				{
@@ -1857,7 +1865,7 @@ bool ExpeditionAction::action()
 				_waiting = true;
 				QTimer::singleShot(DELAY_TIME_CLICK, Qt::PreciseTimer, this, [this, &cm]()
 				{
-					cm.moveMouseToAndClick(135+60*_area , 436); // area
+					cm.moveMouseToAndClick(135 + 60 * _area, 436); // area
 					setState(State::SelectItemChecking, "Expedition:SelectItemChecking");
 					resetRetryAndWainting();
 				});
@@ -1895,7 +1903,7 @@ bool ExpeditionAction::action()
 			_waiting = true;
 			QTimer::singleShot(DELAY_TIME_CLICK, Qt::PreciseTimer, this, [this, &cm]()
 			{
-				cm.moveMouseToAndClick(404, 172+_item*31, 101, 5); // item
+				cm.moveMouseToAndClick(404, 172 + _item * 31, 101, 5); // item
 				setState(State::SortieCheckChecking, "Expedition:SortieCheckChecking");
 				resetRetryAndWainting();
 			});
@@ -1968,7 +1976,7 @@ bool ExpeditionAction::action()
 			_waiting = true;
 			QTimer::singleShot(DELAY_TIME_LONG, Qt::PreciseTimer, this, [this, &cm]()	// use longer
 			{
-				cm.moveMouseToAndClick(364+30*_team, 118); // team
+				cm.moveMouseToAndClick(364 + 30 * _team, 118); // team
 				setState(State::TeamSelectedChecking, "Expedition:TeamSelectedChecking");
 				resetRetryAndWainting();
 			});

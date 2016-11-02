@@ -61,7 +61,7 @@ public:
 	{
 		StopWhen stopWhen = StopWhen::Yusou3;
 	};
-	struct ExpeditionSetting 
+	struct ExpeditionSetting
 	{
 	};
 	struct LevelSetting
@@ -72,7 +72,7 @@ public:
 	};
 	struct CellAnySetting
 	{
-//		int cellId;
+		//		int cellId;
 		int formation = 1;
 		bool bCount = false;
 		bool bReturnNext = false;
@@ -89,17 +89,17 @@ public:
 	};
 
 public:
-	static ControlManager& getInstance() { 
-		static ControlManager instance; 
-		return instance; 
+	static ControlManager& getInstance() {
+		static ControlManager instance;
+		return instance;
 	}
-	
+
 private:
 	ControlManager();
 	virtual ~ControlManager();
 	ControlManager(ControlManager const&);
 	void operator=(ControlManager const&);
-	
+
 public:
 	void setDoneRequest(const QString& api);
 
@@ -124,13 +124,13 @@ public:
 	bool BuildNext_Expedition();
 
 	bool stopWhenCheck();
-	
+
 	void StartJob();
 
 	void Run();
 	void Pause();
 	void Resume();
-	void Terminate(bool bSilent=false);
+	void Terminate(bool bSilent = false);
 
 	bool isPaused();
 	void PauseNext();
@@ -141,11 +141,11 @@ public:
 
 	bool isTerminated(){ return _state == State::Terminated; }
 
-	void setToTerminate(const char* title, bool forceSound=false);
+	void setToTerminate(const char* title, bool forceSound = false);
 
 	void createSSShipList();
 	bool isTreatedSameShip(int shipno, int oshipno);
-	bool isAfterShip(const kcsapi_mst_ship* pmstship, const kcsapi_mst_ship* pomstship, QList<int> checkedIdList=QList<int>()/*for convert*/); 
+	bool isAfterShip(const kcsapi_mst_ship* pmstship, const kcsapi_mst_ship* pomstship, QList<int> checkedIdList = QList<int>()/*for convert*/);
 	// is pmstship after of pomstship
 
 	int getCurrentFlagshipId();
@@ -153,9 +153,9 @@ public:
 	bool shouldChangeSecondShip();
 	bool needChargeFlagship(int team);
 	bool needChargeAnyShip(int team);
-	int getOneWasteShipId(int exclude1=-1, int exclude2=-1);
+	int getOneWasteShipId(int exclude1 = -1, int exclude2 = -1);
 	int getOneWasteShipId(const QList<int>& excludes);
-	bool isShipFull(int keep=3);
+	bool isShipFull(int keep = 3);
 	bool findPagePosByShipId(int shipno, int& page, int& pos, int& lastPage);
 	bool isShipKiraDone(int shipno);
 	bool isLowCond(int shipno);
@@ -163,16 +163,17 @@ public:
 	bool isShipInDock(int shipno);
 	bool isShipDamaged(int shipno);
 	bool isShipCharged(int shipno);
+	bool needChargeCondAirBase();
 
 	bool isHenseiDone(const QList<int>& ships, int team, int index = -1);
 	bool isFlagshipOnly(int team);
 	int getTeamSize(int team);
 	bool isShipType(int shipno, ShipType stype);
-	bool hasSlotitem(int shipno, SlotitemType sitype, int count=1);
+	bool hasSlotitem(int shipno, SlotitemType sitype, int count = 1);
 	bool noSlotitem(int shipno);
 
 	int getShipCondVal(int shipno);
-			
+
 	bool flagshipSevereDamaged();
 
 	bool shouldNightBattle();
@@ -220,8 +221,8 @@ public:
 	inline bool isExpeditionMode(){ return _target == ActionTarget::Expedition; }
 	inline bool isRankMode(){ return _target == ActionTarget::Rank; }
 	inline bool isAnyMode(){ return _target == ActionTarget::Any; }
-	
-	void setState(State state, const char* str, bool bSilent=false, bool forceSound=false);
+
+	void setState(State state, const char* str, bool bSilent = false, bool forceSound = false);
 	void setInactiveWaiting(bool waiting){ _inactiveWaiting = waiting; }
 
 	void setStateStr(const QString& str);
@@ -230,7 +231,7 @@ public:
 	double getIntervalMul(){ return _intervalMul; }
 	void setIntervalMul(double val)
 	{
-		_intervalMul = val; 
+		_intervalMul = val;
 		if (_intervalMul <= 0.0f)
 		{
 			_intervalMul = 1.0f;
@@ -256,15 +257,15 @@ public:
 	const AnySetting& getAnySetting() { return _anySetting; }
 	AnySetting getAnyTemplateSetting(int area, int map);
 
-//private:
+	//private:
 	void moveMouseToAndClick(float x, float y, float offsetX = 5, float offsetY = 3);
 	void moveMouseTo(float x, float y, float offsetX = 5, float offsetY = 3);
-	
+
 	void setPauseNextVal(bool bVal);
 	inline bool getPauseNextVal(){ return _pauseNext; }
 
 	void waitForResponse(const QString& api);
-	
+
 	qreal randVal(qreal min, qreal max);
 
 	QString _lastTerminationReason;
@@ -272,7 +273,7 @@ public:
 	QList<int> _todoShipids;
 	int _toCond = 70;
 	QList<ControlAction*> _actionList;
-	
+
 	State _state = State::None;
 	bool _inactiveWaiting = false;
 	ActionTarget _target = ActionTarget::None;
@@ -282,14 +283,14 @@ public:
 	QString _stateStr;
 	bool _pauseNext = false;
 
-    QList<QList<int> > _ssShips;
+	QList<QList<int> > _ssShips;
 	int _southEastTeamSize = 5;
 
 	int _sortieMinCond = 30;
 	int _sortieWaitCond = 40;
 
 	bool _levelNoWait = false;
-	
+
 	double _intervalMul = 1.0f;
 
 	bool _shouldAutoSwitchToExpeditionFlag = true;
@@ -301,5 +302,5 @@ public:
 	AnySetting _anySetting;
 
 	QMap<QPair<int, int>, AnySetting> _anyTemplateSettings;
-}; 
+};
 

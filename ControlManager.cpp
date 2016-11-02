@@ -51,12 +51,12 @@ bool ControlManager::BuildNext_Kira()
 	{
 		setToTerminate("Terminated:ShipFull");
 		return false;
-//		_actionList.append(new DestroyShipAction());
+		//		_actionList.append(new DestroyShipAction());
 	}
 
 	int togoShipId = _todoShipids.at(0);
-	while (isShipKiraDone(togoShipId) 
-		|| isShipInOtherTeam(togoShipId, 0) 
+	while (isShipKiraDone(togoShipId)
+		|| isShipInOtherTeam(togoShipId, 0)
 		|| isShipInDock(togoShipId)
 		|| hasSlotitem(togoShipId, SlotitemType::JouRiKuTei)
 		|| hasSlotitem(togoShipId, SlotitemType::Sonar)
@@ -81,7 +81,7 @@ bool ControlManager::BuildNext_Kira()
 	{
 		_todoShipids.swap(flagshipIndex, 0);
 	}
-	
+
 	togoShipId = _todoShipids.at(0);
 	auto chAction = new ChangeHenseiAction();
 
@@ -130,11 +130,11 @@ bool ControlManager::BuildNext_Fuel()
 	/*
 	if (!_actionList.empty())
 	{
-		return;
+	return;
 	}
 	*/
 	_target = ActionTarget::Fuel;
-	
+
 	pushPreSupplyCheck();
 	if (stopWhenCheck())
 	{
@@ -146,8 +146,8 @@ bool ControlManager::BuildNext_Fuel()
 	/*
 	if (!isShipType(flagshipid, ShipType::SenSui))
 	{
-		setToTerminate("Terminated:Ship type");
-		return false;
+	setToTerminate("Terminated:Ship type");
+	return false;
 	}
 	*/
 	if (!isFlagshipOnly(0) || !isShipType(flagshipid, ShipType::SenSui))
@@ -166,8 +166,8 @@ bool ControlManager::BuildNext_Fuel()
 	{
 		setToTerminate("Terminated:ShipFull");
 		return false;
-//		_actionList.append(new DestroyShipAction());
-	}	
+		//		_actionList.append(new DestroyShipAction());
+	}
 
 	SortieAction* sortieAction = new SortieAction();
 	sortieAction->setAreaAndMap(2, 3);
@@ -222,14 +222,14 @@ bool ControlManager::BuildNext_SouthEast()
 	for (auto& group : _ssShips)
 	{
 		kcsapi_ship2* pbestship = nullptr;
-		for (auto ssid:group)
+		for (auto ssid : group)
 		{
 			auto pcurship = pkdc->findShipFromShipno(ssid);
 			// cond ng later
 			/*
 			if (pcurship->api_cond <= _sortieMinCond)
 			{
-				continue;
+			continue;
 			}
 			*/
 			// damage ng
@@ -291,7 +291,7 @@ bool ControlManager::BuildNext_SouthEast()
 	{
 		ships.push_front(bestShips.at(i)->api_id);
 	}
-	
+
 	// sort in team first
 	QList<int> sortInTeamShips;
 
@@ -311,7 +311,7 @@ bool ControlManager::BuildNext_SouthEast()
 	{
 		bool bDone = false;
 		QList<int>* pgroup = NULL;
-		for (auto& group:_ssShips)
+		for (auto& group : _ssShips)
 		{
 			if (group.contains(shipno))
 			{
@@ -325,7 +325,7 @@ bool ControlManager::BuildNext_SouthEast()
 			return false;
 		}
 
-		for (int gpshipno:(*pgroup))
+		for (int gpshipno : (*pgroup))
 		{
 			for (int neshipno : nonEmptyShipList)
 			{
@@ -365,7 +365,7 @@ bool ControlManager::BuildNext_SouthEast()
 	_actionList.append(new SortieCommonAdvanceAction());
 	_actionList.append(new ChargeAction());
 	_actionList.append(new RepeatAction());
-	
+
 	setState(State::Ready, "Ready");
 	return true;
 }
@@ -383,7 +383,7 @@ bool ControlManager::BuildNext_Level()
 		setToTerminate("Terminated:ShipFull");
 		return false;
 	}
-	
+
 	bool bHaveMaruyu = false;
 	int redFaceCount = 0;
 	int totalShipCount = 0;
@@ -788,18 +788,18 @@ bool ControlManager::BuildNext_Expedition()
 
 	qint64 ct = TimerMainWindow::currentMS();
 
-	auto pExp = ExpeditionManager::getInstance().getShouldNextSchedule(team, ct, ct+waitMS);
+	auto pExp = ExpeditionManager::getInstance().getShouldNextSchedule(team, ct, ct + waitMS);
 	if (!pExp)
 	{
 		setToTerminate("Termination:Fatal", true);
 		// date may change here
 		return false;
 	}
-    
-    if (team < 0)
-    {
-        return true;
-    }
+
+	if (team < 0)
+	{
+		return true;
+	}
 	// set pexp
 
 	KanSaveData* pksd = &KanSaveData::getInstance();
@@ -880,10 +880,10 @@ bool ControlManager::BuildNext_Expedition()
 			toShips[i] = toShipid;
 		}
 	}
-	
+
 	if (waitMS > 0)
 	{
-		waitMS += 5000+randVal(-1000, 1000);
+		waitMS += 5000 + randVal(-1000, 1000);
 		auto waitAction = new WaitCondAction();
 		waitAction->setWaitMS(waitMS);
 		waitAction->setWaitName(QString("W:%1").arg(ExpeditionManager::getInstance().getCurrentPreset()).toLocal8Bit());
@@ -895,7 +895,7 @@ bool ControlManager::BuildNext_Expedition()
 	chargeAction->setSkipExpedition(true);
 	chargeAction->setTeam(team);
 	_actionList.append(chargeAction);
-	
+
 	// change hensei
 	if (needChangeHensei)
 	{
@@ -909,7 +909,7 @@ bool ControlManager::BuildNext_Expedition()
 	auto expeditionAction = new ExpeditionAction();
 	expeditionAction->setTeamAndTarget(team, pExp->destPage, pExp->destIndex);
 	_actionList.append(expeditionAction);
-	
+
 	_actionList.append(new RepeatAction());
 
 	setState(State::Ready, "Ready");
@@ -1090,7 +1090,7 @@ void ControlManager::Terminate(bool bSilent)
 	_target = ActionTarget::None;
 	_autoExpeditioningFlag = false;
 	MainWindow::mainWindow()->setJobTerminated();
-//	_southEastSetting.stopWhen = StopWhen::None;
+	//	_southEastSetting.stopWhen = StopWhen::None;
 }
 
 bool ControlManager::isPaused()
@@ -1185,40 +1185,40 @@ void ControlManager::createSSShipList()
 
 	KanSaveData* pksd = &KanSaveData::getInstance();
 	KanDataConnector * pkdc = &KanDataConnector::getInstance();
-	for (auto& ship: pksd->portdata.api_ship)
+	for (auto& ship : pksd->portdata.api_ship)
 	{
 		const kcsapi_mst_ship * pmstship = pkdc->findMstShipFromShipid(ship.api_ship_id);
 		if (!pmstship)
 		{
 			continue;
 		}
-		if (pmstship->api_stype == (int)ShipType::SenBou 
+		if (pmstship->api_stype == (int)ShipType::SenBou
 			|| pmstship->api_stype == (int)ShipType::SenSui)
 		{
 			if (ship.api_lv >= 50 && ship.api_maxhp >= 10)
 			{
 				bool bAdded = false;
-				for (QList<int>& group:_ssShips)
+				for (QList<int>& group : _ssShips)
 				{
 					/*
 					if (group.isEmpty())
 					{
-						group.append(shipid);
-						bAdded = true;
+					group.append(shipid);
+					bAdded = true;
 					}
 					else
 					{
 					*/
-						for (auto ssid : group)
+					for (auto ssid : group)
+					{
+						if (isTreatedSameShip(ssid, ship.api_id))
 						{
-							if (isTreatedSameShip(ssid, ship.api_id))
-							{
-								group.push_front(ship.api_id);	// put kai back
-								bAdded = true;
-								break;
-							}
+							group.push_front(ship.api_id);	// put kai back
+							bAdded = true;
+							break;
 						}
-//					}
+					}
+					//					}
 					if (bAdded)
 					{
 						break;
@@ -1318,7 +1318,7 @@ int ControlManager::getOneWasteShipId(const QList<int>& excludes)
 {
 	KanSaveData* pksd = &KanSaveData::getInstance();
 	KanDataConnector* pkdc = &KanDataConnector::getInstance();
-	for (auto& ship: pksd->portdata.api_ship)
+	for (auto& ship : pksd->portdata.api_ship)
 	{
 		if (ship.api_lv == 1
 			&& ship.api_locked == false
@@ -1339,7 +1339,7 @@ int ControlManager::getOneWasteShipId(const QList<int>& excludes)
 					if (excludes.size() > 0)
 					{
 						bool bShouldContinue = false;
-						for (auto excludeId:excludes)
+						for (auto excludeId : excludes)
 						{
 							if (isTreatedSameShip(excludeId, ship.api_id))
 							{
@@ -1379,7 +1379,7 @@ bool ControlManager::isShipFull(int keep)
 	KanSaveData* pksd = &KanSaveData::getInstance();
 	int kancount = pksd->portdata.api_ship.count() + pksd->shipcountoffset;
 	int kanmaxcount = pksd->portdata.api_basic.api_max_chara;
-	if (kancount+keep <= kanmaxcount)
+	if (kancount + keep <= kanmaxcount)
 	{
 		return false;
 	}
@@ -1399,7 +1399,7 @@ bool ControlManager::findPagePosByShipId(int shipno, int& page, int& pos, int& l
 	}
 	lastPage = (ships.size() - 1) / 10;
 	qSort(ships.begin(), ships.end(), [](const  kcsapi_ship2& left, const kcsapi_ship2& right)
-	{ 
+	{
 		return left.api_id > right.api_id; // newer if id is greater
 	});
 
@@ -1455,7 +1455,7 @@ bool ControlManager::isLowCond(int shipno)
 	auto pship = pkdc->findShipFromShipno(shipno);
 	if (pship)
 	{
-		if (KanDataCalc::GetCondState(pship->api_cond-1) >= CondState::Middle)
+		if (KanDataCalc::GetCondState(pship->api_cond - 1) >= CondState::Middle)
 		{
 			return true;
 		}
@@ -1468,7 +1468,7 @@ bool ControlManager::isShipInOtherTeam(int shipno, int team)
 	KanSaveData* pksd = &KanSaveData::getInstance();
 	for (auto& deck : pksd->portdata.api_deck_port)
 	{
-		if (deck.api_id == team+1)
+		if (deck.api_id == team + 1)
 		{
 			continue;
 		}
@@ -1491,7 +1491,7 @@ bool ControlManager::isShipInDock(int shipno)
 	{
 		if (ndock.api_ship_id == shipno)
 		{
-				return true;
+			return true;
 		}
 	}
 	return false;
@@ -1530,6 +1530,16 @@ bool ControlManager::isShipCharged(int shipno)
 	return false;
 }
 
+bool ControlManager::needChargeCondAirBase()
+{
+	KanSaveData* pksd = &KanSaveData::getInstance();
+	if (pksd->airBaseBadCond || pksd->airBaseNeedSupply)
+	{
+		return true;
+	}
+	return false;
+}
+
 bool ControlManager::isHenseiDone(const QList<int>& ships, int team, int index/*=-1*/)
 {
 	KanSaveData* pksd = &KanSaveData::getInstance();
@@ -1538,7 +1548,7 @@ bool ControlManager::isHenseiDone(const QList<int>& ships, int team, int index/*
 	{
 		auto& fleet = pksd->portdata.api_deck_port.at(team);
 		QList<int> nonEmptyShipList;
-		for (auto id:fleet.api_ship)
+		for (auto id : fleet.api_ship)
 		{
 			if (id >= 0)
 			{
@@ -1566,7 +1576,7 @@ bool ControlManager::isHenseiDone(const QList<int>& ships, int team, int index/*
 			{
 				return false;
 			}
-			else 
+			else
 			{
 				for (int i = 0; i < ships.size(); i++)
 				{
@@ -1788,7 +1798,7 @@ WoundState ControlManager::hugestDamageInTeam(int team)
 		auto& fleet = pksd->portdata.api_deck_port.at(team);
 		if (fleet.api_ship.size())
 		{
-			for (auto shipno: fleet.api_ship)
+			for (auto shipno : fleet.api_ship)
 			{
 				if (shipno < 0)
 				{
@@ -1854,7 +1864,7 @@ bool ControlManager::checkColors(const QList<CheckColor>& checklist)
 	}
 	auto w = MainWindow::mainWindow()->getBrowserWidget();
 	auto image = w->grab().toImage();
-	for (auto& item:checklist)
+	for (auto& item : checklist)
 	{
 		auto col = image.pixel(item._pt);
 		int r = qRed(col);
@@ -1964,7 +1974,7 @@ bool ControlManager::needChargeFlagship(int team)
 			// first ship found
 
 			if (pship->api_fuel < pmstship->api_fuel_max
-				||pship->api_bull < pmstship->api_bull_max
+				|| pship->api_bull < pmstship->api_bull_max
 				)
 			{
 				return true;
@@ -1989,7 +1999,7 @@ bool ControlManager::needChargeAnyShip(int team)
 		auto& fleet = pksd->portdata.api_deck_port.at(team);
 		if (fleet.api_ship.size())
 		{
-			for (auto shipno:fleet.api_ship)
+			for (auto shipno : fleet.api_ship)
 			{
 				if (shipno < 0)
 				{
@@ -2072,8 +2082,8 @@ void ControlManager::setState(State state, const char* str, bool bSilent, bool f
 		if (_state == State::Terminated || _state == State::ToTerminate)
 		{
 			_lastTerminationReason = str;
-			if (forceSound 
-				||	(_target != ActionTarget::Expedition && _target != ActionTarget::None)
+			if (forceSound
+				|| (_target != ActionTarget::Expedition && _target != ActionTarget::None)
 				)
 			{
 				MainWindow::mainWindow()->timerWindow()->playSound(TimerMainWindow::SoundIndex::Terminated, bSilent);
@@ -2141,14 +2151,14 @@ ControlManager::AnySetting ControlManager::getAnyTemplateSetting(int area, int m
 
 void ControlManager::moveMouseToAndClick(float x, float y, float offsetX /*= 5*/, float offsetY /*= 3*/)
 {
-	QPointF ptAdjusted = QPointF(x+randVal(-offsetX, offsetX), y+randVal(-offsetY, offsetY));
+	QPointF ptAdjusted = QPointF(x + randVal(-offsetX, offsetX), y + randVal(-offsetY, offsetY));
 
 	if (MainWindow::mainWindow()->getWebWidgetType() == WebWidgetType::IE)
 	{
 #ifdef Q_OS_WIN
 		INPUT input;
 		input.type = INPUT_MOUSE;
-		input.mi.dx = ptAdjusted.x()+5;
+		input.mi.dx = ptAdjusted.x() + 5;
 		input.mi.dy = ptAdjusted.y() + 25;
 		input.mi.dx *= (65536 / GetSystemMetrics(SM_CXSCREEN));
 		input.mi.dy *= (65536 / GetSystemMetrics(SM_CYSCREEN));
@@ -2180,12 +2190,12 @@ void ControlManager::moveMouseToAndClick(float x, float y, float offsetX /*= 5*/
 			QMouseEvent e2(QEvent::MouseButtonRelease, ptAdjusted, Qt::LeftButton, Qt::LeftButton, Qt::NoModifier);
 			QApplication::sendEvent(w, &e2);
 #else
-            QPoint ptG = w->mapToGlobal(QPoint(ptAdjusted.x(), ptAdjusted.y()));
-            MainWindow::mainWindow()->clickAtGlobalPos(ptG);
-            
+			QPoint ptG = w->mapToGlobal(QPoint(ptAdjusted.x(), ptAdjusted.y()));
+			MainWindow::mainWindow()->clickAtGlobalPos(ptG);
+
 #endif
-            
-            
+
+
 		};
 
 		auto browserWidget = MainWindow::mainWindow()->getBrowserWidget();
@@ -2198,15 +2208,15 @@ void ControlManager::moveMouseToAndClick(float x, float y, float offsetX /*= 5*/
 				Q_FOREACH(QObject* obj, webView->page()->view()->children())
 				{
 					sendMouseEvents(qobject_cast<QWidget*>(obj));
-				}
-			}
+		}
+	}
 
 			// reset mouse pos for webengine
 			moveMouseTo(0, 0);
 #endif
-		}
+}
 		else
-        {
+		{
 			sendMouseEvents(browserWidget);
 		}
 
@@ -2222,7 +2232,7 @@ void ControlManager::moveMouseTo(float x, float y, float offsetX /*= 5*/, float 
 #ifdef Q_OS_WIN
 		INPUT input;
 		input.type = INPUT_MOUSE;
-		input.mi.dx = ptAdjusted.x()+5;
+		input.mi.dx = ptAdjusted.x() + 5;
 		input.mi.dy = ptAdjusted.y() + 25;
 		input.mi.dx *= (65536 / GetSystemMetrics(SM_CXSCREEN));
 		input.mi.dy *= (65536 / GetSystemMetrics(SM_CYSCREEN));
@@ -2262,15 +2272,15 @@ void ControlManager::moveMouseTo(float x, float y, float offsetX /*= 5*/, float 
 				{
 					sendMouseEvents(qobject_cast<QWidget*>(obj));
 				}
-			}
-#endif
 		}
+#endif
+	}
 		else
 		{
 			sendMouseEvents(browserWidget);
 		}
 
-	}
+}
 }
 
 void ControlManager::setPauseNextVal(bool bVal)
@@ -2284,7 +2294,7 @@ void ControlManager::setPauseNextVal(bool bVal)
 
 qreal ControlManager::randVal(qreal min, qreal max)
 {
-	qreal value = static_cast<qreal>(qrand()) * (max-min) / RAND_MAX + min;
+	qreal value = static_cast<qreal>(qrand()) * (max - min) / RAND_MAX + min;
 	return value;
 }
 

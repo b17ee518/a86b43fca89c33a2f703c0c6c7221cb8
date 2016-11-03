@@ -698,6 +698,10 @@ void ControlManager::LoadAnyTemplateSettings()
 			{
 				_anyTemplateSettings[pair].cells[cell].bNeedWin = true;
 			}
+			if (settingStr.contains('T') || settingStr.contains('t'))
+			{
+				_anyTemplateSettings[pair].cells[cell].bTerminateNext = true;
+			}
 		}
 		setting->endGroup();
 
@@ -1765,21 +1769,43 @@ bool ControlManager::shouldRetrieve()
 	{
 		return true;
 	}
+	return (hugestDamageInTeam(0) >= WoundState::Big);
+}
 
-	if (_target == ActionTarget::Any)
+bool ControlManager::shouldRetrieveForAny()
+{
+	if (_target != ActionTarget::Any)
 	{
-		KanSaveData* pksd = &KanSaveData::getInstance();
-		auto it = _anySetting.cells.find(pksd->nextdata.api_no);
-		if (it != _anySetting.cells.end())
+		return false;
+	}
+	KanSaveData* pksd = &KanSaveData::getInstance();
+	auto it = _anySetting.cells.find(pksd->nextdata.api_no);
+	if (it != _anySetting.cells.end())
+	{
+		if (it->bReturnNext)
 		{
-			if (it->bReturnNext)
-			{
-				return true;
-			}
+			return true;
 		}
 	}
+	return false;
+}
 
-	return (hugestDamageInTeam(0) >= WoundState::Big);
+bool ControlManager::shouldTerminateForAny()
+{
+	if (_target != ActionTarget::Any)
+	{
+		return false;
+	}
+	KanSaveData* pksd = &KanSaveData::getInstance();
+	auto it = _anySetting.cells.find(pksd->nextdata.api_no);
+	if (it != _anySetting.cells.end())
+	{
+		if (it->bTerminateNext)
+		{
+			return true;
+		}
+	}
+	return false;
 }
 
 WoundState ControlManager::hugestDamageInTeam(int team)
@@ -2298,4 +2324,5 @@ qreal ControlManager::randVal(qreal min, qreal max)
 	qreal value = static_cast<qreal>(qrand()) * (max - min) / RAND_MAX + min;
 	return value;
 }
+
 

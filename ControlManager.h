@@ -79,6 +79,7 @@ public:
 		bool bNeedS = false;
 		bool bKillFlagship = false;
 		bool bNeedWin = false;
+		bool bTerminateNext = false;
 	};
 	struct AnySetting
 	{
@@ -179,6 +180,8 @@ public:
 
 	bool shouldNightBattle();
 	bool shouldRetrieve();
+	bool shouldRetrieveForAny();
+	bool shouldTerminateForAny();
 	WoundState hugestDamageInTeam(int team);
 
 	void setSouthEastSetting(const SouthEastSetting& southEastSetting);

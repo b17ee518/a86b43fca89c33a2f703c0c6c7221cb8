@@ -1468,6 +1468,12 @@ bool SortieCommonAdvanceAction::action()
 			{
 				_shouldRetrieve = cm.shouldRetrieve();
 			}
+			if (!_shouldRetrieve && cm.shouldTerminateForAny())
+			{
+				cm.setToTerminate("Terminated:TerminateCell");
+				emit sigFatal();
+				return false;
+			}
 			QTimer::singleShot(_shouldRetrieve ? DELAY_TIME_SUPERLONG : DELAY_TIME_LONG, Qt::PreciseTimer, this, [this, &cm]()
 			{
 				// select formation
@@ -1504,7 +1510,8 @@ bool SortieCommonAdvanceAction::action()
 				{
 					_waiting = false;
 					// click left or right
-					if (_shouldRetrieve || cm.shouldRetrieve())
+					
+					if (_shouldRetrieve || cm.shouldRetrieve() || cm.shouldRetrieveForAny())
 					{
 						setState(State::ClickRight, "SortieAdv:Retrieve");
 					}

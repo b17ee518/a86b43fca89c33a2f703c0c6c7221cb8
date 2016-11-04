@@ -263,8 +263,9 @@ bool ChangeHenseiAction::action()
 			}
 			else
 			{
-				cm.setToTerminate("Terminated:HenseiError");
+				cm.setToTerminate("Terminated:HenseiError", true);
 				emit sigCheckFail();
+				return false;
 			}
 		}
 		resetRetryAndWainting();
@@ -651,7 +652,7 @@ bool ChangeHenseiAction::action()
 						else
 						{
 							qDebug() << "hensei error";
-							cm.setToTerminate("Terminated:HenseiError");
+							cm.setToTerminate("Terminated:HenseiError", true);
 							emit sigCheckFail();
 						}
 					});
@@ -708,7 +709,7 @@ bool ChangeHenseiAction::action()
 		}
 		else
 		{
-			cm.setToTerminate("Terminated:HenseiError");
+			cm.setToTerminate("Terminated:HenseiError", true);
 			emit sigCheckFail();
 		}
 		break;
@@ -1009,7 +1010,7 @@ bool SortieAction::action()
 		{
 			if (cm.needChargeAnyShip(0) || cm.hugestDamageInTeam(0) >= WoundState::Middle)
 			{
-				cm.setToTerminate("Terminated:Damage");
+				cm.setToTerminate("Terminated:Damage", true);
 				emit sigFatal();
 				return false;
 			}
@@ -1018,7 +1019,7 @@ bool SortieAction::action()
 		{
 			if (cm.needChargeAnyShip(0) || cm.hugestDamageInTeam(0) > WoundState::Middle)
 			{
-				cm.setToTerminate("Terminated:Damage");
+				cm.setToTerminate("Terminated:Damage", true);
 				emit sigFatal();
 				return false;
 			}
@@ -1027,7 +1028,7 @@ bool SortieAction::action()
 		{
 			if (cm.needChargeFlagship(0) || cm.hugestDamageInTeam(0) >= WoundState::Big)
 			{
-				cm.setToTerminate("Terminated:Damage");
+				cm.setToTerminate("Terminated:Damage", true);
 				emit sigFatal();
 				return false;
 			}
@@ -1210,7 +1211,7 @@ bool SortieAction::action()
 			// use in every mode
 			if (cm.needChargeCondAirBase(cm.getAnySetting().checkAirBaseCond))
 			{
-				cm.setToTerminate("Terminated:AirBase");
+				cm.setToTerminate("Terminated:AirBase", true);
 				emit sigFatal();
 				return false;
 			}
@@ -1470,7 +1471,7 @@ bool SortieCommonAdvanceAction::action()
 			}
 			if (!_shouldRetrieve && cm.shouldTerminateForAny())
 			{
-				cm.setToTerminate("Terminated:TerminateCell");
+				cm.setToTerminate("Terminated:TerminateCell", true);
 				emit sigFatal();
 				return false;
 			}
@@ -1538,7 +1539,7 @@ bool SortieCommonAdvanceAction::action()
 				&& !cm.isLevelMode()	// level mode always set to retrieve
 				)
 			{
-				cm.setToTerminate("Terminated:Fatal");
+				cm.setToTerminate("Terminated:Fatal", true);
 				emit sigFatal();
 				return false;
 			}

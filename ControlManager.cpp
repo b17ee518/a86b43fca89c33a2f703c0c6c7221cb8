@@ -1048,7 +1048,7 @@ void ControlManager::Run()
 
 	if (_actionList.empty())
 	{
-		setToTerminate("Terminated:NoAction");
+		setToTerminate("Terminated:NoAction", true);
 		return;
 	}
 	if (_actionList[0]->action())

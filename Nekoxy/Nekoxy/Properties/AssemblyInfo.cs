@@ -19,7 +19,7 @@ using System.Threading.Tasks;
 // 参照不可能になります。COM からこのアセンブリ内の型にアクセスする場合は、
 // その型の ComVisible 属性を true に設定してください。
 
-[assembly: ComVisible(false)]
+[assembly: ComVisible(true)]
 
 // 次の GUID は、このプロジェクトが COM に公開される場合の、typelib の ID です
 

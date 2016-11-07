@@ -702,6 +702,10 @@ void ControlManager::LoadAnyTemplateSettings()
 			{
 				_anyTemplateSettings[pair].cells[cell].bTerminateNext = true;
 			}
+			if (settingStr.contains('A') || settingStr.contains('a'))
+			{
+				_anyTemplateSettings[pair].cells[cell].bAskForProceed = true;
+			}
 		}
 		setting->endGroup();
 
@@ -796,7 +800,7 @@ bool ControlManager::BuildNext_Expedition()
 	auto pExp = ExpeditionManager::getInstance().getShouldNextSchedule(team, ct, ct + waitMS);
 	if (!pExp)
 	{
-		setToTerminate("Termination:Fatal", true);
+		setToTerminate("Termination:Fatal", false);
 		// date may change here
 		return false;
 	}
@@ -1783,6 +1787,24 @@ bool ControlManager::shouldRetrieveForAny()
 	if (it != _anySetting.cells.end())
 	{
 		if (it->bReturnNext)
+		{
+			return true;
+		}
+	}
+	return false;
+}
+
+bool ControlManager::shouldAskForProceedForAny()
+{
+	if (_target != ActionTarget::Any)
+	{
+		return false;
+	}
+	KanSaveData* pksd = &KanSaveData::getInstance();
+	auto it = _anySetting.cells.find(pksd->nextdata.api_no);
+	if (it != _anySetting.cells.end())
+	{
+		if (it->bAskForProceed)
 		{
 			return true;
 		}

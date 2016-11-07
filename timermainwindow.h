@@ -48,6 +48,7 @@ public:
 		Build,
 		Terminated,
 		Action,
+		GoodNight,
 	};
 
     explicit TimerMainWindow(QWidget *parent = 0);

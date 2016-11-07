@@ -80,6 +80,7 @@ public:
 		bool bKillFlagship = false;
 		bool bNeedWin = false;
 		bool bTerminateNext = false;
+		bool bAskForProceed = false;
 	};
 	struct AnySetting
 	{
@@ -181,6 +182,7 @@ public:
 	bool shouldNightBattle();
 	bool shouldRetrieve();
 	bool shouldRetrieveForAny();
+	bool shouldAskForProceedForAny();
 	bool shouldTerminateForAny();
 	WoundState hugestDamageInTeam(int team);
 

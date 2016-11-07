@@ -1223,7 +1223,7 @@ bool SortieAction::action()
 				mapPoints[2] = { 600, 199, 60, 36 };
 				mapPoints[3] = { 288.5f, 350, 102.5f, 36 };
 				mapPoints[4] = { 600, 350, 60, 36 };
-				mapPoints[5] = mapPoints[6] = { 720, 275, 54, 58 };
+				mapPoints[5] = mapPoints[6] = { 720, 275, 30, 50 };
 
 				auto& pPoint = mapPoints[_map];
 				cm.moveMouseToAndClick(pPoint[0], pPoint[1], pPoint[2], pPoint[3]); // map 1
@@ -1292,8 +1292,8 @@ bool SortieAction::action()
 			QTimer::singleShot(DELAY_TIME_CLICK, Qt::PreciseTimer, this, [this, &cm]()
 			{
 				QMap<int, QList<float>> mapPoints;
-				mapPoints[5] = { 482, 208, 252, 82 };
-				mapPoints[6] = { 466, 349, 242, 102 };
+				mapPoints[5] = { 482, 208, 126, 41 };
+				mapPoints[6] = { 466, 349, 121, 51 };
 
 				auto& pPoint = mapPoints[_map];
 				cm.moveMouseToAndClick(pPoint[0], pPoint[1], pPoint[2], pPoint[3]); // map 1
@@ -1514,12 +1514,21 @@ bool SortieCommonAdvanceAction::action()
 					
 					if (_shouldRetrieve || cm.shouldRetrieve() || cm.shouldRetrieveForAny())
 					{
-						setState(State::ClickRight, "SortieAdv:Retrieve");
+						if (cm.shouldAskForProceedForAny())
+						{
+							_waiting = false;
+							MainWindow::mainWindow()->timerWindow()->playSound(TimerMainWindow::SoundIndex::Action);
+						}
+						else
+						{
+							setState(State::ClickRight, "SortieAdv:Retrieve");
+						}
 					}
 					else
 					{
 						setState(State::ClickLeft, "SortieAdv:Advance");
 					}
+					
 				}
 				// else
 				else

@@ -27,6 +27,7 @@ TimerMainWindow::TimerMainWindow(QWidget *parent) :
 	_pPlaylist->addMedia(QUrl::fromLocalFile(filename + "/build.mp3"));
 	_pPlaylist->addMedia(QUrl::fromLocalFile(filename + "/terminated.mp3"));
 	_pPlaylist->addMedia(QUrl::fromLocalFile(filename + "/action.mp3"));
+	_pPlaylist->addMedia(QUrl::fromLocalFile(filename + "/goodnight.mp3"));
 	_pPlaylist->setCurrentIndex(0);
 	_pPlaylist->setPlaybackMode(QMediaPlaylist::CurrentItemOnce);
 	_pPlayer->setPlaylist(_pPlaylist);

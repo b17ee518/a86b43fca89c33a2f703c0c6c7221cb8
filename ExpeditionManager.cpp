@@ -1,6 +1,7 @@
 #include "ExpeditionManager.h"
 #include "kansavedata.h"
 #include "ControlManager.h"
+#include "mainwindow.h"
 
 #include <QFile>
 #include <QTextStream>
@@ -735,6 +736,7 @@ void ExpeditionManager::buildSingleByPresetLine(ExpeditionSchedule* pschedule, c
 void ExpeditionManager::dateChange()
 {
 	// date change:
+	MainWindow::mainWindow()->timerWindow()->playSound(TimerMainWindow::SoundIndex::GoodNight);
 	QString exchangeName;
 	if (_currentPreset.startsWith("Pre_"))
 	{

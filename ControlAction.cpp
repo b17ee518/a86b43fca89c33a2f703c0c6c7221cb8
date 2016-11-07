@@ -1516,8 +1516,9 @@ bool SortieCommonAdvanceAction::action()
 					{
 						if (cm.shouldAskForProceedForAny())
 						{
-							_waiting = false;
+							cm.setToTerminate("Terminated:TerminateCell", false);
 							MainWindow::mainWindow()->timerWindow()->playSound(TimerMainWindow::SoundIndex::Action);
+							emit sigFatal();
 						}
 						else
 						{

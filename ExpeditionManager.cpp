@@ -833,7 +833,7 @@ QString SingleExpedition::checkMatches(int shipid, int index, int team, int& toS
 	ControlManager* cm = &ControlManager::getInstance();
 	toShipid = -1;
 
-	QString errorIndexString = QString("_T%1_%2").arg(team).arg(index);
+	QString errorIndexString = QString("_T%1_%2").arg(team+1).arg(index+1);
 	int shiptype = shipTypes[index];
 
 	if (shiptype < 0)

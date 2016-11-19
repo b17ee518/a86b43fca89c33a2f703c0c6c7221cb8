@@ -85,6 +85,8 @@ public:
 	void BuildSingleNezumiYusou(ExpeditionSchedule* pschedule, int toHour, int toMin);
 	void BuildSingleBauxiteYusou(ExpeditionSchedule* pschedule, int toHour, int toMin);
 
+	void BuildSingleNone(ExpeditionSchedule* pschedule, int toHour, int toMin);
+
 	int getTimeShiftMin(){ return _timeShiftMin; }
 	// should only be called by mainwindow!!
 	void setTimeShiftMin(int min);

@@ -361,6 +361,11 @@ SingleExpedition* ExpeditionManager::getShouldNextSchedule(int team, qint64 ct, 
 
 		QTime costTime = it.value().costTime;
 
+		if (costTime.isNull())
+		{
+			return NULL;
+		}
+
 		QDateTime estNextBackTime = backTime;
 		if (estNextBackTime < currentTime)
 		{
@@ -672,6 +677,19 @@ void ExpeditionManager::BuildSingleBauxiteYusou(ExpeditionSchedule* pschedule, i
 	}
 }
 
+void ExpeditionManager::BuildSingleNone(ExpeditionSchedule* pschedule, int toHour, int toMin)
+{
+	SingleExpedition exp;
+	if (toHour < 0)
+	{
+		pschedule->addExpedition(QTime(23, 59, 59, 900), exp);
+	}
+	else
+	{
+		pschedule->addExpedition(QTime(toHour, toMin), exp);
+	}
+}
+
 void ExpeditionManager::setTimeShiftMin(int min)
 {
 	_timeShiftMin = min;
@@ -730,6 +748,10 @@ void ExpeditionManager::buildSingleByPresetLine(ExpeditionSchedule* pschedule, c
 	else if (!presetName.compare("BY", Qt::CaseInsensitive))
 	{
 		BuildSingleBauxiteYusou(pschedule, hour, minute);
+	}
+	else if (!presetName.compare("NONE", Qt::CaseInsensitive))
+	{
+		BuildSingleNone(pschedule, hour, minute);
 	}
 }
 

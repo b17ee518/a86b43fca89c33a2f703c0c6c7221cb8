@@ -793,11 +793,25 @@ bool ControlManager::BuildNext_Expedition()
 	_target = ActionTarget::Expedition;
 	int team = -1;
 	auto timerWindow = MainWindow::mainWindow()->timerWindow();
-	qint64 waitMS = timerWindow->getMinExpeditionMS(team);
-
+	
+	QList<int> excludeTeams;
+	SingleExpedition* pExp;
 	qint64 ct = TimerMainWindow::currentMS();
+	qint64 waitMS = 0;
+	for (int i = 0; i < 3; i++)
+	{
+		waitMS = timerWindow->getMinExpeditionMS(team, excludeTeams);
+		pExp = ExpeditionManager::getInstance().getShouldNextSchedule(team, ct, ct + waitMS);
+		if (!pExp)
+		{
+			excludeTeams.append(team);
+		}
+		else
+		{
+			break;
+		}
+	}
 
-	auto pExp = ExpeditionManager::getInstance().getShouldNextSchedule(team, ct, ct + waitMS);
 	if (!pExp)
 	{
 		setToTerminate("Termination:Fatal", false);
@@ -1136,12 +1150,33 @@ bool ControlManager::checkShouldAutoWait()
 	}
 
 	int team;
-	qint64 ms = MainWindow::mainWindow()->timerWindow()->getMinExpeditionMS(team);
-	if (ms <= 0)
+	QList<int> excludeTeams;
+	SingleExpedition* pExp;
+	qint64 ct = TimerMainWindow::currentMS();
+	qint64 waitMS = std::numeric_limits<int>::max();
+	for (int i = 0; i < 3; i++)
+	{
+		waitMS = MainWindow::mainWindow()->timerWindow()->getMinExpeditionMS(team, excludeTeams);
+		pExp = ExpeditionManager::getInstance().getShouldNextSchedule(team, ct, ct + waitMS);
+		if (!pExp)
+		{
+			excludeTeams.append(team);
+		}
+		else
+		{
+			break;
+		}
+	}
+
+	if (!pExp)
+	{
+		return false;
+	}
+
+	if (waitMS <= 0)
 	{
 		return true;
 	}
-
 	KanSaveData* pksd = &KanSaveData::getInstance();
 	bool bFirst = true;
 	for (const auto& deck : pksd->portdata.api_deck_port)
@@ -1155,11 +1190,14 @@ bool ControlManager::checkShouldAutoWait()
 		{
 			if (deck.api_mission.first() != 1)
 			{
+				if (excludeTeams.contains(deck.api_id-1))
+				{
+					continue;
+				}
 				return true;
 			}
 		}
 	}
-
 	return false;
 }
 

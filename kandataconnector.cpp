@@ -786,6 +786,9 @@ QString KanDataConnector::logBattleResult(bool bWrite/*=true*/)
 	case KanBattleType::Combined_ECNight:
 		battletypestr = QString::fromLocal8Bit("敵連夜");
 		break;
+	case KanBattleType::Combined_Each:
+		battletypestr = QString::fromLocal8Bit("連連");
+		break;
 	}
 
 	QString writestr = mapareastr + "\t"

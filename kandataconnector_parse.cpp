@@ -1140,6 +1140,14 @@ bool KanDataConnector::req_combined_battle_ec_midnight_battle_parse()
 	return true;
 }
 
+bool KanDataConnector::req_combined_battle_each_battle_parse()
+{
+	pksd->battledata.ReadFromJObj(_jobj);
+
+	updateBattle(pksd->battledata, KanBattleType::Combined_Each);
+	return true;
+}
+
 bool KanDataConnector::get_member_practice_parse()
 {
 	return true;

@@ -60,6 +60,7 @@
  /kcsapi/api_req_combined_battle/airbattle
  /kcsapi/api_req_combined_battle/battleresult
  /kcsapi/api_req_combined_battle/battle
+ /kcsapi/api_req_combined_battle/each_battle
  /kcsapi/api_req_combined_battle/midnight_battle
  /kcsapi/api_req_combined_battle/sp_midnight
 
@@ -232,6 +233,7 @@ KanDataConnector::KanDataConnector(void)
 	req_sortie_night_to_day_flag = PARSEFLAG_OUTPUT;
 	req_combined_battle_ec_battle_flag = PARSEFLAG_OUTPUT;
 	req_combined_battle_ec_midnight_battle_flag = PARSEFLAG_OUTPUT;
+	req_combined_battle_each_battle_flag = PARSEFLAG_OUTPUT;
 //	start2_flag = PARSEFLAG_OUTPUT;
 //	port_port_flag = PARSEFLAG_OUTPUT;
 //	req_sortie_airbattle_flag = PARSEFLAG_OUTPUT;
@@ -342,6 +344,7 @@ bool KanDataConnector::Parse(const QString& pathAndQuery, const QString& request
 		PARSEAPI("/kcsapi/api_req_combined_battle/goback_port", req_combined_battle_goback_port)
 		PARSEAPI("/kcsapi/api_req_combined_battle/ec_battle", req_combined_battle_ec_battle)
 		PARSEAPI("/kcsapi/api_req_combined_battle/ec_midnight_battle", req_combined_battle_ec_midnight_battle)
+		PARSEAPI("/kcsapi/api_req_combined_battle/each_battle", req_combined_battle_each_battle)
 		PARSEAPI("/kcsapi/api_get_member/practice", get_member_practice)
 		PARSEAPI("/kcsapi/api_req_member/get_practice_enemyinfo", req_member_get_practice_enemyinfo)
 		PARSEAPI("/kcsapi/api_req_practice/battle", req_practice_battle)

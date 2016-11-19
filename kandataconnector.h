@@ -47,7 +47,7 @@ public:
 	void setOutputAllLog(bool bVal){ _outputAllLog = bVal; }
 
 	void callUpdateOverviewTable(){ updateOverviewTable(); }
-
+	
 private:
 	void updateOverviewTable();
 	void updateMissionTable();
@@ -158,6 +158,7 @@ private:
 	bool req_combined_battle_goback_port_parse();
 	bool req_combined_battle_ec_battle_parse();
 	bool req_combined_battle_ec_midnight_battle_parse();
+	bool req_combined_battle_each_battle_parse();
 	bool get_member_practice_parse();
 	bool req_member_get_practice_enemyinfo_parse();
 	bool req_practice_battle_parse();
@@ -269,6 +270,7 @@ private:
 	int req_combined_battle_goback_port_flag;
 	int req_combined_battle_ec_battle_flag;
 	int req_combined_battle_ec_midnight_battle_flag;
+	int req_combined_battle_each_battle_flag;
 	int get_member_practice_flag;
 	int req_member_get_practice_enemyinfo_flag;
 	int req_practice_battle_flag;

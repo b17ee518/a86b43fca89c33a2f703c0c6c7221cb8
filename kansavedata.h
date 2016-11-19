@@ -23,6 +23,7 @@ enum class KanBattleType
 	Combined_DayToNight,
 	Combined_EC,
 	Combined_ECNight,
+	Combined_Each,	// 12 vs 12
 };
 
 enum class MaterialDataIndex

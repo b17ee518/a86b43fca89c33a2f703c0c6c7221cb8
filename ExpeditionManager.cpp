@@ -758,6 +758,14 @@ void ExpeditionManager::buildSingleByPresetLine(ExpeditionSchedule* pschedule, c
 void ExpeditionManager::dateChange()
 {
 	// date change:
+	static QDate playedDate = QDate::currentDate().addDays(-1);
+
+	if (playedDate >= QDate::currentDate())
+	{
+		return;
+	}
+	playedDate = QDate::currentDate();
+
 	MainWindow::mainWindow()->timerWindow()->playSound(TimerMainWindow::SoundIndex::GoodNight);
 	QString exchangeName;
 	if (_currentPreset.startsWith("Pre_"))

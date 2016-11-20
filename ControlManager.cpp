@@ -952,6 +952,7 @@ bool ControlManager::BuildNext_Destroy()
 	DestroyShipAction* action = new DestroyShipAction();
 	action->setShips(toDestroyList);
 	_actionList.append(action);
+	_actionList.append(new RepeatAction());	//should be nothing
 	setState(State::Ready, "Ready");
 	return true;
 }

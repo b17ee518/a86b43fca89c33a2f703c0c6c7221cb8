@@ -2164,6 +2164,18 @@ bool RepeatAction::action()
 				mainWindow->switchToExpeditionWait();
 			}
 		}
+		else if (cm.isDestroyMode())
+		{
+			if (cm.BuildNext_Destroy())
+			{
+				setState(State::Done, "Repeat:Done");
+				cm.StartJob();
+			}
+			else
+			{
+				mainWindow->switchToExpeditionWait();
+			}
+		}
 		break;
 	case RepeatAction::State::Done:
 		return true;

@@ -102,7 +102,7 @@ bool ControlManager::BuildNext_Kira()
 	}
 
 	int wasteId = curSecond;
-	if (bChangeSecond)
+	if (bChangeSecond || !wasteShipListByPreCheck.isEmpty())
 	{
 		wasteId = getOneWasteShipId(togoShipId, flagshipid, wasteShipListByPreCheck);
 	}

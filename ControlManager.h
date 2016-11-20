@@ -110,11 +110,11 @@ public:
 	bool LoadToDoShipList_Kira();
 
 	bool LoadDestroyableList();
-	QList<int> GenerateToDestroyList();
+	QList<int> GenerateToDestroyList(QList<int>& wasteShipList);
 
 	void pushPreSupplyCheck();
 
-	bool pushPreShipFullCheck();
+	QList<int> pushPreShipFullCheck();
 
 	bool BuildNext_Kira();
 
@@ -164,8 +164,8 @@ public:
 	bool shouldChangeSecondShip();
 	bool needChargeFlagship(int team);
 	bool needChargeAnyShip(int team);
-	int getOneWasteShipId(int exclude1 = -1, int exclude2 = -1);
-	int getOneWasteShipId(const QList<int>& excludes);
+	int getOneWasteShipId(int exclude1 = -1, int exclude2 = -1, QList<int>shipList=QList<int>());
+	int getOneWasteShipId(const QList<int>& excludes, QList<int>shipList = QList<int>());
 	bool isShipFull(int keep = 3);
 	bool findPagePosByShipId(int shipno, int& page, int& pos, int& lastPage);
 	bool isShipKiraDone(int shipno);

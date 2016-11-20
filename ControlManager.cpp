@@ -47,11 +47,7 @@ bool ControlManager::BuildNext_Kira()
 		return false;
 	}
 
-	if (!pushPreShipFullCheck())
-	{
-		setToTerminate("Terminated:ShipFull");
-		return false;
-	}
+	QList<int> wasteShipListByPreCheck = pushPreShipFullCheck();
 	
 	int togoShipId = _todoShipids.at(0);
 	while (isShipKiraDone(togoShipId)
@@ -94,7 +90,7 @@ bool ControlManager::BuildNext_Kira()
 		// must exclude second first
 		auto preChAction = new ChangeHenseiAction();
 
-		auto randomwaste = getOneWasteShipId(flagshipid, curSecond);
+		auto randomwaste = getOneWasteShipId(flagshipid, curSecond, wasteShipListByPreCheck);
 		preChAction->setShips(flagshipid, randomwaste);
 		_actionList.append(preChAction);
 		bTogoSameToCurSecond = true;
@@ -108,7 +104,7 @@ bool ControlManager::BuildNext_Kira()
 	int wasteId = curSecond;
 	if (bChangeSecond)
 	{
-		wasteId = getOneWasteShipId(togoShipId, flagshipid);
+		wasteId = getOneWasteShipId(togoShipId, flagshipid, wasteShipListByPreCheck);
 	}
 	chAction->setShips(togoShipId, wasteId);
 	_actionList.append(chAction);
@@ -943,7 +939,8 @@ bool ControlManager::BuildNext_Destroy()
 {
 	_target = ActionTarget::Destroy;
 
-	QList<int> toDestroyList = GenerateToDestroyList();
+	QList<int> wasteShipList;
+	QList<int> toDestroyList = GenerateToDestroyList(wasteShipList);
 	if (toDestroyList.isEmpty())
 	{
 		setToTerminate("Termination:Fatal", true);
@@ -1093,7 +1090,7 @@ bool ControlManager::LoadDestroyableList()
 
 }
 
-QList<int> ControlManager::GenerateToDestroyList()
+QList<int> ControlManager::GenerateToDestroyList(QList<int>& wasteShipList)
 {
 	LoadDestroyableList();
 
@@ -1153,6 +1150,8 @@ QList<int> ControlManager::GenerateToDestroyList()
 	{
 		return QList<int>();
 	}
+	wasteShipList.append(kuchiku[0]);
+	wasteShipList.append(kuchiku[1]);
 	return toDestroyList;
 }
 
@@ -1167,23 +1166,25 @@ void ControlManager::pushPreSupplyCheck()
 	}
 }
 
-bool ControlManager::pushPreShipFullCheck()
+QList<int> ControlManager::pushPreShipFullCheck()
 {
 	if (isShipFull())
 	{
+		QList<int> wasteShipList;
 		DestroyShipAction* action = new DestroyShipAction();
 
-		QList<int> toDestroyList = GenerateToDestroyList();
+		QList<int> toDestroyList = GenerateToDestroyList(wasteShipList);
 
 		if (!toDestroyList.size())
 		{
 			delete action;
-			return false;
+			return QList<int>();
 		}
 		action->setShips(toDestroyList);
 		_actionList.append(action);
+		return wasteShipList;
 	}
-	return true;
+	return QList<int>();
 }
 
 
@@ -1495,10 +1496,11 @@ bool ControlManager::isAfterShip(const kcsapi_mst_ship* pmstship, const kcsapi_m
 	}
 }
 
-int ControlManager::getOneWasteShipId(const QList<int>& excludes)
+int ControlManager::getOneWasteShipId(const QList<int>& excludes, QList<int>shipList/* = QList<int>()*/)
 {
 	KanSaveData* pksd = &KanSaveData::getInstance();
 	KanDataConnector* pkdc = &KanDataConnector::getInstance();
+	
 	for (auto& ship : pksd->portdata.api_ship)
 	{
 		if (ship.api_lv == 1
@@ -1533,6 +1535,13 @@ int ControlManager::getOneWasteShipId(const QList<int>& excludes)
 							continue;
 						}
 					}
+					if (!shipList.isEmpty())
+					{
+						if (!shipList.contains(ship.api_id))
+						{
+							continue;
+						}
+					}
 					return ship.api_id;
 				}
 			}
@@ -1541,7 +1550,7 @@ int ControlManager::getOneWasteShipId(const QList<int>& excludes)
 	return -1;
 }
 
-int ControlManager::getOneWasteShipId(int exclude1/*=-1*/, int exclude2/*=-1*/)
+int ControlManager::getOneWasteShipId(int exclude1/*=-1*/, int exclude2/*=-1*/, QList<int>shipList/* = QList<int>()*/)
 {
 	QList<int> excludes;
 	if (exclude1 >= 0)

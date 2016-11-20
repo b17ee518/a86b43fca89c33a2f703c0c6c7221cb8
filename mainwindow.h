@@ -162,6 +162,7 @@ private slots:
 	void onDoJobRank();
 	void onDoJobAny();
 	void onDoJobExpedition(bool bDo);
+	void onDoJobDestroy();
 	void onToggleJobExpedition();
 	void onExportAllList();
 	void onTerminateJob();

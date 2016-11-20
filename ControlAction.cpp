@@ -10,6 +10,7 @@
 #define DELAY_TIME_PAGE	(300*_intervalMul)
 #define DELAY_TIME_SUPERLONG	(1200*_intervalMul)
 #define DELAY_TIME_SUPERSUPERLONG	(2000*_intervalMul)
+#define DELAY_TIME_SKIP_DESTROY	(4500*_intervalMul)
 #define DELAY_TIME_SKIP	(7000*_intervalMul)
 
 ControlAction::ControlAction(QObject* parent /*= NULL*/)
@@ -996,7 +997,434 @@ void ChargeAction::setState(State state, const char* str)
 
 bool DestroyShipAction::action()
 {
-	return true;
+	auto& cm = ControlManager::getInstance();
+	switch (_state)
+	{
+	case DestroyShipAction::State::None:
+
+		_nowIndex = 0;
+		setState(State::HomePortChecking, "Destroy:HomePortChecking");
+		while (!cm.isShipExist(_ships[_nowIndex]))
+		{
+			_nowIndex++;
+			if (_nowIndex == _ships.size())
+			{
+				setState(State::Done, "Destroy:Done");
+				break;
+			}
+		}
+
+		for (int i = 0; i < _ships.size(); i++)
+		{
+			_pageList.append(-1);
+			_posList.append(-1);
+		}
+		
+		int page;
+		int pos;
+		if (ControlManager::getInstance().findPagePosByShipId(_ships[_nowIndex], page, pos, _lastPage))
+		{
+			_pageList[_nowIndex] = page;
+			_posList[_nowIndex] = pos;
+		}
+		else
+		{
+			cm.setToTerminate("Terminated:DestroyError", true);
+			emit sigCheckFail();
+			return false;
+		}
+		resetRetryAndWainting();
+		break;
+	case DestroyShipAction::State::HomePortChecking:
+		if (!_waiting)
+		{
+			_waiting = true;
+			QTimer::singleShot(DELAY_TIME, Qt::PreciseTimer, this, [this, &cm]()
+			{
+				// home port
+				if (cm.checkColors(
+					213, 247, 251, 155, 32
+					, 231, 114, 224, 201, 66))
+				{
+					_waiting = false;
+					setState(State::HomePortDone, "Destroy:HomePortDone");
+				}
+				else
+				{
+					tryRetry();
+				}
+			});
+		}
+		break;
+	case DestroyShipAction::State::HomePortDone:
+		if (!_waiting)
+		{
+			_waiting = true;
+			if (!cm.isShipExist(_ships[_nowIndex]))
+			{
+				setState(State::Done, "Destroy:Done");
+				resetRetryAndWainting();
+			}
+			else
+			{
+				QTimer::singleShot(DELAY_TIME_CLICK, Qt::PreciseTimer, this, [this, &cm]()
+				{
+					cm.moveMouseToAndClick(274, 361, 23, 21.5f); // change button
+					setState(State::KouShouSelectChecking, "Destroy:KouShouSelectChecking");
+					resetRetryAndWainting();
+				});
+			}
+		}
+		break;
+	case DestroyShipAction::State::KouShouSelectChecking:
+		if (!_waiting)
+		{
+			_waiting = true;
+			QTimer::singleShot(DELAY_TIME, Qt::PreciseTimer, this, [this, &cm]()
+			{
+				// destroy
+				if (cm.checkColors(
+					300, 257, 131, 58, 44
+					, 240, 241, 253, 245, 220))
+				{
+					_waiting = false;
+					setState(State::KouShouSelectDone, "Destroy:KouShouSelectDone");
+				}
+				else
+				{
+					tryRetry();
+				}
+			});
+		}
+		break;
+	case DestroyShipAction::State::KouShouSelectDone:
+		if (!_waiting)
+		{
+			_waiting = true;
+			QTimer::singleShot(DELAY_TIME_CLICK, Qt::PreciseTimer, this, [this, &cm]()
+			{
+				cm.moveMouseToAndClick(229, 252, 66, 22); // destroy
+
+				setState(State::FindShipChecking, "Destroy:FindShipChecking");
+				resetRetryAndWainting();
+			});
+		}
+		break;
+	case DestroyShipAction::State::FindShipChecking:
+		if (!_waiting)
+		{
+			_waiting = true;
+			QTimer::singleShot(DELAY_TIME, Qt::PreciseTimer, this, [this, &cm]()
+			{
+				if (cm.checkColors(
+					31, 358, 206, 205, 52
+					, 579, 113, 44, 144, 144))
+				{
+					_waiting = false;
+					setState(State::FindShipDone, "Destroy:FindShipDone");
+				}
+				else if (cm.checkColors(
+					31, 358, 206, 205, 52
+					, 354, 111, 67, 60, 49))
+				{
+					_waiting = false;
+					setState(State::FindShipChangeSort, "Destroy:FindShipChangeSort");
+				}
+				else
+				{
+					tryRetry();
+				}
+			});
+		}
+		break;
+	case DestroyShipAction::State::FindShipChangeSort:
+		if (!_waiting)
+		{
+			_waiting = true;
+			QTimer::singleShot(DELAY_TIME_CLICK, Qt::PreciseTimer, this, [this, &cm]()
+			{
+				cm.moveMouseToAndClick(584, 112, 15, 5); // sort button
+				setState(State::FindShipChecking, "Destroy:FindShipChecking");
+				resetRetryAndWainting();
+			});
+		}
+		break;
+	case DestroyShipAction::State::FindShipDone:
+		if (!_waiting)
+		{
+			_waiting = true;
+			QTimer::singleShot(DELAY_TIME_CLICK, Qt::PreciseTimer, this, [this, &cm]()
+			{
+				if (cm.checkColors(
+					31, 358, 206, 205, 52
+					, 298, 450, 30, 190, 195))
+				{
+					setState(State::FindShipFirstPageDone, "Destroy:FindShipFirstPageDone");
+					resetRetryAndWainting();					
+				}
+				else
+				{
+					cm.moveMouseToAndClick(218, 452); // left most button
+					setState(State::FindShipFirstPageChecking, "Destroy:FindShipFirstPageChecking");
+					resetRetryAndWainting();
+				}
+			});
+		}
+		break;
+	case DestroyShipAction::State::FindShipFirstPageChecking:
+		if (!_waiting)
+		{
+			_waiting = true;
+			QTimer::singleShot(DELAY_TIME, Qt::PreciseTimer, this, [this, &cm]()
+			{
+				if (cm.checkColors(
+					31, 358, 206, 205, 52
+					, 298, 450, 30, 190, 195))
+				{
+					_waiting = false;
+					setState(State::FindShipFirstPageDone, "Destroy:FindShipFirstPageDone");
+				}
+				else
+				{
+					tryRetry();
+				}
+			});
+		}
+		break;
+	case DestroyShipAction::State::FindShipFirstPageDone:
+		if (!_waiting)
+		{
+			_waiting = true;
+			if (_pageList[_nowIndex] < 0 || _posList[_nowIndex] < 0)
+			{
+				cm.setToTerminate("Terminated:DestroyPageError", true);
+				emit sigCheckFail();
+				return false;
+			}
+			else if (_pageList[_nowIndex] == 0)
+			{
+				QTimer::singleShot(DELAY_TIME_CLICK, Qt::PreciseTimer, this, [this, &cm]()
+				{
+					cm.moveMouseToAndClick(300, 136 + _cellHeight*_posList[_nowIndex]);
+					setState(State::FindShipOKChecking, "Destroy:FindShipOKChecking");
+					resetRetryAndWainting();
+				});
+			}
+			else
+			{
+				QTimer::singleShot(DELAY_TIME_CLICK, Qt::PreciseTimer, this, [this, &cm]()
+				{
+					if (_lastPage == _pageList[_nowIndex])
+					{
+						cm.moveMouseToAndClick(496, 452); // last page
+						_curPage = _lastPage;
+					}
+					else if (_pageList[_nowIndex] >= 5)
+					{
+						cm.moveMouseToAndClick(461, 449); // 6th page
+						_curPage = 5;
+					}
+					else
+					{
+						cm.moveMouseToAndClick(332, 446); // second page
+						_curPage = 1;
+					}
+					setState(State::FindShipNextPageChecking, "Destroy:FindShipNextPageChecking");
+					resetRetryAndWainting();
+				});
+			}
+		}
+		break;
+	case DestroyShipAction::State::FindShipNextPageChecking:
+		if (!_waiting)
+		{
+			_waiting = true;
+			QTimer::singleShot(DELAY_TIME_PAGE, Qt::PreciseTimer, this, [this, &cm]()
+			{
+				_waiting = false;
+				setState(State::FindShipNextPageDone, "Destroy:FindShipNextPageDone");
+				// just assume page flip is ok
+			});
+		}
+		break;
+	case DestroyShipAction::State::FindShipNextPageDone:
+		if (!_waiting)
+		{
+			_waiting = true;
+			if (_pageList[_nowIndex] == _curPage)
+			{
+				QTimer::singleShot(DELAY_TIME_CLICK, Qt::PreciseTimer, this, [this, &cm]()
+				{
+					cm.moveMouseToAndClick(300, 136 + _cellHeight*_posList[_nowIndex]);
+					setState(State::FindShipOKChecking, "Destroy:FindShipOKChecking");
+					resetRetryAndWainting();
+				});
+			}
+			else
+			{
+				QTimer::singleShot(DELAY_TIME_CLICK, Qt::PreciseTimer, this, [this, &cm]()
+				{
+					if (_curPage == 1)
+					{
+						cm.moveMouseToAndClick(362, 447); // third page
+						_curPage++;
+					}
+					else if (_pageList[_nowIndex] >= _curPage + 5)
+					{
+						cm.moveMouseToAndClick(461, 449); // 6th page
+						_curPage += 5;
+					}
+					else
+					{
+						cm.moveMouseToAndClick(393, 446); // fourth and further
+						_curPage++;
+					}
+					setState(State::FindShipNextPageChecking, "Destroy:FindShipNextPageChecking");
+					resetRetryAndWainting();
+				});
+			}
+		}
+		break;
+	case DestroyShipAction::State::FindShipOKChecking:
+		if (!_waiting)
+		{
+			_waiting = true;
+			QTimer::singleShot(DELAY_TIME_LONG, Qt::PreciseTimer, this, [this, &cm]()
+			{
+				if (cm.checkColors(
+					31, 358, 206, 205, 52
+					, 669, 444, 12, 117, 107))
+				{
+					_waiting = false;
+					setState(State::FindShipOKDone, "Destroy:FindShipOKDone");
+				}
+				else
+				{
+					tryRetry();
+				}
+			});
+		}
+		break;
+	case DestroyShipAction::State::FindShipOKDone:
+		if (!_waiting)
+		{
+			_waiting = true;
+			QTimer::singleShot(DELAY_TIME_CLICK, Qt::PreciseTimer, this, [this, &cm]()
+			{
+				cm.moveMouseToAndClick(700, 434, 40, 12); // Destroy button
+				if (_nowIndex == _ships.size() - 1)
+				{
+					_waiting = true;
+					{
+						QTimer::singleShot(DELAY_TIME_SKIP_DESTROY + cm.randVal(0, 250), Qt::PreciseTimer, this, [this, &cm]()
+						{
+							setState(State::ReturnToPortChecking, "Destroy:ReturnToPortChecking");
+							resetRetryAndWainting();
+						});
+					}
+				}
+				else
+				{
+					_waiting = true;
+					QTimer::singleShot(DELAY_TIME_SKIP_DESTROY+cm.randVal(0, 250), Qt::PreciseTimer, this, [this, &cm]()
+					{
+						if (!cm.isShipExist(_ships[_nowIndex]))
+						{
+							_nowIndex++;
+
+							int page;
+							int pos;
+							if (ControlManager::getInstance().findPagePosByShipId(_ships[_nowIndex], page, pos, _lastPage))
+							{
+								_pageList[_nowIndex] = page;
+								_posList[_nowIndex] = pos;
+								setState(State::FindShipChecking, "Destroy:Checking");
+								resetRetryAndWainting();
+							}
+							else
+							{
+								cm.setToTerminate("Terminated:DestroyError", true);
+								emit sigCheckFail();
+							}
+						}
+						else
+						{
+							qDebug() << "error";
+							cm.setToTerminate("Terminated:DestroyError", true);
+							emit sigCheckFail();
+						}
+					});
+				}
+			});
+		}
+		break;
+	case DestroyShipAction::State::ReturnToPortChecking:
+		if (!_waiting)
+		{
+			_waiting = true;
+			QTimer::singleShot(DELAY_TIME, Qt::PreciseTimer, this, [this, &cm]()
+			{
+				if (cm.checkColors(
+					31, 358, 206, 205, 52
+					, 329, 112, 66, 57, 47))
+				{
+					_waiting = false;
+					setState(State::ReturnToPortDone, "Destroy:ReturnToPortDone");
+				}
+				else
+				{
+					tryRetry();
+				}
+			});
+		}
+		break;
+	case  DestroyShipAction::State::ReturnToPortDone:
+		if (!_waiting)
+		{
+			_waiting = true;
+			_expectingRequest = "/kcsapi/api_port/port";
+			QTimer::singleShot(DELAY_TIME_CLICK, Qt::PreciseTimer, this, [this, &cm]()
+			{
+				cm.moveMouseToAndClick(74, 252); // port button
+				setState(State::ExpectingPort, "Destroy:ExpectingPort");
+				resetRetryAndWainting();
+			});
+		}
+		break;
+	case DestroyShipAction::State::ExpectingPort:
+		if (_expectingRequest == "")
+		{
+			cm.moveMouseTo(400, 200);
+			setState(State::Done, "Destroy:Done");
+			cm.setupAutoExpedition();
+		}
+		break;
+	case DestroyShipAction::State::Done:
+		return true;
+		break;
+	default:
+		break;
+	}
+
+	return false;
+}
+
+void DestroyShipAction::setState(State state, const char* str)
+{
+	_state = state;
+	ControlManager::getInstance().setStateStr(str);
+}
+
+void DestroyShipAction::setShips(const QList<int>& ships)
+{
+	for (int shipno : ships)
+	{
+		if (shipno < 0)
+		{
+			continue;
+		}
+		_ships.append(shipno);
+	}
 }
 
 bool SortieAction::action()

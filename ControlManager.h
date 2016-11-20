@@ -28,6 +28,7 @@ public:
 		Level,
 		Rank,
 		Any,
+		Destroy,
 	};
 
 	enum class StopWhen
@@ -108,7 +109,12 @@ public:
 
 	bool LoadToDoShipList_Kira();
 
+	bool LoadDestroyableList();
+	QList<int> GenerateToDestroyList();
+
 	void pushPreSupplyCheck();
+
+	bool pushPreShipFullCheck();
 
 	bool BuildNext_Kira();
 
@@ -125,6 +131,8 @@ public:
 
 	bool LoadExpeditionPossibleList(); // TODO
 	bool BuildNext_Expedition();
+
+	bool BuildNext_Destroy();
 
 	bool stopWhenCheck();
 
@@ -167,6 +175,7 @@ public:
 	bool isShipDamaged(int shipno);
 	bool isShipCharged(int shipno);
 	bool needChargeCondAirBase(bool checkCond);
+	bool isShipExist(int shipno);
 
 	bool isHenseiDone(const QList<int>& ships, int team, int index = -1);
 	bool isFlagshipOnly(int team);
@@ -174,6 +183,7 @@ public:
 	bool isShipType(int shipno, ShipType stype);
 	bool hasSlotitem(int shipno, SlotitemType sitype, int count = 1);
 	bool noSlotitem(int shipno);
+	bool noAttackItem(int shipno);
 
 	int getShipCondVal(int shipno);
 
@@ -227,6 +237,7 @@ public:
 	inline bool isExpeditionMode(){ return _target == ActionTarget::Expedition; }
 	inline bool isRankMode(){ return _target == ActionTarget::Rank; }
 	inline bool isAnyMode(){ return _target == ActionTarget::Any; }
+	inline bool isDestroyMode(){ return _target == ActionTarget::Destroy; }
 
 	void setState(State state, const char* str, bool bSilent = false, bool forceSound = false);
 	void setInactiveWaiting(bool waiting){ _inactiveWaiting = waiting; }
@@ -275,6 +286,8 @@ public:
 	qreal randVal(qreal min, qreal max);
 
 	QString _lastTerminationReason;
+
+	QList<int> _destroyableMstIds;
 
 	QList<int> _todoShipids;
 	int _toCond = 70;

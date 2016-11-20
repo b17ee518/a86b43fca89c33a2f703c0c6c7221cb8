@@ -262,6 +262,24 @@ void MainWindow::onToggleJobExpedition()
 	}
 }
 
+void MainWindow::onDoJobDestroy()
+{
+	auto& cm = ControlManager::getInstance();
+	cm.Terminate();
+	cm.clearLastTarget();
+
+	if (cm.BuildNext_Destroy())
+	{
+		cm.StartJob();
+	}
+	else
+	{
+		switchToExpeditionWait();
+	}
+}
+
+
+
 void MainWindow::onExportAllList()
 {
 	KanSaveData* pksd = &KanSaveData::getInstance();

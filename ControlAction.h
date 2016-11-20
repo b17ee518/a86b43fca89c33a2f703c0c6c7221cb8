@@ -252,8 +252,53 @@ class DestroyShipAction : public ControlAction
 public:
 	DestroyShipAction(QObject* parent = NULL)
 		:ControlAction(parent){}
-	
+
+	enum class State
+	{
+		None,
+		HomePortChecking,
+		HomePortDone, // click koushou
+		KouShouSelectChecking,
+		KouShouSelectDone, // click destroy
+		SelectDestroyChecking,
+		SelectDestoryDone,
+		FindShipChecking,	// cur page
+		FindShipChangeSort,	// sort change
+		FindShipDone,		// click ship
+		FindShipFirstPageChecking,
+		FindShipFirstPageDone,
+		FindShipNextPageChecking,
+		FindShipNextPageDone, // skip to
+		FindShipOKChecking,
+		FindShipOKDone, //destroy
+		Skipping,	// click to skip
+		ReturnToPortChecking,
+		ReturnToPortDone,
+		ExpectingPort,
+		Done,
+	};
+	void setShips(const QList<int>& ships);
+	void resetCurPage()
+	{
+		_curPage = 0;
+	}
+
 	virtual bool action() override;
+
+
+public:
+	QList<int> _ships;
+	QList<int> _pageList;
+	QList<int> _posList;
+	int _lastPage = 0;
+
+	int _curPage = 0;
+	int _nowIndex = 0;
+	int _cellHeight = 31;
+
+private:
+	State _state = State::None;
+	void setState(State state, const char* str);
 };
 
 class SortieAction : public ControlAction

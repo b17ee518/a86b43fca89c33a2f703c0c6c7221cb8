@@ -47,13 +47,12 @@ bool ControlManager::BuildNext_Kira()
 		return false;
 	}
 
-	if (isShipFull())
+	if (!pushPreShipFullCheck())
 	{
 		setToTerminate("Terminated:ShipFull");
 		return false;
-		//		_actionList.append(new DestroyShipAction());
 	}
-
+	
 	int togoShipId = _todoShipids.at(0);
 	while (isShipKiraDone(togoShipId)
 		|| isShipInOtherTeam(togoShipId, 0)
@@ -64,6 +63,7 @@ bool ControlManager::BuildNext_Kira()
 		|| hasSlotitem(togoShipId, SlotitemType::Sonar_L)
 		|| hasSlotitem(togoShipId, SlotitemType::YuSou, 3)
 		|| noSlotitem(togoShipId)
+		|| noAttackItem(togoShipId)
 		|| (!_kiraSetting.forceCurrent&&isLowCond(togoShipId)))
 	{
 		_todoShipids.removeAt(0);
@@ -939,6 +939,24 @@ bool ControlManager::BuildNext_Expedition()
 	return true;
 }
 
+bool ControlManager::BuildNext_Destroy()
+{
+	_target = ActionTarget::Destroy;
+
+	QList<int> toDestroyList = GenerateToDestroyList();
+	if (toDestroyList.isEmpty())
+	{
+		setToTerminate("Termination:Fatal", true);
+		return false;
+	}
+	DestroyShipAction* action = new DestroyShipAction();
+	action->setShips(toDestroyList);
+	_actionList.append(action);
+	setState(State::Ready, "Ready");
+	return true;
+}
+
+
 bool ControlManager::stopWhenCheck()
 {
 	if (!isFuelMode() && !isSouthEastMode())
@@ -1043,6 +1061,101 @@ bool ControlManager::LoadToDoShipList_Kira()
 	return true;
 }
 
+
+bool ControlManager::LoadDestroyableList()
+{
+	_destroyableMstIds.clear();
+	QFile * file = new QFile(QApplication::applicationDirPath() + "/action/" + "destroyable.table");
+	if (file)
+	{
+		if (file->open(QIODevice::ReadOnly | QIODevice::Text))
+		{
+			QTextStream instream(file);
+			while (!instream.atEnd())
+			{
+				QString line = instream.readLine();
+				int index = line.indexOf("\t");
+				if (index > 0)
+				{
+					line = line.left(index);
+				}
+				if (!line.isEmpty())
+				{
+					_destroyableMstIds.append(line.toInt());
+				}
+			}
+			file->close();
+		}
+		delete file;
+	}
+	return true;
+
+}
+
+QList<int> ControlManager::GenerateToDestroyList()
+{
+	LoadDestroyableList();
+
+	KanSaveData* pksd = &KanSaveData::getInstance();
+	KanDataConnector* pkdc = &KanDataConnector::getInstance();
+	QList<kcsapi_ship2> toTempDestroyList;
+	for (auto& ship : pksd->portdata.api_ship)
+	{
+		const kcsapi_mst_ship * pmstship = pkdc->findMstShipFromShipid(ship.api_ship_id);
+		if (!pmstship)
+		{
+			continue;
+		}
+		if (_destroyableMstIds.contains(pmstship->api_id)
+			&& !ship.api_locked
+			&& !ship.api_locked_equip
+			&& ship.api_lv < 3)
+		{
+			toTempDestroyList.append(ship);
+		}
+	}
+	qSort(toTempDestroyList.begin(), toTempDestroyList.end(), [](const kcsapi_ship2& left, const kcsapi_ship2& right){
+		if (left.api_id > right.api_id)
+		{
+			return true;
+		}
+		return false;
+	});
+
+	int kuchiku[2] = { -1, -1 };
+	int kindex = 0;
+	int lastMasterId = -1;
+	QList<int> toDestroyList;
+	for (auto& ship : toTempDestroyList)
+	{
+		bool reserve = false;
+		if (kindex < 2)
+		{
+			const kcsapi_mst_ship * pmstship = pkdc->findMstShipFromShipid(ship.api_ship_id);
+			if (pmstship->api_stype == (int)ShipType::KuChiKu)
+			{
+				if (lastMasterId != pmstship->api_id)
+				{
+					kuchiku[kindex] = ship.api_id;
+					lastMasterId = pmstship->api_id;
+					kindex++;
+					reserve = true;
+				}
+			}
+		}
+		if (!reserve)
+		{
+			toDestroyList.append(ship.api_id);
+		}
+	}
+	if (kuchiku[0] < 0 || kuchiku[1] < 0)
+	{
+		return QList<int>();
+	}
+	return toDestroyList;
+}
+
+
 void ControlManager::pushPreSupplyCheck()
 {
 	if (needChargeFlagship(0))
@@ -1052,6 +1165,26 @@ void ControlManager::pushPreSupplyCheck()
 		_actionList.append(action);
 	}
 }
+
+bool ControlManager::pushPreShipFullCheck()
+{
+	if (isShipFull())
+	{
+		DestroyShipAction* action = new DestroyShipAction();
+
+		QList<int> toDestroyList = GenerateToDestroyList();
+
+		if (!toDestroyList.size())
+		{
+			delete action;
+			return false;
+		}
+		action->setShips(toDestroyList);
+		_actionList.append(action);
+	}
+	return true;
+}
+
 
 void ControlManager::Run()
 {
@@ -1587,6 +1720,17 @@ bool ControlManager::needChargeCondAirBase(bool checkCond)
 	return false;
 }
 
+bool ControlManager::isShipExist(int shipno)
+{
+	KanDataConnector* pkdc = &KanDataConnector::getInstance();
+	auto pship = pkdc->findShipFromShipno(shipno);
+	if (pship)
+	{
+		return true;
+	}
+	return false;
+}
+
 bool ControlManager::isHenseiDone(const QList<int>& ships, int team, int index/*=-1*/)
 {
 	KanSaveData* pksd = &KanSaveData::getInstance();
@@ -1724,6 +1868,46 @@ bool ControlManager::noSlotitem(int shipno)
 	}
 	return true;
 }
+
+bool ControlManager::noAttackItem(int shipno)
+{
+	KanDataConnector* pkdc = &KanDataConnector::getInstance();
+
+	auto pship = pkdc->findShipFromShipno(shipno);
+	if (pship)
+	{
+		for (auto slotitemid : pship->api_slot)
+		{
+			auto* pslotitem = pkdc->findSlotitemFromId(slotitemid);
+			if (pslotitem)
+			{
+				auto* pmstslotitem = pkdc->findMstSlotItemFromSlotitemid(pslotitem->api_slotitem_id);
+				if (pmstslotitem)
+				{
+					if (pmstslotitem->api_type.size() > 2)
+					{
+						switch (pmstslotitem->api_type[2])
+						{
+						case (int)SlotitemType::SyuHou_S:
+						case (int)SlotitemType::SyuHou_M:
+						case (int)SlotitemType::SyuHou_L:
+						case (int)SlotitemType::FuKuHou:
+						case (int)SlotitemType::GyoRai:
+						case (int)SlotitemType::KanBaKu:
+						case (int)SlotitemType::KanKou:
+						case (int)SlotitemType::SyuHou_L_II:
+							return false;
+						default:
+							break;
+						}
+					}
+				}
+			}
+		}
+	}
+	return true;
+}
+
 
 int ControlManager::getShipCondVal(int shipno)
 {

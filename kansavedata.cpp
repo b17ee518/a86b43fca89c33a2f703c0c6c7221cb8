@@ -86,6 +86,48 @@ void KanSaveData::logAllExport()
 
 		RECLINE(filename, writestr);
 	}
+
+
+	filename = "MstShip";
+	KLog::getInstance().DeleteLog(filename);
+	RECLINE(filename, "Ship\tID\tSortNo\tName\tShipType\tCategory\tRarity");
+	for (auto& item : start2data.api_mst_ship)
+	{
+		QString writestr = QString::fromLocal8Bit("-\t%1\t%2\t%3\t%4\t%5\t%6")
+			.arg(item.api_id)
+			.arg(item.api_sortno)
+			.arg(item.api_name)
+			.arg(item.api_stype)
+			.arg(item.api_ctype)
+			.arg(item.api_backs);
+
+		RECLINE(filename, writestr);
+	}
+
+	filename = "MstSlotitem";
+	KLog::getInstance().DeleteLog(filename);
+	RECLINE(filename, "Ship\tID\tSortNo\tName\tCategory\tGallery\tMstCategory\tIcon\tAirCategory");
+	for (auto& item : start2data.api_mst_slotitem)
+	{
+		QList<int> category = item.api_type;
+		while (category.count() < 5)
+		{
+			category.append(-1);
+		}
+
+		QString writestr = QString::fromLocal8Bit("-\t%1\t%2\t%3\t%4\t%5\t%6\t%7\t%8")
+			.arg(item.api_id)
+			.arg(item.api_sortno)
+			.arg(item.api_name)
+			.arg(category[0])
+			.arg(category[1])
+			.arg(category[2])
+			.arg(category[3])
+			.arg(category[4]);
+
+		RECLINE(filename, writestr);
+	}
+	
 }
 
 void KanSaveData::resetTotals()

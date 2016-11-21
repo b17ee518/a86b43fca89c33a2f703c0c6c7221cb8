@@ -1530,14 +1530,11 @@ void KanDataConnector::updateBattle(const kcsapi_battle &api_battle, KanBattleTy
 
 					if (damagePos > 6)
 					{
-						if (bCombinedSelf)
-						{
-							totalfdamage_combined[damagePos - 6] += api_battle.api_opening_atack.api_fdam[i];
-						}
-						else
-						{
-							// error
-						}
+						damagePos -= 6;
+					}
+					if (bCombinedSelf/*api_battle.api_formation[0] == 11*/)
+					{
+						totalfdamage_combined[damagePos] += api_battle.api_opening_atack.api_fdam[i];
 					}
 					else
 					{

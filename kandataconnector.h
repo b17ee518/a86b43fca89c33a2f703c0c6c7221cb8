@@ -27,7 +27,7 @@ public:
 
 public:
 	bool Parse(const QString& pathAndQuery, const QString& requestBody, const QString& responseBody);
-	
+
 	kcsapi_ship2 *findShipFromShipno(int shipno);
 	const kcsapi_mst_ship *findMstShipFromShipid(int shipid) const;
 	const QString findMstShipTypeNameFromSType(int stype) const;
@@ -35,19 +35,19 @@ public:
 	kcsapi_slotitem *findSlotitemFromId(int id);
 	const kcsapi_mst_slotitem *findMstSlotItemFromSlotitemid(int slotitemid) const;
 	bool isShipHasSlotitem(const kcsapi_ship2* pship, SlotitemType sitype, int count = 1, int* hasCount = NULL);
-	bool isShipHasSlotitem(int shipno, SlotitemType sitype, int count=1, int* hasCount=NULL)
+	bool isShipHasSlotitem(int shipno, SlotitemType sitype, int count = 1, int* hasCount = NULL)
 	{
 		if (count <= 0)
 		{
 			return true;
 		}
-		return isShipHasSlotitem(findShipFromShipno(shipno), sitype, count, hasCount); 
+		return isShipHasSlotitem(findShipFromShipno(shipno), sitype, count, hasCount);
 	}
 
 	void setOutputAllLog(bool bVal){ _outputAllLog = bVal; }
 
 	void callUpdateOverviewTable(){ updateOverviewTable(); }
-	
+
 private:
 	void updateOverviewTable();
 	void updateMissionTable();
@@ -56,11 +56,11 @@ private:
 	void updateExpeditionTable();
 	void updateRepairDockTable();
 	void updateBuildDockTable();
-	void updateInfoTitleBattle(bool bBattle=false, bool bSelfDamaged=false);
+	void updateInfoTitleBattle(bool bBattle = false, bool bSelfDamaged = false);
 	void updateInfoTitleCond();
 	void updateWeaponTable();
 
-	QString logBattleResult(bool bWrite=true);
+	QString logBattleResult(bool bWrite = true);
 	void logBattleDetail(bool bCombined);
 	QString getLogDevLeadStr();
 	void logBuildResult();
@@ -69,11 +69,11 @@ private:
 
 	void updateBattle(const kcsapi_battle &api_battle, KanBattleType type);
 
-	void getShipColors(const kcsapi_ship2 *pship, QColor *pcolCond=0, QColor *pcolWound=0, CondState* pcondstate=0, WoundState* pwoundstate=0);
+	void getShipColors(const kcsapi_ship2 *pship, QColor *pcolCond = 0, QColor *pcolWound = 0, CondState* pcondstate = 0, WoundState* pwoundstate = 0);
 	void getShipChargeColors(const kcsapi_ship2 *pship, const kcsapi_mst_ship *pmstship, QColor *pcolFuel, QColor *pcolBullet);
 	QString getShipWoundStateString(const kcsapi_ship2 *pship);
 	bool isShipRepairing(const kcsapi_ship2 *pship);
-	bool isAutoRepairing(int flagshipno=-1);
+	bool isAutoRepairing(int flagshipno = -1);
 
 	void processHouraiDamages(const kcsapi_battle_hougeki* api_hougeki
 		, QList<float>* totalfdamage
@@ -159,6 +159,7 @@ private:
 	bool req_combined_battle_ec_battle_parse();
 	bool req_combined_battle_ec_midnight_battle_parse();
 	bool req_combined_battle_each_battle_parse();
+	bool req_combined_battle_each_battle_water_parse();
 	bool get_member_practice_parse();
 	bool req_member_get_practice_enemyinfo_parse();
 	bool req_practice_battle_parse();
@@ -271,6 +272,7 @@ private:
 	int req_combined_battle_ec_battle_flag;
 	int req_combined_battle_ec_midnight_battle_flag;
 	int req_combined_battle_each_battle_flag;
+	int req_combined_battle_each_battle_water_flag;
 	int get_member_practice_flag;
 	int req_member_get_practice_enemyinfo_flag;
 	int req_practice_battle_flag;

@@ -13,22 +13,22 @@ void KanDataConnector::updateOverviewTable()
 	QString tip;
 	KanSaveData * pksd = &KanSaveData::getInstance();
 
-	int kancount = pksd->portdata.api_ship.count()+pksd->shipcountoffset;
+	int kancount = pksd->portdata.api_ship.count() + pksd->shipcountoffset;
 	int kanmaxcount = pksd->portdata.api_basic.api_max_chara;
-	int slotitemcount = pksd->slotitemdata.count()+pksd->slotitemcountoffset;
+	int slotitemcount = pksd->slotitemdata.count() + pksd->slotitemcountoffset;
 	int slotitemmaxcount = pksd->portdata.api_basic.api_max_slotitem;
 	int instantrepaircount = pksd->portdata.api_material[(int)MaterialDataIndex::InstantRepair].api_value;
-//	int instantbuildcount = pksd->portdata.api_material[(int)MaterialDataIndex::InstandBuild].api_value;
+	//	int instantbuildcount = pksd->portdata.api_material[(int)MaterialDataIndex::InstandBuild].api_value;
 	int lv = pksd->portdata.api_basic.api_level;
 	int nextexp = KanDataCalc::GetAdmiralNextLevelExp(pksd->portdata.api_basic.api_experience, lv);
-//	int fcoin = pksd->portdata.api_basic.api_fcoin;
+	//	int fcoin = pksd->portdata.api_basic.api_fcoin;
 
 	lst.append(QString::fromLocal8Bit("所有艦娘数: %1/%2").arg(kancount).arg(kanmaxcount));
 	lst.append(QString::fromLocal8Bit("所有装備数: %1/%2").arg(slotitemcount).arg(slotitemmaxcount));
 	lst.append(QString::fromLocal8Bit("提督Lv. %1(次:%2)").arg(lv).arg(nextexp));
 	lst.append(QString::fromLocal8Bit("高速修復材: %1").arg(instantrepaircount));
-//	lst.append(QString::fromLocal8Bit("高速建造材: %1").arg(instantbuildcount));
-//	lst.append(QString::fromLocal8Bit("家具コイン: %1").arg(fcoin));
+	//	lst.append(QString::fromLocal8Bit("高速建造材: %1").arg(instantbuildcount));
+	//	lst.append(QString::fromLocal8Bit("家具コイン: %1").arg(fcoin));
 	lst.append(QString::fromLocal8Bit("ボス: %1(%2/%3) 南西: %4 輸: %5 潜: %6 東急: %7 Any: %8")
 		.arg(pksd->totalBossReached)
 		.arg(pksd->totalBossWin)
@@ -81,8 +81,8 @@ void KanDataConnector::updateOverviewTable()
 	{
 		cols.append(_colAqua);
 	}
-	else if (pksd->totalBossWin >= 12 
-		&& pksd->totalBossReached >= 24 
+	else if (pksd->totalBossWin >= 12
+		&& pksd->totalBossReached >= 24
 		&& pksd->totalBossSRank >= 6
 		&& pksd->totalSortie >= 36)
 	{
@@ -103,7 +103,7 @@ void KanDataConnector::updateMissionTable()
 	QList<KQRowData> rows;
 
 	int questcount = pksd->questdata.count();
-	for (int i=0; i<questcount; i++)
+	for (int i = 0; i < questcount; i++)
 	{
 		KQRowData rd;
 		rd.appendCell(KQRowCellData(" - "));
@@ -208,7 +208,7 @@ void KanDataConnector::updateFleetTable()
 	MainWindow::shipWindow()->clearShipData();
 
 	KanSaveData * pksd = &KanSaveData::getInstance();
-	foreach (const kcsapi_deck &v, pksd->portdata.api_deck_port)
+	foreach(const kcsapi_deck &v, pksd->portdata.api_deck_port)
 	{
 		// No.
 		// Name cond
@@ -228,16 +228,16 @@ void KanDataConnector::updateFleetTable()
 
 		bool bCondDown = false;
 
-		int alltaiku=0;
+		int alltaiku = 0;
 		int alltaikubonus = 0;
-		int alllv=0;
+		int alllv = 0;
 		int flagshipLv = 0;
 		int allsakuteki = 0;
-//		double allsakuteki_sp = 0;
+		//		double allsakuteki_sp = 0;
 		double allsakuteki_sp33 = 0;
 
-//		int sakuteki_teisatsu = 0;
-//		int sakuteki_dentan = 0;
+		//		int sakuteki_teisatsu = 0;
+		//		int sakuteki_dentan = 0;
 
 		int keijuncount = 0;
 		int kuchikucount = 0;
@@ -316,9 +316,9 @@ void KanDataConnector::updateFleetTable()
 				else if (pmstship->api_stype == (int)ShipType::KuChiKu)
 				{
 					kuchikucount++;
-				}				
+				}
 			}
-			
+
 			int taiku = 0;
 			int taikubonus = 0;
 
@@ -326,7 +326,7 @@ void KanDataConnector::updateFleetTable()
 			slotitems.append(pship->api_slot_ex);
 
 			int slotsakuteki = 0;
-			for (int i = 0; i<slotitems.count(); i++)
+			for (int i = 0; i < slotitems.count(); i++)
 			{
 				int slotitemid = slotitems[i];
 				bool bHaveDrum = false;
@@ -341,7 +341,7 @@ void KanDataConnector::updateFleetTable()
 							{
 								// ok to cast even if not exist
 								SlotitemType type = static_cast<SlotitemType>(pmstslotitem->api_type[2]);
-								
+
 								// taiku
 								if (type == SlotitemType::KanSen
 									|| type == SlotitemType::SuiJouSenTouKi
@@ -358,7 +358,7 @@ void KanDataConnector::updateFleetTable()
 										taikuBase += pmstslotitem->api_houk*1.5;
 									}
 									// hoshi
-									else if (type == SlotitemType::KanSen 
+									else if (type == SlotitemType::KanSen
 										|| type == SlotitemType::SuiJouSenTouKi)
 									{
 										taikuBase += v.api_level*0.2;
@@ -397,8 +397,8 @@ void KanDataConnector::updateFleetTable()
 											break;
 										}
 									}
-									else if (type == SlotitemType::KanKou 
-										|| type == SlotitemType::KanBaKu 
+									else if (type == SlotitemType::KanKou
+										|| type == SlotitemType::KanBaKu
 										|| type == SlotitemType::RiKuJouKouGeKiKi)
 									{
 										if (alv >= 7)
@@ -451,43 +451,43 @@ void KanDataConnector::updateFleetTable()
 								switch (type)
 								{
 								case SlotitemType::KanBaKu:
-//									allsakuteki_sp += pmstslotitem->api_saku * 1.0376255;
+									//									allsakuteki_sp += pmstslotitem->api_saku * 1.0376255;
 									allsakuteki_sp33 += pmstslotitem->api_saku * 0.6;
 									break;
 								case SlotitemType::KanKou:
-//									allsakuteki_sp += pmstslotitem->api_saku * 1.3677954;
+									//									allsakuteki_sp += pmstslotitem->api_saku * 1.3677954;
 									allsakuteki_sp33 += pmstslotitem->api_saku * 0.8;
 									break;
 								case SlotitemType::KanJouTeiSaTsu:
-//									allsakuteki_sp += pmstslotitem->api_saku * 1.6592780;
+									//									allsakuteki_sp += pmstslotitem->api_saku * 1.6592780;
 									allsakuteki_sp33 += pmstslotitem->api_saku * 1.0;
 									break;
 								case SlotitemType::KanJouTeiSaTsu_II:
-//									allsakuteki_sp += pmstslotitem->api_saku * 1.6592780;
+									//									allsakuteki_sp += pmstslotitem->api_saku * 1.6592780;
 									allsakuteki_sp33 += pmstslotitem->api_saku * 1.0;
 									break;
 								case SlotitemType::SuiTei:
-//									allsakuteki_sp += pmstslotitem->api_saku * 2.0;
+									//									allsakuteki_sp += pmstslotitem->api_saku * 2.0;
 									allsakuteki_sp33 += (pmstslotitem->api_saku + sqrt(v.api_level)*1.2) * 1.2;
 									break;
 								case SlotitemType::SuiBaKu:
-//									allsakuteki_sp += pmstslotitem->api_saku * 1.7787282;
+									//									allsakuteki_sp += pmstslotitem->api_saku * 1.7787282;
 									allsakuteki_sp33 += pmstslotitem->api_saku * 1.1;
 									break;
 								case SlotitemType::DenTan_S:
-//									allsakuteki_sp += pmstslotitem->api_saku * 1.0045358;
+									//									allsakuteki_sp += pmstslotitem->api_saku * 1.0045358;
 									allsakuteki_sp33 += (pmstslotitem->api_saku + sqrt(v.api_level)*1.25) * 0.6;
 									break;
 								case SlotitemType::DenTan_L:
-//									allsakuteki_sp += pmstslotitem->api_saku * 0.9906638;
+									//									allsakuteki_sp += pmstslotitem->api_saku * 0.9906638;
 									allsakuteki_sp33 += (pmstslotitem->api_saku + sqrt(v.api_level)*1.25) * 0.6;
 									break;
 								case SlotitemType::DenTan_L_II:
-//									allsakuteki_sp += pmstslotitem->api_saku * 0.9906638;
+									//									allsakuteki_sp += pmstslotitem->api_saku * 0.9906638;
 									allsakuteki_sp33 += (pmstslotitem->api_saku + sqrt(v.api_level)*1.25) * 0.6;
 									break;
 								case SlotitemType::TanSyouTou:
-//									allsakuteki_sp += pmstslotitem->api_saku * 0.9067950;
+									//									allsakuteki_sp += pmstslotitem->api_saku * 0.9067950;
 									allsakuteki_sp33 += pmstslotitem->api_saku * 0.6;
 									break;
 
@@ -539,9 +539,9 @@ void KanDataConnector::updateFleetTable()
 				flagshipLv = pship->api_lv;
 			}
 			allsakuteki += pship->api_sakuteki[0];
-//			allsakuteki_sp += sqrt((double)pship->api_sakuteki[0]) * 1.6841056;
-			allsakuteki_sp33 += sqrt((double)pship->api_sakuteki[0]-slotsakuteki);
-			
+			//			allsakuteki_sp += sqrt((double)pship->api_sakuteki[0]) * 1.6841056;
+			allsakuteki_sp33 += sqrt((double)pship->api_sakuteki[0] - slotsakuteki);
+
 			QString damekonstr = "";
 			if (damekonstate == 1)
 			{
@@ -565,12 +565,12 @@ void KanDataConnector::updateFleetTable()
 			rows.append(rd);
 		}
 
-//		allsakuteki_sp = (int)(sakuteki_teisatsu * 2 + sakuteki_dentan + sqrt((double)(allsakuteki - sakuteki_dentan - sakuteki_teisatsu)));
-//		allsakuteki_sp += ((pksd->portdata.api_basic.api_level + 5) / 5) * 5 * (-0.6142467);
+		//		allsakuteki_sp = (int)(sakuteki_teisatsu * 2 + sakuteki_dentan + sqrt((double)(allsakuteki - sakuteki_dentan - sakuteki_teisatsu)));
+		//		allsakuteki_sp += ((pksd->portdata.api_basic.api_level + 5) / 5) * 5 * (-0.6142467);
 		allsakuteki_sp33 -= ceil(pksd->portdata.api_basic.api_level*0.4);
 
 		// only calc this team
-		allsakuteki_sp33 += (6-v.api_ship.count()) * 2;
+		allsakuteki_sp33 += (6 - v.api_ship.count()) * 2;
 
 		int colindex = 0;
 		if (bNeedCharge || bCondDown)
@@ -583,9 +583,9 @@ void KanDataConnector::updateFleetTable()
 			// 6 kira
 			colindex = 2;
 		}
-		else if (kiracount >= 4 
-			&& keijuncount == 1 
-			&& kuchikucount == 5 
+		else if (kiracount >= 4
+			&& keijuncount == 1
+			&& kuchikucount == 5
 			&& drumcount >= 6
 			&& drumedshipcount >= 3
 			&& flagshipLv >= 50
@@ -617,7 +617,7 @@ void KanDataConnector::updateFleetTable()
 		{
 			colindex = 1;
 		}
-		
+
 		while (pksd->deckSaveData.size() < v.api_id)
 		{
 			pksd->deckSaveData.append(KanSaveData::DeckSaveData());
@@ -633,7 +633,7 @@ void KanDataConnector::updateFleetTable()
 			.arg(v.api_name)
 			.arg(alllv)
 			.arg(alltaiku)
-			.arg(alltaiku+alltaikubonus)
+			.arg(alltaiku + alltaikubonus)
 			.arg(allsakuteki)
 			.arg(allsakuteki_sp33, 0, 'f', 2);
 
@@ -652,7 +652,7 @@ void KanDataConnector::updateFleetTable()
 			}
 		}
 
-		MainWindow::infoWindow()->updateFleetTable(v.api_id-1, strtitle, colindex, bRed, rows);
+		MainWindow::infoWindow()->updateFleetTable(v.api_id - 1, strtitle, colindex, bRed, rows);
 	}
 
 	MainWindow::shipWindow()->buildTable();
@@ -661,7 +661,7 @@ void KanDataConnector::updateFleetTable()
 void KanDataConnector::updateExpeditionTable()
 {
 	KanSaveData * pksd = &KanSaveData::getInstance();
-	foreach (const kcsapi_deck &v, pksd->portdata.api_deck_port)
+	foreach(const kcsapi_deck &v, pksd->portdata.api_deck_port)
 	{
 		if (v.api_id <= 1)
 		{
@@ -669,7 +669,7 @@ void KanDataConnector::updateExpeditionTable()
 		}
 		if (v.api_mission[0] <= 0)
 		{
-			MainWindow::timerWindow()->setExpeditionTime(v.api_id-2);
+			MainWindow::timerWindow()->setExpeditionTime(v.api_id - 2);
 		}
 		else
 		{
@@ -711,11 +711,11 @@ void KanDataConnector::updateExpeditionTable()
 void KanDataConnector::updateRepairDockTable()
 {
 	KanSaveData * pksd = &KanSaveData::getInstance();
-	foreach (const kcsapi_ndock &v, pksd->portdata.api_ndock)
+	foreach(const kcsapi_ndock &v, pksd->portdata.api_ndock)
 	{
 		if (v.api_ship_id == 0)
 		{
-			MainWindow::timerWindow()->setRepairTime(v.api_id-1);
+			MainWindow::timerWindow()->setRepairTime(v.api_id - 1);
 		}
 		else
 		{
@@ -732,7 +732,7 @@ void KanDataConnector::updateRepairDockTable()
 					}
 				}
 			}
-			
+
 		}
 	}
 
@@ -741,7 +741,7 @@ void KanDataConnector::updateRepairDockTable()
 void KanDataConnector::updateBuildDockTable()
 {
 	KanSaveData * pksd = &KanSaveData::getInstance();
-	foreach (const kcsapi_kdock &v, pksd->kdockdata)
+	foreach(const kcsapi_kdock &v, pksd->kdockdata)
 	{
 		if (v.api_state < 0)
 		{
@@ -749,14 +749,14 @@ void KanDataConnector::updateBuildDockTable()
 		}
 		if (v.api_created_ship_id == 0)
 		{
-			MainWindow::timerWindow()->setBuildTime(v.api_id-1);
+			MainWindow::timerWindow()->setBuildTime(v.api_id - 1);
 		}
 		else
 		{
 			int shipid = v.api_created_ship_id;
-//            const kcsapi_ship2 *pship = findShipFromShipno(shipno);
+			//            const kcsapi_ship2 *pship = findShipFromShipno(shipno);
 			const kcsapi_mst_ship *pmstship = findMstShipFromShipid(shipid);
-			MainWindow::timerWindow()->setBuildTime(v.api_id-1, v.api_complete_time, pmstship->api_buildtime, pmstship->api_name);
+			MainWindow::timerWindow()->setBuildTime(v.api_id - 1, v.api_complete_time, pmstship->api_buildtime, pmstship->api_name);
 		}
 	}
 
@@ -768,8 +768,8 @@ void KanDataConnector::updateInfoTitleBattle(bool bBattle, bool bSelfDamaged)
 	/*
 	if (pksd->nextdata.api_no < 0 && !enemyhps)
 	{
-		MainWindow::infoWindow()->updateTitle("", false);
-		return;
+	MainWindow::infoWindow()->updateTitle("", false);
+	return;
 	}
 	*/
 	QString strtitle;
@@ -807,7 +807,7 @@ void KanDataConnector::updateInfoTitleBattle(bool bBattle, bool bSelfDamaged)
 		int combined_remain = 0;
 
 		// only consider enemy team 1
-		for (int i = 1; i<pksd->battledata.api_ship_ke.count(); i++)
+		for (int i = 1; i < pksd->battledata.api_ship_ke.count(); i++)
 		{
 			int shipid = pksd->battledata.api_ship_ke[i];
 			if (shipid > 0)
@@ -853,7 +853,7 @@ void KanDataConnector::updateInfoTitleBattle(bool bBattle, bool bSelfDamaged)
 						}
 						break;
 					}
-					
+
 				}
 			}
 		}
@@ -955,10 +955,10 @@ void KanDataConnector::updateInfoTitleBattle(bool bBattle, bool bSelfDamaged)
 			int enemyBeginTotalHP = 0;
 
 			int sCount = pksd->beginLastBattleHPs.self.count();
-//			int sCombinedCount = pksd->beginLastBattleHPs.combinedSelf.count();
+			//			int sCombinedCount = pksd->beginLastBattleHPs.combinedSelf.count();
 			int eCount = pksd->beginLastBattleHPs.enemy.count();
 			if (sCount == pksd->remainLastBattleHPs.self.count()
-//				&& sCombinedCount == pksd->remainLastBattleHPs.combinedSelf.count()
+				//				&& sCombinedCount == pksd->remainLastBattleHPs.combinedSelf.count()
 				&& eCount == pksd->remainLastBattleHPs.enemy.count())
 			{
 				for (int i = 1; i < sCount; i++)
@@ -969,7 +969,7 @@ void KanDataConnector::updateInfoTitleBattle(bool bBattle, bool bSelfDamaged)
 				/*
 				for (int i = 1; i < sCombinedCount; i++)
 				{
-					selfTotalDamage += pksd->beginLastBattleHPs.combinedSelf[i] - pksd->remainLastBattleHPs.combinedSelf[i];
+				selfTotalDamage += pksd->beginLastBattleHPs.combinedSelf[i] - pksd->remainLastBattleHPs.combinedSelf[i];
 				}
 				*/
 				for (int i = 1; i < eCount; i++)
@@ -997,7 +997,7 @@ void KanDataConnector::updateInfoTitleBattle(bool bBattle, bool bSelfDamaged)
 		{
 			bossDamagedStr = QString::fromLocal8Bit("★");
 		}
-		loseStr = bossDamagedStr+loseStr;
+		loseStr = bossDamagedStr + loseStr;
 		strtitle += QString::fromLocal8Bit(" - %1残:%2%3%4, 輸%5(%6), 航:%7(%8), 潜%9(%10)")
 			.arg(loseStr)
 			.arg(totalremain)
@@ -1027,7 +1027,7 @@ void KanDataConnector::updateInfoTitleBattle(bool bBattle, bool bSelfDamaged)
 	}
 
 	int colindex = 0;
-	if (pksd->nextdata.api_no==pksd->nextdata.api_bosscell_no)
+	if (pksd->nextdata.api_no == pksd->nextdata.api_bosscell_no)
 	{
 		colindex = 1;
 	}
@@ -1052,34 +1052,34 @@ void KanDataConnector::updateInfoTitleCond()
 
 	int lvmin = 20;
 
-	foreach (const kcsapi_ship2 &v, pksd->portdata.api_ship)
+	foreach(const kcsapi_ship2 &v, pksd->portdata.api_ship)
 	{
 		int shipid = v.api_ship_id;
 		/*
 		bool bSkip = false;
-		
+
 		foreach(const kcsapi_deck &deck, pksd->portdata.api_deck_port)
 		{
-			if (deck.api_mission[0] > 0)
-			{
-				foreach(int shipno, deck.api_ship)
-				{
-					if (shipno == v.api_id)
-					{
-						bSkip = true;
-						break;
-					}
-				}
-			}
-			if (bSkip)
-			{
-				break;
-			}
+		if (deck.api_mission[0] > 0)
+		{
+		foreach(int shipno, deck.api_ship)
+		{
+		if (shipno == v.api_id)
+		{
+		bSkip = true;
+		break;
 		}
-		
+		}
+		}
 		if (bSkip)
 		{
-			continue;
+		break;
+		}
+		}
+
+		if (bSkip)
+		{
+		continue;
 		}
 		*/
 		if (shipid > 0)
@@ -1088,7 +1088,7 @@ void KanDataConnector::updateInfoTitleCond()
 			if (pmstship)
 			{
 				if (pmstship->api_stype == (int)ShipType::SuiBou
-					|| pmstship->api_stype == (int) ShipType::YouRiKu)
+					|| pmstship->api_stype == (int)ShipType::YouRiKu)
 				{
 					if (v.api_locked && v.api_lv >= lvmin && isShipHasSlotitem(&v, SlotitemType::JouRiKuTei))
 					{
@@ -1097,7 +1097,7 @@ void KanDataConnector::updateInfoTitleCond()
 						{
 							suibokiras++;
 						}
-						if (KanDataCalc::GetCondState(v.api_cond-3) != CondState::Kira)
+						if (KanDataCalc::GetCondState(v.api_cond - 3) != CondState::Kira)
 						{
 							suibokirawarnings++;
 						}
@@ -1139,7 +1139,7 @@ void KanDataConnector::updateInfoTitleCond()
 		.arg(kuchikucount - kuchikukiras);
 
 	int colindex = 0;
-	if (suibokiras == suibocount && kuchikukiras*2 >= kuchikucount && keijunkiras*2 >= keijuncount && suibokirawarnings==0)
+	if (suibokiras == suibocount && kuchikukiras * 2 >= kuchikucount && keijunkiras * 2 >= keijuncount && suibokirawarnings == 0)
 	{
 		colindex = 1;
 	}
@@ -1147,7 +1147,7 @@ void KanDataConnector::updateInfoTitleCond()
 	{
 		colindex = 2;
 	}
-	else if (suibokirawarnings>0)
+	else if (suibokirawarnings > 0)
 	{
 		colindex = 3;
 	}
@@ -1156,12 +1156,12 @@ void KanDataConnector::updateInfoTitleCond()
 
 void KanDataConnector::updateWeaponTable()
 {
-    if (!pksd->portdata.api_ship.size())
-    {
-        return;
-    }
-    MainWindow::weaponWindow()->clearWeaponData();
-    MainWindow::weaponWindow()->buildTable();
+	if (!pksd->portdata.api_ship.size())
+	{
+		return;
+	}
+	MainWindow::weaponWindow()->clearWeaponData();
+	MainWindow::weaponWindow()->buildTable();
 }
 
 void KanDataConnector::updateBattle(const kcsapi_battle &api_battle, KanBattleType type)
@@ -1193,7 +1193,7 @@ void KanDataConnector::updateBattle(const kcsapi_battle &api_battle, KanBattleTy
 	}
 	else
 	{
-		if (type == KanBattleType::Combined_Each)
+		if (type == KanBattleType::Combined_Each || type == KanBattleType::Combined_EachWater)
 		{
 			bCombinedEnemy = true;
 			bCombinedSelf = true;
@@ -1227,7 +1227,7 @@ void KanDataConnector::updateBattle(const kcsapi_battle &api_battle, KanBattleTy
 			pksd->bCombinedSelf = bCombinedSelf;
 		}
 	}
-	
+
 	if (dockid >= 0)
 	{
 		pksd->lastbattletype = type;
@@ -1235,7 +1235,7 @@ void KanDataConnector::updateBattle(const kcsapi_battle &api_battle, KanBattleTy
 		if (type != KanBattleType::DayToNight
 			&& type != KanBattleType::NightToDay
 			&& type != KanBattleType::Combined_DayToNight
-//			&& type != KanBattleType::Combined_KouKuNight
+			//			&& type != KanBattleType::Combined_KouKuNight
 			&& type != KanBattleType::Combined_ECNight)
 		{
 			pksd->lastSeiku = api_battle.api_kouku.api_stage1.api_disp_seiku;
@@ -1424,9 +1424,9 @@ void KanDataConnector::updateBattle(const kcsapi_battle &api_battle, KanBattleTy
 			}
 		}
 
-		if (type != KanBattleType::Night 
-			&& type != KanBattleType::DayToNight 
-//			&& type != KanBattleType::Combined_KouKuNight 
+		if (type != KanBattleType::Night
+			&& type != KanBattleType::DayToNight
+			//			&& type != KanBattleType::Combined_KouKuNight 
 			&& type != KanBattleType::Combined_DayToNight
 			&& type != KanBattleType::Combined_Night
 			&& type != KanBattleType::Combined_ECNight)
@@ -1459,7 +1459,7 @@ void KanDataConnector::updateBattle(const kcsapi_battle &api_battle, KanBattleTy
 					}
 
 				}
-					break;
+				break;
 				case 2: // hougeki
 				case 3: // raigeki
 				{
@@ -1488,12 +1488,12 @@ void KanDataConnector::updateBattle(const kcsapi_battle &api_battle, KanBattleTy
 							}
 							for (int i = 7; i < damageCount; i++)
 							{
-								totaledamage_combined[i-6] += api_battle.api_support_info.api_support_hourai.api_damage[i];
+								totaledamage_combined[i - 6] += api_battle.api_support_info.api_support_hourai.api_damage[i];
 							}
 						}
 					}
 				}
-					break;
+				break;
 				default:
 					break;
 				}
@@ -1504,7 +1504,7 @@ void KanDataConnector::updateBattle(const kcsapi_battle &api_battle, KanBattleTy
 			{
 				// copied from below
 				// combined?
-				
+
 				bool bSelfCombineDamage = bCombinedSelf;
 				if (type == KanBattleType::Combined_KouKu || type == KanBattleType::Combined_Day)
 				{
@@ -1532,7 +1532,7 @@ void KanDataConnector::updateBattle(const kcsapi_battle &api_battle, KanBattleTy
 					{
 						if (bCombinedSelf)
 						{
-							totaledamage_combined[damagePos - 6] += api_battle.api_opening_atack.api_fdam[i];
+							totalfdamage_combined[damagePos - 6] += api_battle.api_opening_atack.api_fdam[i];
 						}
 						else
 						{
@@ -1554,7 +1554,7 @@ void KanDataConnector::updateBattle(const kcsapi_battle &api_battle, KanBattleTy
 					}
 					for (int i = 7; i < damageCount; i++)
 					{
-						totaledamage_combined[i-6] += api_battle.api_opening_atack.api_edam[i];
+						totaledamage_combined[i - 6] += api_battle.api_opening_atack.api_edam[i];
 					}
 				}
 				else
@@ -1574,7 +1574,7 @@ void KanDataConnector::updateBattle(const kcsapi_battle &api_battle, KanBattleTy
 				int hougeki2flag = api_battle.api_hourai_flag[1];
 				int hougeki3flag = api_battle.api_hourai_flag[2];
 				int raigekiflag = api_battle.api_hourai_flag[3];
-				if (bCombinedSelf && 
+				if (bCombinedSelf &&
 					(type == KanBattleType::Combined_KouKu || type == KanBattleType::Combined_Day))
 				{
 					raigekiflag = api_battle.api_hourai_flag[1];
@@ -1648,11 +1648,11 @@ void KanDataConnector::updateBattle(const kcsapi_battle &api_battle, KanBattleTy
 						/*
 						if (bCombinedSelf)
 						{
-							totalfdamage_combined[i] += api_battle.api_raigeki.api_fdam[i];
+						totalfdamage_combined[i] += api_battle.api_raigeki.api_fdam[i];
 						}
 						else
 						{
-							totalfdamage[i] += api_battle.api_raigeki.api_fdam[i];
+						totalfdamage[i] += api_battle.api_raigeki.api_fdam[i];
 						}
 						*/
 					}
@@ -1753,7 +1753,7 @@ void KanDataConnector::updateBattle(const kcsapi_battle &api_battle, KanBattleTy
 		}
 
 		bool bSelfDamaged = false;
-		for (auto damage:totalfdamage)
+		for (auto damage : totalfdamage)
 		{
 			if (damage > 0)
 			{
@@ -1775,7 +1775,7 @@ void KanDataConnector::updateBattle(const kcsapi_battle &api_battle, KanBattleTy
 		updateInfoTitleBattle(true, bSelfDamaged);
 
 	}
-	
+
 }
 
 void KanDataConnector::processHouraiDamages(const kcsapi_battle_hougeki* api_hougeki

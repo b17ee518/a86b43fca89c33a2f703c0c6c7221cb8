@@ -38,12 +38,12 @@ bool KanDataConnector::port_port_parse()
 	updateInfoTitleBattle();
 	updateInfoTitleCond();
 
-    static bool firstTime = true;
-    if (firstTime)
-    {
-        updateWeaponTable();
-        firstTime = false;
-    }
+	static bool firstTime = true;
+	if (firstTime)
+	{
+		updateWeaponTable();
+		firstTime = false;
+	}
 
 	if (isAutoRepairing())
 	{
@@ -63,7 +63,7 @@ bool KanDataConnector::get_member_basic_parse()
 bool KanDataConnector::get_member_require_info_parse()
 {
 	// api_basic! do not update
-//	pksd->portdata.api_basic.ReadFromJObj(_jobj["api_basic"].toObject());
+	//	pksd->portdata.api_basic.ReadFromJObj(_jobj["api_basic"].toObject());
 
 	// api_slot_item
 	{
@@ -137,7 +137,7 @@ bool KanDataConnector::get_member_ship2_parse()
 {
 	pksd->portdata.api_ship.clear();
 	QJsonArray jarray = _jdoc.object()["api_data"].toArray();
-	for (int i = 0; i<jarray.count(); i++)
+	for (int i = 0; i < jarray.count(); i++)
 	{
 		kcsapi_ship2 api_ship2item;
 		api_ship2item.ReadFromJObj(jarray[i].toObject());
@@ -202,10 +202,10 @@ bool KanDataConnector::get_member_ship_deck_parse()
 		}
 	}
 
-	foreach (const kcsapi_deck &v, api_ship_deck.api_deck_data)
+	foreach(const kcsapi_deck &v, api_ship_deck.api_deck_data)
 	{
 		QList<kcsapi_deck>::iterator it;
-		for (it = pksd->portdata.api_deck_port.begin(); it!=pksd->portdata.api_deck_port.end(); ++it)
+		for (it = pksd->portdata.api_deck_port.begin(); it != pksd->portdata.api_deck_port.end(); ++it)
 		{
 			if (v.api_id == it->api_id)
 			{
@@ -228,7 +228,7 @@ bool KanDataConnector::get_member_slot_item_parse()
 {
 	pksd->slotitemdata.clear();
 	QJsonArray jarray = _jdoc.object()["api_data"].toArray();
-	for (int i = 0; i<jarray.count(); i++)
+	for (int i = 0; i < jarray.count(); i++)
 	{
 		kcsapi_slotitem api_slotitem;
 		api_slotitem.ReadFromJObj(jarray[i].toObject());
@@ -257,7 +257,7 @@ bool KanDataConnector::get_member_deck_parse()
 {
 	pksd->portdata.api_deck_port.clear();
 	QJsonArray jarray = _jdoc.object()["api_data"].toArray();
-	for (int i = 0; i<jarray.count(); i++)
+	for (int i = 0; i < jarray.count(); i++)
 	{
 		kcsapi_deck api_deck;
 		api_deck.ReadFromJObj(jarray[i].toObject());
@@ -279,7 +279,7 @@ bool KanDataConnector::get_member_ndock_parse()
 {
 	pksd->portdata.api_ndock.clear();
 	QJsonArray jarray = _jdoc.object()["api_data"].toArray();
-	for (int i = 0; i<jarray.count(); i++)
+	for (int i = 0; i < jarray.count(); i++)
 	{
 		kcsapi_ndock api_ndock;
 		api_ndock.ReadFromJObj(jarray[i].toObject());
@@ -298,7 +298,7 @@ bool KanDataConnector::get_member_kdock_parse()
 {
 	pksd->kdockdata.clear();
 	QJsonArray jarray = _jdoc.object()["api_data"].toArray();
-	for (int i = 0; i<jarray.count(); i++)
+	for (int i = 0; i < jarray.count(); i++)
 	{
 		kcsapi_kdock api_kdock;
 		api_kdock.ReadFromJObj(jarray[i].toObject());
@@ -319,7 +319,7 @@ bool KanDataConnector::get_member_material_parse()
 {
 	pksd->portdata.api_material.clear();
 	QJsonArray jarray = _jdoc.object()["api_data"].toArray();
-	for (int i = 0; i<jarray.count(); i++)
+	for (int i = 0; i < jarray.count(); i++)
 	{
 		kcsapi_material api_material;
 		api_material.ReadFromJObj(jarray[i].toObject());
@@ -360,7 +360,7 @@ bool KanDataConnector::req_hensei_change_parse()
 	else
 	{
 		int prev = -1;
-//		int previndex = -1;
+		//		int previndex = -1;
 
 		bool bDone = false;
 
@@ -389,7 +389,7 @@ bool KanDataConnector::req_hensei_change_parse()
 							{
 								lstteamship->append(-1);
 							}
-							if (i == team-1)
+							if (i == team - 1)
 							{
 								index--;
 							}
@@ -421,21 +421,21 @@ bool KanDataConnector::req_hensei_change_parse()
 			/*
 			if (lstship->count() >= index + 1)
 			{
-				prev = (*lstship)[index];
-				for (int i = 0; i < lstship->count(); i++)
-				{
-					if ((*lstship)[i] == shipid)
-					{
-						previndex = i;
-						break;
-					}
-				}
+			prev = (*lstship)[index];
+			for (int i = 0; i < lstship->count(); i++)
+			{
+			if ((*lstship)[i] == shipid)
+			{
+			previndex = i;
+			break;
+			}
+			}
 			}
 
 			(*lstship)[index] = shipid;
 			if (previndex >= 0)
 			{
-				(*lstship)[previndex] = prev;
+			(*lstship)[previndex] = prev;
 			}
 			*/
 		}
@@ -532,8 +532,8 @@ bool KanDataConnector::req_hensei_combined_parse()
 bool KanDataConnector::get_member_unsetslot_parse()
 {
 	// slotitem that does not on
-//	kcsapi_slot_data api_unsetslot_data;
-//	api_unsetslot_data.ReadFromJObj(jobj);
+	//	kcsapi_slot_data api_unsetslot_data;
+	//	api_unsetslot_data.ReadFromJObj(jobj);
 	return true;
 }
 
@@ -570,7 +570,7 @@ bool KanDataConnector::req_kousyou_getship_parse()
 		}
 	}
 
-//	pksd->shipcountoffset++;
+	//	pksd->shipcountoffset++;
 	AddShip(api_kdock_getship.api_ship);
 
 	updateOverviewTable();
@@ -588,7 +588,7 @@ bool KanDataConnector::req_kousyou_createitem_parse()
 		AddSlotItem(api_createitem.api_slot_item);
 		//pksd->slotitemcountoffset++;
 	}
-	for (int i = 0; i<api_createitem.api_material.count(); i++)
+	for (int i = 0; i < api_createitem.api_material.count(); i++)
 	{
 		pksd->portdata.api_material[i].api_value = api_createitem.api_material[i];
 	}
@@ -661,39 +661,39 @@ bool KanDataConnector::req_kousyou_destroyship_parse()
 		QList<kcsapi_deck>::iterator it;
 		for (it = pksd->portdata.api_deck_port.begin(); it != pksd->portdata.api_deck_port.end(); ++it)
 		{
-			for (int i = 0; i<it->api_ship.count(); i++)
-			{
-				if (it->api_ship[i] == shipno)
-				{
-					it->api_ship.removeAt(i);
-					bDone = true;
-					break;
-				}
-			}
-			if (bDone)
-			{
-				break;
-			}
+		for (int i = 0; i<it->api_ship.count(); i++)
+		{
+		if (it->api_ship[i] == shipno)
+		{
+		it->api_ship.removeAt(i);
+		bDone = true;
+		break;
+		}
+		}
+		if (bDone)
+		{
+		break;
+		}
 		}
 
 		// slotitem
 		const kcsapi_ship2 * pship = findShipFromShipno(shipno);
 		if (pship)
 		{
-			foreach(int slotitemid, pship->api_slot)
-			{
-				if (slotitemid >= 0)
-				{
-					pksd->slotitemcountoffset--;
-				}
-			}
+		foreach(int slotitemid, pship->api_slot)
+		{
+		if (slotitemid >= 0)
+		{
+		pksd->slotitemcountoffset--;
+		}
+		}
 		}
 		*/
 		// material
 		kcsapi_destroyship api_destroyship;
 		api_destroyship.ReadFromJObj(_jobj);
 		QList<int> api_material = api_destroyship.api_material;
-		for (int i = 0; i<api_material.count(); i++)
+		for (int i = 0; i < api_material.count(); i++)
 		{
 			pksd->portdata.api_material[i].api_value = api_material[i];
 		}
@@ -713,18 +713,18 @@ bool KanDataConnector::req_kousyou_destroyitem2_parse()
 	QString idsstr = _req.GetItemAsString("api_slotitem_ids");
 	QStringList idslst = idsstr.split("%2C");
 
-    foreach (auto& v , idslst)
+	foreach(auto& v, idslst)
 	{
 		int itemid = v.toInt();
 		RemoveSlotItem(itemid);
 	}
-//	pksd->slotitemcountoffset -= idslst.count();
+	//	pksd->slotitemcountoffset -= idslst.count();
 
 
 	kcsapi_destroyitem2 api_destroyitem2;
 	api_destroyitem2.ReadFromJObj(_jobj);
 	QList<int> api_get_material = api_destroyitem2.api_get_material;
-	for (int i = 0; i<api_get_material.count(); i++)
+	for (int i = 0; i < api_get_material.count(); i++)
 	{
 		pksd->portdata.api_material[i].api_value += api_get_material[i];
 	}
@@ -796,7 +796,7 @@ bool KanDataConnector::req_hokyu_charge_parse()
 		}
 	}
 
-	for (int i = 0; i<api_charge.api_material.count(); i++)
+	for (int i = 0; i < api_charge.api_material.count(); i++)
 	{
 		pksd->portdata.api_material[i].api_value = api_charge.api_material[i];
 	}
@@ -954,7 +954,7 @@ bool KanDataConnector::req_map_start_parse()
 	pksd->totalSortie++;
 	updateOverviewTable();
 	// for serial_id
-//	DAPILOGDEBUG();
+	//	DAPILOGDEBUG();
 	return true;
 }
 
@@ -1148,6 +1148,14 @@ bool KanDataConnector::req_combined_battle_each_battle_parse()
 	return true;
 }
 
+bool KanDataConnector::req_combined_battle_each_battle_water_parse()
+{
+	pksd->battledata.ReadFromJObj(_jobj);
+
+	updateBattle(pksd->battledata, KanBattleType::Combined_EachWater);
+	return true;
+}
+
 bool KanDataConnector::get_member_practice_parse()
 {
 	return true;
@@ -1202,29 +1210,29 @@ bool KanDataConnector::get_member_questlist_parse()
 			++it;
 		}
 	}
-	
+
 	if (!api_questlist.api_list.size())
 	{
 		/*
 		// nothing in current
 		if (api_tab_id == 0 || api_tab_id == 9)
 		{
-			pksd->questdata.clear();
+		pksd->questdata.clear();
 		}
 		else
 		{
 		*/
-			// first page nothing: clear type
-			if (api_questlist.api_disp_page == 1)
-			{
-				pksd->clearQuestByType(api_tab_id, 0, -1);
-			}
-			// last page nothing: clear all later
-			else if (api_questlist.api_disp_page >= api_questlist.api_page_count)
-			{
-				pksd->clearQuestByType(api_tab_id, -1, -1, api_questlist.api_page_count);
-			}
-//		}
+		// first page nothing: clear type
+		if (api_questlist.api_disp_page == 1)
+		{
+			pksd->clearQuestByType(api_tab_id, 0, -1);
+		}
+		// last page nothing: clear all later
+		else if (api_questlist.api_disp_page >= api_questlist.api_page_count)
+		{
+			pksd->clearQuestByType(api_tab_id, -1, -1, api_questlist.api_page_count);
+		}
+		//		}
 	}
 	else
 	{
@@ -1272,45 +1280,45 @@ bool KanDataConnector::get_member_questlist_parse()
 	int questcount = api_questlist.api_count - questPerPage * (api_questlist.api_disp_page - 1);
 	if (questcount > api_questlist.api_list.count())
 	{
-		questcount = api_questlist.api_list.count();
+	questcount = api_questlist.api_list.count();
 	}
 
 	if (!questcount)
 	{
-		if (pksd->questdata.size())
-		{
-			pksd->questdata.removeLast();
-		}
-		// when last page nothing??
+	if (pksd->questdata.size())
+	{
+	pksd->questdata.removeLast();
+	}
+	// when last page nothing??
 	}
 	else
 	{
-		int beginindex = api_questlist.api_list[0].api_no;
-		int endindex = api_questlist.api_list[questcount - 1].api_no;
+	int beginindex = api_questlist.api_list[0].api_no;
+	int endindex = api_questlist.api_list[questcount - 1].api_no;
 
-		//delete all in questdata
-		QList<kcsapi_quest>::iterator it;
-		for (it = pksd->questdata.begin(); it != pksd->questdata.end();)
-		{
-			if (it->api_no >= beginindex && it->api_no <= endindex)
-			{
-				it = pksd->questdata.erase(it);
-			}
-			else
-			{
-				++it;
-			}
-		}
+	//delete all in questdata
+	QList<kcsapi_quest>::iterator it;
+	for (it = pksd->questdata.begin(); it != pksd->questdata.end();)
+	{
+	if (it->api_no >= beginindex && it->api_no <= endindex)
+	{
+	it = pksd->questdata.erase(it);
+	}
+	else
+	{
+	++it;
+	}
+	}
 
-		// add to
-		for (int i = 0; i<questcount; i++)
-		{
-			if (api_questlist.api_list[i].api_state > 1)
-			{
-				pksd->questdata.append(api_questlist.api_list[i]);
-			}
-		}
-		qSort(pksd->questdata.begin(), pksd->questdata.end(), questDataSort);
+	// add to
+	for (int i = 0; i<questcount; i++)
+	{
+	if (api_questlist.api_list[i].api_state > 1)
+	{
+	pksd->questdata.append(api_questlist.api_list[i]);
+	}
+	}
+	qSort(pksd->questdata.begin(), pksd->questdata.end(), questDataSort);
 	}
 	*/
 
@@ -1632,9 +1640,9 @@ bool KanDataConnector::get_member_base_air_corps_parse()
 
 bool KanDataConnector::req_air_corps_set_plane_parse()
 {
-//	api_base_id = 1 & api_item_id = 63064 & api_squadron_id = 4
+	//	api_base_id = 1 & api_item_id = 63064 & api_squadron_id = 4
 	int baseid = _req.GetItemAsString("api_base_id").toInt();
-//	int itemid = _req.GetItemAsString("api_item_id").toInt();
+	//	int itemid = _req.GetItemAsString("api_item_id").toInt();
 	int squadronid = _req.GetItemAsString("api_squadron_id").toInt();
 	int areaid = _req.GetItemAsString("api_area_id").toInt();
 
@@ -1647,7 +1655,7 @@ bool KanDataConnector::req_air_corps_set_plane_parse()
 	{
 		pksd->airbasedata[areaid][baseid - 1].api_plane_info.append(kcsapi_air_base_corps_plane_info());
 	}
-	
+
 	kcsapi_air_base_corps tcorps;
 	tcorps.ReadFromJObj(_jobj);
 	for (const auto& item : tcorps.api_plane_info)
@@ -1655,7 +1663,7 @@ bool KanDataConnector::req_air_corps_set_plane_parse()
 		pksd->airbasedata[areaid][baseid - 1].api_plane_info[item.api_squadron_id - 1] = item;
 	}
 	pksd->airbasedata[areaid][baseid - 1].api_distance = tcorps.api_distance;
-	
+
 	checkAirBase();
 
 	return true;
@@ -1686,7 +1694,7 @@ bool KanDataConnector::req_air_corps_supply_parse()
 	{
 		pksd->airbasedata[areaid].append(kcsapi_air_base_corps());
 	}
-	
+
 	for (const auto& idStr : squadronIds)
 	{
 		int squadronid = idStr.toInt();

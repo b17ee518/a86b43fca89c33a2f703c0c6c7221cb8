@@ -17,13 +17,14 @@ enum class KanBattleType
 
 	Combined_KouKu,
 	Combined_Water,
-//	Combined_KouKuNight,
+	//	Combined_KouKuNight,
 	Combined_Day,
 	Combined_Night,		// sp_night
 	Combined_DayToNight,
 	Combined_EC,
 	Combined_ECNight,
 	Combined_Each,	// 12 vs 12
+	Combined_EachWater,	// 12 vs 12
 };
 
 enum class MaterialDataIndex
@@ -132,11 +133,11 @@ public:
 	void setValue(int fuel, int bull, int steel, int bauxite, int dev, int kdock);
 	void clearValue();
 	inline bool isValueSet(){ return _flag > 0; }
-	inline bool isAll30(){ 
-		return _usefuel == 30 
-			&& _usebull == 30 
-			&& _usesteel == 30 
-			&& _usebauxite == 30; 
+	inline bool isAll30(){
+		return _usefuel == 30
+			&& _usebull == 30
+			&& _usesteel == 30
+			&& _usebauxite == 30;
 	}
 
 	int _usefuel;
@@ -164,7 +165,7 @@ public:
 	// public member without _
 
 	kcsapi_port portdata;
-//    QList<kcsapi_ship> shipdata;
+	//    QList<kcsapi_ship> shipdata;
 	kcsapi_start2 start2data;
 	QList<kcsapi_slotitem> slotitemdata;
 
@@ -210,7 +211,7 @@ public:
 
 	LastBattleHpSaveData beginLastBattleHPs;
 	LastBattleHpSaveData remainLastBattleHPs;
-	
+
 	int lastKilledYusou = 0;
 	int lastKilledKubou = 0;
 	int lastKilledSensui = 0;
@@ -226,14 +227,14 @@ public:
 	int totalSouthEastWin = 0;
 	int totalTokyuWin = 0;
 	int totalAnyCount = 0;
-	
+
 public:
 	void logAllExport();
 
 	void resetTotals();
 	void adjustSouthEast(int addval);
 
-	void clearQuestByType(int type, int beginIndex, int endIndex, int page=-1);
+	void clearQuestByType(int type, int beginIndex, int endIndex, int page = -1);
 
 private:
 	KanSaveData(void);

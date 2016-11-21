@@ -48,7 +48,7 @@ bool ControlManager::BuildNext_Kira()
 	}
 
 	QList<int> wasteShipListByPreCheck = pushPreShipFullCheck();
-	
+
 	int togoShipId = _todoShipids.at(0);
 	while (isShipKiraDone(togoShipId)
 		|| isShipInOtherTeam(togoShipId, 0)
@@ -96,13 +96,13 @@ bool ControlManager::BuildNext_Kira()
 		bTogoSameToCurSecond = true;
 	}
 
-	if (!shouldChangeSecondShip() && !bTogoSameToCurSecond)
+	if (!shouldChangeSecondShip() && !bTogoSameToCurSecond && wasteShipListByPreCheck.isEmpty())
 	{
 		bChangeSecond = false;
 	}
 
 	int wasteId = curSecond;
-	if (bChangeSecond || !wasteShipListByPreCheck.isEmpty())
+	if (bChangeSecond)
 	{
 		wasteId = getOneWasteShipId(togoShipId, flagshipid, wasteShipListByPreCheck);
 	}
@@ -789,7 +789,7 @@ bool ControlManager::BuildNext_Expedition()
 	_target = ActionTarget::Expedition;
 	int team = -1;
 	auto timerWindow = MainWindow::mainWindow()->timerWindow();
-	
+
 	QList<int> excludeTeams;
 	SingleExpedition* pExp;
 	qint64 ct = TimerMainWindow::currentMS();
@@ -1325,7 +1325,7 @@ bool ControlManager::checkShouldAutoWait()
 		{
 			if (deck.api_mission.first() != 1)
 			{
-				if (excludeTeams.contains(deck.api_id-1))
+				if (excludeTeams.contains(deck.api_id - 1))
 				{
 					continue;
 				}
@@ -1500,7 +1500,7 @@ int ControlManager::getOneWasteShipId(const QList<int>& excludes, QList<int>ship
 {
 	KanSaveData* pksd = &KanSaveData::getInstance();
 	KanDataConnector* pkdc = &KanDataConnector::getInstance();
-	
+
 	for (auto& ship : pksd->portdata.api_ship)
 	{
 		if (ship.api_lv == 1
@@ -1561,7 +1561,7 @@ int ControlManager::getOneWasteShipId(int exclude1/*=-1*/, int exclude2/*=-1*/, 
 	{
 		excludes.append(exclude2);
 	}
-	return getOneWasteShipId(excludes);
+	return getOneWasteShipId(excludes, shipList);
 }
 
 bool ControlManager::isShipFull(int keep)
@@ -2495,13 +2495,13 @@ void ControlManager::moveMouseToAndClick(float x, float y, float offsetX /*= 5*/
 			// reset mouse pos for webengine
 			moveMouseTo(0, 0);
 #endif
-	}
+		}
 		else
 		{
 			sendMouseEvents(browserWidget);
 		}
 
-}
+	}
 
 }
 
@@ -2553,15 +2553,15 @@ void ControlManager::moveMouseTo(float x, float y, float offsetX /*= 5*/, float 
 				{
 					sendMouseEvents(qobject_cast<QWidget*>(obj));
 				}
-	}
+			}
 #endif
-}
+		}
 		else
 		{
 			sendMouseEvents(browserWidget);
 		}
 
-}
+	}
 }
 
 void ControlManager::setPauseNextVal(bool bVal)

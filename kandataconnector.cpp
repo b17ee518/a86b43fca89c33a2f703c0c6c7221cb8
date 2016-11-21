@@ -192,12 +192,12 @@ bool KanDataConnector::isAutoRepairing(int flagshipno/*=-1*/)
 
 bool KanDataConnector::RemoveShip(int shipno)
 {
-	for (QList<kcsapi_ship2>::iterator it=pksd->portdata.api_ship.begin();
-		 it!=pksd->portdata.api_ship.end(); ++it)
+	for (QList<kcsapi_ship2>::iterator it = pksd->portdata.api_ship.begin();
+		it != pksd->portdata.api_ship.end(); ++it)
 	{
 		if (it->api_id == shipno)
 		{
-            foreach (auto itemid , it->api_slot)
+			foreach(auto itemid, it->api_slot)
 			{
 				RemoveSlotItem(itemid);
 			}
@@ -235,7 +235,7 @@ bool KanDataConnector::AddShip(const kcsapi_ship2& ship)
 bool KanDataConnector::AddShip(int shipid, const QList<int>& slotitems)
 {
 	int newid = 0;
-    foreach (auto& it , pksd->portdata.api_ship)
+	foreach(auto& it, pksd->portdata.api_ship)
 	{
 		if (it.api_id > newid)
 		{
@@ -250,7 +250,7 @@ bool KanDataConnector::AddShip(int shipid, const QList<int>& slotitems)
 		if (ship.ReadFromMstShip(*pmstship, newid))
 		{
 			int i = 0;
-            foreach (auto slotitemid , slotitems)
+			foreach(auto slotitemid, slotitems)
 			{
 				ship.api_slot[i] = slotitemid;
 				i++;
@@ -292,8 +292,8 @@ bool KanDataConnector::AddSlotItem(int id, int slotitemId)
 
 kcsapi_ship2 *KanDataConnector::findShipFromShipno(int shipno)
 {
-	for (QList<kcsapi_ship2>::iterator it=pksd->portdata.api_ship.begin();
-		 it!=pksd->portdata.api_ship.end(); ++it)
+	for (QList<kcsapi_ship2>::iterator it = pksd->portdata.api_ship.begin();
+		it != pksd->portdata.api_ship.end(); ++it)
 	{
 		if (it->api_id == shipno)
 		{
@@ -448,7 +448,7 @@ void KanDataConnector::checkWoundQuit()
 	if (pksd->bCombinedSelf && !bClose)
 	{
 		int combineddeckid = lastdeckid + 1;
-		if (combineddeckid >=0 && combineddeckid < 4)
+		if (combineddeckid >= 0 && combineddeckid < 4)
 		{
 			foreach(int shipno, pksd->portdata.api_deck_port[combineddeckid].api_ship)
 			{
@@ -621,7 +621,7 @@ QString KanDataConnector::logBattleResult(bool bWrite/*=true*/)
 	if (pksd->lastbattletype == KanBattleType::DayToNight
 		|| pksd->lastbattletype == KanBattleType::NightToDay
 		|| pksd->lastbattletype == KanBattleType::Combined_DayToNight
-//		|| pksd->lastbattletype == KanBattleType::Combined_KouKuNight
+		//		|| pksd->lastbattletype == KanBattleType::Combined_KouKuNight
 		|| pksd->lastbattletype == KanBattleType::Combined_ECNight)
 	{
 		useLast = true;
@@ -768,9 +768,9 @@ QString KanDataConnector::logBattleResult(bool bWrite/*=true*/)
 		break;
 		/*
 	case KanBattleType::Combined_KouKuNight:
-		battletypestr = QString::fromLocal8Bit("連航夜");
-		break;
-		*/
+	battletypestr = QString::fromLocal8Bit("連航夜");
+	break;
+	*/
 	case KanBattleType::Combined_Night:
 		battletypestr = QString::fromLocal8Bit("連夜");
 		break;
@@ -788,6 +788,9 @@ QString KanDataConnector::logBattleResult(bool bWrite/*=true*/)
 		break;
 	case KanBattleType::Combined_Each:
 		battletypestr = QString::fromLocal8Bit("連連");
+		break;
+	case KanBattleType::Combined_EachWater:
+		battletypestr = QString::fromLocal8Bit("連連水");
 		break;
 	}
 
@@ -957,11 +960,11 @@ void KanDataConnector::logBattleDetail(bool bCombined)
 			const kcsapi_mst_slotitem * pmstslotitem = findMstSlotItemFromSlotitemid(pship->api_slot[i]);
 			foreach(const kcsapi_mst_slotitem &mstslotitem, pksd->start2data.api_mst_slotitem)
 			{
-				if (mstslotitem.api_id == pship->api_slot[i])
-				{
-					strslotitemname = mstslotitem.api_name;
-					break;
-				}
+			if (mstslotitem.api_id == pship->api_slot[i])
+			{
+			strslotitemname = mstslotitem.api_name;
+			break;
+			}
 			}
 			*/
 			equiplines[i] += strslotitemname + "\t";
@@ -978,14 +981,14 @@ void KanDataConnector::logBattleDetail(bool bCombined)
 	}
 
 	int i = 0;
-	foreach (const kcsapi_mst_ship * pmstship, eships)
+	foreach(const kcsapi_mst_ship * pmstship, eships)
 	{
 		i++;
 		enemynameline += pmstship->api_name + "\t";
 		int ehp = 0;
 		if (i > 6)
 		{
-			ehp = pksd->remainLastBattleHPs.combinedEnemy[i-6];
+			ehp = pksd->remainLastBattleHPs.combinedEnemy[i - 6];
 		}
 		else
 		{
@@ -1002,7 +1005,7 @@ void KanDataConnector::logBattleDetail(bool bCombined)
 	QString writestr = infoline + "\n"
 		+ shipnameline + "\n"
 		+ lvline + "\n";
-	foreach (const QString &str, equiplines)
+	foreach(const QString &str, equiplines)
 	{
 		writestr += str + "\n";
 	}
@@ -1027,7 +1030,7 @@ void KanDataConnector::logBuildResult()
 		return;
 	}
 
-	
+
 	int kdockid = pksd->createshipdata._kdockid - 1;
 	if (kdockid >= 0 && pksd->kdockdata.count() > kdockid)
 	{
@@ -1049,7 +1052,7 @@ void KanDataConnector::logBuildResult()
 
 		RECLOG(filename, writestr);
 	}
-	
+
 }
 
 void KanDataConnector::logCreateItemResult(int slotitemid, int fuel, int bull, int steel, int bauxite)

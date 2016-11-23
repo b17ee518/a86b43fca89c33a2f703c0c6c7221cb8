@@ -1998,6 +1998,7 @@ bool ControlManager::noAttackItem(int shipno)
 						case (int)SlotitemType::GyoRai:
 						case (int)SlotitemType::KanBaKu:
 						case (int)SlotitemType::KanKou:
+						case (int)SlotitemType::SuiBaKu:
 						case (int)SlotitemType::SyuHou_L_II:
 							return false;
 						default:

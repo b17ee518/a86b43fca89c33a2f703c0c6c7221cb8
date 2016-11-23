@@ -871,7 +871,7 @@ bool ChargeAction::action()
 			_waiting = true;
 			QTimer::singleShot(DELAY_TIME_CLICK, Qt::PreciseTimer, this, [this, &cm]()
 			{
-				if (_team > 0 && !_teamChanged)
+				if ((_team > 0 || _forceTeamChange) && !_teamChanged)
 				{
 					cm.moveMouseToAndClick(148 + _team * 30, 119); // team
 					setState(State::NeedChargeChecking, "Charge:NeedChargeChecking");
@@ -887,6 +887,7 @@ bool ChargeAction::action()
 					{
 						_teamChanged = true;
 					}
+					_forceTeamChange = true;
 				}
 				else
 				{
@@ -941,6 +942,7 @@ bool ChargeAction::action()
 						{
 							_team = i;
 							_teamChanged = false;
+							_forceTeamChange = true;
 							setState(State::NeedChargeChecking, "Charge:NeedChargeChecking");
 							resetRetryAndWainting();
 							return;

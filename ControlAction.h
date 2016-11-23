@@ -199,6 +199,7 @@ public:
 
 private:
 	bool _teamChanged = false;
+	bool _forceTeamChange = false;
 
 private:
 	State _state = State::None;

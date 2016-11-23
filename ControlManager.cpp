@@ -989,7 +989,19 @@ bool ControlManager::BuildNext_Expedition()
 
 	// charge with skip
 	auto chargeAction = new ChargeAction();
-	chargeAction->setSkipExpedition(true);
+
+	foreach(auto& deck, pksd->portdata.api_deck_port)
+	{
+		if (deck.api_id == team)
+		{
+			if (deck.api_mission[0] > 0)
+			{
+				chargeAction->setSkipExpedition(true);
+			}
+			break;
+		}
+	}
+
 	chargeAction->setTeam(team);
 	_actionList.append(chargeAction);
 

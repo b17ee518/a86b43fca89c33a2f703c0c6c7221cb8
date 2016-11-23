@@ -875,11 +875,22 @@ bool ChargeAction::action()
 				{
 					cm.moveMouseToAndClick(148 + _team * 30, 119); // team
 					setState(State::NeedChargeChecking, "Charge:NeedChargeChecking");
-					_teamChanged = true;
+					// for second team
+					if (_team == 1)
+					{
+						if (cm.checkColors(183, 118, 35, 160, 161))
+						{
+							_teamChanged = true;
+						}
+					}
+					else
+					{
+						_teamChanged = true;
+					}
 				}
 				else
 				{
-					if (cm.isKiraMode())
+					if (cm.isKiraMode() && _team == 0)
 					{
 						cm.moveMouseToAndClick(117, 167, 2, 2); // first ship
 						setState(State::OKToChargeChecking, "Charge:OKToChargeChecking");
@@ -921,6 +932,21 @@ bool ChargeAction::action()
 			QTimer::singleShot(DELAY_TIME_CLICK, Qt::PreciseTimer, this, [this, &cm]()
 			{
 				cm.moveMouseToAndClick(702, 440.5f, 39, 9.5f); // charge button
+				// other teams! todo check
+				for (int i = 0; i < 4; i++)
+				{
+					if (i != _team)
+					{
+						if (cm.needChargeFlagship(i))
+						{
+							_team = i;
+							_teamChanged = false;
+							setState(State::NeedChargeChecking, "Charge:NeedChargeChecking");
+							resetRetryAndWainting();
+							return;
+						}
+					}
+				}
 				setState(State::FinishedChargeChecking, "Charge:FinishedChargeChecking");
 				resetRetryAndWainting();
 			});

@@ -1706,7 +1706,7 @@ bool SortieAction::action()
 					mapPoints[3] = { 288.5f, 350, 102.5f, 36 };
 					mapPoints[4] = { 600, 350, 60, 36 };
 					mapPoints[5] = mapPoints[6] = { 720, 275, 30, 50 };
-					pPoint = mapPoints[_area];
+					pPoint = mapPoints[_map];
 				}
 
 				cm.moveMouseToAndClick(pPoint[0], pPoint[1], pPoint[2], pPoint[3]); // map 1

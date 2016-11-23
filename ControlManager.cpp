@@ -992,9 +992,9 @@ bool ControlManager::BuildNext_Expedition()
 
 	foreach(auto& deck, pksd->portdata.api_deck_port)
 	{
-		if (deck.api_id == team)
+		if (deck.api_id == team + 1)
 		{
-			if (deck.api_mission[0] > 0)
+			if (deck.api_mission[0] > 0 || needChargeFlagship(team))
 			{
 				chargeAction->setSkipExpedition(true);
 			}

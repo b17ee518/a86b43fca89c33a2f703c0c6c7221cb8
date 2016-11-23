@@ -32,7 +32,21 @@ AnyActionSelectDialog::AnyActionSelectDialog(QWidget *parent) :
 	connect(resetButton, SIGNAL(clicked()), this, SLOT(slotOnReset()));
 
 	ui->leCount->setText(QString::number(ControlManager::getInstance().getAnySetting().count));
-	ui->cbAirBaseCount->setChecked(ControlManager::getInstance().getAnySetting().checkAirBaseCond);
+	ui->cbAirBaseCond->setChecked(ControlManager::getInstance().getAnySetting().checkAirBaseCond);
+	ui->cbCond->setChecked(ControlManager::getInstance().getAnySetting().checkCond);
+	ui->cbMiddleDamage->setChecked(ControlManager::getInstance().getAnySetting().allowMiddleDamageSortie);
+
+	connect(ui->leArea, SIGNAL(textEdited()), this, SLOT(slotUncheckAllAreaButtons()));
+	connect(ui->leMap, SIGNAL(textEdited()), this, SLOT(slotUncheckAllAreaButtons()));
+
+	for (int i = 0; i < 6; i++)
+	{
+		auto button = ui->bgArea->button(i);
+		if (button)
+		{
+			connect(button, SIGNAL(clicked()), this, SLOT(slotClearLEAreaAndMap()));
+		}
+	}
 }
 
 AnyActionSelectDialog::~AnyActionSelectDialog()
@@ -42,21 +56,43 @@ AnyActionSelectDialog::~AnyActionSelectDialog()
 
 void AnyActionSelectDialog::getMapAndArea(int&area, int&map)
 {
-	area = ui->bgArea->checkedId();
-	map = ui->bgMap->checkedId();
+	if (!ui->leArea->text().isEmpty())
+	{
+		area = ui->leArea->text().toInt();
+		map = ui->leMap->text().toInt();
+	}
+	else
+	{
+		area = ui->bgArea->checkedId();
+		map = ui->bgMap->checkedId();
+	}
 }
 
 void AnyActionSelectDialog::setSelections(int area, int map)
 {
-	auto button = ui->bgArea->button(area);
-	if (button)
+	QAbstractButton* button;
+	if (area >0 && area <= 6)
 	{
-		button->setChecked(true);
+		button = ui->bgArea->button(area);
+		if (button)
+		{
+			button->setChecked(true);
+		}
 	}
-	button = ui->bgMap->button(map);
-	if (button)
+	else
 	{
-		button->setChecked(true);
+		slotUncheckAllAreaButtons();
+		ui->leArea->setText(QString::number(area));
+		ui->leMap->setText(QString::number(map));
+	}
+
+	if (map > 0 && map <= 6)
+	{
+		button = ui->bgMap->button(map);
+		if (button)
+		{
+			button->setChecked(true);
+		}
 	}
 }
 
@@ -82,5 +118,57 @@ void AnyActionSelectDialog::slotOnReset()
 
 bool AnyActionSelectDialog::isCheckAirBaseCond()
 {
-	return ui->cbAirBaseCount->isChecked();
+	return ui->cbAirBaseCond->isChecked();
+}
+
+bool AnyActionSelectDialog::isCheckCond()
+{
+	return ui->cbCond->isChecked();
+}
+
+bool AnyActionSelectDialog::isAllowMiddle()
+{
+	return ui->cbMiddleDamage->isChecked();
+}
+
+void AnyActionSelectDialog::slotUncheckAllAreaButtons()
+{
+	slotResetExtraSettings();
+	ui->bgArea->setExclusive(false);
+	ui->bgMap->setExclusive(false);
+	for (int i = 0; i < 6; i++)
+	{
+		auto button = ui->bgArea->button(i);
+		if (button)
+		{
+			button->setChecked(false);
+		}
+	}
+	// omit map
+	/*
+	for (int i = 0; i < 6; i++)
+	{
+		auto button = ui->bgMap->button(i);
+		if (button)
+		{
+			button->setChecked(false);
+		}
+	}
+	*/
+	ui->bgArea->setExclusive(true);
+	ui->bgMap->setExclusive(true);
+}
+
+void AnyActionSelectDialog::slotClearLEAreaAndMap()
+{
+	slotResetExtraSettings();
+	ui->leArea->setText("");
+	ui->leMap->setText("");
+}
+
+void AnyActionSelectDialog::slotResetExtraSettings()
+{
+	ui->cbAirBaseCond->setChecked(false);
+	ui->cbCond->setChecked(true);
+	ui->cbMiddleDamage->setChecked(false);
 }

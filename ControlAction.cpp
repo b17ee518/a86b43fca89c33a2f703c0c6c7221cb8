@@ -1454,7 +1454,9 @@ bool SortieAction::action()
 		}
 		else
 		{
-			if (cm.needChargeFlagship(0) || cm.hugestDamageInTeam(0) >= WoundState::Big)
+			// any
+			if ((cm.needChargeFlagship(0) || cm.hugestDamageInTeam(0) >= WoundState::Big)
+				|| (cm.needChargeFlagship(1) || cm.hugestDamageInTeam(1) >= WoundState::Big))
 			{
 				cm.setToTerminate("Terminated:Damage", true);
 				emit sigFatal();
@@ -1579,7 +1581,15 @@ bool SortieAction::action()
 					areaPoints[5] = { 452, 445, 14, 9 };
 					areaPoints[6] = { 528, 445, 14, 9 };
 
-					const auto& pPoint = areaPoints[_area];
+					QList<float> pPoint;
+					if (_isEvent)
+					{
+						pPoint = { 711, 445, 14, 9 };	//event
+					}
+					else
+					{
+						pPoint = areaPoints[_area];
+					}
 
 					cm.moveMouseToAndClick(pPoint[0], pPoint[1], pPoint[2], pPoint[3]);
 					setState(State::SelectMapChecking, "Sortie:SelectMapChecking");
@@ -1595,28 +1605,37 @@ bool SortieAction::action()
 			_waiting = true;
 			QTimer::singleShot(DELAY_TIME, Qt::PreciseTimer, this, [this, &cm]()
 			{
-				QMap<int, QList<float>> areaPoints;
-				areaPoints[2] = {
-					246, 326, 197, 106, 166
-					, 354, 370, 244, 206, 94 };
+				
+				QList<float> pPoint;
+				if (_isEvent)
+				{
+					pPoint = _areaCheckList;
+				}
+				else
+				{
+					QMap<int, QList<float>> areaPoints;
+					areaPoints[2] = {
+						246, 326, 197, 106, 166
+						, 354, 370, 244, 206, 94 };
 
-				areaPoints[3] = {
-					512, 263, 84, 90, 107
-					, 618, 190, 179, 211, 206 };
+					areaPoints[3] = {
+						512, 263, 84, 90, 107
+						, 618, 190, 179, 211, 206 };
 
-				areaPoints[4] = {
-					384, 197, 206, 227, 147
-					, 340, 340, 155, 90, 93 };
+					areaPoints[4] = {
+						384, 197, 206, 227, 147
+						, 340, 340, 155, 90, 93 };
 
-				areaPoints[5] = {
-					520, 365, 24, 32, 72
-					, 657, 327, 122, 139, 123 };
+					areaPoints[5] = {
+						520, 365, 24, 32, 72
+						, 657, 327, 122, 139, 123 };
 
-				areaPoints[6] = {
-					215, 251, 28, 104, 209
-					, 215, 362, 87, 117, 102 };
+					areaPoints[6] = {
+						215, 251, 28, 104, 209
+						, 215, 362, 87, 117, 102 };
+					pPoint = areaPoints[_area];
+				}
 
-				const auto& pPoint = areaPoints[_area];
 				if (cm.checkColors(pPoint[0], pPoint[1], pPoint[2], pPoint[3], pPoint[4]
 					, pPoint[5], pPoint[6], pPoint[7], pPoint[8], pPoint[9]))
 				{
@@ -1646,23 +1665,38 @@ bool SortieAction::action()
 
 			QTimer::singleShot(DELAY_TIME_CLICK, Qt::PreciseTimer, this, [this, &cm]()
 			{
-				QMap<int, QList<float>> mapPoints;
-				mapPoints[1] = { 281, 207, 100, 41 };
-				mapPoints[2] = { 600, 199, 60, 36 };
-				mapPoints[3] = { 288.5f, 350, 102.5f, 36 };
-				mapPoints[4] = { 600, 350, 60, 36 };
-				mapPoints[5] = mapPoints[6] = { 720, 275, 30, 50 };
+				QList<float> pPoint;
+				if (_isEvent)
+				{
+					pPoint = _mapClickPoint;			
+				}
+				else
+				{
+					QMap<int, QList<float>> mapPoints;
+					mapPoints[1] = { 281, 207, 100, 41 };
+					mapPoints[2] = { 600, 199, 60, 36 };
+					mapPoints[3] = { 288.5f, 350, 102.5f, 36 };
+					mapPoints[4] = { 600, 350, 60, 36 };
+					mapPoints[5] = mapPoints[6] = { 720, 275, 30, 50 };
+					pPoint = mapPoints[_area];
+				}
 
-				auto& pPoint = mapPoints[_map];
 				cm.moveMouseToAndClick(pPoint[0], pPoint[1], pPoint[2], pPoint[3]); // map 1
 
-				if (_map > 4)
+				if (_map > 4)	// when ex map is over 10
 				{
 					setState(State::SelectExMapChecking, "Sortie:SelectExMapChecking");
 				}
 				else
 				{
-					setState(State::SortieCheckChecking, "Sortie:SortieCheckChecking");
+					if (_isEvent)
+					{
+						setState(State::SkipBoardChecking, "Sortie:SkipBoardChecking");
+					}
+					else
+					{
+						setState(State::SortieCheckChecking, "Sortie:SortieCheckChecking");
+					}
 				}
 
 				resetRetryAndWainting();
@@ -1678,27 +1712,35 @@ bool SortieAction::action()
 			_waiting = true;
 			QTimer::singleShot(DELAY_TIME_LONG, Qt::PreciseTimer, this, [this, &cm]()
 			{
-				QMap<int, QList<float>> areaPoints;
-				areaPoints[1] = {
-					160, 291, 250, 43, 43
-					, 162, 279, 255, 255, 255 };
-				areaPoints[2] = {
-					160, 291, 250, 43, 43
-					, 162, 279, 255, 255, 255 };
-				areaPoints[3] = {
-					160, 291, 250, 43, 43
-					, 162, 279, 255, 255, 255 };
-				areaPoints[4] = {
-					160, 291, 250, 43, 43
-					, 162, 279, 255, 255, 255 };
-				areaPoints[5] = {
-					160, 291, 250, 43, 43
-					, 162, 279, 255, 255, 255 };
-				areaPoints[6] = {
-					160, 291, 250, 43, 43
-					, 162, 279, 255, 255, 255 };
+				QList<float> pPoint;
+				if (_isEvent)
+				{
+					pPoint = _mapExCheckList;
+				}
+				else
+				{
+					QMap<int, QList<float>> areaPoints;
+					areaPoints[1] = {
+						160, 291, 250, 43, 43
+						, 162, 279, 255, 255, 255 };
+					areaPoints[2] = {
+						160, 291, 250, 43, 43
+						, 162, 279, 255, 255, 255 };
+					areaPoints[3] = {
+						160, 291, 250, 43, 43
+						, 162, 279, 255, 255, 255 };
+					areaPoints[4] = {
+						160, 291, 250, 43, 43
+						, 162, 279, 255, 255, 255 };
+					areaPoints[5] = {
+						160, 291, 250, 43, 43
+						, 162, 279, 255, 255, 255 };
+					areaPoints[6] = {
+						160, 291, 250, 43, 43
+						, 162, 279, 255, 255, 255 };
+					pPoint = areaPoints[_area];
+				}
 
-				const auto& pPoint = areaPoints[_area];
 				if (cm.checkColors(pPoint[0], pPoint[1], pPoint[2], pPoint[3], pPoint[4]
 					, pPoint[5], pPoint[6], pPoint[7], pPoint[8], pPoint[9]))
 				{
@@ -1719,18 +1761,121 @@ bool SortieAction::action()
 			_waiting = true;
 			QTimer::singleShot(DELAY_TIME_CLICK, Qt::PreciseTimer, this, [this, &cm]()
 			{
-				QMap<int, QList<float>> mapPoints;
-				mapPoints[5] = { 482, 208, 126, 41 };
-				mapPoints[6] = { 466, 349, 121, 51 };
-
-				auto& pPoint = mapPoints[_map];
+				QList<float> pPoint;
+				if (_isEvent)
+				{
+					pPoint = _mapExClickPoint;
+				}
+				else
+				{
+					QMap<int, QList<float>> mapPoints;
+					mapPoints[5] = { 482, 208, 126, 41 };
+					mapPoints[6] = { 466, 349, 121, 51 };
+					pPoint = mapPoints[_map];
+				}
 				cm.moveMouseToAndClick(pPoint[0], pPoint[1], pPoint[2], pPoint[3]); // map 1
 
-				setState(State::SortieCheckChecking, "Sortie:SortieCheckChecking");
+				if (_isEvent)
+				{
+					if (_map > 20)	// ex2
+					{
+						setState(State::SelectEx2MapChecking, "Sortie:SelectEx2MapChecking");
+					}
+					else
+					{
+						setState(State::SkipBoardChecking, "Sortie:SkipBoardChecking");
+					}
+				}
+				else
+				{
+					setState(State::SortieCheckChecking, "Sortie:SortieCheckChecking");
+				}
 				resetRetryAndWainting();
 			});
 		}
 
+		break;
+	case SortieAction::State::SelectEx2MapChecking:
+		if (!_waiting)
+		{
+			_waiting = true;
+			QTimer::singleShot(DELAY_TIME_LONG, Qt::PreciseTimer, this, [this, &cm]()
+			{
+				QList<float> pPoint;
+				pPoint = _mapEx2CheckList;
+
+				if (cm.checkColors(pPoint[0], pPoint[1], pPoint[2], pPoint[3], pPoint[4]
+					, pPoint[5], pPoint[6], pPoint[7], pPoint[8], pPoint[9]))
+				{
+					_waiting = false;
+					setState(State::SelectEx2MapDone, "Sortie:SelectEx2MapDone");
+				}
+				else
+				{
+					tryRetry();
+				}
+			});
+		}
+		break;
+	case SortieAction::State::SelectEx2MapDone:
+
+		if (!_waiting)
+		{
+			_waiting = true;
+			QTimer::singleShot(DELAY_TIME_CLICK, Qt::PreciseTimer, this, [this, &cm]()
+			{
+				QList<float> pPoint;
+				pPoint = _mapEx2ClickPoint;
+				cm.moveMouseToAndClick(pPoint[0], pPoint[1], pPoint[2], pPoint[3]); // map 1
+
+				// should always be ev
+				if (_isEvent)
+				{
+					setState(State::SkipBoardChecking, "Sortie:SkipBoardChecking");
+				}
+				else
+				{
+					setState(State::SortieCheckChecking, "Sortie:SortieCheckChecking");
+				}
+				resetRetryAndWainting();
+			});
+		}
+
+		break;
+
+	case SortieAction::State::SkipBoardChecking:
+		if (!_waiting)
+		{
+			_waiting = true;
+			QTimer::singleShot(DELAY_TIME, Qt::PreciseTimer, this, [this, &cm]()
+			{
+				// blackboard
+				if (cm.checkColors(
+					451, 83, 182, 155, 105
+					, 342, 380, 44, 64, 76))
+				{
+					_waiting = false;
+					setState(State::SkipBoardDone, "Sortie:SkipBoardDone");
+				}
+				else
+				{
+					tryRetry();
+				}
+			});
+		}
+		break;
+	case SortieAction::State::SkipBoardDone:
+
+		if (!_waiting)
+		{
+			_waiting = true;
+			QTimer::singleShot(DELAY_TIME_CLICK, Qt::PreciseTimer, this, [this, &cm]()
+			{
+				cm.moveMouseToAndClick(365, 253, 136, 88); // blackboard
+				setState(State::SortieCheckChecking, "Sortie:SortieCheckChecking");
+				resetRetryAndWainting();
+			});
+		}
 		break;
 
 	case SortieAction::State::SortieCheckChecking:
@@ -1822,10 +1967,27 @@ void SortieAction::setState(State state, const char* str)
 	ControlManager::getInstance().setStateStr(str);
 }
 
-void SortieAction::setAreaAndMap(int area, int map)
+void SortieAction::setAreaAndMap(int area, int map
+	, const QList<float>& areaCheckList/* = QList<float>()*/
+	, const QList<float>& mapClickPoint/* = QList<float>()*/
+	, const QList<float>& mapExCheckList/* = QList<float>()*/
+	, const QList<float>& mapExClickPoint/* = QList<float>()*/
+	, const QList<float>& mapEx2CheckList/* = QList<float>()*/
+	, const QList<float>& mapEx2ClickPoint/* = QList<float>()*/)
 {
 	_area = area;
 	_map = map;
+	_areaCheckList = areaCheckList;
+	_mapClickPoint = mapClickPoint;
+	_mapExCheckList = mapExCheckList;
+	_mapExClickPoint = mapExClickPoint;
+	_mapEx2CheckList = mapEx2CheckList;
+	_mapEx2ClickPoint = mapEx2ClickPoint;
+
+	if (_area >= 30 || _area < 0)
+	{
+		_isEvent = true;
+	}
 }
 
 bool SortieAdvanceAction::action()
@@ -1959,6 +2121,15 @@ bool SortieCommonAdvanceAction::action()
 					}
 					
 				}
+				// combined formation
+				else if (cm.checkColors(
+					460, 167, 0, 122, 123
+					, 475, 180, 8, 109, 110
+					, 566, 165, 230, 217, 93))
+				{
+					_waiting = false;
+					setState(State::SelectCombinedFormation, "SortieAdv:SelectCombinedFormation");
+				}
 				// else
 				else
 				{
@@ -2001,6 +2172,51 @@ bool SortieCommonAdvanceAction::action()
 						{
 							formation = setting.cells[cell].formation;
 							if (formation > 5 || formation < 1)
+							{
+								formation = 1;
+							}
+						}
+					}
+					cm.moveMouseToAndClick(points[formation][0], points[formation][1]); // formation button
+					setStateToChecking();
+					resetRetryAndWainting();
+				});
+			}
+		}
+		break;
+
+	case SortieCommonAdvanceAction::State::SelectCombinedFormation:
+
+		if (!_waiting)
+		{
+			_waiting = true;
+			if (_shouldRetrieve
+				&& !cm.isLevelMode()	// level mode always set to retrieve
+				)
+			{
+				cm.setToTerminate("Terminated:Fatal", true);
+				emit sigFatal();
+				return false;
+			}
+			else
+			{
+				QTimer::singleShot(DELAY_TIME_CLICK, Qt::PreciseTimer, this, [this, &cm]()
+				{
+					QMap<int, QList<float>> points;
+					points[1] = { 497, 172 };
+					points[2] = { 662, 172 };
+					points[3] = { 497, 308 };
+					points[4] = { 662, 308 };
+					int formation = 1;
+
+					if (cm.isAnyMode())
+					{
+						const auto& setting = cm.getAnySetting();
+						int cell = KanSaveData::getInstance().nextdata.api_no;
+						if (setting.cells.contains(cell))
+						{
+							formation = setting.cells[cell].formation;
+							if (formation > 4 || formation < 1)
 							{
 								formation = 1;
 							}

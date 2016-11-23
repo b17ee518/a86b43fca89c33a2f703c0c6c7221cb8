@@ -317,6 +317,14 @@ public:
 		SelectMapDone, // click map or ex
 		SelectExMapChecking,
 		SelectExMapDone, // click ex map
+
+		SelectEx2MapChecking,
+		SelectEx2MapDone, // click ex map
+
+		SkipBoardChecking,
+		SkipBoardDone,	// skip mission (ev only)
+
+
 		SortieCheckChecking,
 		SortieCheckDone, // click ok
 		TeamSelectChecking,
@@ -330,9 +338,25 @@ public:
 	}
 
 public:
-	void setAreaAndMap(int area, int map);
+	void setAreaAndMap(int area, int map
+		, const QList<float>& areaCheckList = QList<float>()
+		, const QList<float>& mapClickPoint = QList<float>()
+		, const QList<float>& mapExCheckList = QList<float>()
+		, const QList<float>& mapExClickPoint = QList<float>()
+		, const QList<float>& mapEx2CheckList = QList<float>()
+		, const QList<float>& mapEx2ClickPoint = QList<float>());
+
 	int _area = 1;
 	int _map = 1;
+
+	bool _isEvent = false;
+
+	QList<float> _areaCheckList;
+	QList<float> _mapClickPoint;	// click E1~E3 or Ex button
+	QList<float> _mapExCheckList;	// for Ex only
+	QList<float> _mapExClickPoint;	// click after Ex
+	QList<float> _mapEx2CheckList;	// for Ex only
+	QList<float> _mapEx2ClickPoint;	// click after Ex
 
 	virtual bool action() override;
 
@@ -372,6 +396,7 @@ public:
 
 		ClickElse,
 		SelectFormation,
+		SelectCombinedFormation,
 		ClickLeft,
 		ClickRight,
 

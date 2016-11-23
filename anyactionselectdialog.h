@@ -21,12 +21,17 @@ public:
 
 	int getCountSet();
 	bool isCheckAirBaseCond();
+	bool isCheckCond();
+	bool isAllowMiddle();
 
 private:
     Ui::AnyActionSelectDialog *ui;
 
 	private slots:
 	void slotOnReset();
+	void slotUncheckAllAreaButtons();
+	void slotClearLEAreaAndMap();
+	void slotResetExtraSettings();
 };
 
 #endif // ANYACTIONSELECTDIALOG_H

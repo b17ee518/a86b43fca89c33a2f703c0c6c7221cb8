@@ -659,6 +659,81 @@ void ControlManager::LoadAnyTemplateSettings()
 			int cell = key.toInt(&bOk);
 			if (!bOk)
 			{
+				auto splited = setting->value(key).toStringList();
+				if (!key.compare("AreaCheck", Qt::CaseInsensitive))
+				{
+					if (splited.size() != 10)
+					{
+						// error
+						continue;
+					}
+					for (const auto& str : splited)
+					{
+						_anyTemplateSettings[pair].areaCheckList.append(str.toInt(&bOk));
+					}
+				}
+				else if (!key.compare("MapClick", Qt::CaseInsensitive))
+				{
+					if (splited.size() != 4)
+					{
+						// error
+						continue;
+					}
+					for (const auto& str : splited)
+					{
+						_anyTemplateSettings[pair].mapClickPoint.append(str.toInt(&bOk));
+					}
+				}
+
+				else if (!key.compare("MapExCheck", Qt::CaseInsensitive))
+				{
+					if (splited.size() != 10)
+					{
+						// error
+						continue;
+					}
+					for (const auto& str : splited)
+					{
+						_anyTemplateSettings[pair].mapExCheckList.append(str.toInt(&bOk));
+					}
+				}
+				else if (!key.compare("MapExClick", Qt::CaseInsensitive))
+				{
+					if (splited.size() != 4)
+					{
+						// error
+						continue;
+					}
+					for (const auto& str : splited)
+					{
+						_anyTemplateSettings[pair].mapExClickPoint.append(str.toInt(&bOk));
+					}
+				}
+
+				else if (!key.compare("MapEx2Check", Qt::CaseInsensitive))
+				{
+					if (splited.size() != 10)
+					{
+						// error
+						continue;
+					}
+					for (const auto& str : splited)
+					{
+						_anyTemplateSettings[pair].mapEx2CheckList.append(str.toInt(&bOk));
+					}
+				}
+				else if (!key.compare("MapEx2Click", Qt::CaseInsensitive))
+				{
+					if (splited.size() != 4)
+					{
+						// error
+						continue;
+					}
+					for (const auto& str : splited)
+					{
+						_anyTemplateSettings[pair].mapEx2ClickPoint.append(str.toInt(&bOk));
+					}
+				}
 				continue;
 			}
 
@@ -752,7 +827,7 @@ bool ControlManager::BuildNext_Any()
 
 					WoundState ws = KanDataCalc::GetWoundState(pship->api_nowhp, pship->api_maxhp);
 
-					if (ws >= WoundState::Middle)
+					if (ws >= WoundState::Middle && !_anySetting.allowMiddleDamageSortie || ws >= WoundState::Big)
 					{
 						setToTerminate("Terminated:Damage");
 						return false;
@@ -762,7 +837,7 @@ bool ControlManager::BuildNext_Any()
 		}
 	}
 
-	if (minCond <= _sortieMinCond)
+	if (minCond <= _sortieMinCond && _anySetting.checkCond)
 	{
 		// wait
 		qint64 waitMS = qCeil((_sortieWaitCond - minCond) / 3.0) * 3 * 60 * 1000;
@@ -772,7 +847,10 @@ bool ControlManager::BuildNext_Any()
 	}
 
 	SortieAction* sortieAction = new SortieAction();
-	sortieAction->setAreaAndMap(_anySetting.area, _anySetting.map);
+	sortieAction->setAreaAndMap(_anySetting.area, _anySetting.map
+		, _anySetting.areaCheckList, _anySetting.mapClickPoint
+		, _anySetting.mapExCheckList, _anySetting.mapExClickPoint
+		, _anySetting.mapEx2CheckList, _anySetting.mapEx2ClickPoint);
 	_actionList.append(sortieAction);
 	_actionList.append(new SortieCommonAdvanceAction());
 	_actionList.append(new ChargeAction());
@@ -1158,11 +1236,14 @@ QList<int> ControlManager::GenerateToDestroyList(QList<int>& wasteShipList)
 
 void ControlManager::pushPreSupplyCheck()
 {
-	if (needChargeFlagship(0))
+	for (int i = 0; i < 4; i++)
 	{
-		ChargeAction* action = new ChargeAction();
-		action->setTeam(0);
-		_actionList.append(action);
+		if (needChargeFlagship(i))
+		{
+			ChargeAction* action = new ChargeAction();
+			action->setTeam(i);
+			_actionList.append(action);
+		}
 	}
 }
 
@@ -2005,7 +2086,7 @@ bool ControlManager::shouldRetrieve()
 	{
 		return true;
 	}
-	return (hugestDamageInTeam(0) >= WoundState::Big);
+	return (hugestDamageInTeam(0) >= WoundState::Big && hugestDamageInTeam(1) >= WoundState::Big);
 }
 
 bool ControlManager::shouldRetrieveForAny()

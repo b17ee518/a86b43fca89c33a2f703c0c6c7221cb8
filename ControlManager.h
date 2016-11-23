@@ -89,7 +89,16 @@ public:
 		int map = 5;
 		int count = 1;
 		bool checkAirBaseCond = false;
+		bool checkCond = true;
+		bool allowMiddleDamageSortie = false;
 		QMap<int, CellAnySetting> cells;
+
+		QList<float> areaCheckList;
+		QList<float> mapClickPoint;	// click E1~E3 or Ex button
+		QList<float> mapExCheckList;	// for Ex only
+		QList<float> mapExClickPoint;	// click after Ex
+		QList<float> mapEx2CheckList;	// for Ex only
+		QList<float> mapEx2ClickPoint;	// click after Ex
 	};
 
 public:

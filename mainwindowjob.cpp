@@ -181,7 +181,7 @@ void MainWindow::onDoJobAny()
 		return;
 	}
 
-	if (area < 1 || area > 6 || map < 1 || map > 6)
+	if (area < 1 || map < 1)
 	{
 		switchToExpeditionWait();
 		return;
@@ -190,6 +190,8 @@ void MainWindow::onDoJobAny()
 	setting = cm.getAnyTemplateSetting(area, map);
 	setting.count = dialog->getCountSet();
 	setting.checkAirBaseCond = dialog->isCheckAirBaseCond();
+	setting.checkCond = dialog->isCheckCond();
+	setting.allowMiddleDamageSortie = dialog->isAllowMiddle();
 	delete dialog;
 
 	cm.setAnySetting(setting);

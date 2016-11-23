@@ -1197,7 +1197,10 @@ QList<int> ControlManager::GenerateToDestroyList(QList<int>& wasteShipList)
 		if (_destroyableMstIds.contains(pmstship->api_id)
 			&& !ship.api_locked
 			&& !ship.api_locked_equip
-			&& ship.api_lv < 3)
+			&& ship.api_lv < 3
+			&& ship.api_maxhp == ship.api_nowhp
+			&& ship.api_bull == pmstship->api_bull_max
+			&& ship.api_fuel == pmstship->api_fuel_max)
 		{
 			toTempDestroyList.append(ship);
 		}

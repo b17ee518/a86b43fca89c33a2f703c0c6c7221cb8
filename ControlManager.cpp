@@ -2086,7 +2086,7 @@ bool ControlManager::shouldRetrieve()
 	{
 		return true;
 	}
-	return (hugestDamageInTeam(0) >= WoundState::Big && hugestDamageInTeam(1) >= WoundState::Big);
+	return (hugestDamageInTeam(0) >= WoundState::Big || hugestDamageInTeam(1) >= WoundState::Big);
 }
 
 bool ControlManager::shouldRetrieveForAny()

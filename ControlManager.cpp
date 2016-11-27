@@ -158,12 +158,15 @@ bool ControlManager::BuildNext_Fuel()
 		return false;
 	}
 
+	pushPreSupplyCheck();
+	/*
 	if (isShipFull())
 	{
 		setToTerminate("Terminated:ShipFull");
 		return false;
 		//		_actionList.append(new DestroyShipAction());
 	}
+	*/
 
 	SortieAction* sortieAction = new SortieAction();
 	sortieAction->setAreaAndMap(2, 3);

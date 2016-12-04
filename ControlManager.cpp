@@ -158,7 +158,7 @@ bool ControlManager::BuildNext_Fuel()
 		return false;
 	}
 
-	pushPreSupplyCheck();
+	pushPreShipFullCheck();
 	/*
 	if (isShipFull())
 	{
@@ -201,13 +201,16 @@ bool ControlManager::BuildNext_SouthEast()
 		// keep 4 and up for formation
 		_southEastTeamSize = 4;
 	}
-
+	
+	pushPreShipFullCheck();
+	/*
 	if (isShipFull())
 	{
 		setToTerminate("Terminated:ShipFull");
 		return false;
 		//		_actionList.append(new DestroyShipAction());
 	}
+	*/
 
 	if (_ssShips.isEmpty())
 	{
@@ -377,11 +380,14 @@ bool ControlManager::BuildNext_Level()
 	KanSaveData* pksd = &KanSaveData::getInstance();
 	KanDataConnector* pkdc = &KanDataConnector::getInstance();
 
+	pushPreShipFullCheck();
+	/*
 	if (isShipFull())
 	{
 		setToTerminate("Terminated:ShipFull");
 		return false;
 	}
+	*/
 
 	bool bHaveMaruyu = false;
 	int redFaceCount = 0;
@@ -532,6 +538,7 @@ bool ControlManager::BuildNext_Rank()
 	KanSaveData* pksd = &KanSaveData::getInstance();
 	KanDataConnector* pkdc = &KanDataConnector::getInstance();
 
+	// allow ship full termination
 	if (isShipFull())
 	{
 		setToTerminate("Terminated:ShipFull");

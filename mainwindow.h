@@ -78,7 +78,7 @@ enum class PlatformType
 };
 
 namespace Ui {
-class MainWindow;
+	class MainWindow;
 }
 
 class MainWindow : public MainWindowBase
@@ -88,13 +88,13 @@ class MainWindow : public MainWindowBase
 public:
 	explicit MainWindow(QWidget *parent = 0);
 	~MainWindow();
-	
-	static inline MainWindow * mainWindow(){return s_pMainWindow;}
-	static inline void setMainWindow(MainWindow * pWindow){s_pMainWindow = pWindow;}
-    void postInit(InfoMainWindow * pInfo, TimerMainWindow * pTimer, WeaponMainWindow *pWeapon, ShipMainWindow* pShip);
-	static inline InfoMainWindow * infoWindow(){return s_pMainWindow->_pInfoWindow;}
-	static inline TimerMainWindow * timerWindow(){return s_pMainWindow->_pTimerWindow;}
-    static inline WeaponMainWindow * weaponWindow(){return s_pMainWindow->_pWeaponWindow;}
+
+	static inline MainWindow * mainWindow(){ return s_pMainWindow; }
+	static inline void setMainWindow(MainWindow * pWindow){ s_pMainWindow = pWindow; }
+	void postInit(InfoMainWindow * pInfo, TimerMainWindow * pTimer, WeaponMainWindow *pWeapon, ShipMainWindow* pShip);
+	static inline InfoMainWindow * infoWindow(){ return s_pMainWindow->_pInfoWindow; }
+	static inline TimerMainWindow * timerWindow(){ return s_pMainWindow->_pTimerWindow; }
+	static inline WeaponMainWindow * weaponWindow(){ return s_pMainWindow->_pWeaponWindow; }
 	static inline ShipMainWindow * shipWindow(){ return s_pMainWindow->_pShipWindow; }
 
 	void AdjustVolume(int vol);
@@ -110,7 +110,7 @@ public:
 	QWidget* getBrowserWidget();
 	void navigateTo(const QString& urlString);
 	void navigateReload();
-	
+
 	void setPauseNextChanged(bool bVal);
 	void setJobTerminated();
 
@@ -124,7 +124,7 @@ signals:
 	void sigTogglePanicTimer(int timeVal);
 	void sigToggleSleepMode(bool bSleep);
 
-public slots:
+	public slots:
 	virtual void slotToggleRestoreMinimize(bool bRestore);
 	virtual void slotSelfToggleRestoreMinimize(bool bRestore);
 	void slotParse(const QString &PathAndQuery, const QString &requestBody, const QString &responseBody);
@@ -138,7 +138,7 @@ protected:
 	virtual void mouseReleaseEvent(QMouseEvent * event);
 	virtual void showEvent(QShowEvent *event);
 
-private slots:
+	private slots:
 	void on_pbClose_clicked();
 	void on_pbMinimize_clicked();
 	void on_pbCheckTransparent_toggled(bool checked);
@@ -163,6 +163,7 @@ private slots:
 	void onDoJobAny();
 	void onDoJobExpedition(bool bDo);
 	void onDoJobDestroy();
+	void onDoJobDevelop();
 	void onToggleJobExpedition();
 	void onExportAllList();
 	void onTerminateJob();
@@ -210,12 +211,12 @@ private:
 	QWebViewCSSIndex _applyCssWhenLoaded = QWebViewCSSIndex::Invalid;
 	QString _ieCsses[(int)QWebViewCSSIndex::Max];
 	QUrl _webViewCsses[(int)QWebViewCSSIndex::Max];
-	
+
 	InfoMainWindow * _pInfoWindow = NULL;
 	TimerMainWindow * _pTimerWindow = NULL;
-    WeaponMainWindow * _pWeaponWindow = NULL;
+	WeaponMainWindow * _pWeaponWindow = NULL;
 	ShipMainWindow* _pShipWindow = NULL;
-	
+
 	static MainWindow * s_pMainWindow;
 
 #ifdef Q_OS_WIN

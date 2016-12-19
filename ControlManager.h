@@ -29,6 +29,7 @@ public:
 		Rank,
 		Any,
 		Destroy,
+		Develop,
 	};
 
 	enum class StopWhen
@@ -101,6 +102,11 @@ public:
 		QList<float> mapEx2ClickPoint;	// click after Ex
 	};
 
+	struct DevelopSetting
+	{
+		QMap<int, int> toDevelopSlotItemList;
+	};
+
 public:
 	static ControlManager& getInstance() {
 		static ControlManager instance;
@@ -143,6 +149,8 @@ public:
 
 	bool BuildNext_Destroy();
 
+	bool BuildNext_Develop();
+
 	bool stopWhenCheck();
 
 	void StartJob();
@@ -173,9 +181,10 @@ public:
 	bool shouldChangeSecondShip();
 	bool needChargeFlagship(int team);
 	bool needChargeAnyShip(int team);
-	int getOneWasteShipId(int exclude1 = -1, int exclude2 = -1, QList<int>shipList=QList<int>());
+	int getOneWasteShipId(int exclude1 = -1, int exclude2 = -1, QList<int>shipList = QList<int>());
 	int getOneWasteShipId(const QList<int>& excludes, QList<int>shipList = QList<int>());
-	bool isShipFull(int keep = 3);
+	bool isShipFull(int keep = 3, bool checkSlotitem = true);
+	bool isSlotItemFull(int keep = 6);
 	bool findPagePosByShipId(int shipno, int& page, int& pos, int& lastPage);
 	bool isShipKiraDone(int shipno);
 	bool isLowCond(int shipno);
@@ -185,6 +194,8 @@ public:
 	bool isShipCharged(int shipno);
 	bool needChargeCondAirBase(bool checkCond);
 	bool isShipExist(int shipno);
+
+	int getTotalSlotItemCountForID(int slotitemId);
 
 	bool isHenseiDone(const QList<int>& ships, int team, int index = -1);
 	bool isFlagshipOnly(int team);
@@ -208,6 +219,7 @@ public:
 	void setSouthEastSetting(const SouthEastSetting& southEastSetting);
 	void setKiraSetting(const KiraSetting& kiraSetting);
 	void setAnySetting(const AnySetting& anySetting);
+	void setDevelopSetting(const DevelopSetting& developSetting);
 
 	bool isRunning(){ return _state == State::Started; }
 	bool isActiveRunning();
@@ -247,6 +259,7 @@ public:
 	inline bool isRankMode(){ return _target == ActionTarget::Rank; }
 	inline bool isAnyMode(){ return _target == ActionTarget::Any; }
 	inline bool isDestroyMode(){ return _target == ActionTarget::Destroy; }
+	inline bool isDevelopMode(){ return _target == ActionTarget::Develop; }
 
 	void setState(State state, const char* str, bool bSilent = false, bool forceSound = false);
 	void setInactiveWaiting(bool waiting){ _inactiveWaiting = waiting; }
@@ -281,6 +294,7 @@ public:
 	const ExpeditionSetting& getExpeditionSetting(){ return _expeditionSetting; }
 	const RankSetting& getRankSetting() { return _rankSetting; }
 	const AnySetting& getAnySetting() { return _anySetting; }
+	const DevelopSetting& getDevelopSetting() { return _developSetting; }
 	AnySetting getAnyTemplateSetting(int area, int map);
 
 	//private:
@@ -328,6 +342,7 @@ public:
 	ExpeditionSetting _expeditionSetting;
 	RankSetting _rankSetting;
 	AnySetting _anySetting;
+	DevelopSetting _developSetting;
 
 	QMap<QPair<int, int>, AnySetting> _anyTemplateSettings;
 };

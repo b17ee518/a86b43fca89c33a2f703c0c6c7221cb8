@@ -223,6 +223,12 @@
     <ClCompile Include="kqnetworkreply.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="developactionselectdialog.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_developactionselectdialog.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="cookiejar.h">
@@ -324,6 +330,12 @@
     <CustomBuild Include="anyactionselectdialog.ui">
       <Filter>Form Files</Filter>
     </CustomBuild>
+    <CustomBuild Include="developactionselectdialog.ui">
+      <Filter>Form Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="developactionselectdialog.h">
+      <Filter>Header Files</Filter>
+    </CustomBuild>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="infomainwindow.ui">
@@ -371,6 +383,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="GeneratedFiles\ui_anyactionselectdialog.h">
+      <Filter>Generated Files</Filter>
+    </ClInclude>
+    <ClInclude Include="GeneratedFiles\ui_developactionselectdialog.h">
       <Filter>Generated Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -162,9 +162,9 @@ bool ControlManager::BuildNext_Fuel()
 	/*
 	if (isShipFull())
 	{
-		setToTerminate("Terminated:ShipFull");
-		return false;
-		//		_actionList.append(new DestroyShipAction());
+	setToTerminate("Terminated:ShipFull");
+	return false;
+	//		_actionList.append(new DestroyShipAction());
 	}
 	*/
 
@@ -201,14 +201,14 @@ bool ControlManager::BuildNext_SouthEast()
 		// keep 4 and up for formation
 		_southEastTeamSize = 4;
 	}
-	
+
 	pushPreShipFullCheck();
 	/*
 	if (isShipFull())
 	{
-		setToTerminate("Terminated:ShipFull");
-		return false;
-		//		_actionList.append(new DestroyShipAction());
+	setToTerminate("Terminated:ShipFull");
+	return false;
+	//		_actionList.append(new DestroyShipAction());
 	}
 	*/
 
@@ -384,8 +384,8 @@ bool ControlManager::BuildNext_Level()
 	/*
 	if (isShipFull())
 	{
-		setToTerminate("Terminated:ShipFull");
-		return false;
+	setToTerminate("Terminated:ShipFull");
+	return false;
 	}
 	*/
 
@@ -1055,6 +1055,41 @@ bool ControlManager::BuildNext_Destroy()
 }
 
 
+bool ControlManager::BuildNext_Develop()
+{
+	_target = ActionTarget::Develop;
+
+	DevelopAction* action = new DevelopAction();
+
+	QMap<int, int>::iterator it = _developSetting.toDevelopSlotItemList.begin();
+	bool bAdded = false;
+	for (; it != _developSetting.toDevelopSlotItemList.end(); ++it)
+	{
+		int id = it.key();
+		int count = it.value();
+		if (count <= 0)
+		{
+			continue;
+		}
+		if (id <= 0 || !KanDataConnector::getInstance().findMstSlotItemFromSlotitemid(id))
+		{
+			continue;
+		}
+		bAdded = true;
+		action->addItem(id, count);
+	}
+	if (!bAdded)
+	{
+		setToTerminate("Termination:Fatal", true);
+		return false;
+	}
+	_actionList.append(action);
+	_actionList.append(new RepeatAction());
+	setState(State::Ready, "Ready");
+	return true;
+
+}
+
 bool ControlManager::stopWhenCheck()
 {
 	if (!isFuelMode() && !isSouthEastMode())
@@ -1670,7 +1705,7 @@ int ControlManager::getOneWasteShipId(int exclude1/*=-1*/, int exclude2/*=-1*/, 
 	return getOneWasteShipId(excludes, shipList);
 }
 
-bool ControlManager::isShipFull(int keep)
+bool ControlManager::isShipFull(int keep/* =3*/, bool checkSlotitem/* =true*/)
 {
 	KanSaveData* pksd = &KanSaveData::getInstance();
 	int kancount = pksd->portdata.api_ship.count() + pksd->shipcountoffset;
@@ -1679,7 +1714,28 @@ bool ControlManager::isShipFull(int keep)
 	{
 		return false;
 	}
+	if (checkSlotitem)
+	{
+		// check slotitem too
+		if (isSlotItemFull(keep * 3 - 3))
+		{
+			return false;
+		}
+	}
 	return true;
+}
+
+bool ControlManager::isSlotItemFull(int keep /*= 6*/)
+{
+	KanSaveData* pksd = &KanSaveData::getInstance();
+	int slotitemcount = pksd->slotitemdata.count() + pksd->slotitemcountoffset;
+	int slotitemmaxcount = pksd->portdata.api_basic.api_max_slotitem;
+	if (slotitemcount + keep <= slotitemmaxcount)
+	{
+		return false;
+	}
+	return true;
+
 }
 
 bool ControlManager::findPagePosByShipId(int shipno, int& page, int& pos, int& lastPage)
@@ -1845,6 +1901,20 @@ bool ControlManager::isShipExist(int shipno)
 		return true;
 	}
 	return false;
+}
+
+int ControlManager::getTotalSlotItemCountForID(int slotitemId)
+{
+	KanSaveData * pksd = &KanSaveData::getInstance();
+	int count = 0;
+	foreach(const kcsapi_slotitem& v, pksd->slotitemdata)
+	{
+		if (v.api_slotitem_id == slotitemId)
+		{
+			count++;
+		}
+	}
+	return count;
 }
 
 bool ControlManager::isHenseiDone(const QList<int>& ships, int team, int index/*=-1*/)
@@ -2231,6 +2301,11 @@ void ControlManager::setAnySetting(const AnySetting& anySetting)
 	_anySetting = anySetting;
 }
 
+void ControlManager::setDevelopSetting(const DevelopSetting& developSetting)
+{
+	_developSetting = developSetting;
+}
+
 bool ControlManager::isActiveRunning()
 {
 	if (!isRunning())
@@ -2608,9 +2683,9 @@ void ControlManager::moveMouseToAndClick(float x, float y, float offsetX /*= 5*/
 			sendMouseEvents(browserWidget);
 		}
 
-	}
+		}
 
-}
+	}
 
 void ControlManager::moveMouseTo(float x, float y, float offsetX /*= 5*/, float offsetY /*= 3*/)
 {
@@ -2647,7 +2722,7 @@ void ControlManager::moveMouseTo(float x, float y, float offsetX /*= 5*/, float 
 			}
 			QMouseEvent e(QEvent::MouseMove, ptAdjusted, Qt::NoButton, Qt::NoButton, Qt::NoModifier);
 			QApplication::sendEvent(w, &e);
-		};
+	};
 
 		auto browserWidget = MainWindow::mainWindow()->getBrowserWidget();
 		if (MainWindow::mainWindow()->getWebWidgetType() == WebWidgetType::WebEngine)
@@ -2668,8 +2743,8 @@ void ControlManager::moveMouseTo(float x, float y, float offsetX /*= 5*/, float 
 			sendMouseEvents(browserWidget);
 		}
 
-	}
 }
+	}
 
 void ControlManager::setPauseNextVal(bool bVal)
 {

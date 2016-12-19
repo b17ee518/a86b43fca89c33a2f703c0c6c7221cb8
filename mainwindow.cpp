@@ -19,8 +19,8 @@
 MainWindow * MainWindow::s_pMainWindow = NULL;
 
 MainWindow::MainWindow(QWidget *parent) :
-	MainWindowBase(parent),
-	ui(new Ui::MainWindow)
+MainWindowBase(parent),
+ui(new Ui::MainWindow)
 {
 	ui->setupUi(this);
 	ui->retranslateUi(this);
@@ -31,7 +31,7 @@ MainWindow::MainWindow(QWidget *parent) :
 	connect(_pScreenshotTimer, SIGNAL(timeout()), this, SLOT(slotScreenshotTimeout()));
 	_panicTimer = new QTimer(this);
 	connect(_panicTimer, SIGNAL(timeout()), this, SLOT(onPanic()));
-	
+
 	setMainWindow(this);
 
 	if (_webWidgetType == WebWidgetType::IE)
@@ -71,7 +71,7 @@ MainWindow::MainWindow(QWidget *parent) :
 		_webView->settings()->setAttribute(QWebSettings::PluginsEnabled, true);
 #endif
 		_webView->setObjectName(QStringLiteral("webView"));
-//		_webView->setUrl(QUrl(QStringLiteral("about:blank")));
+		//		_webView->setUrl(QUrl(QStringLiteral("about:blank")));
 		ui->webFrame_layout->addWidget(_webView);
 	}
 
@@ -137,10 +137,10 @@ MainWindow::MainWindow(QWidget *parent) :
 	setupCss();
 
 	navigateTo(_gameUrl);
-	
-//	navigateTo("http://www.google.com");
-//	navigateTo("http://www.dmm.com/netgame/social/-/gadgets/=/app_id=854854/?f1=1&p1=0");
-//	navigateTo("https://www.dmm.com/my/-/login/auth/");
+
+	//	navigateTo("http://www.google.com");
+	//	navigateTo("http://www.dmm.com/netgame/social/-/gadgets/=/app_id=854854/?f1=1&p1=0");
+	//	navigateTo("https://www.dmm.com/my/-/login/auth/");
 
 	QApplication::instance()->installNativeEventFilter(&_windowsEventfilter);
 }
@@ -181,7 +181,7 @@ void MainWindow::slotWebViewException(int code, const QString &source, const QSt
 
 void MainWindow::BeforeRequestFunc(int sessionID, char *fullURL, char *requestBody)
 {
-//	emit mainWindow()->sigTogglePanicTimer(4000);
+	//	emit mainWindow()->sigTogglePanicTimer(4000);
 	// comment out for tablet
 
 	Q_UNUSED(sessionID);
@@ -192,7 +192,7 @@ void MainWindow::BeforeRequestFunc(int sessionID, char *fullURL, char *requestBo
 
 void MainWindow::AfterSessionCompleteFunc(int sessionID, char *mimeType, int responseCode, char *PathAndQuery, char *requestBody, char *responseBody)
 {
-//	emit mainWindow()->sigTogglePanicTimer(-1);
+	//	emit mainWindow()->sigTogglePanicTimer(-1);
 	// comment out for tablet
 
 	Q_UNUSED(sessionID);
@@ -213,7 +213,7 @@ void MainWindow::AfterSessionCompleteFunc(int sessionID, char *mimeType, int res
 		if (0 == QString::compare(mimeType, "text/plain"))
 		{
 			emit mainWindow->sigParse(PathAndQuery, requestBody, responseBody);
-//            KanDataConnector::getInstance().Parse(PathAndQuery, requestBody, responseBody);
+			//            KanDataConnector::getInstance().Parse(PathAndQuery, requestBody, responseBody);
 			/*
 			QString str = QDateTime::currentDateTime().toString("[yyyy/MM/dd HH:mm:ss]\t");
 			str += PathAndQuery;
@@ -261,9 +261,9 @@ QWidget* MainWindow::getBrowserWidget()
 	if (_webWidgetType == WebWidgetType::IE)
 	{
 #ifdef Q_OS_WIN
-        return _axWidget;
+		return _axWidget;
 #endif
-    }
+	}
 	return _webView;
 }
 
@@ -286,9 +286,9 @@ void MainWindow::navigateReload()
 	if (_webWidgetType == WebWidgetType::IE)
 	{
 		rebuildIE(true);
-//		_axWidget->Refresh();
+		//		_axWidget->Refresh();
 		// refresh won't work with css
-//		navigateTo(_gameUrl);
+		//		navigateTo(_gameUrl);
 	}
 	else
 	{
@@ -309,7 +309,7 @@ void MainWindow::rebuildIE(bool bNavigate)
 				this,
 				SLOT(slotNavigateComplete2(IDispatch*, QVariant&)));
 			toDelete->clear();
-			delete toDelete; 
+			delete toDelete;
 		});
 	}
 

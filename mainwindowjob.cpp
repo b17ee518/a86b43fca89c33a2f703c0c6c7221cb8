@@ -8,6 +8,7 @@
 #include "ExpeditionManager.h"
 
 #include "anyactionselectdialog.h"
+#include "developactionselectdialog.h"
 
 #define TIMESHIFT_MIN	30
 
@@ -34,7 +35,7 @@ void MainWindow::onDoJobFuel()
 		Q_UNUSED(foreverButton);
 
 		pMessageBox->setDefaultButton(QMessageBox::NoButton);
-//		pMessageBox->setAttribute(Qt::WA_DeleteOnClose, true);
+		//		pMessageBox->setAttribute(Qt::WA_DeleteOnClose, true);
 		pMessageBox->exec();
 
 		auto clickedButton = pMessageBox->clickedButton();
@@ -280,6 +281,52 @@ void MainWindow::onDoJobDestroy()
 	}
 }
 
+void MainWindow::onDoJobDevelop()
+{
+	auto& cm = ControlManager::getInstance();
+	cm.Terminate();
+	cm.clearLastTarget();
+
+	DevelopActionSelectDialog* dialog = new DevelopActionSelectDialog();
+	dialog->setPositionTo(this->geometry().center().x(), this->geometry().center().y());
+
+	ControlManager::DevelopSetting setting = cm.getDevelopSetting();
+	int id = 0;
+	int count = 0;
+
+	int result = dialog->exec();
+	if (result == QDialog::Accepted)
+	{
+		dialog->getIdAndCount(id, count);
+	}
+	else
+	{
+		switchToExpeditionWait();
+		return;
+	}
+
+	if (id <= 0 || count <= 0)
+	{
+		switchToExpeditionWait();
+		return;
+	}
+
+	delete dialog;
+
+	setting.toDevelopSlotItemList.clear();
+	setting.toDevelopSlotItemList[id] = count;
+
+	cm.setDevelopSetting(setting);
+
+	if (cm.BuildNext_Develop())
+	{
+		cm.StartJob();
+	}
+	else
+	{
+		switchToExpeditionWait();
+	}
+}
 
 
 void MainWindow::onExportAllList()
@@ -298,7 +345,7 @@ void MainWindow::onExportAllList()
 	QList<ExportInfo> infos;
 	if (pksd->portdata.api_ship.size())
 	{
-		for (auto& ship:pksd->portdata.api_ship)
+		for (auto& ship : pksd->portdata.api_ship)
 		{
 			if (ship.api_lv < 10)
 			{
@@ -332,22 +379,22 @@ void MainWindow::onExportAllList()
 				/*
 				if (left.cond < right.cond)
 				{
-					return true;
+				return true;
 				}
 				else if (left.cond == right.cond)
 				{*/
-					if (left.shipid < right.shipid)
+				if (left.shipid < right.shipid)
+				{
+					return true;
+				}
+				else if (left.shipid == right.shipid)
+				{
+					if (left.shipno < right.shipno)
 					{
 						return true;
 					}
-					else if (left.shipid == right.shipid)
-					{
-						if (left.shipno < right.shipno)
-						{
-							return true;
-						}
-					}
-//				}
+				}
+				//				}
 			}
 			return false;
 		});
@@ -359,7 +406,7 @@ void MainWindow::onExportAllList()
 			if (file->open(QIODevice::WriteOnly | QIODevice::Text))
 			{
 				int lastShipType = -1;
-				for (auto& info:infos)
+				for (auto& info : infos)
 				{
 					QString str;
 					if (lastShipType >= 0 && lastShipType != info.shiptype)
@@ -368,8 +415,8 @@ void MainWindow::onExportAllList()
 					}
 					lastShipType = info.shiptype;
 					str += "-\t" +
-						QString::number(info.shipno) + "\t" + 
-						info.shipname + "\t" + 
+						QString::number(info.shipno) + "\t" +
+						info.shipname + "\t" +
 						QString::number(info.lv) + "\t" +
 						QString::number(info.cond) + "\n";
 

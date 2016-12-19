@@ -3,6 +3,7 @@
 #include <QElapsedTimer>
 #include <QTimer>
 #include <QObject>
+#include <QMap>
 
 class ControlManager;
 class ControlAction : public QObject
@@ -21,7 +22,7 @@ public:
 signals:
 	void sigCheckFail();
 	void sigFatal();
-	
+
 protected:
 	void resetRetryAndWainting()
 	{
@@ -92,7 +93,7 @@ public:
 
 public:
 	void setMaxWaitMS(qint64 waitms);
-	qint64 _maxWaitMS = 30*1000;
+	qint64 _maxWaitMS = 30 * 1000;
 
 private:
 	State _state = State::None;
@@ -302,13 +303,43 @@ private:
 	void setState(State state, const char* str);
 };
 
+class DevelopAction : public ControlAction
+{
+public:
+
+	DevelopAction(QObject* parent = NULL)
+		:ControlAction(parent){}
+
+	enum class State
+	{
+		None,
+		SelectDevelopChecking,
+		SelectDevelopDone,
+		SelectOKChecking,
+		SelectOKDone,
+		Skipping,
+		Done,
+	};
+	void addItem(int itemId, int buildCount);
+
+	virtual bool action() override;
+
+
+public:
+	QMap<int, int> _toBuildSlotItems;
+
+private:
+	State _state = State::None;
+	void setState(State state, const char* str);
+};
+
 class SortieAction : public ControlAction
 {
 public:
 	enum class State
 	{
 		None,
-		HomePortChecking,	
+		HomePortChecking,
 		HomePortDone, // click sortie
 		SortieSelectChecking,
 		SortieSelectDone, // click sortie

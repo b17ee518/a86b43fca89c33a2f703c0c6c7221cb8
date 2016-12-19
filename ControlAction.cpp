@@ -1047,7 +1047,7 @@ bool DestroyShipAction::action()
 			_pageList.append(-1);
 			_posList.append(-1);
 		}
-		
+
 		int page;
 		int pos;
 		if (ControlManager::getInstance().findPagePosByShipId(_ships[_nowIndex], page, pos, _lastPage))
@@ -1097,7 +1097,7 @@ bool DestroyShipAction::action()
 			{
 				QTimer::singleShot(DELAY_TIME_CLICK, Qt::PreciseTimer, this, [this, &cm]()
 				{
-					cm.moveMouseToAndClick(274, 361, 23, 21.5f); // change button
+					cm.moveMouseToAndClick(274, 361, 23, 21.5f); // kousyou button
 					setState(State::KouShouSelectChecking, "Destroy:KouShouSelectChecking");
 					resetRetryAndWainting();
 				});
@@ -1188,7 +1188,7 @@ bool DestroyShipAction::action()
 					, 298, 450, 30, 190, 195))
 				{
 					setState(State::FindShipFirstPageDone, "Destroy:FindShipFirstPageDone");
-					resetRetryAndWainting();					
+					resetRetryAndWainting();
 				}
 				else
 				{
@@ -1354,7 +1354,7 @@ bool DestroyShipAction::action()
 				else
 				{
 					_waiting = true;
-					QTimer::singleShot(DELAY_TIME_SKIP_DESTROY+cm.randVal(0, 250), Qt::PreciseTimer, this, [this, &cm]()
+					QTimer::singleShot(DELAY_TIME_SKIP_DESTROY + cm.randVal(0, 250), Qt::PreciseTimer, this, [this, &cm]()
 					{
 						if (!cm.isShipExist(_ships[_nowIndex]))
 						{
@@ -1453,6 +1453,141 @@ void DestroyShipAction::setShips(const QList<int>& ships)
 		}
 		_ships.append(shipno);
 	}
+}
+
+
+void DevelopAction::addItem(int itemId, int buildCount)
+{
+	_toBuildSlotItems[itemId] = buildCount;// +ControlManager::getInstance().getTotalSlotItemCountForID(itemId);
+}
+
+
+bool DevelopAction::action()
+{
+	auto& cm = ControlManager::getInstance();
+	switch (_state)
+	{
+	case State::None:
+	{
+		setState(DevelopAction::State::SelectDevelopChecking, "SelectDevelopChecking");
+		QMap<int, int>::iterator it = _toBuildSlotItems.begin();
+		bool bAllDone = false;
+		while (it != _toBuildSlotItems.end()) {
+			int slotitemId = it.key();
+			if (cm.getTotalSlotItemCountForID(slotitemId) < it.value())
+			{
+				bAllDone = true;
+				break;
+			}
+			++it;
+		}
+		if (bAllDone)
+		{
+			setState(State::Done, "Develop:Done");
+			break;
+		}
+
+		resetRetryAndWainting();
+	}
+	break;
+	case State::SelectDevelopChecking:
+		if (!_waiting)
+		{
+			_waiting = true;
+			QTimer::singleShot(DELAY_TIME, Qt::PreciseTimer, this, [this, &cm]()
+			{
+				// destroy
+				if (cm.checkColors(
+					300, 257, 131, 58, 44
+					, 240, 241, 253, 245, 220))
+				{
+					_waiting = false;
+					setState(State::SelectDevelopDone, "Destroy:SelectDevelopDone");
+				}
+				else
+				{
+					tryRetry();
+				}
+			});
+		}
+		break;
+	case State::SelectDevelopDone:
+		if (!_waiting)
+		{
+			_waiting = true;
+			QTimer::singleShot(DELAY_TIME_CLICK, Qt::PreciseTimer, this, [this, &cm]()
+			{
+				cm.moveMouseToAndClick(204, 338, 66, 22); // destroy
+				setState(State::SelectOKChecking, "Destroy:SelectOKChecking");
+				resetRetryAndWainting();
+			});
+		}
+		break;
+	case State::SelectOKChecking:
+		if (!_waiting)
+		{
+			_waiting = true;
+			QTimer::singleShot(DELAY_TIME, Qt::PreciseTimer, this, [this, &cm]()
+			{
+				// ok to develop
+				if (cm.checkColors(
+					220, 360, 204, 113, 48
+					, 700, 441, 76, 231, 223))
+				{
+					_waiting = false;
+					setState(State::SelectOKDone, "Destroy:SelectOKDone");
+				}
+				else
+				{
+					tryRetry();
+				}
+			});
+		}
+		break;
+	case State::SelectOKDone:
+		if (!_waiting)
+		{
+			_waiting = true;
+			QTimer::singleShot(DELAY_TIME_CLICK, Qt::PreciseTimer, this, [this, &cm]()
+			{
+				cm.moveMouseToAndClick(697, 443, 55, 12); // ok button
+				setState(State::Skipping, "Destroy:Skipping");
+				resetRetryAndWainting();
+			});
+		}
+		break;
+
+	case State::Skipping:
+		if (!_waiting)
+		{
+			_waiting = true;
+			QTimer::singleShot(DELAY_TIME, Qt::PreciseTimer, this, [this, &cm]()
+			{
+				// destroy
+				if (cm.checkColors(
+					300, 257, 131, 58, 44
+					, 240, 241, 253, 245, 220))
+				{
+					_waiting = false;
+					setState(State::SelectOKDone, "Destroy:SelectOKDone");
+				}
+				else
+				{
+					cm.moveMouseToAndClick(738, 401);
+				}
+			});
+		}
+		break;
+	}
+
+	return false;
+}
+
+
+void DevelopAction::setState(State state, const char* str)
+{
+	_state = state;
+	ControlManager::getInstance().setStateStr(str);
 }
 
 bool SortieAction::action()
@@ -1633,7 +1768,7 @@ bool SortieAction::action()
 			_waiting = true;
 			QTimer::singleShot(DELAY_TIME, Qt::PreciseTimer, this, [this, &cm]()
 			{
-				
+
 				QList<float> pPoint;
 				if (_isEvent)
 				{
@@ -1696,7 +1831,7 @@ bool SortieAction::action()
 				QList<float> pPoint;
 				if (_isEvent)
 				{
-					pPoint = _mapClickPoint;			
+					pPoint = _mapClickPoint;
 				}
 				else
 				{
@@ -2129,7 +2264,7 @@ bool SortieCommonAdvanceAction::action()
 				{
 					_waiting = false;
 					// click left or right
-					
+
 					if (_shouldRetrieve || cm.shouldRetrieve() || cm.shouldRetrieveForAny())
 					{
 						if (cm.shouldAskForProceedForAny())
@@ -2147,7 +2282,7 @@ bool SortieCommonAdvanceAction::action()
 					{
 						setState(State::ClickLeft, "SortieAdv:Advance");
 					}
-					
+
 				}
 				// combined formation
 				else if (cm.checkColors(
@@ -2411,6 +2546,18 @@ bool RepeatAction::action()
 		else if (cm.isDestroyMode())
 		{
 			if (cm.BuildNext_Destroy())
+			{
+				setState(State::Done, "Repeat:Done");
+				cm.StartJob();
+			}
+			else
+			{
+				mainWindow->switchToExpeditionWait();
+			}
+		}
+		else if (cm.isDevelopMode())
+		{
+			if (cm.BuildNext_Develop())
 			{
 				setState(State::Done, "Repeat:Done");
 				cm.StartJob();

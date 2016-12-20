@@ -1058,7 +1058,6 @@ bool ControlManager::BuildNext_Destroy()
 bool ControlManager::BuildNext_Develop()
 {
 	_target = ActionTarget::Develop;
-
 	DevelopAction* action = new DevelopAction();
 
 	QMap<int, int>::iterator it = _developSetting.toDevelopSlotItemList.begin();
@@ -1075,11 +1074,16 @@ bool ControlManager::BuildNext_Develop()
 		{
 			continue;
 		}
+		if (ControlManager::getInstance().getTotalSlotItemCountForID(id) >= count)
+		{
+			continue;
+		}
 		bAdded = true;
 		action->addItem(id, count);
 	}
 	if (!bAdded)
 	{
+		delete action;
 		setToTerminate("Termination:Fatal", true);
 		return false;
 	}
@@ -2672,12 +2676,12 @@ void ControlManager::moveMouseToAndClick(float x, float y, float offsetX /*= 5*/
 				{
 					sendMouseEvents(qobject_cast<QWidget*>(obj));
 				}
-			}
+	}
 
 			// reset mouse pos for webengine
 			moveMouseTo(0, 0);
 #endif
-		}
+}
 		else
 		{
 			sendMouseEvents(browserWidget);
@@ -2722,7 +2726,7 @@ void ControlManager::moveMouseTo(float x, float y, float offsetX /*= 5*/, float 
 			}
 			QMouseEvent e(QEvent::MouseMove, ptAdjusted, Qt::NoButton, Qt::NoButton, Qt::NoModifier);
 			QApplication::sendEvent(w, &e);
-	};
+		};
 
 		auto browserWidget = MainWindow::mainWindow()->getBrowserWidget();
 		if (MainWindow::mainWindow()->getWebWidgetType() == WebWidgetType::WebEngine)
@@ -2735,9 +2739,9 @@ void ControlManager::moveMouseTo(float x, float y, float offsetX /*= 5*/, float 
 				{
 					sendMouseEvents(qobject_cast<QWidget*>(obj));
 				}
-			}
+	}
 #endif
-		}
+}
 		else
 		{
 			sendMouseEvents(browserWidget);

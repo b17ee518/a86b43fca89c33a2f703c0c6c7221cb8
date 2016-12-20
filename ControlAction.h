@@ -318,6 +318,9 @@ public:
 		SelectOKChecking,
 		SelectOKDone,
 		Skipping,
+		ReturnToPortChecking,
+		ReturnToPortDone,
+		ExpectingPort,
 		Done,
 	};
 	void addItem(int itemId, int buildCount);

@@ -1483,7 +1483,7 @@ bool DevelopAction::action()
 		}
 		if (bAllDone)
 		{
-			setState(State::Done, "Develop:Done");
+			setState(State::ReturnToPortChecking, "Develop:ReturnToPortChecking");
 			break;
 		}
 
@@ -1503,7 +1503,7 @@ bool DevelopAction::action()
 				{
 					// skip to ok
 					_waiting = false;
-					setState(State::SelectOKDone, "Destroy:SelectOKDone");
+					setState(State::SelectOKDone, "Develop:SelectOKDone");
 				}
 				// destroy
 				else if (cm.checkColors(
@@ -1511,7 +1511,7 @@ bool DevelopAction::action()
 					, 240, 241, 253, 245, 220))
 				{
 					_waiting = false;
-					setState(State::SelectDevelopDone, "Destroy:SelectDevelopDone");
+					setState(State::SelectDevelopDone, "Develop:SelectDevelopDone");
 				}
 				else
 				{
@@ -1527,7 +1527,7 @@ bool DevelopAction::action()
 			QTimer::singleShot(DELAY_TIME_CLICK, Qt::PreciseTimer, this, [this, &cm]()
 			{
 				cm.moveMouseToAndClick(204, 338, 66, 22); // destroy
-				setState(State::SelectOKChecking, "Destroy:SelectOKChecking");
+				setState(State::SelectOKChecking, "Develop:SelectOKChecking");
 				resetRetryAndWainting();
 			});
 		}
@@ -1544,7 +1544,7 @@ bool DevelopAction::action()
 					, 700, 441, 76, 231, 223))
 				{
 					_waiting = false;
-					setState(State::SelectOKDone, "Destroy:SelectOKDone");
+					setState(State::SelectOKDone, "Develop:SelectOKDone");
 				}
 				else
 				{
@@ -1560,7 +1560,7 @@ bool DevelopAction::action()
 			QTimer::singleShot(DELAY_TIME_CLICK, Qt::PreciseTimer, this, [this, &cm]()
 			{
 				cm.moveMouseToAndClick(697, 443, 55, 12); // ok button
-				setState(State::Skipping, "Destroy:Skipping");
+				setState(State::Skipping, "Develop:Skipping");
 				resetRetryAndWainting();
 			});
 		}
@@ -1592,11 +1592,11 @@ bool DevelopAction::action()
 					}
 					if (bAllDone)
 					{
-						setState(State::Done, "Develop:Done");
+						setState(State::ReturnToPortChecking, "Develop:ReturnToPortChecking");
 					}
 					else
 					{
-						setState(State::SelectDevelopDone, "Destroy:SelectDevelopDone");
+						setState(State::SelectDevelopDone, "Develop:SelectDevelopDone");
 					}
 				}
 				else
@@ -1605,6 +1605,47 @@ bool DevelopAction::action()
 					resetRetryAndWainting();
 				}
 			});
+		}
+		break;
+	case State::ReturnToPortChecking:
+		if (!_waiting)
+		{
+			_waiting = true;
+			QTimer::singleShot(DELAY_TIME, Qt::PreciseTimer, this, [this, &cm]()
+			{
+				if (cm.checkColors(
+					31, 358, 206, 205, 52
+					, 502, 448, 140, 56, 19))
+				{
+					_waiting = false;
+					setState(State::ReturnToPortDone, "Develop:ReturnToPortDone");
+				}
+				else
+				{
+					tryRetry();
+				}
+			});
+		}
+		break;
+	case  State::ReturnToPortDone:
+		if (!_waiting)
+		{
+			_waiting = true;
+			_expectingRequest = "/kcsapi/api_port/port";
+			QTimer::singleShot(DELAY_TIME_CLICK, Qt::PreciseTimer, this, [this, &cm]()
+			{
+				cm.moveMouseToAndClick(74, 252); // port button
+				setState(State::ExpectingPort, "Develop:ExpectingPort");
+				resetRetryAndWainting();
+			});
+		}
+		break;
+	case State::ExpectingPort:
+		if (_expectingRequest == "")
+		{
+			cm.moveMouseTo(400, 200);
+			setState(State::Done, "Develop:Done");
+			cm.setupAutoExpedition();
 		}
 		break;
 	case State::Done:

@@ -341,21 +341,14 @@
   <ItemGroup>
     <CustomBuild Include="developactionselectdialog.h">
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>
-      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Moc%27ing developactionselectdialog.h...</Message>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">.\GeneratedFiles\moc_%(Filename).cpp</Outputs>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o ".\GeneratedFiles\moc_%(Filename).cpp"  -D_WINDOWS -DNOMINMAX -DUNICODE -DWIN32 -DQT_AXCONTAINER_LIB -DQT_WEBKIT_LIB -DQT_WINEXTRAS_LIB -DQT_AXBASE_LIB -DQT_WIDGETS_LIB -DQT_POSITIONING_LIB -DQT_NETWORK_LIB -DQT_GUI_LIB -DQT_CORE_LIB -DQT_OPENGL_ES_2 -DQT_OPENGL_ES_2_ANGLE -DQT_DLL -DQT_MULTIMEDIA_LIB -DQT_MULTIMEDIAWIDGETS_LIB "-I$(QTDIR_5_4_1)\include" "-I$(QTDIR_5_4_1)\include\QtWebEngineWidgets" "-I$(QTDIR_5_4_1)\include\QtWebEngine" "-I$(QTDIR_5_4_1)\include\QtWinExtras" "-I$(QTDIR_5_4_1)\include\QtWidgets" "-I$(QTDIR_5_4_1)\include\QtPositioning" "-I$(QTDIR_5_4_1)\include\QtNetwork" "-I$(QTDIR_5_4_1)\include\QtGui" "-I$(QTDIR_5_4_1)\include\QtANGLE" "-I$(QTDIR_5_4_1)\include\QtCore" "-I.\debug" "-I." "-I$(QTDIR_5_4_1)\mkspecs\win32-msvc2010" "-I.\GeneratedFiles" "-I$(QTDIR_5_4_1)\include\ActiveQt" "-I$(QTDIR_5_4_1)\include\QtMultimedia" "-I$(QTDIR_5_4_1)\include\QtMultimediaWidgets" "-I$(QTDIR_5_4_1)\include\QtWebKit" "-I$(QTDIR_5_4_1)\include\QtWebKitWidgets"</Command>
-      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='ReleaseWebEngine|Win32'">$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>
-      <Message Condition="'$(Configuration)|$(Platform)'=='ReleaseWebEngine|Win32'">Moc%27ing developactionselectdialog.h...</Message>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='ReleaseWebEngine|Win32'">.\GeneratedFiles\moc_%(Filename).cpp</Outputs>
-      <Command Condition="'$(Configuration)|$(Platform)'=='ReleaseWebEngine|Win32'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o ".\GeneratedFiles\moc_%(Filename).cpp"  -D_WINDOWS -DNOMINMAX -DUNICODE -DWIN32 -DQT_NO_DEBUG -DQT_AXCONTAINER_LIB -DQT_WEBKIT_LIB -DQT_WINEXTRAS_LIB -DQT_AXBASE_LIB -DQT_WIDGETS_LIB -DQT_POSITIONING_LIB -DQT_NETWORK_LIB -DQT_GUI_LIB -DQT_CORE_LIB -DQT_OPENGL_ES_2 -DQT_OPENGL_ES_2_ANGLE -DNDEBUG -DQT_DLL -DQT_MULTIMEDIA_LIB -DQT_MULTIMEDIAWIDGETS_LIB "-I$(QTDIR)\include" "-I$(QTDIR)\include\QtWebEngineWidgets" "-I$(QTDIR)\include\QtWinExtras" "-I$(QTDIR)\include\QtWidgets" "-I$(QTDIR)\include\QtPositioning" "-I$(QTDIR)\include\QtNetwork" "-I$(QTDIR)\include\QtGui" "-I$(QTDIR)\include\QtANGLE" "-I$(QTDIR)\include\QtCore" "-I.\release" "-I." "-I$(QTDIR)\mkspecs\win32-msvc2010" "-I.\GeneratedFiles" "-I$(QTDIR)\include\ActiveQt" "-I$(QTDIR)\include\QtMultimedia" "-I$(QTDIR)\include\QtMultimediaWidgets" "-I$(QTDIR)\include\QtWebKitWidgets"</Command>
-      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>
-      <Message Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Moc%27ing developactionselectdialog.h...</Message>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">.\GeneratedFiles\moc_%(Filename).cpp</Outputs>
+      <Message>Moc%27ing %(Filename).h...</Message>
+      <Outputs>.\GeneratedFiles\moc_%(Filename).cpp</Outputs>
+      <AdditionalInputs>$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>
       <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o ".\GeneratedFiles\moc_%(Filename).cpp"  -D_WINDOWS -DNOMINMAX -DUNICODE -DWIN32 -DQT_NO_DEBUG -DQT_AXCONTAINER_LIB -DQT_WEBKIT_LIB -DQT_WINEXTRAS_LIB -DQT_AXBASE_LIB -DQT_WIDGETS_LIB -DQT_POSITIONING_LIB -DQT_NETWORK_LIB -DQT_GUI_LIB -DQT_CORE_LIB -DQT_OPENGL_ES_2 -DQT_OPENGL_ES_2_ANGLE -DNDEBUG -DQT_DLL -DQT_MULTIMEDIA_LIB -DQT_MULTIMEDIAWIDGETS_LIB "-I$(QTDIR_5_4_1)\include" "-I$(QTDIR_5_4_1)\include\QtWebEngineWidgets" "-I$(QTDIR_5_4_1)\include\QtWebEngine" "-I$(QTDIR_5_4_1)\include\QtWinExtras" "-I$(QTDIR_5_4_1)\include\QtWidgets" "-I$(QTDIR_5_4_1)\include\QtPositioning" "-I$(QTDIR_5_4_1)\include\QtNetwork" "-I$(QTDIR_5_4_1)\include\QtGui" "-I$(QTDIR_5_4_1)\include\QtANGLE" "-I$(QTDIR_5_4_1)\include\QtCore" "-I.\debug" "-I." "-I$(QTDIR_5_4_1)\mkspecs\win32-msvc2010" "-I.\GeneratedFiles" "-I$(QTDIR_5_4_1)\include\ActiveQt" "-I$(QTDIR_5_4_1)\include\QtMultimedia" "-I$(QTDIR_5_4_1)\include\QtMultimediaWidgets" "-I$(QTDIR_5_4_1)\include\QtWebKit" "-I$(QTDIR_5_4_1)\include\QtWebKitWidgets"</Command>
-      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='DebugWebEngine|Win32'">$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>
-      <Message Condition="'$(Configuration)|$(Platform)'=='DebugWebEngine|Win32'">Moc%27ing developactionselectdialog.h...</Message>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='DebugWebEngine|Win32'">.\GeneratedFiles\moc_%(Filename).cpp</Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='ReleaseWebEngine|Win32'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o ".\GeneratedFiles\moc_%(Filename).cpp"  -D_WINDOWS -DNOMINMAX -DUNICODE -DWIN32 -DQT_NO_DEBUG -DQT_AXCONTAINER_LIB -DQT_WEBKIT_LIB -DQT_WINEXTRAS_LIB -DQT_AXBASE_LIB -DQT_WIDGETS_LIB -DQT_POSITIONING_LIB -DQT_NETWORK_LIB -DQT_GUI_LIB -DQT_CORE_LIB -DQT_OPENGL_ES_2 -DQT_OPENGL_ES_2_ANGLE -DNDEBUG -DQT_DLL -DQT_MULTIMEDIA_LIB -DQT_MULTIMEDIAWIDGETS_LIB "-I$(QTDIR)\include" "-I$(QTDIR)\include\QtWebEngineWidgets" "-I$(QTDIR)\include\QtWinExtras" "-I$(QTDIR)\include\QtWidgets" "-I$(QTDIR)\include\QtPositioning" "-I$(QTDIR)\include\QtNetwork" "-I$(QTDIR)\include\QtGui" "-I$(QTDIR)\include\QtANGLE" "-I$(QTDIR)\include\QtCore" "-I.\release" "-I." "-I$(QTDIR)\mkspecs\win32-msvc2010" "-I.\GeneratedFiles" "-I$(QTDIR)\include\ActiveQt" "-I$(QTDIR)\include\QtMultimedia" "-I$(QTDIR)\include\QtMultimediaWidgets" "-I$(QTDIR)\include\QtWebKitWidgets"</Command>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o ".\GeneratedFiles\moc_%(Filename).cpp"  -D_WINDOWS -DNOMINMAX -DUNICODE -DWIN32 -DQT_AXCONTAINER_LIB -DQT_WEBKIT_LIB -DQT_WINEXTRAS_LIB -DQT_AXBASE_LIB -DQT_WIDGETS_LIB -DQT_POSITIONING_LIB -DQT_NETWORK_LIB -DQT_GUI_LIB -DQT_CORE_LIB -DQT_OPENGL_ES_2 -DQT_OPENGL_ES_2_ANGLE -DQT_DLL -DQT_MULTIMEDIA_LIB -DQT_MULTIMEDIAWIDGETS_LIB "-I$(QTDIR_5_4_1)\include" "-I$(QTDIR_5_4_1)\include\QtWebEngineWidgets" "-I$(QTDIR_5_4_1)\include\QtWebEngine" "-I$(QTDIR_5_4_1)\include\QtWinExtras" "-I$(QTDIR_5_4_1)\include\QtWidgets" "-I$(QTDIR_5_4_1)\include\QtPositioning" "-I$(QTDIR_5_4_1)\include\QtNetwork" "-I$(QTDIR_5_4_1)\include\QtGui" "-I$(QTDIR_5_4_1)\include\QtANGLE" "-I$(QTDIR_5_4_1)\include\QtCore" "-I.\debug" "-I." "-I$(QTDIR_5_4_1)\mkspecs\win32-msvc2010" "-I.\GeneratedFiles" "-I$(QTDIR_5_4_1)\include\ActiveQt" "-I$(QTDIR_5_4_1)\include\QtMultimedia" "-I$(QTDIR_5_4_1)\include\QtMultimediaWidgets" "-I$(QTDIR_5_4_1)\include\QtWebKit" "-I$(QTDIR_5_4_1)\include\QtWebKitWidgets"</Command>
       <Command Condition="'$(Configuration)|$(Platform)'=='DebugWebEngine|Win32'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o ".\GeneratedFiles\moc_%(Filename).cpp"  -D_WINDOWS -DNOMINMAX -DUNICODE -DWIN32 -DQT_AXCONTAINER_LIB -DQT_WEBKIT_LIB -DQT_WINEXTRAS_LIB -DQT_AXBASE_LIB -DQT_WIDGETS_LIB -DQT_POSITIONING_LIB -DQT_NETWORK_LIB -DQT_GUI_LIB -DQT_CORE_LIB -DQT_OPENGL_ES_2 -DQT_OPENGL_ES_2_ANGLE -DQT_DLL -DQT_MULTIMEDIA_LIB -DQT_MULTIMEDIAWIDGETS_LIB "-I$(QTDIR)\include" "-I$(QTDIR)\include\QtWebEngineWidgets" "-I$(QTDIR)\include\QtWebEngine" "-I$(QTDIR)\include\QtWinExtras" "-I$(QTDIR)\include\QtWidgets" "-I$(QTDIR)\include\QtPositioning" "-I$(QTDIR)\include\QtNetwork" "-I$(QTDIR)\include\QtGui" "-I$(QTDIR)\include\QtANGLE" "-I$(QTDIR)\include\QtCore" "-I.\debug" "-I." "-I$(QTDIR)\mkspecs\win32-msvc2010" "-I.\GeneratedFiles" "-I$(QTDIR)\include\ActiveQt" "-I$(QTDIR)\include\QtMultimedia" "-I$(QTDIR)\include\QtMultimediaWidgets"</Command>
+      <AdditionalInputs>$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>
     </CustomBuild>
     <ClInclude Include="GeneratedFiles\ui_anyactionselectdialog.h" />
     <CustomBuild Include="anyactionselectdialog.h">
@@ -624,22 +617,13 @@
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="developactionselectdialog.ui">
-      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(QTDIR)\bin\uic.exe;%(AdditionalInputs)</AdditionalInputs>
-      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Uic%27ing %(Identity)...</Message>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">.\GeneratedFiles\ui_%(Filename).h;%(Outputs)</Outputs>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">"$(QTDIR)\bin\uic.exe" -o ".\GeneratedFiles\ui_%(Filename).h" "%(FullPath)"</Command>
-      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='ReleaseWebEngine|Win32'">$(QTDIR)\bin\uic.exe;%(AdditionalInputs)</AdditionalInputs>
-      <Message Condition="'$(Configuration)|$(Platform)'=='ReleaseWebEngine|Win32'">Uic%27ing %(Identity)...</Message>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='ReleaseWebEngine|Win32'">.\GeneratedFiles\ui_%(Filename).h;%(Outputs)</Outputs>
-      <Command Condition="'$(Configuration)|$(Platform)'=='ReleaseWebEngine|Win32'">"$(QTDIR)\bin\uic.exe" -o ".\GeneratedFiles\ui_%(Filename).h" "%(FullPath)"</Command>
-      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(QTDIR)\bin\uic.exe;%(AdditionalInputs)</AdditionalInputs>
-      <Message Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Uic%27ing %(Identity)...</Message>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">.\GeneratedFiles\ui_%(Filename).h;%(Outputs)</Outputs>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">"$(QTDIR)\bin\uic.exe" -o ".\GeneratedFiles\ui_%(Filename).h" "%(FullPath)"</Command>
-      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='DebugWebEngine|Win32'">$(QTDIR)\bin\uic.exe;%(AdditionalInputs)</AdditionalInputs>
-      <Message Condition="'$(Configuration)|$(Platform)'=='DebugWebEngine|Win32'">Uic%27ing %(Identity)...</Message>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='DebugWebEngine|Win32'">.\GeneratedFiles\ui_%(Filename).h;%(Outputs)</Outputs>
-      <Command Condition="'$(Configuration)|$(Platform)'=='DebugWebEngine|Win32'">"$(QTDIR)\bin\uic.exe" -o ".\GeneratedFiles\ui_%(Filename).h" "%(FullPath)"</Command>
+      <FileType>Document</FileType>
+      <AdditionalInputs>$(QTDIR)\bin\uic.exe;%(AdditionalInputs)</AdditionalInputs>
+      <Command>"$(QTDIR)\bin\uic.exe" -o ".\GeneratedFiles\ui_%(Filename).h" "%(FullPath)"</Command>
+      <Message>Uic%27ing %(Identity)...</Message>
+      <Outputs>.\GeneratedFiles\ui_%(Filename).h;%(Outputs)</Outputs>
+      <AdditionalInputs>$(QTDIR)\bin\uic.exe;%(AdditionalInputs)</AdditionalInputs>
+      <SubType>Designer</SubType>
     </CustomBuild>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

@@ -16,11 +16,11 @@
 #define WEAPON_UPDATETIMER_INTERVAL	50
 
 WeaponMainWindow::WeaponMainWindow(QWidget *parent)
-: SubMainWindow(parent)
-, ui(new Ui::WeaponMainWindow)
-, _needRebuildTable(true)
-, _lastToggledId(-1)
-, _doNotRecordLast(false)
+	: SubMainWindow(parent)
+	, ui(new Ui::WeaponMainWindow)
+	, _needRebuildTable(true)
+	, _lastToggledId(-1)
+	, _doNotRecordLast(false)
 {
 	ui->setupUi(this);
 	mwbPostInit();
@@ -38,35 +38,35 @@ WeaponMainWindow::WeaponMainWindow(QWidget *parent)
 
 WeaponMainWindow::~WeaponMainWindow()
 {
-    delete ui;
+	delete ui;
 }
 
 void WeaponMainWindow::clearWeaponData()
 {
-    _weaponGroupList.clear();
+	_weaponGroupList.clear();
 	_needRebuildTable = true;
 }
 
 void WeaponMainWindow::addWeaponData(int slotitemId, const QString& itemname, int type, int rare, bool bLocked, int level, int alv, const QString& shipname, int shiplv, int distance)
 {
-    UIWeaponData data;
-    data.setData(bLocked, level, shipname, shiplv, alv, distance);
-    bool bDone = false;
-    for (QList<UIWeaponGroupData>::iterator it=_weaponGroupList.begin(); it!=_weaponGroupList.end(); ++it)
-    {
-        if (it->id == slotitemId)
-        {
-            it->weapons.push_back(data);
-            bDone = true;
-            break;
-        }
-    }
-    if (!bDone)
-    {
-        UIWeaponGroupData group;
-        group.setMetaData(slotitemId, itemname, type, rare);
-        group.weapons.push_back(data);
-        _weaponGroupList.push_back(group);
+	UIWeaponData data;
+	data.setData(bLocked, level, shipname, shiplv, alv, distance);
+	bool bDone = false;
+	for (QList<UIWeaponGroupData>::iterator it = _weaponGroupList.begin(); it != _weaponGroupList.end(); ++it)
+	{
+		if (it->id == slotitemId)
+		{
+			it->weapons.push_back(data);
+			bDone = true;
+			break;
+		}
+	}
+	if (!bDone)
+	{
+		UIWeaponGroupData group;
+		group.setMetaData(slotitemId, itemname, type, rare);
+		group.weapons.push_back(data);
+		_weaponGroupList.push_back(group);
 	}
 	_needRebuildTable = true;
 }
@@ -173,14 +173,14 @@ void WeaponMainWindow::buildTable()
 	}
 	_lstCollapsibleFrames.clear();
 
-    int count = 0;
-    foreach (auto& item, _weaponGroupList)
-    {
-        if (item.weapons.size())
-        {
-            buildSingleTable(item);
-            count++;
-        }
+	int count = 0;
+	foreach(auto& item, _weaponGroupList)
+	{
+		if (item.weapons.size())
+		{
+			buildSingleTable(item);
+			count++;
+		}
 	}
 	_needRebuildTable = false;
 	_doNotRecordLast = false;
@@ -220,45 +220,45 @@ void WeaponMainWindow::slotSetVisible(bool bValue)
 
 void WeaponMainWindow::buildSingleTable(const UIWeaponGroupData& groupData)
 {
-    auto pFrame = new KQUI_CollapsibleFrame(ui->scrollAreaWidgetContents);
-    pFrame->setObjectName(QStringLiteral("Frame"));
-    QSizePolicy sizePolicy4(QSizePolicy::Expanding, QSizePolicy::Expanding);
-    sizePolicy4.setHorizontalStretch(0);
-    sizePolicy4.setVerticalStretch(0);
-    sizePolicy4.setHeightForWidth(pFrame->sizePolicy().hasHeightForWidth());
-    pFrame->setSizePolicy(sizePolicy4);
-    pFrame->setMinimumSize(QSize(0, 25));
-    pFrame->setFrameShape(QFrame::StyledPanel);
-    pFrame->setFrameShadow(QFrame::Raised);
+	auto pFrame = new KQUI_CollapsibleFrame(ui->scrollAreaWidgetContents);
+	pFrame->setObjectName(QStringLiteral("Frame"));
+	QSizePolicy sizePolicy4(QSizePolicy::Expanding, QSizePolicy::Expanding);
+	sizePolicy4.setHorizontalStretch(0);
+	sizePolicy4.setVerticalStretch(0);
+	sizePolicy4.setHeightForWidth(pFrame->sizePolicy().hasHeightForWidth());
+	pFrame->setSizePolicy(sizePolicy4);
+	pFrame->setMinimumSize(QSize(0, 25));
+	pFrame->setFrameShape(QFrame::StyledPanel);
+	pFrame->setFrameShadow(QFrame::Raised);
 
-    pFrame->tableWidget()->hide();
-    pFrame->pushButton()->setStyleSheet("text-align: left;");
-    connect(pFrame->tableWidget(), SIGNAL(sigTableSizeChanged()), this, SLOT(slotOnTableSizeChanged()));
+	pFrame->tableWidget()->hide();
+	pFrame->pushButton()->setStyleSheet("text-align: left;");
+	connect(pFrame->tableWidget(), SIGNAL(sigTableSizeChanged()), this, SLOT(slotOnTableSizeChanged()));
 	connect(pFrame->pushButton(), SIGNAL(toggled(bool)), pFrame->tableWidget(), SLOT(setVisible(bool)));
 	connect(pFrame->pushButton(), SIGNAL(toggled(bool)), this, SLOT(slotToggled(bool)));
 	connect(pFrame->pushButton(), SIGNAL(toggled(bool)), pFrame, SLOT(slotResize(bool)));
 
 
-    ui->verticalLayout->addWidget(pFrame);
-    _lstCollapsibleFrames.push_back(pFrame);
+	ui->verticalLayout->addWidget(pFrame);
+	_lstCollapsibleFrames.push_back(pFrame);
 
-    setWeaponColumnFormat(pFrame);
+	setWeaponColumnFormat(pFrame);
 
-    int sparecount = 0;
-    int sparenolock = 0;
+	int sparecount = 0;
+	int sparenolock = 0;
 	int maxsparenolocklevel = 0;
-    QList<KQRowData> rows;
+	QList<KQRowData> rows;
 
-    QColor colWhite = QColor(255, 255, 255);
-    QColor colYellow = QColor(255, 255, 0);
-    QColor colRed = QColor(255, 0, 0);
+	QColor colWhite = QColor(255, 255, 255);
+	QColor colYellow = QColor(255, 255, 0);
+	QColor colRed = QColor(255, 0, 0);
 	QColor colAqua = QColor(153, 255, 255);
 
 	int colindex = COLINDEX_NORMAL;
 	bool bRed = false;
 	int lockedcount = 0;
-    foreach (const UIWeaponData& it, groupData.weapons)
-    {
+	foreach(const UIWeaponData& it, groupData.weapons)
+	{
 		if (it.shipname.isEmpty())
 		{
 			sparecount++;
@@ -305,19 +305,19 @@ void WeaponMainWindow::buildSingleTable(const UIWeaponGroupData& groupData)
 			colDist = colAqua;
 		}
 		rd.appendCell(KQRowCellData(QString::fromLocal8Bit("熟%1").arg(it.alv), colAlv));
-		rd.appendCell(KQRowCellData(it.distance > 0? QString::fromLocal8Bit("距%1").arg(it.distance) : "", colDist));
-        rd.appendCell(KQRowCellData(it.shipname));
-        rd.appendCell(KQRowCellData(QString::fromLocal8Bit("Lv.%1").arg(it.shiplv)));
-        if (it.bLocked)
-        {
-            rd.appendCell(KQRowCellData(QString::fromLocal8Bit("鎖"), colYellow));
-        }
-        else
-        {
-            rd.appendCell(KQRowCellData(QString::fromLocal8Bit("空"), colRed));
+		rd.appendCell(KQRowCellData(it.distance > 0 ? QString::fromLocal8Bit("距%1").arg(it.distance) : "", colDist));
+		rd.appendCell(KQRowCellData(it.shipname));
+		rd.appendCell(KQRowCellData(QString::fromLocal8Bit("Lv.%1").arg(it.shiplv)));
+		if (it.bLocked)
+		{
+			rd.appendCell(KQRowCellData(QString::fromLocal8Bit("鎖"), colYellow));
+		}
+		else
+		{
+			rd.appendCell(KQRowCellData(QString::fromLocal8Bit("空"), colRed));
 			colindex = COLINDEX_ONNOLOCK;
-        }
-        rows.push_back(rd);
+		}
+		rows.push_back(rd);
 		if (it.level && !it.bLocked)
 		{
 			bRed = true;
@@ -326,7 +326,7 @@ void WeaponMainWindow::buildSingleTable(const UIWeaponGroupData& groupData)
 		{
 			lockedcount++;
 		}
-    }
+	}
 	if (sparecount == groupData.weapons.size() && !colindex)
 	{
 		colindex = COLINDEX_NOON;
@@ -338,26 +338,27 @@ void WeaponMainWindow::buildSingleTable(const UIWeaponGroupData& groupData)
 	/*
 	if (sparenolock > 0)
 	{
-		KQRowData rd;
-		rd.appendCell(KQRowCellData(QString::fromLocal8Bit("★%1").arg(maxsparenolocklevel), maxsparenolocklevel > 0 ? colYellow : colWhite));
-		rd.appendCell(KQRowCellData(QString::fromLocal8Bit("-")));
-		rd.appendCell(KQRowCellData(QString::fromLocal8Bit("%1").arg(sparenolock)));
-		rd.appendCell(KQRowCellData(QString::fromLocal8Bit("空"), colRed));
-		rows.push_back(rd);
+	KQRowData rd;
+	rd.appendCell(KQRowCellData(QString::fromLocal8Bit("★%1").arg(maxsparenolocklevel), maxsparenolocklevel > 0 ? colYellow : colWhite));
+	rd.appendCell(KQRowCellData(QString::fromLocal8Bit("-")));
+	rd.appendCell(KQRowCellData(QString::fromLocal8Bit("%1").arg(sparenolock)));
+	rd.appendCell(KQRowCellData(QString::fromLocal8Bit("空"), colRed));
+	rows.push_back(rd);
 	}
 	*/
-    QString title = QString::fromLocal8Bit("%2 ★%1 (空:%3/廃:%4/総:%5)")
-            .arg(groupData.rare)
-            .arg(groupData.name)
-            .arg(sparecount)
-            .arg(sparenolock)
-            .arg(groupData.weapons.size());
-    pFrame->pushButton()->setText(title);
+	QString title = QString::fromLocal8Bit("%2 ★%1 (空:%3/廃:%4/総:%5) [%6]")
+		.arg(groupData.rare)
+		.arg(groupData.name)
+		.arg(sparecount)
+		.arg(sparenolock)
+		.arg(groupData.weapons.size())
+		.arg(groupData.id);
+	pFrame->pushButton()->setText(title);
 	setButtonColor(pFrame, colindex, bRed);
 
 	pFrame->pushButton()->setProperty(QPROPERTY_SLOTITEMID, groupData.id);
 
-    pFrame->tableWidget()->updateFullTable(rows);
+	pFrame->tableWidget()->updateFullTable(rows);
 
 	if (_checkedIdList.contains(groupData.id))
 	{
@@ -368,21 +369,21 @@ void WeaponMainWindow::buildSingleTable(const UIWeaponGroupData& groupData)
 		pFrame->pushButton()->setChecked(false);
 	}
 
-//	pFrame->pushButton()->setChecked(false);
+	//	pFrame->pushButton()->setChecked(false);
 }
 
 void WeaponMainWindow::setWeaponColumnFormat(KQUI_CollapsibleFrame *pFrame)
 {
-    auto pTableWidget = pFrame->tableWidget();
-    pTableWidget->setRowCount(0);
+	auto pTableWidget = pFrame->tableWidget();
+	pTableWidget->setRowCount(0);
 	pTableWidget->setColumnCount(6);
 	pTableWidget->setColumnWidth(0, 40);
 	pTableWidget->setColumnWidth(1, 40);
 	pTableWidget->setColumnWidth(2, 40);
-    pTableWidget->setColumnWidth(3, 120);
-    pTableWidget->setColumnWidth(4, 60);
-    pTableWidget->setColumnWidth(5, 18);
-    pTableWidget->setSeparatorColumn(3);
+	pTableWidget->setColumnWidth(3, 120);
+	pTableWidget->setColumnWidth(4, 60);
+	pTableWidget->setColumnWidth(5, 18);
+	pTableWidget->setSeparatorColumn(3);
 }
 
 void WeaponMainWindow::slotOnTableSizeChanged()
@@ -394,11 +395,11 @@ void WeaponMainWindow::slotUpdateTimer()
 	/*
 	static int count = 0;
 	count++;
-	
+
 	if (count == 50)
 	{
-		needRebuildTable = true;
-		buildTable();
+	needRebuildTable = true;
+	buildTable();
 	}
 	*/
 
@@ -412,7 +413,7 @@ void WeaponMainWindow::slotUpdateTimer()
 				return;
 			}
 		}
-//		this->adjustSize();
+		//		this->adjustSize();
 	}
 }
 
@@ -423,7 +424,7 @@ void WeaponMainWindow::on_pbClose_clicked()
 
 void WeaponMainWindow::on_pbMinimize_clicked()
 {
-    minimizeWindow();
+	minimizeWindow();
 }
 
 void WeaponMainWindow::slotToggled(bool bValue)
@@ -450,7 +451,7 @@ void WeaponMainWindow::slotToggled(bool bValue)
 				}
 			}
 			else
-			{ 
+			{
 				_checkedIdList.removeAll(id);
 			}
 		}
@@ -459,74 +460,74 @@ void WeaponMainWindow::slotToggled(bool bValue)
 
 void WeaponMainWindow::setButtonColor(KQUI_CollapsibleFrame* pFrame, int colindex, bool bRed)
 {
-	
+
 	static QString stylesheet_a[] =
 	{
 		"\
-		QPushButton {   \
-			color:white;    \
-			text-align: left;\
-		}   \
-		",  // normal
-		"\
-			QPushButton {   \
-			color:rgb(153, 255, 255);    \
-			text-align: left;\
-		}   \
-		",  // have spare no lock
-		"\
-		QPushButton {   \
-			color:rgb(255, 255, 0);    \
-			text-align: left;\
-		}   \
-		",   // all locked
-		"\
-			QPushButton {   \
-			color:rgb(255, 153, 0);    \
-			text-align: left;\
-		}   \
-		",   // on but no lock
-		"\
-			QPushButton {   \
-			color:rgb(180, 180, 180);    \
-			text-align: left;\
-		}   \
-		"   // no on
+				QPushButton {   \
+							color:white;    \
+										text-align: left;\
+												}   \
+														",  // normal
+														"\
+																	QPushButton {   \
+																				color:rgb(153, 255, 255);    \
+																							text-align: left;\
+																									}   \
+																											",  // have spare no lock
+																											"\
+																													QPushButton {   \
+																																color:rgb(255, 255, 0);    \
+																																			text-align: left;\
+																																					}   \
+																																							",   // all locked
+																																							"\
+																																										QPushButton {   \
+																																													color:rgb(255, 153, 0);    \
+																																																text-align: left;\
+																																																		}   \
+																																																				",   // on but no lock
+																																																				"\
+																																																							QPushButton {   \
+																																																										color:rgb(180, 180, 180);    \
+																																																													text-align: left;\
+																																																															}   \
+																																																																	"   // no on
 	};
 	static QString stylesheet_b[] =
 	{
 		" \
-		QPushButton{\
-			background-color: rgb(80, 80, 80);\
-			border: none; \
-		}\
-		QPushButton:checked{\
-			background-color: rgb(80, 80, 80);\
-			border: none; \
-		}\
-		QPushButton:hover{  \
-			background-color: grey; \
-			border-style: outset;  \
-		}  \
-		",
-		" \
-		QPushButton:checked{\
-			background-color: rgb(153, 0, 0);\
-			border: none; \
-		}\
-		QPushButton:flat{\
-			background-color: rgb(153, 0, 0);\
-			border: none; \
-		}\
-		QPushButton:{\
-			background-color: rgb(153, 0, 0);\
-			border: none; \
-		}\
-		QPushButton:hover{  \
-			background-color: rgb(128, 0, 0);; \
-			border-style: outset;  \
-		}  \
-		"
+				QPushButton{\
+							background-color: rgb(80, 80, 80);\
+										border: none; \
+												}\
+														QPushButton:checked{\
+																	background-color: rgb(80, 80, 80);\
+																				border: none; \
+																						}\
+																								QPushButton:hover{  \
+																											background-color: grey; \
+																														border-style: outset;  \
+																																}  \
+																																		",
+																																		" \
+																																				QPushButton:checked{\
+																																							background-color: rgb(153, 0, 0);\
+																																										border: none; \
+																																												}\
+																																														QPushButton:flat{\
+																																																	background-color: rgb(153, 0, 0);\
+																																																				border: none; \
+																																																						}\
+																																																								QPushButton:{\
+																																																											background-color: rgb(153, 0, 0);\
+																																																														border: none; \
+																																																																}\
+																																																																		QPushButton:hover{  \
+																																																																					background-color: rgb(128, 0, 0);; \
+																																																																								border-style: outset;  \
+																																																																										}  \
+																																																																												"
 	};
 
 	pFrame->pushButton()->setAutoFillBackground(true);

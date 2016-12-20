@@ -1471,12 +1471,12 @@ bool DevelopAction::action()
 	{
 		setState(DevelopAction::State::SelectDevelopChecking, "SelectDevelopChecking");
 		QMap<int, int>::iterator it = _toBuildSlotItems.begin();
-		bool bAllDone = false;
+		bool bAllDone = true;
 		while (it != _toBuildSlotItems.end()) {
 			int slotitemId = it.key();
 			if (cm.getTotalSlotItemCountForID(slotitemId) < it.value())
 			{
-				bAllDone = true;
+				bAllDone = false;
 				break;
 			}
 			++it;
@@ -1496,8 +1496,17 @@ bool DevelopAction::action()
 			_waiting = true;
 			QTimer::singleShot(DELAY_TIME, Qt::PreciseTimer, this, [this, &cm]()
 			{
-				// destroy
+				// ok to develop
 				if (cm.checkColors(
+					220, 360, 204, 113, 48
+					, 700, 441, 76, 231, 223))
+				{
+					// skip to ok
+					_waiting = false;
+					setState(State::SelectOKDone, "Destroy:SelectOKDone");
+				}
+				// destroy
+				else if (cm.checkColors(
 					300, 257, 131, 58, 44
 					, 240, 241, 253, 245, 220))
 				{
@@ -1569,14 +1578,37 @@ bool DevelopAction::action()
 					, 240, 241, 253, 245, 220))
 				{
 					_waiting = false;
-					setState(State::SelectOKDone, "Destroy:SelectOKDone");
+
+					QMap<int, int>::iterator it = _toBuildSlotItems.begin();
+					bool bAllDone = true;
+					while (it != _toBuildSlotItems.end()) {
+						int slotitemId = it.key();
+						if (cm.getTotalSlotItemCountForID(slotitemId) < it.value())
+						{
+							bAllDone = false;
+							break;
+						}
+						++it;
+					}
+					if (bAllDone)
+					{
+						setState(State::Done, "Develop:Done");
+					}
+					else
+					{
+						setState(State::SelectDevelopDone, "Destroy:SelectDevelopDone");
+					}
 				}
 				else
 				{
 					cm.moveMouseToAndClick(738, 401);
+					resetRetryAndWainting();
 				}
 			});
 		}
+		break;
+	case State::Done:
+		return true;
 		break;
 	}
 

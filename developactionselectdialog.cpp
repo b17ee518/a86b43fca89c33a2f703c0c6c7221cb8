@@ -27,8 +27,6 @@ ui(new Ui::DevelopActionSelectDialog)
 	ui->leCount->setText(QString::number(count));
 
 	setNameByID();
-
-	connect(ui->leId, SIGNAL(textEdited()), this, SLOT(slotOnIDEdited()));
 }
 
 DevelopActionSelectDialog::~DevelopActionSelectDialog()

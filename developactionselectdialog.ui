@@ -214,5 +214,24 @@
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>leId</sender>
+   <signal>textEdited(QString)</signal>
+   <receiver>DevelopActionSelectDialog</receiver>
+   <slot>slotOnIDEdited()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>69</x>
+     <y>51</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>315</x>
+     <y>65</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
+ <slots>
+  <slot>slotOnIDEdited()</slot>
+ </slots>
 </ui>

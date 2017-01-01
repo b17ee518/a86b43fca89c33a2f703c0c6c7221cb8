@@ -518,6 +518,8 @@ void KanDataConnector::updateFleetTable()
 								case SlotitemType::SuiJouSenTouKi:
 									allsakuteki_sp33 += pmstslotitem->api_saku * 0.6;
 									break;
+								case SlotitemType::FunSenBaku:
+									allsakuteki_sp33 += pmstslotitem->api_saku * 0.6;
 
 								default:
 									break;
@@ -540,6 +542,11 @@ void KanDataConnector::updateFleetTable()
 			}
 			allsakuteki += pship->api_sakuteki[0];
 			//			allsakuteki_sp += sqrt((double)pship->api_sakuteki[0]) * 1.6841056;
+
+			// TODO: areamul
+			// 2-5:1 / 3-5:4 / 6-1:4 / 6-2:3 / 6-3:3
+			//allsakuteki_sp33 *= areasp33mul;
+
 			allsakuteki_sp33 += sqrt((double)pship->api_sakuteki[0] - slotsakuteki);
 
 			QString damekonstr = "";

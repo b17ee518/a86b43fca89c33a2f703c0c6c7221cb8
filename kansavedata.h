@@ -89,6 +89,10 @@ enum class SlotitemType
 	ToKuGaTaUChiBiTei = 46,	// 特型内火艇
 	RiKuJouKouGeKiKi = 47,	// 陸上攻撃機
 	KyoKuChiSenTouKi = 48,	// 局地戦闘機
+	FunSen = 56,	//噴式戦闘機
+	FunSenBaku = 57,	//噴式戦闘爆撃機
+	FunKou = 58,	//噴式攻撃機
+	FunTei = 59,	//噴式偵察機	
 	DenTan_L_II = 93,	// 大型電探（II）
 	KanJouTeiSaTsu_II = 94,	// 艦上偵察機(II)
 };

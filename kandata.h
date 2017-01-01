@@ -433,6 +433,9 @@ public:
 	QList<int> api_touch_plane;
 	QList<int> api_flare_pos;
 
+	// funshiki
+	kcsapi_battle_kouku api_injection_kouku;
+
 	kcsapi_battle_kouku api_kouku;
 	// combine or 1-6
 	kcsapi_battle_kouku api_kouku2;

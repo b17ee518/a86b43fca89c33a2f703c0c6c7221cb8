@@ -1365,6 +1365,34 @@ void KanDataConnector::updateBattle(const kcsapi_battle &api_battle, KanBattleTy
 			}
 		}
 
+		// injection
+		//　航空ダメージ
+		if (api_battle.api_stage_flag[2] > 0)
+		{
+			for (int i = 1; i < api_battle.api_injection_kouku.api_stage3.api_fdam.count(); i++)
+			{
+				totalfdamage[i] += api_battle.api_injection_kouku.api_stage3.api_fdam[i];
+			}
+			for (int i = 1; i < api_battle.api_injection_kouku.api_stage3.api_edam.count(); i++)
+			{
+				totaledamage[i] += api_battle.api_injection_kouku.api_stage3.api_edam[i];
+			}
+			if (bCombinedSelf)
+			{
+				for (int i = 1; i < api_battle.api_injection_kouku.api_stage3_combined.api_fdam.count(); i++)
+				{
+					totalfdamage_combined[i] += api_battle.api_injection_kouku.api_stage3_combined.api_fdam[i];
+				}
+			}
+			if (bCombinedEnemy)
+			{
+				for (int i = 1; i < api_battle.api_injection_kouku.api_stage3_combined.api_edam.count(); i++)
+				{
+					totaledamage_combined[i] += api_battle.api_injection_kouku.api_stage3_combined.api_edam[i];
+				}
+			}
+		}
+
 		//TODO: formation
 		int stageflagcount = api_battle.api_stage_flag.count();
 		if (stageflagcount >= 3)

@@ -1529,6 +1529,8 @@ bool kcsapi_battle::ReadFromJObj(const QJsonObject &jobj)
 	_AIREAD(api_touch_plane);
 	_AIREAD(api_flare_pos);
 
+	_CREAD(api_injection_kouku, kcsapi_battle_kouku);
+
 	_CREAD(api_kouku, kcsapi_battle_kouku);
 
 	// combined

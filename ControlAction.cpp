@@ -2443,7 +2443,7 @@ bool SortieCommonAdvanceAction::action()
 					points[2] = { 662, 172 };
 					points[3] = { 497, 308 };
 					points[4] = { 662, 308 };
-					int formation = 1;
+					int formation = 4;
 
 					if (cm.isAnyMode())
 					{
@@ -2454,7 +2454,7 @@ bool SortieCommonAdvanceAction::action()
 							formation = setting.cells[cell].formation;
 							if (formation > 4 || formation < 1)
 							{
-								formation = 1;
+								formation = 4;
 							}
 						}
 					}

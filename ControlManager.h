@@ -196,6 +196,8 @@ public:
 	bool needChargeCondAirBase(bool checkCond);
 	bool isShipExist(int shipno);
 
+	int getShipLevel(int shipno);
+
 	int getTotalSlotItemCountForID(int slotitemId);
 
 	bool isHenseiDone(const QList<int>& ships, int team, int index = -1);

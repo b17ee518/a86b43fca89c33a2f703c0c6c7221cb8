@@ -43,7 +43,7 @@ void ExpeditionManager::BuildByPreset(ExpeditionPreset preset)
 		// second team 30->2last
 		{
 			pschedule = &(_schedules[1]);
-			BuildSingle30(pschedule, 19, 0);			
+			BuildSingle30(pschedule, 19, 0);
 			BuildSingle2last(pschedule, -1, -1);
 		}
 		// third team toukyu2 -> padding40 -> 5last
@@ -345,7 +345,7 @@ SingleExpedition* ExpeditionManager::getShouldNextSchedule(int team, qint64 ct, 
 		dateChange();
 		return NULL;
 	}
-	
+
 	QMap<QTime, SingleExpedition>::iterator it = pSchedule->expeditions.begin();
 	while (it != pSchedule->expeditions.end()) {
 		bool bOverNight = false;
@@ -373,8 +373,8 @@ SingleExpedition* ExpeditionManager::getShouldNextSchedule(int team, qint64 ct, 
 		}
 		estNextBackTime = estNextBackTime.addMSecs(costTime.msecsSinceStartOfDay());
 
-//		qDebug() << "estNext" << estNextBackTime.toString("dd:hh:mm:ss.zzz");
-//		qDebug() << "schEndTime" << schEndTime.toString("dd:hh:mm:ss.zzz");
+		//		qDebug() << "estNext" << estNextBackTime.toString("dd:hh:mm:ss.zzz");
+		//		qDebug() << "schEndTime" << schEndTime.toString("dd:hh:mm:ss.zzz");
 
 		if (estNextBackTime < schEndTime || bOverNight)
 		{
@@ -393,9 +393,9 @@ void ExpeditionManager::BuildSingle20(ExpeditionSchedule* pschedule, int toHour,
 	SingleExpedition exp;
 
 	exp.Clear();
-	exp.addShip((int)ShipType::KuChiKu, false, 0);
-	exp.addShip((int)ShipType::KuChiKu, false, 0);
-	exp.addShip((int)ShipType::KuChiKu, false, 0);
+	exp.addShip((int)ShipType::KuChiKu, false, 0, 3);
+	exp.addShip((int)ShipType::KuChiKu, false, 0, 0);
+	exp.addShip((int)ShipType::KuChiKu, false, 0, 0);
 	exp.addSpecialExcludes(SPSHIP_AKIGUMO);
 	exp.addSpecialExcludes(SPSHIP_YUGUMO);
 	exp.addSpecialExcludes(SPSHIP_MAKIGUMO);
@@ -420,10 +420,10 @@ void ExpeditionManager::BuildSingle30(ExpeditionSchedule* pschedule, int toHour,
 {
 	SingleExpedition exp;
 	exp.Clear();
-	exp.addShip(-SPSHIP_FUMITSUKI, false, 0);
-	exp.addShip(-SPSHIP_NAGATSUKI, false, 0);
-	exp.addShip(-SPSHIP_KIKUZUKI, false, 0);
-	exp.addShip(-SPSHIP_MIKAZUKI, false, 0);
+	exp.addShip(-SPSHIP_FUMITSUKI, false, 0, 2);
+	exp.addShip(-SPSHIP_NAGATSUKI, false, 0, 0);
+	exp.addShip(-SPSHIP_KIKUZUKI, false, 0, 0);
+	exp.addShip(-SPSHIP_MIKAZUKI, false, 0, 0);
 	exp.setInfo(QTime(0, 29), 0, 1);
 
 	if (toHour < 0)
@@ -441,10 +441,10 @@ void ExpeditionManager::BuildSingle40(ExpeditionSchedule* pschedule, int toHour,
 	SingleExpedition exp;
 
 	exp.Clear();
-	exp.addShip((int)ShipType::KuChiKu, false, 0);
-	exp.addShip((int)ShipType::KuChiKu, false, 0);
-	exp.addShip((int)ShipType::KuChiKu, false, 0);
-	exp.addShip((int)ShipType::KuChiKu, false, 0);
+	exp.addShip((int)ShipType::KuChiKu, false, 0, 4);
+	exp.addShip((int)ShipType::KuChiKu, false, 0, 0);
+	exp.addShip((int)ShipType::KuChiKu, false, 0, 0);
+	exp.addShip((int)ShipType::KuChiKu, false, 0, 0);
 	exp.addSpecialExcludes(SPSHIP_AKIGUMO);
 	exp.addSpecialExcludes(SPSHIP_YUGUMO);
 	exp.addSpecialExcludes(SPSHIP_MAKIGUMO);
@@ -469,12 +469,12 @@ void ExpeditionManager::BuildSingleTokyu1(ExpeditionSchedule* pschedule, int toH
 {
 	SingleExpedition exp;
 	exp.Clear();
-	exp.addShip((int)ShipType::KeiJun, true, 0);
-	exp.addShip(-SPSHIP_AKIGUMO, false, 2);
-	exp.addShip(-SPSHIP_YUGUMO, false, 2);
-	exp.addShip((int)ShipType::KuChiKu, true, 1);
-	exp.addShip((int)ShipType::KuChiKu, true, 1);
-	exp.addShip((int)ShipType::KuChiKu, true, 1);
+	exp.addShip((int)ShipType::KeiJun, true, 0, 50);
+	exp.addShip(-SPSHIP_AKIGUMO, false, 2, 30);
+	exp.addShip(-SPSHIP_YUGUMO, false, 2, 30);
+	exp.addShip((int)ShipType::KuChiKu, true, 1, 30);
+	exp.addShip((int)ShipType::KuChiKu, true, 1, 30);
+	exp.addShip((int)ShipType::KuChiKu, true, 1, 30);
 	exp.addSpecialExcludes(SPSHIP_MAKIGUMO);
 	exp.addSpecialExcludes(SPSHIP_NAGANAMI);
 	exp.addSpecialExcludes(SPSHIP_FUMITSUKI);
@@ -498,12 +498,12 @@ void ExpeditionManager::BuildSingleTokyu2(ExpeditionSchedule* pschedule, int toH
 	SingleExpedition exp;
 
 	exp.Clear();
-	exp.addShip(-SPSHIP_MAKIGUMO, false, 3);
-	exp.addShip(-SPSHIP_NAGANAMI, false, 3);
-	exp.addShip((int)ShipType::KuChiKu, true, 1);
-	exp.addShip((int)ShipType::KuChiKu, true, 1);
-	exp.addShip((int)ShipType::KuChiKu, true, 1);
-	exp.addShip((int)ShipType::KuChiKu, true, 1);
+	exp.addShip(-SPSHIP_MAKIGUMO, false, 3, 65);
+	exp.addShip(-SPSHIP_NAGANAMI, false, 3, 35);
+	exp.addShip((int)ShipType::KuChiKu, true, 1, 35);
+	exp.addShip((int)ShipType::KuChiKu, true, 1, 35);
+	exp.addShip((int)ShipType::KuChiKu, true, 1, 35);
+	exp.addShip((int)ShipType::KuChiKu, true, 1, 35);
 	exp.addSpecialExcludes(SPSHIP_AKIGUMO);
 	exp.addSpecialExcludes(SPSHIP_YUGUMO);
 	exp.addSpecialExcludes(SPSHIP_FUMITSUKI);
@@ -527,12 +527,12 @@ void ExpeditionManager::BuildSingle2last(ExpeditionSchedule* pschedule, int toHo
 	SingleExpedition exp;
 
 	exp.Clear();
-	exp.addShip((int)ShipType::KeiJun, true, 0);
-	exp.addShip((int)ShipType::KuChiKu, true, 1);
-	exp.addShip((int)ShipType::KuChiKu, true, 1);
-	exp.addShip((int)ShipType::KuChiKu, true, 1);
-	exp.addShip((int)ShipType::KuChiKu, true, 1);
-	exp.addShip((int)ShipType::YouRiKu, true, 0);
+	exp.addShip((int)ShipType::KeiJun, true, 0, 10);
+	exp.addShip((int)ShipType::KuChiKu, true, 1, 0);
+	exp.addShip((int)ShipType::KuChiKu, true, 1, 0);
+	exp.addShip((int)ShipType::KuChiKu, true, 1, 0);
+	exp.addShip((int)ShipType::KuChiKu, true, 1, 0);
+	exp.addShip((int)ShipType::YouRiKu, true, 0, 0);
 	exp.addSpecialExcludes(SPSHIP_AKIGUMO);
 	exp.addSpecialExcludes(SPSHIP_YUGUMO);
 	exp.addSpecialExcludes(SPSHIP_MAKIGUMO);
@@ -558,12 +558,12 @@ void ExpeditionManager::BuildSingle3last(ExpeditionSchedule* pschedule, int toHo
 {
 	SingleExpedition exp;
 	exp.Clear();
-	exp.addShip((int)ShipType::KeiJun, true, 0);
-	exp.addShip(-SPSHIP_AKIGUMO, false, 2);
-	exp.addShip(-SPSHIP_YUGUMO, false, 2);
-	exp.addShip((int)ShipType::KuChiKu, true, 1);
-	exp.addShip((int)ShipType::KuChiKu, true, 1);
-	exp.addShip((int)ShipType::YouRiKu, true, 0);
+	exp.addShip((int)ShipType::KeiJun, true, 0, 50);
+	exp.addShip(-SPSHIP_AKIGUMO, false, 2, 30);
+	exp.addShip(-SPSHIP_YUGUMO, false, 2, 30);
+	exp.addShip((int)ShipType::KuChiKu, true, 1, 30);
+	exp.addShip((int)ShipType::KuChiKu, true, 1, 30);
+	exp.addShip((int)ShipType::YouRiKu, true, 0, 30);
 	exp.addSpecialExcludes(SPSHIP_AKIGUMO);
 	exp.addSpecialExcludes(SPSHIP_YUGUMO);
 	exp.addSpecialExcludes(SPSHIP_MAKIGUMO);
@@ -590,12 +590,12 @@ void ExpeditionManager::BuildSingle5last(ExpeditionSchedule* pschedule, int toHo
 	SingleExpedition exp;
 
 	exp.Clear();
-	exp.addShip((int)ShipType::KeiJun, true, 0);
-	exp.addShip(-SPSHIP_MAKIGUMO, false, 3);
-	exp.addShip(-SPSHIP_NAGANAMI, false, 3);
-	exp.addShip((int)ShipType::KuChiKu, true, 1);
-	exp.addShip((int)ShipType::SuiBou, true, 0);
-	exp.addShip((int)ShipType::SuiBou, true, 0);
+	exp.addShip((int)ShipType::KeiJun, true, 0, 25);
+	exp.addShip(-SPSHIP_MAKIGUMO, false, 3, 25);
+	exp.addShip(-SPSHIP_NAGANAMI, false, 3, 25);
+	exp.addShip((int)ShipType::KuChiKu, true, 1, 25);
+	exp.addShip((int)ShipType::SuiBou, true, 0, 25);
+	exp.addShip((int)ShipType::SuiBou, true, 0, 25);
 	exp.addSpecialExcludes(SPSHIP_AKIGUMO);
 	exp.addSpecialExcludes(SPSHIP_YUGUMO);
 	exp.addSpecialExcludes(SPSHIP_MAKIGUMO);
@@ -621,12 +621,12 @@ void ExpeditionManager::BuildSingleNezumiYusou(ExpeditionSchedule* pschedule, in
 	SingleExpedition exp;
 
 	exp.Clear();
-	exp.addShip((int)ShipType::KeiJun, true, 0);
-	exp.addShip((int)ShipType::KuChiKu, true, 1);
-	exp.addShip((int)ShipType::KuChiKu, true, 1);
-	exp.addShip((int)ShipType::KuChiKu, true, 1);
-	exp.addShip((int)ShipType::KuChiKu, true, 1);
-	exp.addShip((int)ShipType::YouRiKu, true, 0);
+	exp.addShip((int)ShipType::KeiJun, true, 0, 15);
+	exp.addShip((int)ShipType::KuChiKu, true, 1, 3);
+	exp.addShip((int)ShipType::KuChiKu, true, 1, 3);
+	exp.addShip((int)ShipType::KuChiKu, true, 1, 3);
+	exp.addShip((int)ShipType::KuChiKu, true, 1, 3);
+	exp.addShip((int)ShipType::YouRiKu, true, 0, 3);
 	exp.addSpecialExcludes(SPSHIP_AKIGUMO);
 	exp.addSpecialExcludes(SPSHIP_YUGUMO);
 	exp.addSpecialExcludes(SPSHIP_MAKIGUMO);
@@ -651,12 +651,12 @@ void ExpeditionManager::BuildSingleBauxiteYusou(ExpeditionSchedule* pschedule, i
 {
 	SingleExpedition exp;
 
-	exp.addShip((int)ShipType::KuChiKu, true, 1);
-	exp.addShip((int)ShipType::KuChiKu, true, 1);
-	exp.addShip((int)ShipType::KuChiKu, true, 1);
-	exp.addShip((int)ShipType::KuChiKu, true, 1);
-	exp.addShip((int)ShipType::KuChiKu, true, 1);
-	exp.addShip((int)ShipType::YouRiKu, true, 0);
+	exp.addShip((int)ShipType::KuChiKu, true, 1, 6);
+	exp.addShip((int)ShipType::KuChiKu, true, 1, 0);
+	exp.addShip((int)ShipType::KuChiKu, true, 1, 0);
+	exp.addShip((int)ShipType::KuChiKu, true, 1, 0);
+	exp.addShip((int)ShipType::KuChiKu, true, 1, 0);
+	exp.addShip((int)ShipType::YouRiKu, true, 0, 0);
 	exp.addSpecialExcludes(SPSHIP_AKIGUMO);
 	exp.addSpecialExcludes(SPSHIP_YUGUMO);
 	exp.addSpecialExcludes(SPSHIP_MAKIGUMO);
@@ -793,7 +793,7 @@ void ExpeditionManager::dateChange()
 			if (file->open(QIODevice::ReadOnly | QIODevice::Text))
 			{
 				QTextStream instream(file);
-				
+
 				while (!instream.atEnd())
 				{
 					QString line = instream.readLine().trimmed();
@@ -832,15 +832,17 @@ void SingleExpedition::Clear()
 	shipTypes.clear();
 	kiraState.clear();
 	drumCount.clear();
+	minLevel.clear();
 	specialExcludes.clear();
 	costTime = QTime();
 }
 
-void SingleExpedition::addShip(int type, bool kira, int drum)
+void SingleExpedition::addShip(int type, bool kira, int drum, int level)
 {
 	shipTypes.append(type);
 	kiraState.append(kira);
 	drumCount.append(drum);
+	minLevel.append(level);
 }
 
 void SingleExpedition::setInfo(const QTime& cost, int page, int index)
@@ -855,7 +857,7 @@ void SingleExpedition::addSpecialExcludes(int shipid)
 	specialExcludes.append(shipid);
 }
 
-QString SingleExpedition::checkMatches(int shipid, int index, int team, int& toShipid, 
+QString SingleExpedition::checkMatches(int shipid, int index, int team, int& toShipid,
 	const QList<int>& shipList, const QList<int>& excludeShips)
 {
 	// return ErrorMessage if error
@@ -863,7 +865,7 @@ QString SingleExpedition::checkMatches(int shipid, int index, int team, int& toS
 	ControlManager* cm = &ControlManager::getInstance();
 	toShipid = -1;
 
-	QString errorIndexString = QString("_T%1_%2").arg(team+1).arg(index+1);
+	QString errorIndexString = QString("_T%1_%2").arg(team + 1).arg(index + 1);
 	int shiptype = shipTypes[index];
 
 	if (shiptype < 0)
@@ -879,14 +881,15 @@ QString SingleExpedition::checkMatches(int shipid, int index, int team, int& toS
 			&& !cm->isShipInOtherTeam(id, team)
 			&& !cm->isShipDamaged(id)
 			&& cm->isShipCharged(id)
-			&& cm->hasSlotitem(id, SlotitemType::YuSou, drumCount[index]))
+			&& cm->hasSlotitem(id, SlotitemType::YuSou, drumCount[index])
+			&& cm->getShipLevel(id) >= minLevel[index])
 		{
 			toShipid = id;
 			return "";
 		}
 		else
 		{
-			return QString("CurrentShipError")+errorIndexString;
+			return QString("CurrentShipError") + errorIndexString;
 		}
 	}
 	else
@@ -895,7 +898,8 @@ QString SingleExpedition::checkMatches(int shipid, int index, int team, int& toS
 		// if current ship is ok
 		if (cm->isShipType(shipid, (ShipType)shiptype)
 			&& cm->hasSlotitem(shipid, SlotitemType::YuSou, drumCount[index])
-			&& checkDaihatsu(shipid, shiptype))
+			&& checkDaihatsu(shipid, shiptype)
+			&& cm->getShipLevel(shipid) >= minLevel[index])
 		{
 			if (!kiraState[index])
 			{
@@ -919,7 +923,8 @@ QString SingleExpedition::checkMatches(int shipid, int index, int team, int& toS
 							&& cm->isShipCharged(id)
 							&& cm->hasSlotitem(id, SlotitemType::YuSou, drumCount[index])
 							&& !cm->hasSlotitem(id, SlotitemType::Sonar)
-							&& !cm->hasSlotitem(id, SlotitemType::BaKuRai))
+							&& !cm->hasSlotitem(id, SlotitemType::BaKuRai)
+							&& cm->getShipLevel(id) >= minLevel[index])
 						{
 							if (excludeShips.contains(id) || specialExcludes.contains(id))
 							{
@@ -981,7 +986,8 @@ QString SingleExpedition::checkMatches(int shipid, int index, int team, int& toS
 					&& cm->isShipCharged(id)
 					&& cm->hasSlotitem(id, SlotitemType::YuSou, drumCount[index])
 					&& !cm->hasSlotitem(id, SlotitemType::Sonar)
-					&& !cm->hasSlotitem(id, SlotitemType::BaKuRai))
+					&& !cm->hasSlotitem(id, SlotitemType::BaKuRai)
+					&& cm->getShipLevel(id) >= minLevel[index])
 				{
 					if (excludeShips.contains(id) || specialExcludes.contains(id))
 					{
@@ -1024,7 +1030,8 @@ QString SingleExpedition::checkMatches(int shipid, int index, int team, int& toS
 					&& cm->isShipCharged(id)
 					&& cm->hasSlotitem(id, SlotitemType::YuSou, drumCount[index])
 					&& !cm->hasSlotitem(id, SlotitemType::Sonar)
-					&& !cm->hasSlotitem(id, SlotitemType::BaKuRai))
+					&& !cm->hasSlotitem(id, SlotitemType::BaKuRai)
+					&& cm->getShipLevel(id) >= minLevel[index])
 				{
 					if (excludeShips.contains(id) || specialExcludes.contains(id))
 					{

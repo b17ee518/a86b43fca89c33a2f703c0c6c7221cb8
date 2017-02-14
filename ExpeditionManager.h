@@ -10,11 +10,11 @@ public:
 	~SingleExpedition(){};
 
 	void Clear();
-	void addShip(int type, bool kira, int drum);
+	void addShip(int type, bool kira, int drum, int minLevel);
 	void setInfo(const QTime& cost, int page, int index);
 	void addSpecialExcludes(int shipid);
 
-	QString checkMatches(int shipid, int index, int team, int& toShipid, 
+	QString checkMatches(int shipid, int index, int team, int& toShipid,
 		const QList<int>& shipList, const QList<int>& excludeShips);
 
 	bool checkDaihatsu(int shipid, int shiptype);
@@ -22,6 +22,7 @@ public:
 	QList<int> shipTypes;	// minus for special ship
 	QList<bool> kiraState;
 	QList<int> drumCount;
+	QList<int> minLevel;
 	QList<int> specialExcludes;
 	QTime costTime;
 	int destPage = -1;
@@ -105,6 +106,6 @@ private:
 	QString _expeditionDefineFileName;
 
 	int _timeShiftMin = 0;
-}; 
+};
 
 

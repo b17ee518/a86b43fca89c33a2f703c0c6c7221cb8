@@ -1908,6 +1908,17 @@ bool ControlManager::isShipExist(int shipno)
 	return false;
 }
 
+int ControlManager::getShipLevel(int shipno)
+{
+	KanDataConnector* pkdc = &KanDataConnector::getInstance();
+	auto pship = pkdc->findShipFromShipno(shipno);
+	if (pship)
+	{
+		return pship->api_lv;
+	}
+	return 0;
+}
+
 int ControlManager::getTotalSlotItemCountForID(int slotitemId)
 {
 	KanSaveData * pksd = &KanSaveData::getInstance();
@@ -2676,13 +2687,13 @@ void ControlManager::moveMouseToAndClick(float x, float y, float offsetX /*= 5*/
 				Q_FOREACH(QObject* obj, webView->page()->view()->children())
 				{
 					sendMouseEvents(qobject_cast<QWidget*>(obj));
-				}
-			}
+		}
+	}
 
 			// reset mouse pos for webengine
 			moveMouseTo(0, 0);
 #endif
-	}
+}
 		else
 		{
 			sendMouseEvents(browserWidget);
@@ -2740,16 +2751,16 @@ void ControlManager::moveMouseTo(float x, float y, float offsetX /*= 5*/, float 
 				{
 					sendMouseEvents(qobject_cast<QWidget*>(obj));
 				}
-	}
+			}
 #endif
-}
+		}
 		else
 		{
 			sendMouseEvents(browserWidget);
 		}
 
-}
 	}
+}
 
 void ControlManager::setPauseNextVal(bool bVal)
 {

@@ -92,6 +92,7 @@ public:
 		bool checkAirBaseCond = false;
 		bool checkCond = true;
 		bool allowMiddleDamageSortie = false;
+		bool pauseAtStartMap = false;
 		QMap<int, CellAnySetting> cells;
 
 		QList<float> areaCheckList;

@@ -7,10 +7,10 @@
 #include "kandataconnector.h"
 
 AnyActionSelectDialog::AnyActionSelectDialog(QWidget *parent) :
-    QDialog(parent),
-    ui(new Ui::AnyActionSelectDialog)
+QDialog(parent),
+ui(new Ui::AnyActionSelectDialog)
 {
-    ui->setupUi(this);
+	ui->setupUi(this);
 
 	ui->bgArea->setId(ui->pbArea01, 1);
 	ui->bgArea->setId(ui->pbArea02, 2);
@@ -35,6 +35,7 @@ AnyActionSelectDialog::AnyActionSelectDialog(QWidget *parent) :
 	ui->cbAirBaseCond->setChecked(ControlManager::getInstance().getAnySetting().checkAirBaseCond);
 	ui->cbCond->setChecked(ControlManager::getInstance().getAnySetting().checkCond);
 	ui->cbMiddleDamage->setChecked(ControlManager::getInstance().getAnySetting().allowMiddleDamageSortie);
+	ui->cbPauseStartMap->setChecked(ControlManager::getInstance().getAnySetting().pauseAtStartMap);
 
 	connect(ui->leArea, SIGNAL(textEdited()), this, SLOT(slotUncheckAllAreaButtons()));
 	connect(ui->leMap, SIGNAL(textEdited()), this, SLOT(slotUncheckAllAreaButtons()));
@@ -51,7 +52,7 @@ AnyActionSelectDialog::AnyActionSelectDialog(QWidget *parent) :
 
 AnyActionSelectDialog::~AnyActionSelectDialog()
 {
-    delete ui;
+	delete ui;
 }
 
 void AnyActionSelectDialog::getMapAndArea(int&area, int&map)
@@ -71,7 +72,7 @@ void AnyActionSelectDialog::getMapAndArea(int&area, int&map)
 void AnyActionSelectDialog::setSelections(int area, int map)
 {
 	QAbstractButton* button;
-	if (area >0 && area <= 6)
+	if (area > 0 && area <= 6)
 	{
 		button = ui->bgArea->button(area);
 		if (button)
@@ -98,7 +99,7 @@ void AnyActionSelectDialog::setSelections(int area, int map)
 
 void AnyActionSelectDialog::setPositionTo(int x, int y)
 {
-	move(x-this->geometry().width()/2, y-this->geometry().height()/2);
+	move(x - this->geometry().width() / 2, y - this->geometry().height() / 2);
 }
 
 int AnyActionSelectDialog::getCountSet()
@@ -131,6 +132,12 @@ bool AnyActionSelectDialog::isAllowMiddle()
 	return ui->cbMiddleDamage->isChecked();
 }
 
+
+bool AnyActionSelectDialog::isPauseStartMap()
+{
+	return ui->cbPauseStartMap->isChecked();
+}
+
 void AnyActionSelectDialog::slotUncheckAllAreaButtons()
 {
 	slotResetExtraSettings();
@@ -148,11 +155,11 @@ void AnyActionSelectDialog::slotUncheckAllAreaButtons()
 	/*
 	for (int i = 0; i < 6; i++)
 	{
-		auto button = ui->bgMap->button(i);
-		if (button)
-		{
-			button->setChecked(false);
-		}
+	auto button = ui->bgMap->button(i);
+	if (button)
+	{
+	button->setChecked(false);
+	}
 	}
 	*/
 	ui->bgArea->setExclusive(true);

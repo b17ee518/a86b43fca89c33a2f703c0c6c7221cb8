@@ -381,10 +381,14 @@ public:
 		, const QList<float>& mapEx2CheckList = QList<float>()
 		, const QList<float>& mapEx2ClickPoint = QList<float>());
 
+	void setShouldPauseNext(bool bPause);
+
 	int _area = 1;
 	int _map = 1;
 
 	bool _isEvent = false;
+
+	bool _autoPauseNext = false;
 
 	QList<float> _areaCheckList;
 	QList<float> _mapClickPoint;	// click E1~E3 or Ex button

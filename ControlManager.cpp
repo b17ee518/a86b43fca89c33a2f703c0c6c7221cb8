@@ -861,6 +861,7 @@ bool ControlManager::BuildNext_Any()
 		, _anySetting.areaCheckList, _anySetting.mapClickPoint
 		, _anySetting.mapExCheckList, _anySetting.mapExClickPoint
 		, _anySetting.mapEx2CheckList, _anySetting.mapEx2ClickPoint);
+	sortieAction->setShouldPauseNext(_anySetting.pauseAtStartMap);
 	_actionList.append(sortieAction);
 	_actionList.append(new SortieCommonAdvanceAction());
 	_actionList.append(new ChargeAction());
@@ -2676,18 +2677,18 @@ void ControlManager::moveMouseToAndClick(float x, float y, float offsetX /*= 5*/
 				{
 					sendMouseEvents(qobject_cast<QWidget*>(obj));
 				}
-	}
+			}
 
 			// reset mouse pos for webengine
 			moveMouseTo(0, 0);
 #endif
-}
+	}
 		else
 		{
 			sendMouseEvents(browserWidget);
 		}
 
-		}
+}
 
 	}
 

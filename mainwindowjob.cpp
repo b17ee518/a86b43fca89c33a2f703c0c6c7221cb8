@@ -193,6 +193,7 @@ void MainWindow::onDoJobAny()
 	setting.checkAirBaseCond = dialog->isCheckAirBaseCond();
 	setting.checkCond = dialog->isCheckCond();
 	setting.allowMiddleDamageSortie = dialog->isAllowMiddle();
+	setting.pauseAtStartMap = dialog->isPauseStartMap();
 	delete dialog;
 
 	cm.setAnySetting(setting);

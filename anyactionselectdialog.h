@@ -4,16 +4,16 @@
 #include <QDialog>
 
 namespace Ui {
-class AnyActionSelectDialog;
+	class AnyActionSelectDialog;
 }
 
 class AnyActionSelectDialog : public QDialog
 {
-    Q_OBJECT
+	Q_OBJECT
 
 public:
-    explicit AnyActionSelectDialog(QWidget *parent = 0);
-    ~AnyActionSelectDialog();
+	explicit AnyActionSelectDialog(QWidget *parent = 0);
+	~AnyActionSelectDialog();
 
 	void getMapAndArea(int&area, int& map);
 	void setSelections(int area, int map);
@@ -23,9 +23,10 @@ public:
 	bool isCheckAirBaseCond();
 	bool isCheckCond();
 	bool isAllowMiddle();
+	bool isPauseStartMap();
 
 private:
-    Ui::AnyActionSelectDialog *ui;
+	Ui::AnyActionSelectDialog *ui;
 
 	private slots:
 	void slotOnReset();

@@ -2186,6 +2186,11 @@ bool SortieAction::action()
 		if (_expectingRequest == "")
 		{
 			setState(State::Done, "Sortie:Done");
+			if (_autoPauseNext)
+			{
+				cm.PauseNext();
+				MainWindow::mainWindow()->setPauseNextChanged(true);
+			}
 		}
 		break;
 	case SortieAction::State::Done:
@@ -2224,6 +2229,11 @@ void SortieAction::setAreaAndMap(int area, int map
 	{
 		_isEvent = true;
 	}
+}
+
+void SortieAction::setShouldPauseNext(bool bPause)
+{
+	_autoPauseNext = bPause;
 }
 
 bool SortieAdvanceAction::action()

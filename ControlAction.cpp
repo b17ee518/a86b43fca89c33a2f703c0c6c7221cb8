@@ -2154,9 +2154,9 @@ bool SortieAction::action()
 			_waiting = true;
 			QTimer::singleShot(DELAY_TIME, Qt::PreciseTimer, this, [this, &cm]()
 			{
-				// sortie ok button
+				// sortie go button
 				if (cm.checkColors(
-					610, 125, 61, 61, 61
+					633, 434, 229, 69, 66
 					, 551, 237, 255, 246, 242))
 				{
 					_waiting = false;
@@ -2921,9 +2921,10 @@ bool ExpeditionAction::action()
 			_waiting = true;
 			QTimer::singleShot(DELAY_TIME, Qt::PreciseTimer, this, [this, &cm]()
 			{
+				// go button
 				if (cm.checkColors(
-					652, 429, 44, 165, 153
-					, 694, 451, 255, 226, 90))
+					634, 434, 68, 151, 224
+					, 590, 448, 249, 255, 253))
 				{
 					_waiting = false;
 					setState(State::TeamSelectedDone, "Expedition:TeamSelectedDone");
@@ -2934,7 +2935,6 @@ bool ExpeditionAction::action()
 				}
 			});
 		}
-		break;
 		break;
 	case ExpeditionAction::State::TeamSelectedDone:
 		if (!_waiting)

@@ -1782,7 +1782,7 @@ bool SortieAction::action()
 			{
 				// area 1 sortie map
 				if (cm.checkColors(
-					562, 119, 255, 184, 103
+					562, 119, 255, 186, 92
 					, 644, 246, 137, 143, 154))
 					//					, 648, 118, 118, 180, 72))
 				{

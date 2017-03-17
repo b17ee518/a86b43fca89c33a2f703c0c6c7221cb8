@@ -2818,7 +2818,7 @@ bool ExpeditionAction::action()
 			{
 				if (cm.checkColors(
 					75, 210, 244, 222, 168
-					, 508, 113, 247, 177, 85))
+					, 508, 113, 251, 184, 90))
 				{
 					_waiting = false;
 					setState(State::SelectItemDone, "Expedition:SelectItemDone");

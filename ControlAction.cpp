@@ -2123,11 +2123,7 @@ bool SortieAction::action()
 				// sortie ok button
 				if (cm.checkColors(
 					722, 440, 19, 86, 87
-					, 82, 230, 218, 196, 196) ||
-					// with airbase
-					cm.checkColors(630, 434, 156, 48, 31
-					, 82, 230, 218, 196, 196
-					, 608, 454, 88, 179, 83))
+					, 82, 230, 218, 196, 196))
 				{
 					_waiting = false;
 					setState(State::SortieCheckDone, "Sortie:SortieCheckDone");
@@ -2161,7 +2157,11 @@ bool SortieAction::action()
 				// sortie go button
 				if (cm.checkColors(
 					633, 434, 229, 69, 66
-					, 551, 237, 255, 246, 242))
+					, 551, 237, 255, 246, 242) ||
+					// with airbase
+					cm.checkColors(630, 434, 156, 48, 31
+					, 82, 230, 218, 196, 196
+					, 608, 454, 88, 179, 83))
 				{
 					_waiting = false;
 					setState(State::TeamSelectDone, "Sortie:TeamSelectDone");
@@ -2180,7 +2180,7 @@ bool SortieAction::action()
 			_waiting = true;
 			QTimer::singleShot(DELAY_TIME_CLICK, Qt::PreciseTimer, this, [this, &cm]()
 			{
-				cm.moveMouseToAndClick(631, 446.5f, 54, 12.5f); // ok to start
+				cm.moveMouseToAndClick(631, 434, 54, 9.5f); // ok to start
 				setState(State::ExpectingMapStart, "Sortie:ExpectingMapStart");
 				resetRetryAndWainting();
 			});

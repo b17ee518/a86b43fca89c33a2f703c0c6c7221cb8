@@ -2123,7 +2123,11 @@ bool SortieAction::action()
 				// sortie ok button
 				if (cm.checkColors(
 					722, 440, 19, 86, 87
-					, 82, 230, 218, 196, 196))
+					, 82, 230, 218, 196, 196) ||
+					// with airbase
+					cm.checkColors(630, 434, 156, 48, 31
+					, 82, 230, 218, 196, 196
+					, 608, 454, 88, 179, 83))
 				{
 					_waiting = false;
 					setState(State::SortieCheckDone, "Sortie:SortieCheckDone");

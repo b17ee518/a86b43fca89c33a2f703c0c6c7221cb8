@@ -2180,7 +2180,7 @@ bool SortieAction::action()
 			_waiting = true;
 			QTimer::singleShot(DELAY_TIME_CLICK, Qt::PreciseTimer, this, [this, &cm]()
 			{
-				cm.moveMouseToAndClick(631, 434, 54, 9.5f); // ok to start
+				cm.moveMouseToAndClick(631, 434, 54, 6); // ok to start
 				setState(State::ExpectingMapStart, "Sortie:ExpectingMapStart");
 				resetRetryAndWainting();
 			});

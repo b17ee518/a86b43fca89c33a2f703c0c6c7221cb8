@@ -655,40 +655,6 @@ bool KanDataConnector::req_kousyou_destroyship_parse()
 	int shipno = _req.GetItemAsString("api_ship_id").toInt();
 	if (shipno > 0)
 	{
-		/*
-		bool bDone = false;
-
-		QList<kcsapi_deck>::iterator it;
-		for (it = pksd->portdata.api_deck_port.begin(); it != pksd->portdata.api_deck_port.end(); ++it)
-		{
-		for (int i = 0; i<it->api_ship.count(); i++)
-		{
-		if (it->api_ship[i] == shipno)
-		{
-		it->api_ship.removeAt(i);
-		bDone = true;
-		break;
-		}
-		}
-		if (bDone)
-		{
-		break;
-		}
-		}
-
-		// slotitem
-		const kcsapi_ship2 * pship = findShipFromShipno(shipno);
-		if (pship)
-		{
-		foreach(int slotitemid, pship->api_slot)
-		{
-		if (slotitemid >= 0)
-		{
-		pksd->slotitemcountoffset--;
-		}
-		}
-		}
-		*/
 		// material
 		kcsapi_destroyship api_destroyship;
 		api_destroyship.ReadFromJObj(_jobj);

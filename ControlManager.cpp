@@ -2060,7 +2060,9 @@ bool ControlManager::noSlotitem(int shipno)
 	auto pship = pkdc->findShipFromShipno(shipno);
 	if (pship)
 	{
-		for (auto slotitemid : pship->api_slot)
+		QList<int> fullSlot = pship->api_slot;
+		fullSlot.append(pship->api_slot_ex);
+		for (auto slotitemid : fullSlot)
 		{
 			if (slotitemid >= 0)
 			{
@@ -2078,7 +2080,9 @@ bool ControlManager::noAttackItem(int shipno)
 	auto pship = pkdc->findShipFromShipno(shipno);
 	if (pship)
 	{
-		for (auto slotitemid : pship->api_slot)
+		QList<int> fullSlot = pship->api_slot;
+		fullSlot.append(pship->api_slot_ex);
+		for (auto slotitemid : fullSlot)
 		{
 			auto* pslotitem = pkdc->findSlotitemFromId(slotitemid);
 			if (pslotitem)
@@ -2687,13 +2691,12 @@ void ControlManager::moveMouseToAndClick(float x, float y, float offsetX /*= 5*/
 				Q_FOREACH(QObject* obj, webView->page()->view()->children())
 				{
 					sendMouseEvents(qobject_cast<QWidget*>(obj));
-		}
-	}
+				}
+			}
 
 			// reset mouse pos for webengine
 			moveMouseTo(0, 0);
 #endif
-}
 		else
 		{
 			sendMouseEvents(browserWidget);

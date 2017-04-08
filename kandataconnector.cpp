@@ -201,6 +201,7 @@ bool KanDataConnector::RemoveShip(int shipno)
 			{
 				RemoveSlotItem(itemid);
 			}
+			RemoveSlotItem(it->api_slot_ex);
 			pksd->portdata.api_ship.erase(it);
 			return true;
 		}
@@ -383,7 +384,9 @@ bool KanDataConnector::isShipHasSlotitem(const kcsapi_ship2* pship, SlotitemType
 	}
 
 	int nowCount = 0;
-	for (auto slotitemid : pship->api_slot)
+	QList<int> fullSlot = pship->api_slot;
+	fullSlot.append(pship->api_slot_ex);
+	for (auto slotitemid : fullSlot)
 	{
 		if (slotitemid >= 0)
 		{
@@ -940,13 +943,15 @@ void KanDataConnector::logBattleDetail(bool bCombined)
 		}
 		lvline += QString("%1").arg(pship->api_lv) + "\t";
 
-		for (int i = 0; i < pship->api_slot.count(); i++)
+		QList<int> fullSlot = pship->api_slot;
+		fullSlot.append(pship->api_slot_ex);
+		for (int i = 0; i < fullSlot.count(); i++)
 		{
 			QString strslotitemname = "-";
 
-			if (pship->api_slot[i] > 0)
+			if (fullSlot[i] > 0)
 			{
-				const kcsapi_slotitem * pslotitem = findSlotitemFromId(pship->api_slot[i]);
+				const kcsapi_slotitem * pslotitem = findSlotitemFromId(fullSlot[i]);
 				if (pslotitem)
 				{
 					const kcsapi_mst_slotitem * pmstslotitem = findMstSlotItemFromSlotitemid(pslotitem->api_slotitem_id);
@@ -956,17 +961,6 @@ void KanDataConnector::logBattleDetail(bool bCombined)
 					}
 				}
 			}
-			/*
-			const kcsapi_mst_slotitem * pmstslotitem = findMstSlotItemFromSlotitemid(pship->api_slot[i]);
-			foreach(const kcsapi_mst_slotitem &mstslotitem, pksd->start2data.api_mst_slotitem)
-			{
-			if (mstslotitem.api_id == pship->api_slot[i])
-			{
-			strslotitemname = mstslotitem.api_name;
-			break;
-			}
-			}
-			*/
 			equiplines[i] += strslotitemname + "\t";
 		}
 

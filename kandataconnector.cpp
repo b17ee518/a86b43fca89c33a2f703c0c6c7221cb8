@@ -927,7 +927,7 @@ void KanDataConnector::logBattleDetail(bool bCombined)
 	QString enemynameline = QString::fromLocal8Bit("\t敵艦:\t");
 	QString ehpline = QString::fromLocal8Bit("\t敵残HP:\t");
 
-	for (int i = 0; i < 5; i++)
+	for (int i = 0; i < 6; i++)
 	{
 		equiplines.append(QString::fromLocal8Bit("\t装備%1\t").arg(i + 1));
 	}

@@ -2697,14 +2697,15 @@ void ControlManager::moveMouseToAndClick(float x, float y, float offsetX /*= 5*/
 			// reset mouse pos for webengine
 			moveMouseTo(0, 0);
 #endif
+		}
 		else
 		{
 			sendMouseEvents(browserWidget);
 		}
 
-}
-
 	}
+
+}
 
 void ControlManager::moveMouseTo(float x, float y, float offsetX /*= 5*/, float offsetY /*= 3*/)
 {

@@ -1646,6 +1646,10 @@ int ControlManager::getOneWasteShipId(const QList<int>& excludes, QList<int>ship
 {
 	KanSaveData* pksd = &KanSaveData::getInstance();
 	KanDataConnector* pkdc = &KanDataConnector::getInstance();
+	if (_destroyableMstIds.isEmpty())
+	{
+		LoadDestroyableList();
+	}
 
 	for (auto& ship : pksd->portdata.api_ship)
 	{
@@ -1656,10 +1660,11 @@ int ControlManager::getOneWasteShipId(const QList<int>& excludes, QList<int>ship
 		{
 			int shipid = ship.api_ship_id;
 			const kcsapi_mst_ship * pmstship = pkdc->findMstShipFromShipid(shipid);
-			if (!pmstship)
+			if (!pmstship || !_destroyableMstIds.contains(shipid))
 			{
 				continue;
 			}
+
 			if (pmstship->api_stype == (int)ShipType::KuChiKu)
 			{
 				if (ship.api_fuel == pmstship->api_fuel_max
@@ -2697,13 +2702,13 @@ void ControlManager::moveMouseToAndClick(float x, float y, float offsetX /*= 5*/
 			// reset mouse pos for webengine
 			moveMouseTo(0, 0);
 #endif
-		}
+	}
 		else
 		{
 			sendMouseEvents(browserWidget);
 		}
 
-	}
+}
 
 }
 
@@ -2754,8 +2759,8 @@ void ControlManager::moveMouseTo(float x, float y, float offsetX /*= 5*/, float 
 				Q_FOREACH(QObject* obj, webView->page()->view()->children())
 				{
 					sendMouseEvents(qobject_cast<QWidget*>(obj));
-				}
-			}
+	}
+}
 #endif
 		}
 		else

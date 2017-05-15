@@ -1068,7 +1068,7 @@ bool SingleExpedition::checkDaihatsu(int shipid, int shiptype)
 	if (shiptype == (int)ShipType::SuiBou
 		|| shiptype == (int)ShipType::YouRiKu)
 	{
-		if (ControlManager::getInstance().hasSlotitem(shipid, SlotitemType::JouRiKuTei, 3))
+		if (ControlManager::getInstance().hasSlotitem(shipid, SlotitemType::JouRiKuTei, 2))
 		{
 			return true;
 		}

@@ -75,6 +75,7 @@ public:
 	void BuildSingle20(ExpeditionSchedule* pschedule, int toHour, int toMin);
 	void BuildSingle30(ExpeditionSchedule* pschedule, int toHour, int toMin);
 	void BuildSingle40(ExpeditionSchedule* pschedule, int toHour, int toMin);
+	void BuildSingle90(ExpeditionSchedule* pschedule, int toHour, int toMin);
 
 	void BuildSingleTokyu1(ExpeditionSchedule* pschedule, int toHour, int toMin);
 	void BuildSingleTokyu2(ExpeditionSchedule* pschedule, int toHour, int toMin);

@@ -2104,6 +2104,7 @@ bool ControlManager::noAttackItem(int shipno)
 						case (int)SlotitemType::SyuHou_L:
 						case (int)SlotitemType::FuKuHou:
 						case (int)SlotitemType::GyoRai:
+						case (int)SlotitemType::ToKuSen:
 						case (int)SlotitemType::KanBaKu:
 						case (int)SlotitemType::KanKou:
 						case (int)SlotitemType::SuiBaKu:
@@ -2702,13 +2703,13 @@ void ControlManager::moveMouseToAndClick(float x, float y, float offsetX /*= 5*/
 			// reset mouse pos for webengine
 			moveMouseTo(0, 0);
 #endif
-		}
+	}
 		else
 		{
 			sendMouseEvents(browserWidget);
 		}
 
-	}
+}
 
 }
 
@@ -2760,9 +2761,9 @@ void ControlManager::moveMouseTo(float x, float y, float offsetX /*= 5*/, float 
 				{
 					sendMouseEvents(qobject_cast<QWidget*>(obj));
 				}
-			}
+	}
 #endif
-		}
+}
 		else
 		{
 			sendMouseEvents(browserWidget);

@@ -53,7 +53,7 @@ bool ControlManager::BuildNext_Kira()
 	while (isShipKiraDone(togoShipId)
 		|| isShipInOtherTeam(togoShipId, 0)
 		|| isShipInDock(togoShipId)
-		|| hasSlotitem(togoShipId, SlotitemType::JouRiKuTei)
+		|| hasSlotitem(togoShipId, SlotitemType::JouRiKuTei, 3)
 		|| hasSlotitem(togoShipId, SlotitemType::Sonar)
 		|| hasSlotitem(togoShipId, SlotitemType::BaKuRai)
 		|| hasSlotitem(togoShipId, SlotitemType::Sonar_L)
@@ -2702,13 +2702,13 @@ void ControlManager::moveMouseToAndClick(float x, float y, float offsetX /*= 5*/
 			// reset mouse pos for webengine
 			moveMouseTo(0, 0);
 #endif
-	}
+		}
 		else
 		{
 			sendMouseEvents(browserWidget);
 		}
 
-}
+	}
 
 }
 
@@ -2759,8 +2759,8 @@ void ControlManager::moveMouseTo(float x, float y, float offsetX /*= 5*/, float 
 				Q_FOREACH(QObject* obj, webView->page()->view()->children())
 				{
 					sendMouseEvents(qobject_cast<QWidget*>(obj));
-	}
-}
+				}
+			}
 #endif
 		}
 		else

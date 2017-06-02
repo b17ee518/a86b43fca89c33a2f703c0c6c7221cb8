@@ -940,7 +940,9 @@ QString SingleExpedition::checkMatches(int shipid, int index, int team, int& toS
 			if (!kiraState[index])
 			{
 				// already no kira
-				if (cm->getShipCondVal(shipid) <= shouldChangeCondBorder)
+				if (cm->getShipCondVal(shipid) <= shouldChangeCondBorder
+					&& !excludeShips.contains(shipid)
+					&& !specialExcludes.contains(shipid))
 				{
 					return "";
 				}

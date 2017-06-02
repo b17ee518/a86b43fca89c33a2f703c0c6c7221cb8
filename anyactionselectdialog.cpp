@@ -32,6 +32,7 @@ ui(new Ui::AnyActionSelectDialog)
 	connect(resetButton, SIGNAL(clicked()), this, SLOT(slotOnReset()));
 
 	ui->leCount->setText(QString::number(ControlManager::getInstance().getAnySetting().count));
+	ui->leSSOnlyCount->setText(QString::number(ControlManager::getInstance().getAnySetting().onlySSTeamSize));
 	ui->cbAirBaseCond->setChecked(ControlManager::getInstance().getAnySetting().checkAirBaseCond);
 	ui->cbCond->setChecked(ControlManager::getInstance().getAnySetting().checkCond);
 	ui->cbMiddleDamage->setChecked(ControlManager::getInstance().getAnySetting().allowMiddleDamageSortie);
@@ -108,6 +109,15 @@ int AnyActionSelectDialog::getCountSet()
 	bool bOk = false;
 	int count = countStr.toInt(&bOk);
 	return count;
+}
+
+int AnyActionSelectDialog::getOnlySSTeamSize()
+{
+	QString countStr = ui->leSSOnlyCount->text();
+	bool bOk = false;
+	int count = countStr.toInt(&bOk);
+	return count;
+
 }
 
 void AnyActionSelectDialog::slotOnReset()

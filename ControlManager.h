@@ -93,6 +93,7 @@ public:
 		bool checkCond = true;
 		bool allowMiddleDamageSortie = false;
 		bool pauseAtStartMap = false;
+		int onlySSTeamSize = 0;
 		QMap<int, CellAnySetting> cells;
 
 		QList<float> areaCheckList;
@@ -138,6 +139,8 @@ public:
 
 	bool BuildNext_SouthEast();
 
+	bool BuildNext_East();
+
 	bool BuildNext_Level();
 
 	bool BuildNext_Rank();
@@ -173,6 +176,7 @@ public:
 	void setToTerminate(const char* title, bool forceSound = false);
 
 	void createSSShipList();
+	bool chooseSSShipList(int teamSize, QList<int>& ships, QList<int>&sortInTeamShips, QString& errorMessage);
 	bool isTreatedSameShip(int shipno, int oshipno);
 	bool isAfterShip(const kcsapi_mst_ship* pmstship, const kcsapi_mst_ship* pomstship, QList<int> checkedIdList = QList<int>()/*for convert*/);
 	// is pmstship after of pomstship
@@ -202,6 +206,7 @@ public:
 
 	bool isHenseiDone(const QList<int>& ships, int team, int index = -1);
 	bool isFlagshipOnly(int team);
+	int isAllSSShips(int team);
 	int getTeamSize(int team);
 	bool isShipType(int shipno, ShipType stype);
 	bool hasSlotitem(int shipno, SlotitemType sitype, int count = 1);

@@ -179,38 +179,10 @@ bool ControlManager::BuildNext_Fuel()
 	return true;
 }
 
-bool ControlManager::BuildNext_SouthEast()
+bool ControlManager::chooseSSShipList(int teamSize, QList<int>& ships, QList<int>& sortInTeamShips, QString& errorMessage)
 {
-	_target = ActionTarget::SouthEast;
-
-	pushPreSupplyCheck();
-	if (stopWhenCheck())
-	{
-		setToTerminate("Termination:StopWhenDone");
-		return false;
-	}
-	_southEastTeamSize = getTeamSize(0);
 	KanSaveData* pksd = &KanSaveData::getInstance();
-	if (pksd->totalSouthEastWin >= 5)
-	{
-		setToTerminate("Terminated:Done Mission");
-		return false;
-	}
-	if (_southEastTeamSize < 4)
-	{
-		// keep 4 and up for formation
-		_southEastTeamSize = 4;
-	}
-
-	pushPreShipFullCheck();
-	/*
-	if (isShipFull())
-	{
-	setToTerminate("Terminated:ShipFull");
-	return false;
-	//		_actionList.append(new DestroyShipAction());
-	}
-	*/
+	errorMessage = "";
 
 	if (_ssShips.isEmpty())
 	{
@@ -266,9 +238,9 @@ bool ControlManager::BuildNext_SouthEast()
 		}
 	}
 
-	if (bestShips.size() < _southEastTeamSize)
+	if (bestShips.size() < teamSize)
 	{
-		setToTerminate("Terminated:No Enough Ship");
+		errorMessage = "Terminated:No Enough Ship";
 		return false;
 	}
 
@@ -278,7 +250,7 @@ bool ControlManager::BuildNext_SouthEast()
 		return left->api_cond > right->api_cond; // cond from high to low
 	});
 
-	int minCond = bestShips.at(_southEastTeamSize - 1)->api_cond;
+	int minCond = bestShips.at(teamSize - 1)->api_cond;
 	if (minCond <= _sortieMinCond)
 	{
 		// wait
@@ -288,14 +260,14 @@ bool ControlManager::BuildNext_SouthEast()
 		_actionList.append(waitAction);
 	}
 
-	QList<int> ships;
-	for (int i = 0; i < _southEastTeamSize; i++)
+	ships.clear();
+	for (int i = 0; i < teamSize; i++)
 	{
 		ships.push_front(bestShips.at(i)->api_id);
 	}
 
 	// sort in team first
-	QList<int> sortInTeamShips;
+	sortInTeamShips.clear();
 
 	QList<int> nonEmptyShipList;
 	if (pksd->portdata.api_deck_port.size())
@@ -323,7 +295,7 @@ bool ControlManager::BuildNext_SouthEast()
 		}
 		if (!pgroup)
 		{
-			setToTerminate("Terminated:Wrong SS Data");
+			errorMessage = "Terminated:Wrong SS Data";
 			return false;
 		}
 
@@ -349,6 +321,42 @@ bool ControlManager::BuildNext_SouthEast()
 		{
 			sortInTeamShips.append(shipno);
 		}
+	}
+	return true;
+}
+
+bool ControlManager::BuildNext_SouthEast()
+{
+	_target = ActionTarget::SouthEast;
+
+	pushPreSupplyCheck();
+	if (stopWhenCheck())
+	{
+		setToTerminate("Termination:StopWhenDone");
+		return false;
+	}
+	_southEastTeamSize = getTeamSize(0);
+	KanSaveData* pksd = &KanSaveData::getInstance();
+	if (pksd->totalSouthEastWin >= 5)
+	{
+		setToTerminate("Terminated:Done Mission");
+		return false;
+	}
+	if (_southEastTeamSize < 4)
+	{
+		// keep 4 and up for formation
+		_southEastTeamSize = 4;
+	}
+
+	pushPreShipFullCheck();
+
+	QList<int> ships;
+	QList<int> sortInTeamShips;
+	QString errorMessage;
+	if (!chooseSSShipList(_southEastTeamSize, ships, sortInTeamShips, errorMessage))
+	{
+		setToTerminate(errorMessage.toLocal8Bit());
+		return false;
 	}
 
 	// change hensei sort
@@ -815,45 +823,74 @@ bool ControlManager::BuildNext_Any()
 		return false;
 	}
 
+	QList<int> ships;
 	int minCond = std::numeric_limits<int>::max();
 	int shipCount = 0;
 
-	if (pksd->portdata.api_deck_port.size())
+	if (_anySetting.onlySSTeamSize > 0)
 	{
-		auto& firstFleet = pksd->portdata.api_deck_port.first();
-		for (auto id : firstFleet.api_ship)
+		QList<int> sortInTeamShips;
+		QString errorMessage;
+		if (!chooseSSShipList(_anySetting.onlySSTeamSize, ships, sortInTeamShips, errorMessage))
 		{
-			if (id >= 0)
+			setToTerminate(errorMessage.toLocal8Bit());
+			return false;
+		}
+
+		auto chSortAction = new ChangeHenseiAction();
+		chSortAction->setShips(sortInTeamShips);
+		_actionList.append(chSortAction);
+
+		// change hensei
+		auto chAction = new ChangeHenseiAction();
+		chAction->setShips(ships);
+		_actionList.append(chAction);
+
+	}
+	else
+	{
+		if (pksd->portdata.api_deck_port.size())
+		{
+			auto& firstFleet = pksd->portdata.api_deck_port.first();
+			for (auto id : firstFleet.api_ship)
 			{
-				const kcsapi_ship2* pship = pkdc->findShipFromShipno(id);
-				if (pship)
+				if (id >= 0)
 				{
-					shipCount++;
-
-					if (pship->api_cond < minCond)
-					{
-						minCond = pship->api_cond;
-					}
-
-					WoundState ws = KanDataCalc::GetWoundState(pship->api_nowhp, pship->api_maxhp);
-
-					if (ws >= WoundState::Middle && !_anySetting.allowMiddleDamageSortie || ws >= WoundState::Big)
-					{
-						setToTerminate("Terminated:Damage");
-						return false;
-					}
+					ships.append(id);
 				}
 			}
 		}
 	}
 
-	if (minCond <= _sortieMinCond && _anySetting.checkCond)
+	for (auto id : ships)
 	{
-		// wait
-		qint64 waitMS = qCeil((_sortieWaitCond - minCond) / 3.0) * 3 * 60 * 1000;
-		auto waitAction = new WaitCondAction();
-		waitAction->setWaitMS(waitMS);
-		_actionList.append(waitAction);
+		const kcsapi_ship2* pship = pkdc->findShipFromShipno(id);
+		if (pship)
+		{
+			shipCount++;
+
+			if (pship->api_cond < minCond)
+			{
+				minCond = pship->api_cond;
+			}
+
+			WoundState ws = KanDataCalc::GetWoundState(pship->api_nowhp, pship->api_maxhp);
+
+			if (ws >= WoundState::Middle && !_anySetting.allowMiddleDamageSortie || ws >= WoundState::Big)
+			{
+				setToTerminate("Terminated:Damage");
+				return false;
+			}
+		}
+
+		if (minCond <= _sortieMinCond && _anySetting.checkCond)
+		{
+			// wait
+			qint64 waitMS = qCeil((_sortieWaitCond - minCond) / 3.0) * 3 * 60 * 1000;
+			auto waitAction = new WaitCondAction();
+			waitAction->setWaitMS(waitMS);
+			_actionList.append(waitAction);
+		}
 	}
 
 	SortieAction* sortieAction = new SortieAction();
@@ -2006,6 +2043,32 @@ bool ControlManager::isFlagshipOnly(int team)
 	return getTeamSize(team) == 1;
 }
 
+int ControlManager::isAllSSShips(int team)
+{
+	KanSaveData* pksd = &KanSaveData::getInstance();
+	if (team < 0)
+	{
+		return 0;
+	}
+
+	if (pksd->portdata.api_deck_port.size() > team)
+	{
+		auto& fleet = pksd->portdata.api_deck_port.at(team);
+		QList<int> nonEmptyShipList;
+		for (auto id : fleet.api_ship)
+		{
+			if (id >= 0)
+			{
+				if (!isShipType(id, ShipType::SenSui) && !isShipType(id, ShipType::SenBou))
+				{
+					return 0;
+				}
+			}
+		}
+	}
+	return getTeamSize(team);
+}
+
 int ControlManager::getTeamSize(int team)
 {
 	KanSaveData* pksd = &KanSaveData::getInstance();
@@ -2703,13 +2766,13 @@ void ControlManager::moveMouseToAndClick(float x, float y, float offsetX /*= 5*/
 			// reset mouse pos for webengine
 			moveMouseTo(0, 0);
 #endif
-	}
+		}
 		else
 		{
 			sendMouseEvents(browserWidget);
 		}
 
-}
+	}
 
 }
 
@@ -2761,9 +2824,9 @@ void ControlManager::moveMouseTo(float x, float y, float offsetX /*= 5*/, float 
 				{
 					sendMouseEvents(qobject_cast<QWidget*>(obj));
 				}
-	}
+			}
 #endif
-}
+		}
 		else
 		{
 			sendMouseEvents(browserWidget);

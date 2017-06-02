@@ -190,11 +190,35 @@ void MainWindow::onDoJobAny()
 
 	setting = cm.getAnyTemplateSetting(area, map);
 	setting.count = dialog->getCountSet();
+	setting.onlySSTeamSize = dialog->getOnlySSTeamSize();
 	setting.checkAirBaseCond = dialog->isCheckAirBaseCond();
 	setting.checkCond = dialog->isCheckCond();
 	setting.allowMiddleDamageSortie = dialog->isAllowMiddle();
 	setting.pauseAtStartMap = dialog->isPauseStartMap();
 	delete dialog;
+
+	if (setting.onlySSTeamSize > 0 && cm.isAllSSShips(0) != setting.onlySSTeamSize)
+	{
+		QMessageBox * pMessageBox = new QMessageBox(
+			QMessageBox::NoIcon
+			, QString::fromLocal8Bit("")
+			, QString::fromLocal8Bit("潜水艦のみ？")
+			, QMessageBox::Yes | QMessageBox::No
+			, this
+			, Qt::Dialog | Qt::MSWindowsFixedSizeDialogHint | Qt::FramelessWindowHint);
+		pMessageBox->setDefaultButton(QMessageBox::Yes);
+		pMessageBox->setAttribute(Qt::WA_DeleteOnClose, true);
+		int reply = pMessageBox->exec();
+
+		if (reply == QMessageBox::No)
+		{
+			setting.onlySSTeamSize = 0;
+			cm.setAnySetting(setting);
+
+			switchToExpeditionWait();
+			return;
+		}
+	}
 
 	cm.setAnySetting(setting);
 

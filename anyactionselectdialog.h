@@ -20,6 +20,7 @@ public:
 	void setPositionTo(int x, int y);
 
 	int getCountSet();
+	int getOnlySSTeamSize();
 	bool isCheckAirBaseCond();
 	bool isCheckCond();
 	bool isAllowMiddle();

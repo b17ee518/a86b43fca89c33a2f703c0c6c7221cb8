@@ -1862,15 +1862,47 @@ bool ControlManager::isLowCond(int shipno)
 	return false;
 }
 
-bool ControlManager::isShipInOtherTeam(int shipno, int team)
+bool ControlManager::isShipInOtherTeam(int shipno, int team, bool excludeOnBoardingExpedition/*=false*/)
 {
 	KanSaveData* pksd = &KanSaveData::getInstance();
+
+	QList<bool> onBoarding;
+	onBoarding.append(true);
+	onBoarding.append(true);
+	onBoarding.append(true);
+
+	QList<int> excludeTeams;
+	TimerMainWindow* timerWindow = MainWindow::mainWindow()->timerWindow();
+	for (int i = 0; i < 3; i++)
+	{
+		int tteam = -1;
+		auto waitMS = timerWindow->getMinExpeditionMS(tteam, excludeTeams);
+		if (tteam >= 0)
+		{
+			onBoarding[tteam - 1] = (waitMS <= 0);
+			excludeTeams.append(tteam);
+		}
+	}
+
 	for (auto& deck : pksd->portdata.api_deck_port)
 	{
 		if (deck.api_id == team + 1)
 		{
 			continue;
 		}
+
+		if (excludeOnBoardingExpedition)
+		{
+			int index = deck.api_id - 2;
+			if (index >= 0)
+			{
+				if (onBoarding[index])
+				{
+					continue;
+				}
+			}
+		}
+
 		for (auto id : deck.api_ship)
 		{
 			if (id == shipno)

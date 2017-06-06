@@ -914,7 +914,7 @@ QString SingleExpedition::checkMatches(int shipid, int index, int team, int& toS
 		}
 		// warning no check on kira
 		if (!cm->isShipInDock(id)
-			&& !cm->isShipInOtherTeam(id, team)
+			&& !cm->isShipInOtherTeam(id, team, true)
 			&& !cm->isShipDamaged(id)
 			&& cm->isShipCharged(id)
 			&& cm->hasSlotitem(id, SlotitemType::YuSou, drumCount[index])
@@ -956,7 +956,7 @@ QString SingleExpedition::checkMatches(int shipid, int index, int team, int& toS
 						int condVal = cm->getShipCondVal(id);
 						if (cm->isShipType(id, (ShipType)shiptype)
 							&& !cm->isShipInDock(id)
-							&& !cm->isShipInOtherTeam(id, -1)	// every team
+							&& !cm->isShipInOtherTeam(id, -1, true)	// every team
 							&& !cm->isShipDamaged(id)
 							&& cm->isShipCharged(id)
 							&& cm->hasSlotitem(id, SlotitemType::YuSou, drumCount[index])
@@ -1019,7 +1019,7 @@ QString SingleExpedition::checkMatches(int shipid, int index, int team, int& toS
 				int condVal = cm->getShipCondVal(id);
 				if (cm->isShipType(id, (ShipType)(shipTypes[index]))
 					&& !cm->isShipInDock(id)
-					&& !cm->isShipInOtherTeam(id, -1)	// every team
+					&& !cm->isShipInOtherTeam(id, -1, true)	// every team
 					&& !cm->isShipDamaged(id)
 					&& cm->isShipCharged(id)
 					&& cm->hasSlotitem(id, SlotitemType::YuSou, drumCount[index])
@@ -1063,7 +1063,7 @@ QString SingleExpedition::checkMatches(int shipid, int index, int team, int& toS
 				if (cm->isShipType(id, (ShipType)(shipTypes[index]))
 					&& (KanDataCalc::GetCondState(cm->getShipCondVal(id)) == CondState::Kira)
 					&& !cm->isShipInDock(id)
-					&& !cm->isShipInOtherTeam(id, -1)	// every team
+					&& !cm->isShipInOtherTeam(id, -1, true)	// every team
 					&& !cm->isShipDamaged(id)
 					&& cm->isShipCharged(id)
 					&& cm->hasSlotitem(id, SlotitemType::YuSou, drumCount[index])

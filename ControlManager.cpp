@@ -1001,9 +1001,12 @@ bool ControlManager::BuildNext_Expedition()
 	{
 		int toShipid = -1;
 		QList<int> excludeShipids;
-		for (int j = 0; j < i; j++)
+		for (int j = 0; j < shipCount; j++)
 		{
-			excludeShipids.append(toShips[j]);
+			if (j != i)
+			{
+				excludeShipids.append(toShips[j]);
+			}
 		}
 		QString failReason = pExp->checkMatches(ships[i], i, team, toShipid, todoships, excludeShipids);
 		if (!failReason.isEmpty())
@@ -2798,13 +2801,13 @@ void ControlManager::moveMouseToAndClick(float x, float y, float offsetX /*= 5*/
 			// reset mouse pos for webengine
 			moveMouseTo(0, 0);
 #endif
-		}
+	}
 		else
 		{
 			sendMouseEvents(browserWidget);
 		}
 
-	}
+}
 
 }
 
@@ -2855,8 +2858,8 @@ void ControlManager::moveMouseTo(float x, float y, float offsetX /*= 5*/, float 
 				Q_FOREACH(QObject* obj, webView->page()->view()->children())
 				{
 					sendMouseEvents(qobject_cast<QWidget*>(obj));
-				}
-			}
+	}
+}
 #endif
 		}
 		else

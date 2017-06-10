@@ -166,6 +166,7 @@ MainWindow::~MainWindow()
 #endif
 	if (_pSharkProcess)
 	{
+		_pSharkProcess->kill();
 		_pSharkProcess->close();
 		delete _pSharkProcess;
 	}
@@ -506,5 +507,5 @@ void MainWindow::slotNavigateComplete2(IDispatch*, QVariant& url)
 	{
 		applyCss(_applyCssWhenLoaded);
 	}
-	}
+}
 #endif

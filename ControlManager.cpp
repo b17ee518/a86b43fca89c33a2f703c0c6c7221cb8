@@ -2885,4 +2885,15 @@ qreal ControlManager::randVal(qreal min, qreal max)
 	return value;
 }
 
+void ControlManager::setPortDataDirty()
+{
+	_isPortDataDirty = true;
+	KanDataConnector::getInstance().callUpdateOverviewTable();
+}
+
+void ControlManager::clearPortDataDirtyFlag()
+{
+	_isPortDataDirty = false;
+	KanDataConnector::getInstance().callUpdateOverviewTable();
+}
 

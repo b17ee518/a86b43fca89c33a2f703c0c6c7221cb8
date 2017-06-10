@@ -115,6 +115,7 @@ KanDataConnector::KanDataConnector(void)
 	_colRed = QColor(255, 0, 0);
 	_colBlue = QColor(0, 0, 255);
 	_colAqua = QColor(0, 255, 255);
+	_colPurple = QColor(204, 51, 204);
 
 	start2_flag = PARSEFLAG_NORMAL;
 	port_port_flag = PARSEFLAG_NORMAL;
@@ -272,16 +273,16 @@ bool KanDataConnector::Parse(const QString& pathAndQuery, const QString& request
 
 #define PARSEAPIF(apistr, api)\
 	if (_pathAndQuery == apistr)\
-			{\
+				{\
 		if ((api##_flag & PARSEFLAG_IGNORE) == 0)\
-						{\
+								{\
 			if (api##_flag & PARSEFLAG_OUTPUT)\
-									{\
+												{\
 				DAPILOG();\
-									}\
+												}\
 			bRet = api##_parse();\
-						}\
-			}
+								}\
+				}
 #define PARSEAPI(apistr, api) else PARSEAPIF(apistr, api)
 
 	PARSEAPIF("/kcsapi/api_start2", start2)

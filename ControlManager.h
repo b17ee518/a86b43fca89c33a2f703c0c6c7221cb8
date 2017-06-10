@@ -317,8 +317,8 @@ public:
 	qreal randVal(qreal min, qreal max);
 
 	bool isPortDataDirty(){ return _isPortDataDirty; }
-	void setPortDataDirty(){ _isPortDataDirty = true; }
-	void clearPortDataDirtyFlag(){ _isPortDataDirty = false; }
+	void setPortDataDirty();
+	void clearPortDataDirtyFlag();
 
 private:
 

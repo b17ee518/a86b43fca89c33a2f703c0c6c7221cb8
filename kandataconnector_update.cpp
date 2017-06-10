@@ -24,10 +24,16 @@ void KanDataConnector::updateOverviewTable()
 	int nextexp = KanDataCalc::GetAdmiralNextLevelExp(pksd->portdata.api_basic.api_experience, lv);
 	//	int fcoin = pksd->portdata.api_basic.api_fcoin;
 
+	bool isPortDirty = ControlManager::getInstance().isPortDataDirty();
+	QString dirtyStr = isPortDirty ? QString::fromLocal8Bit("■") : "";
+
 	lst.append(QString::fromLocal8Bit("所有艦娘数: %1/%2").arg(kancount).arg(kanmaxcount));
 	lst.append(QString::fromLocal8Bit("所有装備数: %1/%2").arg(slotitemcount).arg(slotitemmaxcount));
-	lst.append(QString::fromLocal8Bit("提督Lv. %1(次:%2)").arg(lv).arg(nextexp));
+	lst.append(QString::fromLocal8Bit("提督Lv. %1(次:%2) %3").arg(lv).arg(nextexp).arg(dirtyStr));
 	lst.append(QString::fromLocal8Bit("高速修復材: %1").arg(instantrepaircount));
+
+
+
 	//	lst.append(QString::fromLocal8Bit("高速建造材: %1").arg(instantbuildcount));
 	//	lst.append(QString::fromLocal8Bit("家具コイン: %1").arg(fcoin));
 	lst.append(QString::fromLocal8Bit("ボス: %1(%2/%3) 南西: %4 輸: %5 潜: %6 東急: %7 Any: %8")
@@ -71,7 +77,14 @@ void KanDataConnector::updateOverviewTable()
 		cols.append(_colWhite);
 	}
 	//
-	cols.append(_colWhite);
+	if (isPortDirty)
+	{
+		cols.append(_colPurple);
+	}
+	else
+	{
+		cols.append(_colWhite);
+	}
 	cols.append(_colWhite);
 
 	if (pksd->totalSouthEastWin >= 5)

@@ -3,6 +3,8 @@
 
 #include "kandataconnector.h"
 
+#include "ControlManager.h"
+
 //#include <QWebFrame>
 #include <QShortcut>
 
@@ -162,12 +164,135 @@ MainWindow::~MainWindow()
 		delete _pTitanium;
 	}
 #endif
+	if (_pSharkProcess)
+	{
+		_pSharkProcess->close();
+		delete _pSharkProcess;
+	}
 	delete ui;
 }
 
 void MainWindow::slotParse(const QString &PathAndQuery, const QString &requestBody, const QString &responseBody)
 {
 	KanDataConnector::getInstance().Parse(PathAndQuery, requestBody, responseBody);
+}
+
+void MainWindow::slotSharkProcessReadyReadError()
+{
+	QString receivedError = QString(_pSharkProcess->readAllStandardOutput()).trimmed();
+	Q_UNUSED(receivedError);
+}
+
+
+void MainWindow::slotSharkProcessReadyRead()
+{
+	auto byteArray = _pSharkProcess->readAllStandardOutput();
+
+	qDebug() << "Buffer: " << byteArray.left(80) << "..." << byteArray.right(80) << (byteArray.endsWith('\n') ? "... EndWithReturn" : "");
+
+	_sharkReadingBuffer += QString::fromUtf8(byteArray.constData(), byteArray.size());
+	if (!byteArray.endsWith('\n'))
+	{
+		return;
+	}
+
+	auto splitedPackage = _sharkReadingBuffer.split("\t", QString::SplitBehavior::SkipEmptyParts);
+
+	_sharkReadingBuffer = "";
+
+	int length = splitedPackage.length();
+	for (int i = 0; i < length; i++)
+	{
+		if (splitedPackage[i].startsWith("/kcsapi/"))
+		{
+
+			SharkRequestResponseRecord record;
+			record.pathAndQuery = splitedPackage[i];
+			i++;
+			if (i < length)
+			{
+				record.requestBody = splitedPackage[i];
+				i++;
+				if (i < length)
+				{
+					record.requestFrame = splitedPackage[i].toInt();
+					if (record.requestFrame == 0)
+					{
+						continue;
+					}
+					bool matched = false;
+					// try match
+					for (int j = 0; j < _sharkResponseStack.length(); j++)
+					{
+						if (record.requestFrame == _sharkResponseStack[j].requestFrame)
+						{
+							matched = true;
+							emit sigParse(record.pathAndQuery, record.requestBody, _sharkResponseStack[j].responseBody);
+							_sharkResponseStack.removeAt(j);
+							break;
+						}
+					}
+					if (!matched)
+					{
+						// add new
+						while (_sharkRequestStack.length() >= _sharkStackMax)
+						{
+							_sharkRequestStack.removeFirst();
+						}
+						_sharkRequestStack.append(record);
+					}
+				}
+			}
+		}
+		else if (splitedPackage[i].startsWith("svdata="))
+		{
+			SharkRequestResponseRecord record;
+			record.responseBody = splitedPackage[i];
+			i++;
+			if (i < length)
+			{
+				record.requestFrame = splitedPackage[i].toInt();
+				if (record.requestFrame == 0)
+				{
+					// fatal response error
+					onFatalSharkResponseError(false);
+				}
+				// try match
+				bool matched = false;
+				for (int j = _sharkRequestStack.length() - 1; j >= 0; j--)
+				{
+					if (_sharkRequestStack[j].requestFrame == record.requestFrame)
+					{
+						matched = true;
+						emit sigParse(_sharkRequestStack[j].pathAndQuery, _sharkRequestStack[j].requestBody, record.responseBody);
+						_sharkRequestStack.removeAt(j);
+						break;
+					}
+				}
+				if (!matched)
+				{
+					// fatal response error?
+					onFatalSharkResponseError(false);
+
+					// add new
+					while (_sharkResponseStack.length() >= _sharkStackMax)
+					{
+						_sharkResponseStack.removeFirst();
+					}
+					_sharkResponseStack.append(record);
+				}
+			}
+		}
+	}
+}
+
+void MainWindow::onFatalSharkResponseError(bool fatalOnProxy)
+{
+	if (_sharkShouldRaiseFatalOnMismatchResponse || fatalOnProxy)
+	{
+		ControlManager::getInstance().setToTerminate("FatalSharkResponse", true);
+		close();
+	}
 }
 
 void MainWindow::slotWebViewException(int code, const QString &source, const QString &desc, const QString &help)
@@ -381,5 +506,5 @@ void MainWindow::slotNavigateComplete2(IDispatch*, QVariant& url)
 	{
 		applyCss(_applyCssWhenLoaded);
 	}
-}
+	}
 #endif

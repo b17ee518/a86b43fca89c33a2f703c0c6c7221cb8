@@ -140,8 +140,28 @@ void MainWindow::setWebSettings()
 		_pTitanium->Startup(_useport);
 #endif
 	}
+	else if (_proxyMode == ProxyMode::Shark)
+	{
+		_pSharkProcess = new QProcess();
+		_pSharkProcess->setWorkingDirectory(_sharkWorkingPath);
+		QObject::connect(_pSharkProcess, SIGNAL(readyReadStandardOutput()), this, SLOT(slotSharkProcessReadyRead()));
+		QObject::connect(_pSharkProcess, SIGNAL(readyReadStandardError()), this, SLOT(slotSharkProcessReadyReadError()));
 
-	if (_proxyMode != ProxyMode::NoProxy && _proxyMode != ProxyMode::QtProxy)
+#ifdef Q_OS_WIN
+		_pSharkProcess->start("cmd");
+#else
+		_pSharkProcess->start("sh");
+#endif
+		if (!_pSharkProcess->waitForStarted())
+		{
+			return;
+		}
+		_pSharkProcess->write(_sharkCommand.toLocal8Bit());
+		_pSharkProcess->write("\n");
+		_pSharkProcess->closeWriteChannel();
+	}
+
+	if (_proxyMode != ProxyMode::NoProxy && _proxyMode != ProxyMode::QtProxy && _proxyMode != ProxyMode::Shark)
 	{
 		if (exceptionSender)
 		{
@@ -460,6 +480,11 @@ void MainWindow::loadSettings()
 	const QString itemUsePort = "UsePort";
 	const QString itemIntervalMul = "IntervalMul";
 	const QString itemProxyMode = "ProxyMode";
+
+	const QString itemSharkWorkingPath = "SharkWorkingPath";
+	const QString itemSharkCommand = "SharkCommand";
+	const QString itemShouldFatalOnMismatchResponse = "SharkShouldFatalOnMismatchResponse";
+
 	//	const QString itemExpeditionMode = "ExpeditionMode";
 	const QString itemTimeShift = "TimeShift";
 
@@ -502,13 +527,43 @@ void MainWindow::loadSettings()
 	{
 		if (_platformType == PlatformType::Mac)
 		{
-			setting->setValue(itemProxyMode, "QtProxy");
+			if (QT_VERSION >= QT_VERSION_CHECK(5, 6, 0))
+			{
+				setting->setValue(itemProxyMode, "Shark");
+			}
+			else
+			{
+				setting->setValue(itemProxyMode, "QtProxy");
+			}
 		}
 		else
 		{
 			setting->setValue(itemProxyMode, "Nekoxy");
 		}
 	}
+
+	if (!setting->contains(itemSharkWorkingPath))
+	{
+		if (_platformType == PlatformType::Mac)
+		{
+			setting->setValue(itemSharkWorkingPath, "");
+		}
+		else
+		{
+			setting->setValue(itemSharkWorkingPath, "c:/Program Files/Wireshark/");
+		}
+	}
+
+	if (!setting->contains(itemSharkCommand))
+	{
+		setting->setValue(itemSharkCommand, "tshark -Y \"http.request.uri contains \\\"kcsapi\\\" || http.file_data contains \\\"svdata=\\\"\" -Tfields -e http.request.uri -e http.file_data -e frame.number -X lua_script:extract.lua -X lua_script1:data-text-lines -T fields -e extractor.value.string -e http.request_in -l");
+	}
+
+	if (!setting->contains(itemShouldFatalOnMismatchResponse))
+	{
+		setting->setValue(itemShouldFatalOnMismatchResponse, true);
+	}
+
 	/*
 	if (!setting->contains(itemExpeditionMode))
 	{
@@ -573,6 +628,15 @@ void MainWindow::loadSettings()
 	{
 		_proxyMode = ProxyMode::Titanium;
 	}
+	else if (!proxymode.compare("Shark", Qt::CaseInsensitive))
+	{
+		_proxyMode = ProxyMode::Shark;
+	}
+
+	_sharkWorkingPath = setting->value(itemSharkWorkingPath).toString();
+	_sharkCommand = setting->value(itemSharkCommand).toString();
+
+	_sharkShouldRaiseFatalOnMismatchResponse = setting->value(itemShouldFatalOnMismatchResponse).toBool();
 
 	// no longer use ini file for expedition
 	ExpeditionManager::getInstance().BuildByPreset("Default");
@@ -641,12 +705,12 @@ void MainWindow::applyCss(QWebViewCSSIndex css)
 #if (QT_VERSION >= QT_VERSION_CHECK(5, 6, 0))
 		QString jsStr = 
 			"function addStyleString(str) {\
-										var node = document.createElement('style');\
-																					node.innerHTML = str;\
-																																				document.body.appendChild(node);\
-																																																						}\
-																																																																											addStyleString('" + _ieCsses[(int)css] + "'); \
-																																																																																																			addStyleString('body { background: silver }'); ";
+																			var node = document.createElement('style');\
+																																																																					node.innerHTML = str;\
+																																																																																																																																																																																													document.body.appendChild(node);\
+																																																																																																																																																																																																																																																																																																																																																																																																																																																	}\
+																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																												addStyleString('" + _ieCsses[(int)css] + "'); \
+																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																	addStyleString('body { background: silver }'); ";
 
 		_webView->page()->runJavaScript(jsStr);
 #else

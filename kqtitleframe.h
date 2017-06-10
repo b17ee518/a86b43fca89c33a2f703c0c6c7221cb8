@@ -7,34 +7,34 @@
 
 class KQTitleFrame : public QFrame
 {
-    Q_OBJECT
+	Q_OBJECT
 public:
-    explicit KQTitleFrame(QWidget *parent = 0);
+	explicit KQTitleFrame(QWidget *parent = 0);
 
-    void setHandlingWidget(QWidget * pw);
-    inline QWidget * handlingWidget(){return _pHandlingWidget;}
+	void setHandlingWidget(QWidget * pw);
+	inline QWidget * handlingWidget(){ return _pHandlingWidget; }
 
 protected:
-    void stopMoving();
+	void stopMoving();
 
 private:
-    QWidget * _pHandlingWidget = NULL;
+	QWidget * _pHandlingWidget = NULL;
 
-    bool _bMoving = false;
-    QPoint _lastMovingPos;
+	bool _bMoving = false;
+	QPoint _lastMovingPos;
 
-    QTimer * _pUpdateTimer = NULL;
+	QTimer * _pUpdateTimer = NULL;
 
 protected:
-    void mousePressEvent(QMouseEvent* event);
-    void mouseReleaseEvent(QMouseEvent* event);
+	void mousePressEvent(QMouseEvent* event);
+	void mouseReleaseEvent(QMouseEvent* event);
 
 signals:
 
-public slots:
+	public slots :
 
-private slots:
-    void slotUpdateTimer();
+		private slots :
+		void slotUpdateTimer();
 
 };
 

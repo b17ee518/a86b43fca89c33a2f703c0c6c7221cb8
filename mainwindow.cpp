@@ -18,9 +18,9 @@
 
 MainWindow * MainWindow::s_pMainWindow = NULL;
 
-MainWindow::MainWindow(QWidget *parent) :
-MainWindowBase(parent),
-ui(new Ui::MainWindow)
+MainWindow::MainWindow(QWidget *parent)
+	: MainWindowBase(parent)
+	, ui(new Ui::MainWindow)
 {
 	ui->setupUi(this);
 	ui->retranslateUi(this);

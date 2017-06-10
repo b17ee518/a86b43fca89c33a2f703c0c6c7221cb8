@@ -17,11 +17,11 @@
 #define SHIP_UPDATETIMER_INTERVAL	50
 
 ShipMainWindow::ShipMainWindow(QWidget *parent)
-: SubMainWindow(parent)
-, ui(new Ui::ShipMainWindow)
-, _needRebuildTable(true)
-, _lastToggledId(-1)
-, _doNotRecordLast(false)
+	: SubMainWindow(parent)
+	, ui(new Ui::ShipMainWindow)
+	, _needRebuildTable(true)
+	, _lastToggledId(-1)
+	, _doNotRecordLast(false)
 {
 	ui->setupUi(this);
 	mwbPostInit();
@@ -38,35 +38,35 @@ ShipMainWindow::ShipMainWindow(QWidget *parent)
 
 ShipMainWindow::~ShipMainWindow()
 {
-    delete ui;
+	delete ui;
 }
 
 void ShipMainWindow::clearShipData()
 {
-    _shipGroupList.clear();
+	_shipGroupList.clear();
 	_needRebuildTable = true;
 }
 
 void ShipMainWindow::addShipData(int stype, const QString& stypename, int team, bool bExpedition, const QString& name, int lv, int cond, bool bNeedCharge, bool bNeedRepair, int drumCount, int sortnum, int shipid)
 {
-    UIShipData data;
-    data.setData(team, bExpedition, name, lv, cond, bNeedCharge, bNeedRepair, drumCount, sortnum, shipid);
-    bool bDone = false;
-    for (QList<UIShipGroupData>::iterator it=_shipGroupList.begin(); it!=_shipGroupList.end(); ++it)
-    {
-        if (it->stype == stype)
-        {
-            it->ships.push_back(data);
-            bDone = true;
-            break;
-        }
-    }
-    if (!bDone)
-    {
-        UIShipGroupData group;
-        group.setMetaData(stype, stypename);
-        group.ships.push_back(data);
-        _shipGroupList.push_back(group);
+	UIShipData data;
+	data.setData(team, bExpedition, name, lv, cond, bNeedCharge, bNeedRepair, drumCount, sortnum, shipid);
+	bool bDone = false;
+	for (QList<UIShipGroupData>::iterator it = _shipGroupList.begin(); it != _shipGroupList.end(); ++it)
+	{
+		if (it->stype == stype)
+		{
+			it->ships.push_back(data);
+			bDone = true;
+			break;
+		}
+	}
+	if (!bDone)
+	{
+		UIShipGroupData group;
+		group.setMetaData(stype, stypename);
+		group.ships.push_back(data);
+		_shipGroupList.push_back(group);
 	}
 	_needRebuildTable = true;
 }
@@ -110,7 +110,7 @@ void ShipMainWindow::buildTable()
 	KanDataConnector * pkdc = &KanDataConnector::getInstance();
 	KanSaveData * pksd = &KanSaveData::getInstance();
 
-	foreach (auto& ship, pksd->portdata.api_ship)
+	foreach(auto& ship, pksd->portdata.api_ship)
 	{
 		auto pmstship = pkdc->findMstShipFromShipid(ship.api_ship_id);
 		QString shiptypename = pkdc->findMstShipTypeNameFromSType(pmstship->api_stype);
@@ -119,10 +119,10 @@ void ShipMainWindow::buildTable()
 		bool bNeedCharge = false;
 		bool bNeedRepair = false;
 		int drumcount = 0;
-		
-		foreach (auto& deck, pksd->portdata.api_deck_port)
+
+		foreach(auto& deck, pksd->portdata.api_deck_port)
 		{
-			foreach (auto shipno, deck.api_ship)
+			foreach(auto shipno, deck.api_ship)
 			{
 				if (ship.api_id == shipno)
 				{
@@ -156,7 +156,7 @@ void ShipMainWindow::buildTable()
 						if (pmstslotitem->api_type.count() > 2)
 						{
 							int type = pmstslotitem->api_type[2];
-							
+
 							// drum
 							if (type == (int)SlotitemType::YuSou)
 							{
@@ -185,14 +185,14 @@ void ShipMainWindow::buildTable()
 	}
 	_lstCollapsibleFrames.clear();
 
-    int count = 0;
-    foreach (auto& item, _shipGroupList)
-    {
-        if (item.ships.size())
-        {
-            buildSingleTable(item);
-            count++;
-        }
+	int count = 0;
+	foreach(auto& item, _shipGroupList)
+	{
+		if (item.ships.size())
+		{
+			buildSingleTable(item);
+			count++;
+		}
 	}
 	_needRebuildTable = false;
 	_doNotRecordLast = false;
@@ -232,43 +232,43 @@ void ShipMainWindow::slotSetVisible(bool bValue)
 
 void ShipMainWindow::buildSingleTable(const UIShipGroupData& groupData)
 {
-    auto pFrame = new KQUI_CollapsibleFrame(ui->scrollAreaWidgetContents);
-    pFrame->setObjectName(QStringLiteral("Frame"));
-    QSizePolicy sizePolicy4(QSizePolicy::Expanding, QSizePolicy::Expanding);
-    sizePolicy4.setHorizontalStretch(0);
-    sizePolicy4.setVerticalStretch(0);
-    sizePolicy4.setHeightForWidth(pFrame->sizePolicy().hasHeightForWidth());
-    pFrame->setSizePolicy(sizePolicy4);
-    pFrame->setMinimumSize(QSize(0, 25));
-    pFrame->setFrameShape(QFrame::StyledPanel);
-    pFrame->setFrameShadow(QFrame::Raised);
+	auto pFrame = new KQUI_CollapsibleFrame(ui->scrollAreaWidgetContents);
+	pFrame->setObjectName(QStringLiteral("Frame"));
+	QSizePolicy sizePolicy4(QSizePolicy::Expanding, QSizePolicy::Expanding);
+	sizePolicy4.setHorizontalStretch(0);
+	sizePolicy4.setVerticalStretch(0);
+	sizePolicy4.setHeightForWidth(pFrame->sizePolicy().hasHeightForWidth());
+	pFrame->setSizePolicy(sizePolicy4);
+	pFrame->setMinimumSize(QSize(0, 25));
+	pFrame->setFrameShape(QFrame::StyledPanel);
+	pFrame->setFrameShadow(QFrame::Raised);
 
-    pFrame->tableWidget()->hide();
-    pFrame->pushButton()->setStyleSheet("text-align: left;");
-    connect(pFrame->tableWidget(), SIGNAL(sigTableSizeChanged()), this, SLOT(slotOnTableSizeChanged()));
+	pFrame->tableWidget()->hide();
+	pFrame->pushButton()->setStyleSheet("text-align: left;");
+	connect(pFrame->tableWidget(), SIGNAL(sigTableSizeChanged()), this, SLOT(slotOnTableSizeChanged()));
 	connect(pFrame->pushButton(), SIGNAL(toggled(bool)), pFrame->tableWidget(), SLOT(setVisible(bool)));
 	connect(pFrame->pushButton(), SIGNAL(toggled(bool)), this, SLOT(slotToggled(bool)));
 	connect(pFrame->pushButton(), SIGNAL(toggled(bool)), pFrame, SLOT(slotResize(bool)));
 
 
-    ui->verticalLayout->addWidget(pFrame);
-    _lstCollapsibleFrames.push_back(pFrame);
+	ui->verticalLayout->addWidget(pFrame);
+	_lstCollapsibleFrames.push_back(pFrame);
 
-    setShipColumnFormat(pFrame);
+	setShipColumnFormat(pFrame);
 
 	int kiracount = 0;
 	int usablekiracount = 0;
-    QList<KQRowData> rows;
+	QList<KQRowData> rows;
 
-    QColor colWhite = QColor(255, 255, 255);
-    QColor colYellow = QColor(255, 255, 0);
-    QColor colRed = QColor(255, 0, 0);
+	QColor colWhite = QColor(255, 255, 255);
+	QColor colYellow = QColor(255, 255, 0);
+	QColor colRed = QColor(255, 0, 0);
 	QColor colGray = QColor(180, 180, 180);
 
 	int colIndex = COLINDEX_NORMAL;
 	bool bRed = false;
 
-    foreach (const UIShipData& it, groupData.ships)
+	foreach(const UIShipData& it, groupData.ships)
 	{
 		bool bKira = false;
 		QColor mainColor = getMainColor(it);
@@ -322,7 +322,7 @@ void ShipMainWindow::buildSingleTable(const UIShipGroupData& groupData)
 		{
 			bRed = true;
 		}
-    }
+	}
 
 	int totalCount = groupData.ships.size();
 	if (totalCount)
@@ -333,21 +333,21 @@ void ShipMainWindow::buildSingleTable(const UIShipGroupData& groupData)
 		{
 			colIndex = COLINDEX_NOKIRA;
 		}
-		else if (kiraval < 1.0f/8.0f || usableval < 1.0f/10.0f)
+		else if (kiraval < 1.0f / 8.0f || usableval < 1.0f / 10.0f)
 		{
 			colIndex = COLINDEX_SELDOMKIRA;
 		}
-		else if (kiraval >= 1.0f/2.0f  || usableval >= 1.0f/3.0f)
+		else if (kiraval >= 1.0f / 2.0f || usableval >= 1.0f / 3.0f)
 		{
 			colIndex = COLINDEX_LOTSKIRA;
 		}
-		else if (kiraval >= 1.0f/3.0f || usableval >= 1.0f/4.0f)
+		else if (kiraval >= 1.0f / 3.0f || usableval >= 1.0f / 4.0f)
 		{
 			colIndex = COLINDEX_SOMEKIRA;
 		}
 	}
-	
-    QString title = QString::fromLocal8Bit("%1 (キラ:%2/使えるキラ:%3/総:%4)")
+
+	QString title = QString::fromLocal8Bit("%1 (キラ:%2/使えるキラ:%3/総:%4)")
 		.arg(groupData.stypename)
 		.arg(kiracount)
 		.arg(usablekiracount)
@@ -357,7 +357,7 @@ void ShipMainWindow::buildSingleTable(const UIShipGroupData& groupData)
 
 	pFrame->pushButton()->setProperty(QPROPERTY_SLOTITEMID, groupData.stype);
 
-    pFrame->tableWidget()->updateFullTable(rows);
+	pFrame->tableWidget()->updateFullTable(rows);
 
 	if (_checkedIdList.contains(groupData.stype))
 	{
@@ -368,21 +368,21 @@ void ShipMainWindow::buildSingleTable(const UIShipGroupData& groupData)
 		pFrame->pushButton()->setChecked(false);
 	}
 
-//	pFrame->pushButton()->setChecked(false);
+	//	pFrame->pushButton()->setChecked(false);
 }
 
 void ShipMainWindow::setShipColumnFormat(KQUI_CollapsibleFrame *pFrame)
 {
-    auto pTableWidget = pFrame->tableWidget();
-    pTableWidget->setRowCount(0);
-    pTableWidget->setColumnCount(6);
-    pTableWidget->setColumnWidth(0, 18);		// team
+	auto pTableWidget = pFrame->tableWidget();
+	pTableWidget->setRowCount(0);
+	pTableWidget->setColumnCount(6);
+	pTableWidget->setColumnWidth(0, 18);		// team
 	pTableWidget->setColumnWidth(1, 120);	// name
 	pTableWidget->setColumnWidth(2, 60);		// lv
 	pTableWidget->setColumnWidth(3, 50);		// cond
 	pTableWidget->setColumnWidth(4, 18);		// charge/HP
 	pTableWidget->setColumnWidth(5, 80);		// drum
-    pTableWidget->setSeparatorColumn(2);
+	pTableWidget->setSeparatorColumn(2);
 }
 
 QColor ShipMainWindow::getMainColor(const UIShipData& ship)
@@ -440,11 +440,11 @@ void ShipMainWindow::slotUpdateTimer()
 	/*
 	static int count = 0;
 	count++;
-	
+
 	if (count == 50)
 	{
-		needRebuildTable = true;
-		buildTable();
+	needRebuildTable = true;
+	buildTable();
 	}
 	*/
 
@@ -458,7 +458,7 @@ void ShipMainWindow::slotUpdateTimer()
 				return;
 			}
 		}
-//		this->adjustSize();
+		//		this->adjustSize();
 	}
 }
 
@@ -469,7 +469,7 @@ void ShipMainWindow::on_pbClose_clicked()
 
 void ShipMainWindow::on_pbMinimize_clicked()
 {
-    minimizeWindow();
+	minimizeWindow();
 }
 
 void ShipMainWindow::slotToggled(bool bValue)
@@ -496,7 +496,7 @@ void ShipMainWindow::slotToggled(bool bValue)
 				}
 			}
 			else
-			{ 
+			{
 				_checkedIdList.removeAll(id);
 			}
 		}
@@ -556,74 +556,74 @@ void ShipMainWindow::onToggleSleepMode(bool bSleep)
 
 void ShipMainWindow::setButtonColor(KQUI_CollapsibleFrame* pFrame, int colindex, bool bRed)
 {
-	
+
 	static QString stylesheet_a[] =
 	{
 		"\
-		QPushButton {   \
-			color:white;    \
-			text-align: left;\
-		}   \
-		",  // normal
-		"\
-			QPushButton {   \
-			color:rgb(153, 255, 255);    \
-			text-align: left;\
-		}   \
-		",  // 1/4 usable or 1/3 kira
-		"\
-		QPushButton {   \
-			color:rgb(255, 255, 0);    \
-			text-align: left;\
-		}   \
-		",   // 1/3 usable or 1/2 kira
-		"\
-			QPushButton {   \
-			color:rgb(255, 153, 0);    \
-			text-align: left;\
-		}   \
-		",   // lower than 1/10 usable or 1/8 kira
-		"\
-			QPushButton {   \
-			color:rgb(180, 180, 180);    \
-			text-align: left;\
-		}   \
-		"   // no kira
+				QPushButton {   \
+							color:white;    \
+										text-align: left;\
+												}   \
+														",  // normal
+														"\
+																	QPushButton {   \
+																				color:rgb(153, 255, 255);    \
+																							text-align: left;\
+																									}   \
+																											",  // 1/4 usable or 1/3 kira
+																											"\
+																													QPushButton {   \
+																																color:rgb(255, 255, 0);    \
+																																			text-align: left;\
+																																					}   \
+																																							",   // 1/3 usable or 1/2 kira
+																																							"\
+																																										QPushButton {   \
+																																													color:rgb(255, 153, 0);    \
+																																																text-align: left;\
+																																																		}   \
+																																																				",   // lower than 1/10 usable or 1/8 kira
+																																																				"\
+																																																							QPushButton {   \
+																																																										color:rgb(180, 180, 180);    \
+																																																													text-align: left;\
+																																																															}   \
+																																																																	"   // no kira
 	};
 	static QString stylesheet_b[] =
 	{
 		" \
-		QPushButton{\
-			background-color: rgb(80, 80, 80);\
-			border: none; \
-		}\
-		QPushButton:checked{\
-			background-color: rgb(80, 80, 80);\
-			border: none; \
-		}\
-		QPushButton:hover{  \
-			background-color: grey; \
-			border-style: outset;  \
-		}  \
-		",
-		" \
-		QPushButton:checked{\
-			background-color: rgb(153, 0, 0);\
-			border: none; \
-		}\
-		QPushButton:flat{\
-			background-color: rgb(153, 0, 0);\
-			border: none; \
-		}\
-		QPushButton:{\
-			background-color: rgb(153, 0, 0);\
-			border: none; \
-		}\
-		QPushButton:hover{  \
-			background-color: rgb(128, 0, 0);; \
-			border-style: outset;  \
-		}  \
-		"
+				QPushButton{\
+							background-color: rgb(80, 80, 80);\
+										border: none; \
+												}\
+														QPushButton:checked{\
+																	background-color: rgb(80, 80, 80);\
+																				border: none; \
+																						}\
+																								QPushButton:hover{  \
+																											background-color: grey; \
+																														border-style: outset;  \
+																																}  \
+																																		",
+																																		" \
+																																				QPushButton:checked{\
+																																							background-color: rgb(153, 0, 0);\
+																																										border: none; \
+																																												}\
+																																														QPushButton:flat{\
+																																																	background-color: rgb(153, 0, 0);\
+																																																				border: none; \
+																																																						}\
+																																																								QPushButton:{\
+																																																											background-color: rgb(153, 0, 0);\
+																																																														border: none; \
+																																																																}\
+																																																																		QPushButton:hover{  \
+																																																																					background-color: rgb(128, 0, 0);; \
+																																																																								border-style: outset;  \
+																																																																										}  \
+																																																																												"
 	};
 
 	pFrame->pushButton()->setAutoFillBackground(true);

@@ -9,13 +9,13 @@
 class KanReqData
 {
 public:
-    KanReqData(){}
+	KanReqData(){}
 
-    void ReadFromString(const QString& strfunc, const QString& reqstr);
-    QString GetItemAsString(const QString& item);
+	void ReadFromString(const QString& strfunc, const QString& reqstr);
+	QString GetItemAsString(const QString& item);
 
-    QString _reqfunc;
-    QUrlQuery _query;
+	QString _reqfunc;
+	QUrlQuery _query;
 };
 
 #endif // KANREQDATA_H

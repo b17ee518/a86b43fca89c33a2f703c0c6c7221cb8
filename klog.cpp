@@ -14,7 +14,7 @@ void KLog::AppendLog(QFile *f, const QString& log, bool bWithTimeStamp/*=true*/)
 	{
 		if (f->isWritable())
 		{
-			QString str = (bWithTimeStamp?QDateTime::currentDateTime().toString("[yyyy/MM/dd HH:mm:ss]\t"):"");
+			QString str = (bWithTimeStamp ? QDateTime::currentDateTime().toString("[yyyy/MM/dd HH:mm:ss]\t") : "");
 			str += log;
 			str += "\n";
 			QTextStream outstream(f);
@@ -29,14 +29,14 @@ void KLog::AppendLog(QFile *f, const QString& log, bool bWithTimeStamp/*=true*/)
 void KLog::LogError(const QString& log)
 {
 	RecordLog("error", log);
-//	AppendLog(errorlog, log);
+	//	AppendLog(errorlog, log);
 }
 
 void KLog::LogAPI(const QString& path, const QString& request, const QString& response, bool bDebug/*=false*/)
 {
-	QString str = path+"\t"+request+"\t"+response;
-	RecordLog(QString("apilog")+(bDebug?"_debug":""), str);
-//	AppendLog(apilog, str);
+	QString str = path + "\t" + request + "\t" + response;
+	RecordLog(QString("apilog") + (bDebug ? "_debug" : ""), str);
+	//	AppendLog(apilog, str);
 }
 
 void KLog::DeleteLog(const QString& filename)

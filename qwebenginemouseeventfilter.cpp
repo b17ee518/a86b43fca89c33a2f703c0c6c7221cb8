@@ -54,9 +54,9 @@ bool QWebEngineMouseEventFilter::eventFilter(QObject * obj, QEvent * event)
 		if ((pMouseEvent != NULL) && (pMouseEvent->source() == Qt::MouseEventSource::MouseEventSynthesizedBySystem))
 		{
 		*/
-			event->ignore();
-			return true;
-//		}
+		event->ignore();
+		return true;
+		//		}
 	}
 	return false;
 }

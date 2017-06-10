@@ -12,20 +12,20 @@
 class KLog
 {
 private:
-    KLog(void);
+	KLog(void);
 public:
-    static KLog& getInstance(void) {
-        static KLog singleton;
-        return singleton;
-    }
+	static KLog& getInstance(void) {
+		static KLog singleton;
+		return singleton;
+	}
 
-	void AppendLog(QFile * f, const QString& log, bool bWithTimeStamp=true);
+	void AppendLog(QFile * f, const QString& log, bool bWithTimeStamp = true);
 
 	void LogError(const QString& log);
-	void LogAPI(const QString& path, const QString& request, const QString& response, bool bDebug=false);
+	void LogAPI(const QString& path, const QString& request, const QString& response, bool bDebug = false);
 
 	void DeleteLog(const QString& filename);
-	void RecordLog(const QString& filename, const QString& log, bool bWithTimeStamp=true);
+	void RecordLog(const QString& filename, const QString& log, bool bWithTimeStamp = true);
 };
 
 #endif // KLOG_H

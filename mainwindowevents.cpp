@@ -48,28 +48,28 @@ void MainWindow::changeEvent(QEvent *e)
 	if (e->type() == QEvent::WindowStateChange)
 	{
 		QWindowStateChangeEvent* event = static_cast<QWindowStateChangeEvent*>(e);
-		if(event->oldState() & Qt::WindowMinimized)
+		if (event->oldState() & Qt::WindowMinimized)
 		{
-//            if (ui->pbCheckInfo->isChecked())
-            {
-                _pInfoWindow->setWindowState(Qt::WindowNoState);
-                _pInfoWindow->show();
-                _pInfoWindow->stackUnder(this);
-            }
+			//            if (ui->pbCheckInfo->isChecked())
+			{
+				_pInfoWindow->setWindowState(Qt::WindowNoState);
+				_pInfoWindow->show();
+				_pInfoWindow->stackUnder(this);
+			}
 
-//            if (ui->pbCheckTimer->isChecked())
-            {
-                _pTimerWindow->setWindowState(Qt::WindowNoState);
-                _pTimerWindow->show();
-                _pTimerWindow->stackUnder(_pInfoWindow);
-            }
+			//            if (ui->pbCheckTimer->isChecked())
+			{
+				_pTimerWindow->setWindowState(Qt::WindowNoState);
+				_pTimerWindow->show();
+				_pTimerWindow->stackUnder(_pInfoWindow);
+			}
 
-//            if (ui->pbCheckWeapon->isChecked())
-//            {
-//                m_pWeaponWindow->setWindowState(Qt::WindowNoState);
-//                m_pWeaponWindow->show();
-//                m_pWeaponWindow->stackUnder(m_pWeaponWindow);
-//            }
+			//            if (ui->pbCheckWeapon->isChecked())
+			//            {
+			//                m_pWeaponWindow->setWindowState(Qt::WindowNoState);
+			//                m_pWeaponWindow->show();
+			//                m_pWeaponWindow->stackUnder(m_pWeaponWindow);
+			//            }
 			this->raise();
 			this->activateWindow();
 			this->setSleepMode(false);
@@ -92,7 +92,7 @@ void MainWindow::changeEvent(QEvent *e)
 			{
 				_pShipWindow->hide();
 			}
-//			this->setSleepMode(true);
+			//			this->setSleepMode(true);
 		}
 	}
 
@@ -140,7 +140,7 @@ void MainWindow::closeEvent(QCloseEvent *e)
 
 	_pInfoWindow->close();
 	_pTimerWindow->close();
-    _pWeaponWindow->close();
+	_pWeaponWindow->close();
 	_pShipWindow->close();
 }
 
@@ -148,7 +148,7 @@ void MainWindow::moveEvent(QMoveEvent *e)
 {
 	MainWindowBase::moveEvent(e);
 
-	QPoint diffPos = e->pos()-e->oldPos();
+	QPoint diffPos = e->pos() - e->oldPos();
 
 	if (_bMoveSubTogether)
 	{
@@ -174,15 +174,15 @@ void MainWindow::moveEvent(QMoveEvent *e)
 void MainWindow::mouseReleaseEvent(QMouseEvent *event)
 {
 	QRect rc = QApplication::desktop()->availableGeometry(QApplication::desktop()->primaryScreen());
-	if (x() < 20 && x() > -20 && x()!=0)
+	if (x() < 20 && x() > -20 && x() != 0)
 	{
 		move(0, y());
 	}
-	else if (x()+width() > rc.width()-20 && x()+width() < rc.width()+20 && x()!=rc.width()-width())
+	else if (x() + width() > rc.width() - 20 && x() + width() < rc.width() + 20 && x() != rc.width() - width())
 	{
-		move(rc.width()-width(), y());
+		move(rc.width() - width(), y());
 	}
-	if (y() < 20 && y()!=0)
+	if (y() < 20 && y() != 0)
 	{
 		move(x(), 0);
 	}
@@ -195,14 +195,14 @@ void MainWindow::slotToggleRestoreMinimize(bool bRestore)
 	{
 		if (isMinimized())
 		{
-            restoreWindow();
+			restoreWindow();
 		}
 	}
 	if (!bRestore)
 	{
 		if (!isMinimized())
-        {
-            minimizeWindow();
+		{
+			minimizeWindow();
 		}
 	}
 }
@@ -226,7 +226,7 @@ void MainWindow::on_pbClose_clicked()
 
 void MainWindow::on_pbMinimize_clicked()
 {
-    minimizeWindow();
+	minimizeWindow();
 }
 
 void MainWindow::on_pbCheckTransparent_toggled(bool checked)
@@ -313,11 +313,11 @@ void MainWindow::on_pbCheckTransparent_toggled(bool checked)
 	/*
 	if (checked)
 	{
-		applyCss(QWebViewCSSIndex::Compact);
+	applyCss(QWebViewCSSIndex::Compact);
 	}
 	else
 	{
-		applyCss(QWebViewCSSIndex::Normal);
+	applyCss(QWebViewCSSIndex::Normal);
 	}
 	*/
 }

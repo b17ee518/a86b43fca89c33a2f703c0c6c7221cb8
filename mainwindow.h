@@ -60,6 +60,7 @@ enum class ProxyMode
 	Fid,
 	Nekoxy,
 	Titanium,
+	Shark,
 };
 
 enum class WebWidgetType

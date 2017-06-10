@@ -6,9 +6,9 @@
 #define INFO_UPDATETIMER_INTERVAL				50
 #define INFO_UPDATETIMER_INTERVAL_SLOW	500
 
-InfoMainWindow::InfoMainWindow(QWidget *parent) :
-	SubMainWindow(parent),
-	ui(new Ui::InfoMainWindow)
+InfoMainWindow::InfoMainWindow(QWidget *parent)
+	: SubMainWindow(parent)
+	, ui(new Ui::InfoMainWindow)
 {
 	ui->setupUi(this);
 
@@ -65,13 +65,13 @@ void InfoMainWindow::updateOverviewTable(const QList<QString>& lst, const QList<
 {
 	if (lst.count() == 5 && cols.count() == 5)
 	{
-		for (int i=0; i<2; i++)
+		for (int i = 0; i < 2; i++)
 		{
-			for (int j=0; j<2; j++)
+			for (int j = 0; j < 2; j++)
 			{
 				QTableWidgetItem * pItem = ui->overviewTable->item(j, i);
-				pItem->setText(lst[j*2+i]);
-				pItem->setTextColor(cols[j*2+i]);
+				pItem->setText(lst[j * 2 + i]);
+				pItem->setTextColor(cols[j * 2 + i]);
 			}
 		}
 	}
@@ -92,81 +92,81 @@ void InfoMainWindow::updateFleetTable(int n, const QString& buttonTitle, int col
 	static QString stylesheet_a[] =
 	{
 		"\
-		QPushButton {   \
-			color:white;    \
-			text-align: left;\
-		}   \
-		",  // normal 0
-		"\
-			QPushButton {   \
-			color:rgb(153, 255, 255);    \
-			text-align: left;\
-		}   \
-		",  // have kira 1
-		"\
-		QPushButton {   \
-			color:rgb(255, 255, 0);    \
-			text-align: left;\
-		}   \
-		",  // kira full 2
-		"\
-		QPushButton {   \
-			color:rgb(60, 179, 113);    \
-			text-align: left;\
-		}   \
-		",   // tokyu ok 3
-		"\
-		QPushButton {   \
-			color:rgb(102, 153, 255);    \
-			text-align: left;\
-		}   \
-		",   // nezumi ok 4
-		"\
-			QPushButton {   \
-			color:rgb(255, 153, 0);    \
-			text-align: left;\
-		}   \
-		"   // need hokyu 4
+						QPushButton {   \
+													color:white;    \
+																							text-align: left;\
+																																			}   \
+																																																	",  // normal 0
+																																																	"\
+																																																																		QPushButton {   \
+																																																																																						color:rgb(153, 255, 255);    \
+																																																																																																													text-align: left;\
+																																																																																																																																						}   \
+																																																																																																																																																																	",  // have kira 1
+																																																																																																																																																																	"\
+																																																																																																																																																																																														QPushButton {   \
+																																																																																																																																																																																																																														color:rgb(255, 255, 0);    \
+																																																																																																																																																																																																																																																																	text-align: left;\
+																																																																																																																																																																																																																																																																																																						}   \
+																																																																																																																																																																																																																																																																																																																																													",  // kira full 2
+																																																																																																																																																																																																																																																																																																																																													"\
+																																																																																																																																																																																																																																																																																																																																																																																						QPushButton {   \
+																																																																																																																																																																																																																																																																																																																																																																																																																																		color:rgb(60, 179, 113);    \
+																																																																																																																																																																																																																																																																																																																																																																																																																																																																																	text-align: left;\
+																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																		}   \
+																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																					",   // tokyu ok 3
+																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																					"\
+																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																										QPushButton {   \
+																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																		color:rgb(102, 153, 255);    \
+																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																													text-align: left;\
+																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																										}   \
+																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																									",   // nezumi ok 4
+																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																									"\
+																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																											QPushButton {   \
+																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																color:rgb(255, 153, 0);    \
+																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																								text-align: left;\
+																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																		}   \
+																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																														"   // need hokyu 4
 	};
 	static QString stylesheet_b[] =
 	{
 		" \
-		QPushButton{\
-			background-color: rgb(80, 80, 80);\
-			border: none; \
-		}\
-		QPushButton:checked{\
-			background-color: rgb(80, 80, 80);\
-			border: none; \
-		}\
-		QPushButton:hover{  \
-			background-color: grey; \
-			border-style: outset;  \
-		}  \
-		",
-		" \
-		QPushButton:checked{\
-			background-color: rgb(153, 0, 0);\
-			border: none; \
-		}\
-		QPushButton:flat{\
-			background-color: rgb(153, 0, 0);\
-			border: none; \
-		}\
-		QPushButton:{\
-			background-color: rgb(153, 0, 0);\
-			border: none; \
-		}\
-		QPushButton:hover{  \
-			background-color: rgb(128, 0, 0);; \
-			border-style: outset;  \
-		}  \
-		"
+						QPushButton{\
+													background-color: rgb(80, 80, 80);\
+																							border: none; \
+																																			}\
+																																																	QPushButton:checked{\
+																																																																		background-color: rgb(80, 80, 80);\
+																																																																																						border: none; \
+																																																																																																												}\
+																																																																																																																																				QPushButton:hover{  \
+																																																																																																																																																															background-color: grey; \
+																																																																																																																																																																																													border-style: outset;  \
+																																																																																																																																																																																																																													}  \
+																																																																																																																																																																																																																																																															",
+																																																																																																																																																																																																																																																															" \
+																																																																																																																																																																																																																																																																																																			QPushButton:checked{\
+																																																																																																																																																																																																																																																																																																																																										background-color: rgb(153, 0, 0);\
+																																																																																																																																																																																																																																																																																																																																																																																				border: none; \
+																																																																																																																																																																																																																																																																																																																																																																																																																																}\
+																																																																																																																																																																																																																																																																																																																																																																																																																																																																														QPushButton:flat{\
+																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																															background-color: rgb(153, 0, 0);\
+																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																			border: none; \
+																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																									}\
+																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																	QPushButton:{\
+																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																												background-color: rgb(153, 0, 0);\
+																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																										border: none; \
+																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																										}\
+																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																												QPushButton:hover{  \
+																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																	background-color: rgb(128, 0, 0);; \
+																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																									border-style: outset;  \
+																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																			}  \
+																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																															"
 	};
 	_pFleetFrames[n]->pushButton()->setText(buttonTitle);
 	_pFleetFrames[n]->tableWidget()->updateFullTable(rows);
 
-	_pFleetFrames[n]->pushButton()->setStyleSheet(stylesheet_a[colindex]+stylesheet_b[bRed?1:0]);
+	_pFleetFrames[n]->pushButton()->setStyleSheet(stylesheet_a[colindex] + stylesheet_b[bRed ? 1 : 0]);
 }
 
 void InfoMainWindow::updateRepairTable(const QString& buttonTitle, const QList<KQRowData>& rows)
@@ -180,29 +180,29 @@ void InfoMainWindow::updateTitle(const QString& title, int colindex)
 	static QString stylesheet[] =
 	{
 		" \
-		QLineEdit{\
-			color: rgb(255, 255, 255);\
-			border: none;\
-		}\
-		",
-		" \
-		QLineEdit{\
-			color: rgb(255, 255, 0);\
-			border: none;\
-		}\
-		",
-		" \
-		QLineEdit{\
-			color: rgb(255, 153, 0);\
-			border: none;\
-		}\
-		",
-		" \
-		QLineEdit{\
-			color: rgb(128, 128, 128);\
-			border: none;\
-		}\
-		"
+						QLineEdit{\
+													color: rgb(255, 255, 255);\
+																							border: none;\
+																																			}\
+																																																	",
+																																																	" \
+																																																																	QLineEdit{\
+																																																																																				color: rgb(255, 255, 0);\
+																																																																																																										border: none;\
+																																																																																																																																		}\
+																																																																																																																																																												",
+																																																																																																																																																												" \
+																																																																																																																																																																																								QLineEdit{\
+																																																																																																																																																																																																																							color: rgb(255, 153, 0);\
+																																																																																																																																																																																																																																																									border: none;\
+																																																																																																																																																																																																																																																																																													}\
+																																																																																																																																																																																																																																																																																																																																			",
+																																																																																																																																																																																																																																																																																																																																			" \
+																																																																																																																																																																																																																																																																																																																																																																											QLineEdit{\
+																																																																																																																																																																																																																																																																																																																																																																																																																						color: rgb(128, 128, 128);\
+																																																																																																																																																																																																																																																																																																																																																																																																																																																																				border: none;\
+																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																				}\
+																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																						"
 	};
 	ui->lineEditTitle->setText(title);
 	ui->lineEditTitle->setStyleSheet(stylesheet[colindex]);
@@ -215,9 +215,9 @@ void InfoMainWindow::setOverviewColumnFormat()
 	ui->overviewTable->setColumnWidth(0, 175);
 	ui->overviewTable->setColumnWidth(1, 155);
 	ui->overviewTable->setSpan(2, 0, 1, 2);
-	for (int i=0; i<2; i++)
+	for (int i = 0; i < 2; i++)
 	{
-		for (int j=0; j<2; j++)
+		for (int j = 0; j < 2; j++)
 		{
 			QTableWidgetItem * pItem = new QTableWidgetItem();
 			ui->overviewTable->setItem(i, j, pItem);
@@ -285,23 +285,23 @@ void InfoMainWindow::setRepairColumnFormat()
 
 void InfoMainWindow::slotOnTableSizeChanged()
 {
-    int minw=280;
-    KQUI_CollapsibleFrame * pFrame;
-    foreach (pFrame, _lstCollapsibleFrames)
-    {
-        pFrame->tableWidget()->resizeColumnsToContents();
-        int w = pFrame->tableWidget()->minimumWidth();
-        if (w > minw)
-        {
-            minw = w;
-        }
-    }
-    foreach (pFrame, _lstCollapsibleFrames)
-    {
-        pFrame->tableWidget()->adjustSizeToWidth(minw);
-    }
+	int minw = 280;
+	KQUI_CollapsibleFrame * pFrame;
+	foreach(pFrame, _lstCollapsibleFrames)
+	{
+		pFrame->tableWidget()->resizeColumnsToContents();
+		int w = pFrame->tableWidget()->minimumWidth();
+		if (w > minw)
+		{
+			minw = w;
+		}
+	}
+	foreach(pFrame, _lstCollapsibleFrames)
+	{
+		pFrame->tableWidget()->adjustSizeToWidth(minw);
+	}
 	_needUpdateNext[0] = true;
-//    this->adjustSize();
+	//    this->adjustSize();
 
 }
 void InfoMainWindow::slotUpdateTimer()
@@ -332,7 +332,7 @@ void InfoMainWindow::slotUpdateTimer()
 		if (index >= 0)
 		{
 			_needUpdateNext[index] = false;
-			if (index < UPDATENEXT_TRYTIME-1)
+			if (index < UPDATENEXT_TRYTIME - 1)
 			{
 				_needUpdateNext[index + 1] = true;
 			}
@@ -352,7 +352,7 @@ void InfoMainWindow::on_pbClose_clicked()
 
 void InfoMainWindow::on_pbMinimize_clicked()
 {
-    minimizeWindow();
+	minimizeWindow();
 }
 
 void InfoMainWindow::onToggleSleepMode(bool bSleep)

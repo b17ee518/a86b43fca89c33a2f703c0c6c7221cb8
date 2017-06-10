@@ -19,7 +19,7 @@ protected:
 private:
 	QTime _pressedTime;
 	QTime _releasedTime;
-	QTime _dblClickedTime;	
+	QTime _dblClickedTime;
 };
 
 #endif // QWEBENGINEMOUSEEVENTFILTER_H

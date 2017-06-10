@@ -21,30 +21,30 @@ class QTimer;
 
 class CookieJar : public QNetworkCookieJar
 {
-    Q_OBJECT
+	Q_OBJECT
 public:
-    explicit CookieJar(QObject *parent = 0);
-    ~CookieJar();
-    bool deleteCookie(const QNetworkCookie & cookie);
-    bool insertCookie(const QNetworkCookie & cookie);
-    bool setCookiesFromUrl(const QList<QNetworkCookie> & cookieList, const QUrl & url);
-    bool updateCookie(const QNetworkCookie & cookie);
+	explicit CookieJar(QObject *parent = 0);
+	~CookieJar();
+	bool deleteCookie(const QNetworkCookie & cookie);
+	bool insertCookie(const QNetworkCookie & cookie);
+	bool setCookiesFromUrl(const QList<QNetworkCookie> & cookieList, const QUrl & url);
+	bool updateCookie(const QNetworkCookie & cookie);
 
-public slots:
-    void save();
-    void load();
-    void deleteAll();
+	public slots:
+	void save();
+	void load();
+	void deleteAll();
 
-private slots:
-    void autoSave();
+	private slots:
+	void autoSave();
 
 private:
-    void removeExpiredCookies();
-    void markChanged();
-    QString cookiesFile() const;
+	void removeExpiredCookies();
+	void markChanged();
+	QString cookiesFile() const;
 
-    QString _dir;
-    bool    _modified = false;
-    QTimer* _saveDelayTimer = NULL;
+	QString _dir;
+	bool    _modified = false;
+	QTimer* _saveDelayTimer = NULL;
 };
 

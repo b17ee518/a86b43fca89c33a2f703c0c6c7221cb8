@@ -8,29 +8,29 @@
 
 class SubMainWindow : public MainWindowBase
 {
-    Q_OBJECT
+	Q_OBJECT
 public:
-    explicit SubMainWindow(QWidget *parent = 0);
+	explicit SubMainWindow(QWidget *parent = 0);
 
-    inline bool isDockingOnTop(){return _bDockingOnTop;}
+	inline bool isDockingOnTop(){ return _bDockingOnTop; }
 
 protected:
 
-    virtual void showEvent(QShowEvent *event);
-    virtual void hideEvent(QHideEvent *event);
+	virtual void showEvent(QShowEvent *event);
+	virtual void hideEvent(QHideEvent *event);
 
-    virtual void moveEvent(QMoveEvent *event);
-    virtual void mouseReleaseEvent(QMouseEvent * event);
+	virtual void moveEvent(QMoveEvent *event);
+	virtual void mouseReleaseEvent(QMouseEvent * event);
 
 signals:
 
-public slots:
+	public slots :
 
 private:
-    bool _bDockingOnTop;
-    QTimer * _pDockingCallbackTimer;
-protected slots:
-    virtual void slotDockingTimerCallback();
+	bool _bDockingOnTop;
+	QTimer * _pDockingCallbackTimer;
+	protected slots:
+	virtual void slotDockingTimerCallback();
 
 };
 

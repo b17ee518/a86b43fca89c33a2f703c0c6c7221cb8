@@ -26,12 +26,12 @@ QWindowsEventFilter::~QWindowsEventFilter()
 	/*
 	if (_logFile)
 	{
-		_logFile->close();
-		delete _logFile;
+	_logFile->close();
+	delete _logFile;
 	}
 	if (_logStream)
 	{
-		delete _logStream;
+	delete _logStream;
 	}
 	*/
 }
@@ -44,18 +44,18 @@ bool QWindowsEventFilter::nativeEventFilter(const QByteArray &eventType, void *m
 	if (eventType == "windows_generic_MSG")
 	{
 		MSG *msg = static_cast<MSG *>(message);
-				
+
 		if (msg->message == WM_POWERBROADCAST)
 		{
 			/*
 			if (_logStream)
 			{
-				QString str = QString("\nMessage: ") + QString::number(msg->message) + " lParam: " + QString::number((int)(msg->lParam)) + " Time :" + QTime::currentTime().toString() + "\n";
-				(*_logStream) << str;
-				if (_logFile)
-				{
-					_logFile->flush();
-				}
+			QString str = QString("\nMessage: ") + QString::number(msg->message) + " lParam: " + QString::number((int)(msg->lParam)) + " Time :" + QTime::currentTime().toString() + "\n";
+			(*_logStream) << str;
+			if (_logFile)
+			{
+			_logFile->flush();
+			}
 			}
 			*/
 			auto mainWindow = MainWindow::mainWindow();
@@ -82,12 +82,12 @@ bool QWindowsEventFilter::nativeEventFilter(const QByteArray &eventType, void *m
 				/*
 				if (_logStream)
 				{
-					QString str = QString("Power Setting: ") + QString::number(*(DWORD*)(ps->Data)) + "\n";
-					(*_logStream) << str;
-					if (_logFile)
-					{
-						_logFile->flush();
-					}
+				QString str = QString("Power Setting: ") + QString::number(*(DWORD*)(ps->Data)) + "\n";
+				(*_logStream) << str;
+				if (_logFile)
+				{
+				_logFile->flush();
+				}
 				}
 				*/
 				if (ps->PowerSetting == GUID_CONSOLE_DISPLAY_STATE)

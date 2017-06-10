@@ -1179,6 +1179,8 @@ void KanDataConnector::updateWeaponTable()
 
 void KanDataConnector::updateBattle(const kcsapi_battle &api_battle, KanBattleType type)
 {
+	ControlManager::getInstance().setPortDataDirty();
+
 	int dockid = 0;
 	int dockid_combinedSelf = -1;
 	bool bCombinedSelf = false;

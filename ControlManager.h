@@ -316,6 +316,14 @@ public:
 
 	qreal randVal(qreal min, qreal max);
 
+	bool isPortDataDirty(){ return _isPortDataDirty; }
+	void setPortDataDirty(){ _isPortDataDirty = true; }
+	void clearPortDataDirtyFlag(){ _isPortDataDirty = false; }
+
+private:
+
+	bool _isPortDataDirty = true;
+
 	QString _lastTerminationReason;
 
 	QList<int> _destroyableMstIds;

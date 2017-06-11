@@ -10,6 +10,8 @@
 #include "anyactionselectdialog.h"
 #include "developactionselectdialog.h"
 
+#include <QCheckBox>
+
 #define TIMESHIFT_MIN	30
 
 void MainWindow::onDoJobFuel()
@@ -34,12 +36,15 @@ void MainWindow::onDoJobFuel()
 		auto foreverButton = pMessageBox->addButton(QString::fromLocal8Bit("永久"), QMessageBox::RejectRole);
 		Q_UNUSED(foreverButton);
 
+		QCheckBox* cb = new QCheckBox(QString::fromLocal8Bit("2-2"));
+		ControlManager::SouthEastSetting southEastSetting = cm.getSouthEastSetting();
+		cb->setChecked(southEastSetting.is2_2);
+		pMessageBox->setCheckBox(cb);
+
 		pMessageBox->setDefaultButton(QMessageBox::NoButton);
-		//		pMessageBox->setAttribute(Qt::WA_DeleteOnClose, true);
 		pMessageBox->exec();
 
 		auto clickedButton = pMessageBox->clickedButton();
-		ControlManager::SouthEastSetting southEastSetting;
 		if (clickedButton == resetButton)
 		{
 			KanSaveData::getInstance().resetTotals();
@@ -59,6 +64,9 @@ void MainWindow::onDoJobFuel()
 		{
 			southEastSetting.stopWhen = ControlManager::StopWhen::None;
 		}
+
+		southEastSetting.is2_2 = cb->isChecked();
+
 		cm.setSouthEastSetting(southEastSetting);
 		delete pMessageBox;
 	}

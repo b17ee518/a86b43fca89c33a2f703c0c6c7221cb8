@@ -62,6 +62,7 @@ public:
 	struct SouthEastSetting
 	{
 		StopWhen stopWhen = StopWhen::Yusou3;
+		bool is2_2 = false;
 	};
 	struct ExpeditionSetting
 	{

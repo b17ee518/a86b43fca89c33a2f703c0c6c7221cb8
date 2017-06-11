@@ -370,7 +370,14 @@ bool ControlManager::BuildNext_SouthEast()
 	_actionList.append(chAction);
 
 	SortieAction* sortieAction = new SortieAction();
-	sortieAction->setAreaAndMap(2, 3);
+	if (_southEastSetting.is2_2)
+	{
+		sortieAction->setAreaAndMap(2, 2);
+	}
+	else
+	{
+		sortieAction->setAreaAndMap(2, 3);
+	}
 	_actionList.append(sortieAction);
 	_actionList.append(new SortieCommonAdvanceAction());
 	_actionList.append(new ChargeAction());
@@ -546,12 +553,7 @@ bool ControlManager::BuildNext_Rank()
 	KanSaveData* pksd = &KanSaveData::getInstance();
 	KanDataConnector* pkdc = &KanDataConnector::getInstance();
 
-	// allow ship full termination
-	if (isShipFull())
-	{
-		setToTerminate("Terminated:ShipFull");
-		return false;
-	}
+	pushPreShipFullCheck();
 
 	int totalYusou = 0;
 	bool allSS = true;
@@ -810,12 +812,7 @@ bool ControlManager::BuildNext_Any()
 	KanSaveData* pksd = &KanSaveData::getInstance();
 	KanDataConnector* pkdc = &KanDataConnector::getInstance();
 
-	//TODO: read AnySetting
-	if (isShipFull())
-	{
-		setToTerminate("Terminated:ShipFull");
-		return false;
-	}
+	pushPreShipFullCheck();
 
 	if (_anySetting.count >= 0 && _anySetting.count <= pksd->totalAnyCount)
 	{
@@ -2801,13 +2798,13 @@ void ControlManager::moveMouseToAndClick(float x, float y, float offsetX /*= 5*/
 			// reset mouse pos for webengine
 			moveMouseTo(0, 0);
 #endif
-		}
+	}
 		else
 		{
 			sendMouseEvents(browserWidget);
 		}
 
-	}
+}
 
 }
 
@@ -2859,9 +2856,9 @@ void ControlManager::moveMouseTo(float x, float y, float offsetX /*= 5*/, float 
 				{
 					sendMouseEvents(qobject_cast<QWidget*>(obj));
 				}
-			}
+	}
 #endif
-		}
+}
 		else
 		{
 			sendMouseEvents(browserWidget);

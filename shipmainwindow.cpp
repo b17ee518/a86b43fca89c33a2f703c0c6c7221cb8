@@ -559,71 +559,16 @@ void ShipMainWindow::setButtonColor(KQUI_CollapsibleFrame* pFrame, int colindex,
 
 	static QString stylesheet_a[] =
 	{
-		"\
-				QPushButton {   \
-							color:white;    \
-										text-align: left;\
-												}   \
-														",  // normal
-														"\
-																	QPushButton {   \
-																				color:rgb(153, 255, 255);    \
-																							text-align: left;\
-																									}   \
-																											",  // 1/4 usable or 1/3 kira
-																											"\
-																													QPushButton {   \
-																																color:rgb(255, 255, 0);    \
-																																			text-align: left;\
-																																					}   \
-																																							",   // 1/3 usable or 1/2 kira
-																																							"\
-																																										QPushButton {   \
-																																													color:rgb(255, 153, 0);    \
-																																																text-align: left;\
-																																																		}   \
-																																																				",   // lower than 1/10 usable or 1/8 kira
-																																																				"\
-																																																							QPushButton {   \
-																																																										color:rgb(180, 180, 180);    \
-																																																													text-align: left;\
-																																																															}   \
-																																																																	"   // no kira
+		"QPushButton { color:white; text-align: left;} ", // normal
+		"QPushButton { color:rgb(153, 255, 255); text-align: left;} ", // 1/4 usable or 1/3 kira
+		"QPushButton { color:rgb(255, 255, 0); text-align: left;} ", // 1/3 usable or 1/2 kira
+		"QPushButton { color:rgb(255, 153, 0); text-align: left;} ", // lower than 1/10 usable or 1/8 kira
+		"QPushButton { color:rgb(180, 180, 180); text-align: left;} " // no kira
 	};
 	static QString stylesheet_b[] =
 	{
-		" \
-				QPushButton{\
-							background-color: rgb(80, 80, 80);\
-										border: none; \
-												}\
-														QPushButton:checked{\
-																	background-color: rgb(80, 80, 80);\
-																				border: none; \
-																						}\
-																								QPushButton:hover{  \
-																											background-color: grey; \
-																														border-style: outset;  \
-																																}  \
-																																		",
-																																		" \
-																																				QPushButton:checked{\
-																																							background-color: rgb(153, 0, 0);\
-																																										border: none; \
-																																												}\
-																																														QPushButton:flat{\
-																																																	background-color: rgb(153, 0, 0);\
-																																																				border: none; \
-																																																						}\
-																																																								QPushButton:{\
-																																																											background-color: rgb(153, 0, 0);\
-																																																														border: none; \
-																																																																}\
-																																																																		QPushButton:hover{  \
-																																																																					background-color: rgb(128, 0, 0);; \
-																																																																								border-style: outset;  \
-																																																																										}  \
-																																																																												"
+		"QPushButton{ background-color: rgb(80, 80, 80); border: none; } QPushButton:checked{ background-color: rgb(80, 80, 80); border: none; } QPushButton:hover{ background-color: grey; border-style: outset; }",
+		"QPushButton:checked{ background-color: rgb(153, 0, 0); border: none; } QPushButton:flat{ background-color: rgb(153, 0, 0); border: none; } QPushButton:{ background-color: rgb(153, 0, 0); border: none; } QPushButton:hover{ background-color: rgb(128, 0, 0);; border-style: outset; }"
 	};
 
 	pFrame->pushButton()->setAutoFillBackground(true);

@@ -33,48 +33,21 @@ int main(int argc, char *argv[])
 #endif
 	a.setFont(newFont);
 
-	QString style = "   \
-								QWidget{background-color:rgb(68, 68, 68);color:white;}\
-											QTextEdit{border:none;}\
-														QToolTip { color: white; background-color: rgb(80, 80, 80); border: 1px solid black; }\
-																	QLineEdit{\
-																					color: rgb(255, 255, 255);\
-																									border: none;\
-																												}\
-																															QFrame{border-top:1px solid grey;}\
-																																		QPushButton:checked{\
-																																						background-color: rgb(80, 80, 80);\
-																																										border: none; \
-																																													}\
-																																																QPushButton:hover{  \
-																																																				background-color: rgb(128, 128, 128); \
-																																																								border-style: outset;  \
-																																																											}  \
-																																																														QTableWidget {\
-																																																																		selection-background-color: transparent;\
-																																																																						gridline-color: rgb(255, 0, 0);\
-																																																																									}\
-																																																																												QComboBox{ \
-																																																																																selection-background-color: rgb(68, 68, 68);    \
-																																																																																			}   \
-																																																																																						QComboBox:hover{  \
-																																																																																										background-color: grey; \
-																																																																																														border-style: outset;  \
-																																																																																																	}  \
-																																																																																																				KQTitleFrame{background-color: rgb(45, 45, 48);}\
-																																																																																																							QComboBox QAbstractItemView {   \
-																																																																																																											selection-background-color: gray;   \
-																																																																																																														}\
-																																																																																																																	QProgressBar {  \
-																																																																																																																					background-color: grey;  \
-																																																																																																																									border: 0px; \
-																																																																																																																													border-left: 1px solid black;\
-																																																																																																																																	border-radius: 0px; \
-																																																																																																																																				}\
-																																																																																																																																							QProgressBar::chunk {   \
-																																																																																																																																											background-color: grey;  \
-																																																																																																																																														}\
-																																																																																																																																																	";
+	QString style =
+		"QWidget		{ background-color:rgb(68, 68, 68);color:white; }"
+		"QTextEdit		{ border:none; }"
+		"QToolTip		{ color: white; background-color: rgb(80, 80, 80); border: 1px solid black; }"
+		"QLineEdit		{ color: rgb(255, 255, 255); border: none; }"
+		"QFrame			{ border-top:1px solid grey; }"
+		"QPushButton:checked			{ background-color: rgb(80, 80, 80); border: none; }"
+		"QPushButton:hover				{ background-color: rgb(128, 128, 128); border-style: outset; }"
+		"QTableWidget	{ selection-background-color: transparent; gridline-color: rgb(255, 0, 0); }"
+		"QComboBox		{ selection-background-color: rgb(68, 68, 68); }"
+		"QComboBox:hover				{ background-color: grey; border-style: outset; }"
+		"KQTitleFrame	{background-color: rgb(45, 45, 48);}"
+		"QComboBox QAbstractItemView	{ selection-background-color: gray; }"
+		"QProgressBar	{ background-color: grey; border: 0px; border-left: 1px solid black; border-radius: 0px; }"
+		"QProgressBar::chunk			{ background-color: grey; } ";
 	a.setStyleSheet(style);
 
 	MainWindow * w = new MainWindow();

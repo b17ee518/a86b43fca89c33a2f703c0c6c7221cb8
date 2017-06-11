@@ -455,46 +455,14 @@ void TimerMainWindow::setProgressColor(QProgressBar *pBar, qint64 tdiff, bool bY
 {
 	static QString stylesheet[3] =
 	{
-		"\
-		QProgressBar {  \
-			background-color: grey;  \
-			border: 0px; \
-			border-left: 1px solid black;\
-			border-radius: 0px; \
-		}\
-		QProgressBar::chunk {   \
-			background-color: rgb(255, 153, 0);  \
-		}\
-		",
-
-		"\
-		QProgressBar {  \
-			background-color: grey;  \
-			border: 0px; \
-			border-left: 1px solid black;\
-			border-radius: 0px; \
-		}\
-		QProgressBar::chunk {   \
-			background-color: rgb(255, 255, 0);  \
-		}\
-		",
-
-		"\
-		QProgressBar {  \
-			background-color: grey;  \
-			border: 0px; \
-			border-left: 1px solid black;\
-			border-radius: 0px; \
-		}\
-		QProgressBar::chunk {   \
-			background-color: rgb(0, 255, 0);  \
-		}\
-		"
+		"QProgressBar { background-color: grey; border: 0px; border-left: 1px solid black; border-radius: 0px; } QProgressBar::chunk { background-color: rgb(255, 153, 0); }",
+		"QProgressBar { background-color: grey; border: 0px; border-left: 1px solid black; border-radius: 0px; } QProgressBar::chunk { background-color: rgb(255, 255, 0); }",
+		"QProgressBar { background-color: grey; border: 0px; border-left: 1px solid black; border-radius: 0px; } QProgressBar::chunk { background-color: rgb(0, 255, 0); }"
 	};
 	int stylei;
 	if (bYellow)
 	{
-		if (tdiff  <= 0)
+		if (tdiff <= 0)
 		{
 			stylei = 2;
 		}

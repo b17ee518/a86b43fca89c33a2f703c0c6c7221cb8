@@ -72,32 +72,14 @@ void MainWindow::onDoJobFuel()
 		delete pMessageBox;
 	}
 
-	if (cm.isFlagshipOnly(0))
+	if (cm.BuildNext_Fuel())
 	{
-		if (cm.BuildNext_Fuel())
-		{
-			cm.StartJob();
-		}
-		else
-		{
-			switchToExpeditionWait();
-		}
-
+		cm.StartJob();
 	}
 	else
 	{
-		if (cm.BuildNext_SouthEast())
-		{
-			cm.StartJob();
-		}
-		else
-		{
-			switchToExpeditionWait();
-		}
-
+		switchToExpeditionWait();
 	}
-
-	cm.StartJob();
 }
 
 void MainWindow::onDoJobKira()

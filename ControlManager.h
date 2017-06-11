@@ -138,8 +138,6 @@ public:
 
 	bool BuildNext_Fuel();
 
-	bool BuildNext_SouthEast();
-
 	bool BuildNext_East();
 
 	bool BuildNext_Level();
@@ -177,7 +175,7 @@ public:
 	void setToTerminate(const char* title, bool forceSound = false);
 
 	void createSSShipList();
-	bool chooseSSShipList(int teamSize, QList<int>& ships, QList<int>&sortInTeamShips, QString& errorMessage);
+	bool chooseSSShipList(int teamSize, QList<int>& ships, QList<int>&sortInTeamShips, QString& errorMessage, bool onlySensui = false);
 	bool isTreatedSameShip(int shipno, int oshipno);
 	bool isAfterShip(const kcsapi_mst_ship* pmstship, const kcsapi_mst_ship* pomstship, QList<int> checkedIdList = QList<int>()/*for convert*/);
 	// is pmstship after of pomstship
@@ -343,7 +341,6 @@ private:
 	bool _pauseNext = false;
 
 	QList<QList<int> > _ssShips;
-	int _southEastTeamSize = 5;
 
 	int _sortieMinCond = 30;
 	int _sortieWaitCond = 40;

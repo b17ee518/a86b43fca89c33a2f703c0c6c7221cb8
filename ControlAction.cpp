@@ -2558,7 +2558,7 @@ bool RepeatAction::action()
 	switch (_state)
 	{
 	case RepeatAction::State::None:
-		if (cm.isFuelMode())
+		if (cm.isFuelMode() || cm.isSouthEastMode())
 		{
 			if (cm.BuildNext_Fuel())
 			{
@@ -2573,18 +2573,6 @@ bool RepeatAction::action()
 		else if (cm.isKiraMode())
 		{
 			if (cm.BuildNext_Kira())
-			{
-				setState(State::Done, "Repeat:Done");
-				cm.StartJob();
-			}
-			else
-			{
-				mainWindow->switchToExpeditionWait();
-			}
-		}
-		else if (cm.isSouthEastMode())
-		{
-			if (cm.BuildNext_SouthEast())
 			{
 				setState(State::Done, "Repeat:Done");
 				cm.StartJob();

@@ -122,14 +122,13 @@ bool ControlManager::BuildNext_Kira()
 
 bool ControlManager::BuildNext_Fuel()
 {
-	// for repeat action
-	/*
-	if (!_actionList.empty())
-	{
-	return;
-	}
-	*/
 	_target = ActionTarget::Fuel;
+	int flagshipid = getCurrentFlagshipId();
+	if (!isFlagshipOnly(0) || !isShipType(flagshipid, ShipType::SenSui))
+	{
+		// southeast
+		_target = ActionTarget::SouthEast;
+	}
 
 	pushPreSupplyCheck();
 	if (stopWhenCheck())
@@ -138,40 +137,55 @@ bool ControlManager::BuildNext_Fuel()
 		return false;
 	}
 
-	int flagshipid = getCurrentFlagshipId();
-	/*
-	if (!isShipType(flagshipid, ShipType::SenSui))
+	int teamSize = getTeamSize(0);
+	if (_target == ActionTarget::SouthEast)
 	{
-	setToTerminate("Terminated:Ship type");
-	return false;
-	}
-	*/
-	if (!isFlagshipOnly(0) || !isShipType(flagshipid, ShipType::SenSui))
-	{
-		// southeast
-		return BuildNext_SouthEast();
-	}
+		KanSaveData* pksd = &KanSaveData::getInstance();
+		if (pksd->totalSouthEastWin >= 5)
+		{
+			setToTerminate("Terminated:Done Mission");
+			return false;
+		}
 
-	if (flagshipSevereDamaged())
-	{
-		setToTerminate("Terminated:Flagship");
-		return false;
+		if (teamSize < 4)
+		{
+			// keep 4 and up for formation
+			teamSize = 4;
+		}
 	}
 
 	pushPreShipFullCheck();
-	/*
-	if (isShipFull())
+
+	QList<int> ships;
+	QList<int> sortInTeamShips;
+	QString errorMessage;
+	if (!chooseSSShipList(teamSize, ships, sortInTeamShips, errorMessage, _target == ActionTarget::Fuel))
 	{
-	setToTerminate("Terminated:ShipFull");
-	return false;
-	//		_actionList.append(new DestroyShipAction());
+		setToTerminate(errorMessage.toLocal8Bit());
+		return false;
 	}
-	*/
+
+	// change hensei sort
+	auto chSortAction = new ChangeHenseiAction();
+	chSortAction->setShips(sortInTeamShips);
+	_actionList.append(chSortAction);
+
+	// change hensei
+	auto chAction = new ChangeHenseiAction();
+	chAction->setShips(ships);
+	_actionList.append(chAction);
 
 	SortieAction* sortieAction = new SortieAction();
-	sortieAction->setAreaAndMap(2, 3);
+	if (_southEastSetting.is2_2)
+	{
+		sortieAction->setAreaAndMap(2, 2);
+	}
+	else
+	{
+		sortieAction->setAreaAndMap(2, 3);
+	}
 	_actionList.append(sortieAction);
-	_actionList.append(new SortieAdvanceAction());
+	_actionList.append(new SortieCommonAdvanceAction());
 	_actionList.append(new ChargeAction());
 	_actionList.append(new RepeatAction());
 
@@ -179,7 +193,7 @@ bool ControlManager::BuildNext_Fuel()
 	return true;
 }
 
-bool ControlManager::chooseSSShipList(int teamSize, QList<int>& ships, QList<int>& sortInTeamShips, QString& errorMessage)
+bool ControlManager::chooseSSShipList(int teamSize, QList<int>& ships, QList<int>& sortInTeamShips, QString& errorMessage, bool onlySenSui/*=false*/)
 {
 	KanSaveData* pksd = &KanSaveData::getInstance();
 	errorMessage = "";
@@ -199,6 +213,14 @@ bool ControlManager::chooseSSShipList(int teamSize, QList<int>& ships, QList<int
 		for (auto ssid : group)
 		{
 			auto pcurship = pkdc->findShipFromShipno(ssid);
+
+			if (onlySenSui)
+			{
+				if (!isShipType(ssid, ShipType::SenSui))
+				{
+					continue;
+				}
+			}
 			// cond ng later
 			/*
 			if (pcurship->api_cond <= _sortieMinCond)
@@ -247,7 +269,25 @@ bool ControlManager::chooseSSShipList(int teamSize, QList<int>& ships, QList<int
 	// sort bestships
 	qSort(bestShips.begin(), bestShips.end(), [](const  kcsapi_ship2* left, const kcsapi_ship2* right)
 	{
-		return left->api_cond > right->api_cond; // cond from high to low
+		if (left->api_cond > right->api_cond)
+		{
+			return true;
+		}
+		else if (left->api_cond == right->api_cond)
+		{
+			if (left->api_kaihi[0] > right->api_kaihi[0])
+			{
+				return true;
+			}
+			else if (left->api_kaihi[0] > right->api_kaihi[0])
+			{
+				if (left->api_lucky[0] > right->api_lucky[0])
+				{
+					return true;
+				}
+			}
+		}
+		return false;
 	});
 
 	int minCond = bestShips.at(teamSize - 1)->api_cond;
@@ -322,68 +362,6 @@ bool ControlManager::chooseSSShipList(int teamSize, QList<int>& ships, QList<int
 			sortInTeamShips.append(shipno);
 		}
 	}
-	return true;
-}
-
-bool ControlManager::BuildNext_SouthEast()
-{
-	_target = ActionTarget::SouthEast;
-
-	pushPreSupplyCheck();
-	if (stopWhenCheck())
-	{
-		setToTerminate("Termination:StopWhenDone");
-		return false;
-	}
-	_southEastTeamSize = getTeamSize(0);
-	KanSaveData* pksd = &KanSaveData::getInstance();
-	if (pksd->totalSouthEastWin >= 5)
-	{
-		setToTerminate("Terminated:Done Mission");
-		return false;
-	}
-	if (_southEastTeamSize < 4)
-	{
-		// keep 4 and up for formation
-		_southEastTeamSize = 4;
-	}
-
-	pushPreShipFullCheck();
-
-	QList<int> ships;
-	QList<int> sortInTeamShips;
-	QString errorMessage;
-	if (!chooseSSShipList(_southEastTeamSize, ships, sortInTeamShips, errorMessage))
-	{
-		setToTerminate(errorMessage.toLocal8Bit());
-		return false;
-	}
-
-	// change hensei sort
-	auto chSortAction = new ChangeHenseiAction();
-	chSortAction->setShips(sortInTeamShips);
-	_actionList.append(chSortAction);
-
-	// change hensei
-	auto chAction = new ChangeHenseiAction();
-	chAction->setShips(ships);
-	_actionList.append(chAction);
-
-	SortieAction* sortieAction = new SortieAction();
-	if (_southEastSetting.is2_2)
-	{
-		sortieAction->setAreaAndMap(2, 2);
-	}
-	else
-	{
-		sortieAction->setAreaAndMap(2, 3);
-	}
-	_actionList.append(sortieAction);
-	_actionList.append(new SortieCommonAdvanceAction());
-	_actionList.append(new ChargeAction());
-	_actionList.append(new RepeatAction());
-
-	setState(State::Ready, "Ready");
 	return true;
 }
 
@@ -2798,15 +2776,15 @@ void ControlManager::moveMouseToAndClick(float x, float y, float offsetX /*= 5*/
 			// reset mouse pos for webengine
 			moveMouseTo(0, 0);
 #endif
-	}
+		}
 		else
 		{
 			sendMouseEvents(browserWidget);
 		}
 
-}
+	}
 
-}
+	}
 
 void ControlManager::moveMouseTo(float x, float y, float offsetX /*= 5*/, float offsetY /*= 3*/)
 {
@@ -2840,10 +2818,10 @@ void ControlManager::moveMouseTo(float x, float y, float offsetX /*= 5*/, float 
 			if (!w)
 			{
 				return;
-			}
+	}
 			QMouseEvent e(QEvent::MouseMove, ptAdjusted, Qt::NoButton, Qt::NoButton, Qt::NoModifier);
 			QApplication::sendEvent(w, &e);
-		};
+};
 
 		auto browserWidget = MainWindow::mainWindow()->getBrowserWidget();
 		if (MainWindow::mainWindow()->getWebWidgetType() == WebWidgetType::WebEngine)
@@ -2856,15 +2834,15 @@ void ControlManager::moveMouseTo(float x, float y, float offsetX /*= 5*/, float 
 				{
 					sendMouseEvents(qobject_cast<QWidget*>(obj));
 				}
-	}
+			}
 #endif
-}
+		}
 		else
 		{
 			sendMouseEvents(browserWidget);
 		}
 
-	}
+}
 }
 
 void ControlManager::setPauseNextVal(bool bVal)

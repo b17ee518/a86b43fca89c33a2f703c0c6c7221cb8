@@ -2155,6 +2155,11 @@ bool ControlManager::noAttackItem(int shipno)
 {
 	KanDataConnector* pkdc = &KanDataConnector::getInstance();
 
+	if (isShipType(shipno, ShipType::SuiBou))
+	{
+		return false;
+	}
+
 	auto pship = pkdc->findShipFromShipno(shipno);
 	if (pship)
 	{

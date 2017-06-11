@@ -36,10 +36,11 @@ void MainWindow::onDoJobFuel()
 		auto foreverButton = pMessageBox->addButton(QString::fromLocal8Bit("永久"), QMessageBox::RejectRole);
 		Q_UNUSED(foreverButton);
 
-		QCheckBox* cb = new QCheckBox(QString::fromLocal8Bit("2-2"));
 		ControlManager::SouthEastSetting southEastSetting = cm.getSouthEastSetting();
-		cb->setChecked(southEastSetting.is2_2);
-		pMessageBox->setCheckBox(cb);
+
+		QCheckBox* p22CheckBox = new QCheckBox(QString::fromLocal8Bit("2-2"));
+		p22CheckBox->setChecked(southEastSetting.is2_2);
+		pMessageBox->setCheckBox(p22CheckBox);
 
 		pMessageBox->setDefaultButton(QMessageBox::NoButton);
 		pMessageBox->exec();
@@ -65,7 +66,7 @@ void MainWindow::onDoJobFuel()
 			southEastSetting.stopWhen = ControlManager::StopWhen::None;
 		}
 
-		southEastSetting.is2_2 = cb->isChecked();
+		southEastSetting.is2_2 = p22CheckBox->isChecked();
 
 		cm.setSouthEastSetting(southEastSetting);
 		delete pMessageBox;

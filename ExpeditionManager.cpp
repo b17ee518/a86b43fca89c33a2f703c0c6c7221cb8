@@ -943,6 +943,9 @@ QString SingleExpedition::checkMatches(int shipid, int index, int team, int& toS
 	else
 	{
 		int shouldChangeCondBorder = 52;
+		int betterChangeSuiBouCondBorder = 62;
+		bool okForThisSuiBou = false;
+
 		// if current ship is ok
 		if (cm->isShipType(shipid, (ShipType)shiptype)
 			&& cm->hasSlotitem(shipid, SlotitemType::YuSou, drumCount[index])
@@ -1008,9 +1011,24 @@ QString SingleExpedition::checkMatches(int shipid, int index, int team, int& toS
 			// need kira
 			else
 			{
-				if (cm->getShipCondVal(shipid) > shouldChangeCondBorder)
+				int cond = cm->getShipCondVal(shipid);
+				if (cond > shouldChangeCondBorder)
 				{
-					return "";
+					if ((ShipType)shiptype == ShipType::SuiBou || (ShipType)shiptype == ShipType::YouRiKu)
+					{
+						if (cond > betterChangeSuiBouCondBorder)
+						{
+							return "";
+						}
+						else
+						{
+							okForThisSuiBou = true;
+						}
+					}
+					else
+					{
+						return "";
+					}
 				}
 				else
 				{
@@ -1105,7 +1123,14 @@ QString SingleExpedition::checkMatches(int shipid, int index, int team, int& toS
 			}
 			else
 			{
-				return QString("NoAvailableShip") + errorIndexString;
+				if (okForThisSuiBou)
+				{
+					return "";
+				}
+				else
+				{
+					return QString("NoAvailableShip") + errorIndexString;
+				}
 			}
 		}
 	}

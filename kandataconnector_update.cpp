@@ -1071,6 +1071,7 @@ void KanDataConnector::updateInfoTitleCond()
 	int suibocount = 0;
 	int suibokiras = 0;
 	int suibokirawarnings = 0;
+	int suibokirafinalwarnings = 0;
 	int keijuncount = 0;
 	int keijunkiras = 0;
 	int kuchikucount = 0;
@@ -1123,9 +1124,13 @@ void KanDataConnector::updateInfoTitleCond()
 						{
 							suibokiras++;
 						}
-						if (KanDataCalc::GetCondState(v.api_cond - 3) != CondState::Kira)
+						if (KanDataCalc::GetCondState(v.api_cond - 13) != CondState::Kira)
 						{
 							suibokirawarnings++;
+						}
+						if (KanDataCalc::GetCondState(v.api_cond - 3) != CondState::Kira)
+						{
+							suibokirafinalwarnings++;
 						}
 					}
 				}
@@ -1155,10 +1160,11 @@ void KanDataConnector::updateInfoTitleCond()
 		}
 	}
 
-	QString titlestr = QString::fromLocal8Bit("キラ - 水母:%1(%2/%3) 軽巡:%4(%5) 駆逐:%6(%7)")
+	QString titlestr = QString::fromLocal8Bit("キラ - 水母:%1(%2/%3/%4) 軽巡:%5(%6) 駆逐:%7(%8)")
 		.arg(suibokiras)
 		.arg(suibocount - suibokiras)
 		.arg(suibokirawarnings)
+		.arg(suibokirafinalwarnings)
 		.arg(keijunkiras)
 		.arg(keijuncount - keijunkiras)
 		.arg(kuchikukiras)
@@ -1172,6 +1178,10 @@ void KanDataConnector::updateInfoTitleCond()
 	else if (suibokiras < suibocount || kuchikukiras < 10 || keijunkiras < 4)
 	{
 		colindex = 2;
+	}
+	else if (suibokirafinalwarnings > 0)
+	{
+		colindex = 4;
 	}
 	else if (suibokirawarnings > 0)
 	{

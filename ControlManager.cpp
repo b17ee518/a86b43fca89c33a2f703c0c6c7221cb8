@@ -2268,6 +2268,11 @@ bool ControlManager::shouldNightBattle()
 		}
 		return false;
 	}
+	else if (_target == ActionTarget::Fuel)
+	{
+		return false;
+	}
+
 	if (pksd->lastWonAssumption)
 	{
 		return false;
@@ -2770,13 +2775,13 @@ void ControlManager::moveMouseToAndClick(float x, float y, float offsetX /*= 5*/
 				Q_FOREACH(QObject* obj, webView->page()->view()->children())
 				{
 					sendMouseEvents(qobject_cast<QWidget*>(obj));
-				}
-			}
+		}
+	}
 
 			// reset mouse pos for webengine
 			moveMouseTo(0, 0);
 #endif
-		}
+}
 		else
 		{
 			sendMouseEvents(browserWidget);
@@ -2818,10 +2823,10 @@ void ControlManager::moveMouseTo(float x, float y, float offsetX /*= 5*/, float 
 			if (!w)
 			{
 				return;
-	}
+			}
 			QMouseEvent e(QEvent::MouseMove, ptAdjusted, Qt::NoButton, Qt::NoButton, Qt::NoModifier);
 			QApplication::sendEvent(w, &e);
-};
+		};
 
 		auto browserWidget = MainWindow::mainWindow()->getBrowserWidget();
 		if (MainWindow::mainWindow()->getWebWidgetType() == WebWidgetType::WebEngine)
@@ -2834,9 +2839,9 @@ void ControlManager::moveMouseTo(float x, float y, float offsetX /*= 5*/, float 
 				{
 					sendMouseEvents(qobject_cast<QWidget*>(obj));
 				}
-			}
-#endif
 		}
+#endif
+	}
 		else
 		{
 			sendMouseEvents(browserWidget);

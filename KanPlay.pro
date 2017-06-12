@@ -7,7 +7,14 @@
 QT       += core gui multimedia
 CONFIG += c++11
 
-greaterThan(QT_MAJOR_VERSION, 4): QT += widgets webkitwidgets webenginewidgets
+greaterThan(QT_MAJOR_VERSION, 4) {
+    QT += widgets
+    greaterThan(QT_MINOR_VERSION, 5) {
+        QT += webenginewidgets
+    } else {
+        QT += webkitwidgets
+    }
+}
 
 win: QT += axcontainer winextras
 
@@ -55,7 +62,8 @@ SOURCES += main.cpp\
     qwebenginemouseeventfilter.cpp \
     qwindowseventfilter.cpp \
     shipmainwindow.cpp \
-    anyactionselectdialog.cpp
+    anyactionselectdialog.cpp \
+    developactionselectdialog.cpp
 
 win: SOURCES += \
     shdocvw.cpp \
@@ -93,7 +101,8 @@ HEADERS  += mainwindow.h \
     qwebenginemouseeventfilter.h \
     qwindowseventfilter.h \
     shipmainwindow.h \
-    anyactionselectdialog.h
+    anyactionselectdialog.h \
+    developactionselectdialog.h
 
 win: HEADERS += \
     shdocvw.h \
@@ -107,4 +116,5 @@ FORMS    += mainwindow.ui \
     timermainwindow.ui \
     weaponmainwindow.ui \
     shipmainwindow.ui \
-    anyactionselectdialog.ui
+    anyactionselectdialog.ui \
+    developactionselectdialog.ui

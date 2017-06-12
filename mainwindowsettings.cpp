@@ -11,7 +11,10 @@
 #ifdef Q_OS_WIN
 #include <QWinTaskbarProgress>
 #endif
+
+#if (QT_VERSION >= QT_VERSION_CHECK(5, 6, 0))
 #include <QWebEngineSettings>
+#endif
 
 #ifdef Q_OS_WIN
 #include <Audiopolicy.h>
@@ -150,13 +153,14 @@ void MainWindow::setWebSettings()
 #ifdef Q_OS_WIN
 		_pSharkProcess->start("cmd");
 #else
-		_pSharkProcess->start("sh");
+        _pSharkProcess->start("sh");
 #endif
+
 		if (!_pSharkProcess->waitForStarted())
 		{
 			return;
-		}
-		_pSharkProcess->write(_sharkCommand.toLocal8Bit());
+        }
+        _pSharkProcess->write(_sharkCommand.toLocal8Bit());
 		_pSharkProcess->write("\n");
 		_pSharkProcess->closeWriteChannel();
 	}
@@ -375,7 +379,7 @@ void MainWindow::setupCss()
 	 z-index:1
 	 }
 	 */
-	_ieCsses[(int)QWebViewCSSIndex::Normal] = "body {margin:0;overflow:hidden;} #game_frame{position:fixed;top:-16px;left:-50px;z-index:1}";
+    _ieCsses[(int)QWebViewCSSIndex::Normal] = "body {margin:0;overflow:hidden;} #game_frame{position:fixed;top:-16px;left:-50px;z-index:1}";
 	_webViewCsses[(int)QWebViewCSSIndex::Normal] = QUrl(QString("data:text/css;charset=utf-8;base64,")
 		+ _ieCsses[(int)QWebViewCSSIndex::Normal].toUtf8().toBase64());
 	//		(QUrl("data:text/css;charset=utf-8;base64,Ym9keSB7DQoJbWFyZ2luOjA7DQoJb3ZlcmZsb3c6aGlkZGVuDQp9DQoNCiNnYW1lX2ZyYW1lIHsNCglwb3NpdGlvbjpmaXhlZDsNCgl0b3A6LTE2cHg7DQoJbGVmdDotNTBweDsNCgl6LWluZGV4OjENCn0="));
@@ -703,16 +707,15 @@ void MainWindow::applyCss(QWebViewCSSIndex css)
 	else
 	{
 #if (QT_VERSION >= QT_VERSION_CHECK(5, 6, 0))
-		QString jsStr = 
-			"function addStyleString(str) {\
-																			var node = document.createElement('style');\
-																																																																					node.innerHTML = str;\
-																																																																																																																																																																																													document.body.appendChild(node);\
-																																																																																																																																																																																																																																																																																																																																																																																																																																																	}\
-																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																												addStyleString('" + _ieCsses[(int)css] + "'); \
-																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																	addStyleString('body { background: silver }'); ";
-
-		_webView->page()->runJavaScript(jsStr);
+        QString jsStr =
+                "function addStyleString(str) {"
+                "var node = document.createElement('style');"
+                "node.innerHTML = str;"
+                "document.body.appendChild(node);"
+                "}"
+                "addStyleString('" + _ieCsses[(int)css] + "'); "
+                "addStyleString('body { background: silver }'); ";
+        _webView->page()->runJavaScript(jsStr);
 #else
 		_webView->page()->settings()->setUserStyleSheetUrl(_webViewCsses[(int)css]);
 #endif

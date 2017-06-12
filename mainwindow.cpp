@@ -175,17 +175,20 @@ MainWindow::~MainWindow()
 
 void MainWindow::slotParse(const QString &PathAndQuery, const QString &requestBody, const QString &responseBody)
 {
-
-    auto mainWindow = MainWindow::mainWindow();
-    if (mainWindow->_applyCssToGameFlag && mainWindow->_webWidgetType == WebWidgetType::WebEngine)
+    if (_proxyMode == ProxyMode::Shark)
     {
-        mainWindow->installWebEngineMouseEventFilter();
+        if (s_pMainWindow->_applyCssToGameFlag && s_pMainWindow->_webWidgetType == WebWidgetType::WebEngine)
+        {
 
-        mainWindow->applyCss(QWebViewCSSIndex::Normal);
-        mainWindow->_applyCssToGameFlag = false;
+#if QT_OS_WIN
+            s_pMainWindow->installWebEngineMouseEventFilter();
+#endif
+
+            s_pMainWindow->applyCss(QWebViewCSSIndex::Normal);
+            s_pMainWindow->_applyCssToGameFlag = false;
+        }
     }
-
-	KanDataConnector::getInstance().Parse(PathAndQuery, requestBody, responseBody);
+    KanDataConnector::getInstance().Parse(PathAndQuery, requestBody, responseBody);
 }
 
 void MainWindow::slotSharkProcessReadyReadError()

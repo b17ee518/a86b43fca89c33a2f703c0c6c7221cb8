@@ -11,7 +11,10 @@
 #ifdef Q_OS_WIN
 #include <QWinTaskbarProgress>
 #endif
+
+#if (QT_VERSION >= QT_VERSION_CHECK(5, 6, 0))
 #include <QWebEngineSettings>
+#endif
 
 #ifdef Q_OS_WIN
 #include <Audiopolicy.h>

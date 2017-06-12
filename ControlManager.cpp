@@ -954,7 +954,7 @@ bool ControlManager::BuildNext_Expedition()
 		return false;
 	}
 	QList<int> ships;
-	if (pksd->portdata.api_deck_port.size())
+    if (pksd->portdata.api_deck_port.size() > team)
 	{
 		auto& fleet = pksd->portdata.api_deck_port.at(team);
 		if (fleet.api_ship.size())
@@ -1979,7 +1979,7 @@ bool ControlManager::isHenseiDone(const QList<int>& ships, int team, int index/*
 {
 	KanSaveData* pksd = &KanSaveData::getInstance();
 
-	if (pksd->portdata.api_deck_port.size())
+    if (pksd->portdata.api_deck_port.size() > team)
 	{
 		auto& fleet = pksd->portdata.api_deck_port.at(team);
 		QList<int> nonEmptyShipList;
@@ -2340,7 +2340,7 @@ WoundState ControlManager::hugestDamageInTeam(int team)
 		return WoundState::Dead;
 	}
 
-	if (pksd->portdata.api_deck_port.size())
+    if (pksd->portdata.api_deck_port.size() > team)
 	{
 		auto& fleet = pksd->portdata.api_deck_port.at(team);
 		if (fleet.api_ship.size())
@@ -2504,7 +2504,7 @@ bool ControlManager::needChargeFlagship(int team)
 		return false;
 	}
 
-	if (pksd->portdata.api_deck_port.size())
+    if (pksd->portdata.api_deck_port.size() > team)
 	{
 		auto& fleet = pksd->portdata.api_deck_port.at(team);
 		if (fleet.api_ship.size())
@@ -2546,7 +2546,7 @@ bool ControlManager::needChargeAnyShip(int team)
 		return false;
 	}
 
-	if (pksd->portdata.api_deck_port.size())
+    if (pksd->portdata.api_deck_port.size() > team)
 	{
 		auto& fleet = pksd->portdata.api_deck_port.at(team);
 		if (fleet.api_ship.size())
@@ -2730,17 +2730,17 @@ void ControlManager::moveMouseToAndClick(float x, float y, float offsetX /*= 5*/
 	}
 	else
 	{
-		auto sendMouseEvents = [this, ptAdjusted](QWidget* w){
+        auto sendMouseEvents = [this, ptAdjusted](QObject* w){
 			if (!w)
 			{
 				return;
-			}
-#ifdef Q_OS_WIN
-			QMouseEvent e(QEvent::MouseButtonPress, ptAdjusted, Qt::LeftButton, Qt::LeftButton, Qt::NoModifier);
-			QApplication::sendEvent(w, &e);
+            }
+#if defined Q_OS_WIN || defined Q_OS_MAC
+            QMouseEvent e(QEvent::MouseButtonPress, ptAdjusted, Qt::LeftButton, Qt::LeftButton, Qt::NoModifier);
+            QApplication::sendEvent(w, &e);
 
-			QMouseEvent e2(QEvent::MouseButtonRelease, ptAdjusted, Qt::LeftButton, Qt::LeftButton, Qt::NoModifier);
-			QApplication::sendEvent(w, &e2);
+            QMouseEvent e2(QEvent::MouseButtonRelease, ptAdjusted, Qt::LeftButton, Qt::LeftButton, Qt::NoModifier);
+            QApplication::sendEvent(w, &e2);
 #else
 			QPoint ptG = w->mapToGlobal(QPoint(ptAdjusted.x(), ptAdjusted.y()));
 			MainWindow::mainWindow()->clickAtGlobalPos(ptG);
@@ -2768,8 +2768,8 @@ void ControlManager::moveMouseToAndClick(float x, float y, float offsetX /*= 5*/
 #endif
 		}
 		else
-		{
-			sendMouseEvents(browserWidget);
+        {
+            sendMouseEvents(browserWidget);
 		}
 
 	}

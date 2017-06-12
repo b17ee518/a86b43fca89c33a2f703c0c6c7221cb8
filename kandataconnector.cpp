@@ -174,7 +174,7 @@ bool KanDataConnector::isAutoRepairing(int flagshipno/*=-1*/)
 	if (flagshipno < 0)
 	{
 		KanSaveData * pksd = &KanSaveData::getInstance();
-		if (pksd->portdata.api_deck_port.size())
+        if (pksd->portdata.api_deck_port.size() > 0)
 		{
 			auto& shiplist = pksd->portdata.api_deck_port.at(0).api_ship;
 			if (shiplist.size())

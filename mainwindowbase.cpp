@@ -66,13 +66,16 @@ void MainWindowBase::closeEvent(QCloseEvent *event)
 	QMainWindow::closeEvent(event);
 }
 
-#ifdef Q_OS_WIN
 void MainWindowBase::minimizeWindow()
 {
+#if defined Q_OS_WIN
     setWindowState(Qt::WindowMinimized);
+#endif
 }
+
 void MainWindowBase::restoreWindow()
 {
+#if defined Q_OS_WIN
     setWindowState(Qt::WindowNoState);
-}
 #endif
+}

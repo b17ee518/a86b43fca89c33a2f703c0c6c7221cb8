@@ -6,9 +6,9 @@
 #include "ControlManager.h"
 #include "kandataconnector.h"
 
-AnyActionSelectDialog::AnyActionSelectDialog(QWidget *parent) :
-QDialog(parent),
-ui(new Ui::AnyActionSelectDialog)
+AnyActionSelectDialog::AnyActionSelectDialog(QWidget *parent)
+	: QDialog(parent)
+	, ui(new Ui::AnyActionSelectDialog)
 {
 	ui->setupUi(this);
 

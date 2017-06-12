@@ -24,10 +24,16 @@ void KanDataConnector::updateOverviewTable()
 	int nextexp = KanDataCalc::GetAdmiralNextLevelExp(pksd->portdata.api_basic.api_experience, lv);
 	//	int fcoin = pksd->portdata.api_basic.api_fcoin;
 
+	bool isPortDirty = ControlManager::getInstance().isPortDataDirty();
+	QString dirtyStr = isPortDirty ? QString::fromLocal8Bit("■") : "";
+
 	lst.append(QString::fromLocal8Bit("所有艦娘数: %1/%2").arg(kancount).arg(kanmaxcount));
 	lst.append(QString::fromLocal8Bit("所有装備数: %1/%2").arg(slotitemcount).arg(slotitemmaxcount));
-	lst.append(QString::fromLocal8Bit("提督Lv. %1(次:%2)").arg(lv).arg(nextexp));
+	lst.append(QString::fromLocal8Bit("提督Lv. %1(次:%2) %3").arg(lv).arg(nextexp).arg(dirtyStr));
 	lst.append(QString::fromLocal8Bit("高速修復材: %1").arg(instantrepaircount));
+
+
+
 	//	lst.append(QString::fromLocal8Bit("高速建造材: %1").arg(instantbuildcount));
 	//	lst.append(QString::fromLocal8Bit("家具コイン: %1").arg(fcoin));
 	lst.append(QString::fromLocal8Bit("ボス: %1(%2/%3) 南西: %4 輸: %5 潜: %6 東急: %7 Any: %8")
@@ -71,7 +77,14 @@ void KanDataConnector::updateOverviewTable()
 		cols.append(_colWhite);
 	}
 	//
-	cols.append(_colWhite);
+	if (isPortDirty)
+	{
+		cols.append(_colPurple);
+	}
+	else
+	{
+		cols.append(_colWhite);
+	}
 	cols.append(_colWhite);
 
 	if (pksd->totalSouthEastWin >= 5)
@@ -1058,6 +1071,7 @@ void KanDataConnector::updateInfoTitleCond()
 	int suibocount = 0;
 	int suibokiras = 0;
 	int suibokirawarnings = 0;
+	int suibokirafinalwarnings = 0;
 	int keijuncount = 0;
 	int keijunkiras = 0;
 	int kuchikucount = 0;
@@ -1110,9 +1124,13 @@ void KanDataConnector::updateInfoTitleCond()
 						{
 							suibokiras++;
 						}
-						if (KanDataCalc::GetCondState(v.api_cond - 3) != CondState::Kira)
+						if (KanDataCalc::GetCondState(v.api_cond - 13) != CondState::Kira)
 						{
 							suibokirawarnings++;
+						}
+						if (KanDataCalc::GetCondState(v.api_cond - 3) != CondState::Kira)
+						{
+							suibokirafinalwarnings++;
 						}
 					}
 				}
@@ -1142,10 +1160,11 @@ void KanDataConnector::updateInfoTitleCond()
 		}
 	}
 
-	QString titlestr = QString::fromLocal8Bit("キラ - 水母:%1(%2/%3) 軽巡:%4(%5) 駆逐:%6(%7)")
+	QString titlestr = QString::fromLocal8Bit("キラ - 水母:%1(%2/%3/%4) 軽巡:%5(%6) 駆逐:%7(%8)")
 		.arg(suibokiras)
 		.arg(suibocount - suibokiras)
 		.arg(suibokirawarnings)
+		.arg(suibokirafinalwarnings)
 		.arg(keijunkiras)
 		.arg(keijuncount - keijunkiras)
 		.arg(kuchikukiras)
@@ -1159,6 +1178,10 @@ void KanDataConnector::updateInfoTitleCond()
 	else if (suibokiras < suibocount || kuchikukiras < 10 || keijunkiras < 4)
 	{
 		colindex = 2;
+	}
+	else if (suibokirafinalwarnings > 0)
+	{
+		colindex = 4;
 	}
 	else if (suibokirawarnings > 0)
 	{
@@ -1179,6 +1202,8 @@ void KanDataConnector::updateWeaponTable()
 
 void KanDataConnector::updateBattle(const kcsapi_battle &api_battle, KanBattleType type)
 {
+	ControlManager::getInstance().setPortDataDirty();
+
 	int dockid = 0;
 	int dockid_combinedSelf = -1;
 	bool bCombinedSelf = false;

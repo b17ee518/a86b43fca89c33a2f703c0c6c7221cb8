@@ -62,6 +62,7 @@ public:
 	struct SouthEastSetting
 	{
 		StopWhen stopWhen = StopWhen::Yusou3;
+		bool is2_2 = false;
 	};
 	struct ExpeditionSetting
 	{
@@ -137,8 +138,6 @@ public:
 
 	bool BuildNext_Fuel();
 
-	bool BuildNext_SouthEast();
-
 	bool BuildNext_East();
 
 	bool BuildNext_Level();
@@ -176,7 +175,7 @@ public:
 	void setToTerminate(const char* title, bool forceSound = false);
 
 	void createSSShipList();
-	bool chooseSSShipList(int teamSize, QList<int>& ships, QList<int>&sortInTeamShips, QString& errorMessage);
+	bool chooseSSShipList(int teamSize, QList<int>& ships, QList<int>&sortInTeamShips, QString& errorMessage, bool onlySensui = false);
 	bool isTreatedSameShip(int shipno, int oshipno);
 	bool isAfterShip(const kcsapi_mst_ship* pmstship, const kcsapi_mst_ship* pomstship, QList<int> checkedIdList = QList<int>()/*for convert*/);
 	// is pmstship after of pomstship
@@ -193,7 +192,7 @@ public:
 	bool findPagePosByShipId(int shipno, int& page, int& pos, int& lastPage);
 	bool isShipKiraDone(int shipno);
 	bool isLowCond(int shipno);
-	bool isShipInOtherTeam(int shipno, int team);
+	bool isShipInOtherTeam(int shipno, int team, bool excludeOnBoardingExpedition = false);
 	bool isShipInDock(int shipno);
 	bool isShipDamaged(int shipno);
 	bool isShipCharged(int shipno);
@@ -316,6 +315,14 @@ public:
 
 	qreal randVal(qreal min, qreal max);
 
+	bool isPortDataDirty(){ return _isPortDataDirty; }
+	void setPortDataDirty();
+	void clearPortDataDirtyFlag();
+
+private:
+
+	bool _isPortDataDirty = true;
+
 	QString _lastTerminationReason;
 
 	QList<int> _destroyableMstIds;
@@ -334,7 +341,6 @@ public:
 	bool _pauseNext = false;
 
 	QList<QList<int> > _ssShips;
-	int _southEastTeamSize = 5;
 
 	int _sortieMinCond = 30;
 	int _sortieWaitCond = 40;

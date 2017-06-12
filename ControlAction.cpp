@@ -2323,6 +2323,12 @@ bool SortieCommonAdvanceAction::action()
 					, 450, 185, 233, 231, 227
 					, 398, 190, 214, 210, 111))
 				{
+					if (cm.isPortDataDirty())
+					{
+						cm.setToTerminate("Fatal:PortDirty", true);
+						emit sigFatal();
+						return;
+					}
 					_waiting = false;
 					setState(State::SelectFormation, "SortieAdv:SelectFormation");
 				}
@@ -2349,6 +2355,12 @@ bool SortieCommonAdvanceAction::action()
 					, 579, 133, 38, 87, 115
 					, 511, 288, 238, 255, 255))
 				{
+					if (cm.isPortDataDirty())
+					{
+						cm.setToTerminate("Fatal:PortDirty", true);
+						emit sigFatal();
+						return;
+					}
 					_waiting = false;
 					// click left or right
 
@@ -2393,6 +2405,7 @@ bool SortieCommonAdvanceAction::action()
 
 		if (!_waiting)
 		{
+			cm.setPortDataDirty();
 			_waiting = true;
 			if (_shouldRetrieve
 				&& !cm.isLevelMode()	// level mode always set to retrieve
@@ -2545,7 +2558,7 @@ bool RepeatAction::action()
 	switch (_state)
 	{
 	case RepeatAction::State::None:
-		if (cm.isFuelMode())
+		if (cm.isFuelMode() || cm.isSouthEastMode())
 		{
 			if (cm.BuildNext_Fuel())
 			{
@@ -2560,18 +2573,6 @@ bool RepeatAction::action()
 		else if (cm.isKiraMode())
 		{
 			if (cm.BuildNext_Kira())
-			{
-				setState(State::Done, "Repeat:Done");
-				cm.StartJob();
-			}
-			else
-			{
-				mainWindow->switchToExpeditionWait();
-			}
-		}
-		else if (cm.isSouthEastMode())
-		{
-			if (cm.BuildNext_SouthEast())
 			{
 				setState(State::Done, "Repeat:Done");
 				cm.StartJob();

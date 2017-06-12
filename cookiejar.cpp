@@ -30,171 +30,171 @@ static const int INTERVAL = 1000 * 3;  // 3sec.
 
 QDataStream &operator<<(QDataStream &st, const QList<QNetworkCookie> &src)
 {
-    st << COOKIEJAR_MAGIC;
-    st << quint32(src.size());
-    for (int i = 0; i < src.size(); ++i) {
-        st << src.at(i).toRawForm();
-    }
-    return st;
+	st << COOKIEJAR_MAGIC;
+	st << quint32(src.size());
+	for (int i = 0; i < src.size(); ++i) {
+		st << src.at(i).toRawForm();
+	}
+	return st;
 }
 
 QDataStream &operator>>(QDataStream &st, QList<QNetworkCookie> &dest)
 {
-    QList<QNetworkCookie> tmp;
-    quint32 magic;
-    st >> magic;
-    if (magic != COOKIEJAR_MAGIC) {
-        return st;
-    }
+	QList<QNetworkCookie> tmp;
+	quint32 magic;
+	st >> magic;
+	if (magic != COOKIEJAR_MAGIC) {
+		return st;
+	}
 
-    quint32 count;
-    st >> count;
+	quint32 count;
+	st >> count;
 
-    tmp.reserve(count);
-    for (quint32 i = 0; i < count; ++i) {
-        QByteArray value;
-        st >> value;
+	tmp.reserve(count);
+	for (quint32 i = 0; i < count; ++i) {
+		QByteArray value;
+		st >> value;
 
-        QList<QNetworkCookie> newCookies = QNetworkCookie::parseCookies(value);
-        for (int j = 0; j < newCookies.count(); ++j) {
-            tmp.append(newCookies.at(j));
-        }
-        if (st.atEnd()) {
-            break;
-        }
-    }
-    dest.swap(tmp);
-    return st;
+		QList<QNetworkCookie> newCookies = QNetworkCookie::parseCookies(value);
+		for (int j = 0; j < newCookies.count(); ++j) {
+			tmp.append(newCookies.at(j));
+		}
+		if (st.atEnd()) {
+			break;
+		}
+	}
+	dest.swap(tmp);
+	return st;
 }
 
 
 CookieJar::CookieJar(QObject *parent)
-    : QNetworkCookieJar(parent), _saveDelayTimer(new QTimer(parent))
+	: QNetworkCookieJar(parent), _saveDelayTimer(new QTimer(parent))
 {
-    qRegisterMetaTypeStreamOperators<QList<QNetworkCookie> >("QList<QNetworkCookie>");
-    _saveDelayTimer->setInterval(INTERVAL);
-    _saveDelayTimer->setSingleShot(true);
-    connect(_saveDelayTimer, SIGNAL(timeout()), SLOT(autoSave()));
+	qRegisterMetaTypeStreamOperators<QList<QNetworkCookie> >("QList<QNetworkCookie>");
+	_saveDelayTimer->setInterval(INTERVAL);
+	_saveDelayTimer->setSingleShot(true);
+	connect(_saveDelayTimer, SIGNAL(timeout()), SLOT(autoSave()));
 
-    QSettings settings(QSettings::IniFormat, QSettings::UserScope, "KanPlayProj", "KanPlay");
-    _dir = QFileInfo(settings.fileName()).dir().path();
-    settings.remove(QLatin1String("cookies")); // remove old version.
-    load();
+	QSettings settings(QSettings::IniFormat, QSettings::UserScope, "KanPlayProj", "KanPlay");
+	_dir = QFileInfo(settings.fileName()).dir().path();
+	settings.remove(QLatin1String("cookies")); // remove old version.
+	load();
 }
 
 CookieJar::~CookieJar()
 {
-    _saveDelayTimer->stop();
-    save();
+	_saveDelayTimer->stop();
+	save();
 }
 
 bool CookieJar::deleteCookie(const QNetworkCookie & cookie)
 {
-    bool changed = QNetworkCookieJar::deleteCookie(cookie); 
-    if (changed) {
-        markChanged();
-    }
-    return changed;
+	bool changed = QNetworkCookieJar::deleteCookie(cookie);
+	if (changed) {
+		markChanged();
+	}
+	return changed;
 }
 
 bool CookieJar::insertCookie(const QNetworkCookie & cookie)
 {
-    bool changed = QNetworkCookieJar::insertCookie(cookie); 
-    if (changed) {
-        markChanged();
-    }
-    return changed;
+	bool changed = QNetworkCookieJar::insertCookie(cookie);
+	if (changed) {
+		markChanged();
+	}
+	return changed;
 }
 
 bool CookieJar::setCookiesFromUrl(const QList<QNetworkCookie> & cookieList, const QUrl & url)
 {
-    bool changed = QNetworkCookieJar::setCookiesFromUrl(cookieList, url);
-    if (changed) {
-        markChanged();
-    }
-    return changed;
+	bool changed = QNetworkCookieJar::setCookiesFromUrl(cookieList, url);
+	if (changed) {
+		markChanged();
+	}
+	return changed;
 }
 
 bool CookieJar::updateCookie(const QNetworkCookie & cookie)
 {
-    bool changed = QNetworkCookieJar::updateCookie(cookie);
-    if (changed) {
-        markChanged();
-    }
-    return changed;
+	bool changed = QNetworkCookieJar::updateCookie(cookie);
+	if (changed) {
+		markChanged();
+	}
+	return changed;
 }
 
 void CookieJar::save()
 {
-    removeExpiredCookies();
-    QList<QNetworkCookie> cookies = QNetworkCookieJar::allCookies();
-    QMutableListIterator<QNetworkCookie> i(cookies);
-    while (i.hasNext()) {
-        if ( i.next().isSessionCookie() ) {
-            i.remove();
-        }
-    }
-    QSettings cookieSettings(cookiesFile(), QSettings::IniFormat);
-    cookieSettings.setValue(QLatin1String("cookies"), QVariant::fromValue<QList<QNetworkCookie> >(cookies));
-    _modified = false;
+	removeExpiredCookies();
+	QList<QNetworkCookie> cookies = QNetworkCookieJar::allCookies();
+	QMutableListIterator<QNetworkCookie> i(cookies);
+	while (i.hasNext()) {
+		if (i.next().isSessionCookie()) {
+			i.remove();
+		}
+	}
+	QSettings cookieSettings(cookiesFile(), QSettings::IniFormat);
+	cookieSettings.setValue(QLatin1String("cookies"), QVariant::fromValue<QList<QNetworkCookie> >(cookies));
+	_modified = false;
 }
 
 void CookieJar::load()
 {
-    QSettings cookieSettings(cookiesFile(), QSettings::IniFormat);
-    QList<QNetworkCookie> cookies = qvariant_cast<QList<QNetworkCookie> >(cookieSettings.value(QLatin1String("cookies")));
-    if (cookies.isEmpty()) {
-        return;
-    }
-    setAllCookies(cookies);
+	QSettings cookieSettings(cookiesFile(), QSettings::IniFormat);
+	QList<QNetworkCookie> cookies = qvariant_cast<QList<QNetworkCookie>>(cookieSettings.value(QLatin1String("cookies")));
+	if (cookies.isEmpty()) {
+		return;
+	}
+	setAllCookies(cookies);
 }
 
 void CookieJar::deleteAll()
 {
-    QList<QNetworkCookie> cookies;
-    QSettings cookieSettings(cookiesFile(), QSettings::IniFormat);
-    cookieSettings.setValue(QLatin1String("cookies"), QVariant::fromValue<QList<QNetworkCookie> >(cookies));
-    setAllCookies(cookies);
+	QList<QNetworkCookie> cookies;
+	QSettings cookieSettings(cookiesFile(), QSettings::IniFormat);
+	cookieSettings.setValue(QLatin1String("cookies"), QVariant::fromValue<QList<QNetworkCookie> >(cookies));
+	setAllCookies(cookies);
 }
 
 void CookieJar::autoSave()
 {
-    if (!_modified) { 
-        return; 
-    }
-    save();
+	if (!_modified) {
+		return;
+	}
+	save();
 }
 
 void CookieJar::removeExpiredCookies()
 {
-    QDateTime now = QDateTime::currentDateTime();
-    QList<QNetworkCookie> cookies = QNetworkCookieJar::allCookies();
-    int count = cookies.count();
-    QMutableListIterator<QNetworkCookie> i(cookies);
-    while (i.hasNext()) {
-        if (i.next().isSessionCookie()) {
-            continue;
-        }
-        if (i.value().expirationDate() < now) {
-            i.remove();
-        }
-    }
-    if (cookies.count() != count) {
-        setAllCookies(cookies);
-    }
+	QDateTime now = QDateTime::currentDateTime();
+	QList<QNetworkCookie> cookies = QNetworkCookieJar::allCookies();
+	int count = cookies.count();
+	QMutableListIterator<QNetworkCookie> i(cookies);
+	while (i.hasNext()) {
+		if (i.next().isSessionCookie()) {
+			continue;
+		}
+		if (i.value().expirationDate() < now) {
+			i.remove();
+		}
+	}
+	if (cookies.count() != count) {
+		setAllCookies(cookies);
+	}
 }
 
 void CookieJar::markChanged()
 {
-    if (_saveDelayTimer->isActive()) {
-        _saveDelayTimer->stop();
-    }
-    _modified = true;
-    _saveDelayTimer->start();
+	if (_saveDelayTimer->isActive()) {
+		_saveDelayTimer->stop();
+	}
+	_modified = true;
+	_saveDelayTimer->start();
 }
 
-QString CookieJar::cookiesFile() const 
+QString CookieJar::cookiesFile() const
 {
-    QString filename = QDir(_dir).filePath(QLatin1String("cookies.ini"));
-    return filename;
+	QString filename = QDir(_dir).filePath(QLatin1String("cookies.ini"));
+	return filename;
 }

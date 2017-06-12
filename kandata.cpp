@@ -8,109 +8,109 @@
 
 #define _SIREAD(name)\
 	if (jobj[#name].isString())\
-	{\
-        name##_s = jobj[#name].toString();\
-        name = name##_s.toInt();\
-	}\
-	else\
-	{\
+					{\
+		name##_s = jobj[#name].toString();\
+		name = name##_s.toInt();\
+					}\
+																else\
+																{\
 		_IREAD(name);\
-	}
+																}
 
 #define _AIREAD(name)   \
 	_jarray=jobj[#name].toArray();\
 	name.clear();\
 	foreach(const QJsonValue &v, _jarray)\
-	{\
+																{\
 		int val = 0;\
 		if (v.isString())\
-		{\
+										{\
 			val = v.toString().toInt();\
-		}\
-		else\
-		{\
+										}\
+																																else\
+																																{\
 			val = v.toInt();\
-		}\
+																																}\
 		name.append(val);\
-	}
+																}
 #define _AFREAD(name)   \
 	_jarray=jobj[#name].toArray();\
 	name.clear();\
 	foreach(const QJsonValue &v, _jarray)\
-	{\
+																{\
 		name.append(v.toDouble());\
-	}
+																}
 
 #define _AAIREAD(name) \
 	_jarray = jobj[#name].toArray();\
 	name.clear();\
 	foreach(const QJsonValue &v, _jarray)\
-	{\
+																{\
 	if (v.isArray())\
-		{\
+						{\
 		QJsonArray jt = v.toArray();\
 		QList<int> lt;\
 		foreach(const QJsonValue &vt, jt)\
-			{\
+																																																{\
 			lt.append(vt.toInt());\
-			}\
+																																																}\
 			name.append(lt);\
-		}\
-		else\
-		{\
+						}\
+																																else\
+																																{\
 		QList<int> lt;\
 		lt.append(v.toInt());\
 		name.append(lt);\
-		}\
-	}
+																																}\
+																}
 #define _AAFREAD(name) \
 	_jarray = jobj[#name].toArray();\
 	name.clear();\
 	foreach(const QJsonValue &v, _jarray)\
-	{\
+																{\
 	if (v.isArray())\
-		{\
+						{\
 		QJsonArray jt = v.toArray();\
 		QList<float> lt;\
 		foreach(const QJsonValue &vt, jt)\
-			{\
+																																																{\
 			lt.append(vt.toDouble());\
-			}\
+																																																}\
 			name.append(lt);\
-		}\
-		else\
-		{\
+						}\
+																																else\
+																																{\
 		QList<float> lt;\
 		lt.append(v.toDouble());\
 		name.append(lt);\
-		}\
-	}
+																																}\
+																}
 
 #define _ASREAD(name)   \
 	_jarray=jobj[#name].toArray();\
 	name.clear();\
 	foreach(const QJsonValue &v, _jarray)\
-	{\
+																{\
 		name.append(v.toString());\
-	}
+																}
 
 #define _ALREAD(name)   \
 	_jarray=jobj[#name].toArray();\
 	name.clear();\
 	foreach(const QJsonValue &v, _jarray)\
-	{\
+																{\
 		name.append((qint64)v.toDouble());\
-	}
+																}
 
 #define _ACREAD(name, c)   \
 	_jarray=jobj[#name].toArray();\
 	name.clear();\
 	foreach(const QJsonValue &v, _jarray)\
-	{\
+																{\
 		c tc;\
 		tc.ReadFromJObj(v.toObject());\
 		name.append(tc);\
-	}
+																}
 
 #define _CREAD(name, c)\
 	name.ReadFromJObj(jobj[#name].toObject());
@@ -118,11 +118,11 @@
 /*
  * Replace \ and "
  *
-	QString str = "";
-	QJsonDocument doc = QJsonDocument::fromJson(str.toLocal8Bit());
-	KBasicData d;
-	d.ReadFromJObj(doc.object()["api_data"].toObject());
-*/
+ QString str = "";
+ QJsonDocument doc = QJsonDocument::fromJson(str.toLocal8Bit());
+ KBasicData d;
+ d.ReadFromJObj(doc.object()["api_data"].toObject());
+ */
 
 bool kcsapi_basic::ReadFromJObj(const QJsonObject &jobj)
 {
@@ -131,7 +131,7 @@ bool kcsapi_basic::ReadFromJObj(const QJsonObject &jobj)
 	api_furniture.clear();
 	foreach(const QJsonValue &v, jarray)
 	{
-		api_furniture.append(v.toInt());
+	api_furniture.append(v.toInt());
 	}
 	api_member_id = jobj["api_member_id"].toString();
 	*/
@@ -140,22 +140,22 @@ bool kcsapi_basic::ReadFromJObj(const QJsonObject &jobj)
 	api_furniture.clear();
 	foreach(const QJsonValue &v, jarray)
 	{
-		if (v.isArray())
-		{
-			QJsonArray jt = v.toArray();
-			QList<int> lt;
-			foreach(const QJsonValue &vt, jt)
-			{
-				lt.append(vt.toInt());
-			}
-			api_furniture.append(lt);
-		}
-		else
-		{
-			QList<int> lt;
-			lt.append(v.toInt());
-			api_furniture.append(lt);
-		}
+	if (v.isArray())
+	{
+	QJsonArray jt = v.toArray();
+	QList<int> lt;
+	foreach(const QJsonValue &vt, jt)
+	{
+	lt.append(vt.toInt());
+	}
+	api_furniture.append(lt);
+	}
+	else
+	{
+	QList<int> lt;
+	lt.append(v.toInt());
+	api_furniture.append(lt);
+	}
 	}
 	*/
 
@@ -192,7 +192,7 @@ bool kcsapi_basic::ReadFromJObj(const QJsonObject &jobj)
 	_IREAD(api_tutorial_progress);
 	_AIREAD(api_pvp);
 
-//    qDebug(api_comment.toUtf8());
+	//    qDebug(api_comment.toUtf8());
 
 	return _bParseRet;
 }
@@ -426,7 +426,7 @@ bool kcsapi_ship2::ReadFromShip(const kcsapi_ship &ship)
 		api_sortno = ship.api_sortno;
 		api_ship_id = ship.api_ship_id;
 		api_lv = ship.api_ship_id;
-//        api_exp = ship.api_exp;
+		//        api_exp = ship.api_exp;
 		api_nowhp = ship.api_nowhp;
 		api_maxhp = ship.api_maxhp;
 		api_leng = ship.api_leng;
@@ -1347,7 +1347,7 @@ bool kcsapi_next::ReadFromJObj(const QJsonObject &jobj)
 	_IREAD(api_bosscell_no);
 	_IREAD(api_bosscomp);
 	_IREAD(api_comment_kind);
-    _IREAD(api_production_kind);
+	_IREAD(api_production_kind);
 	_CREAD(api_enemy, kcsapi_next_enemy);
 	_CREAD(api_airsearch, kcsapi_airsearch);
 	_CREAD(api_eventmap, kcsapi_eventmap);
@@ -1409,7 +1409,7 @@ bool kcsapi_battle_base_attack::ReadFromJObj(const QJsonObject &jobj)
 {
 	_IREAD(api_base_id);
 	_ACREAD(api_squadron_plane, kcsapi_battle_base_attack_squadron);
-	
+
 	_AIREAD(api_stage_flag);
 	_AAIREAD(api_plane_from); //? f, e list
 	_CREAD(api_stage1, kcsapi_battle_support_airatack_stage1);
@@ -1550,7 +1550,7 @@ bool kcsapi_battle::ReadFromJObj(const QJsonObject &jobj)
 
 	// midnight
 	_CREAD(api_hougeki, kcsapi_battle_hougeki); //midnight
-	
+
 	return _bParseRet;
 }
 

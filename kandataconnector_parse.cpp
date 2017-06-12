@@ -7,6 +7,8 @@
 #include "mainwindow.h"
 #include "klog.h"
 
+#include "ControlManager.h"
+
 bool questDataSort(const kcsapi_quest &left, const kcsapi_quest &right)
 {
 	return left.api_no < right.api_no;
@@ -49,6 +51,8 @@ bool KanDataConnector::port_port_parse()
 	{
 		MainWindow::mainWindow()->timerWindow()->setAutoRepairTime(true, true);
 	}
+
+	ControlManager::getInstance().clearPortDataDirtyFlag();
 
 	return true;
 }
@@ -521,6 +525,8 @@ bool KanDataConnector::req_hensei_preset_delete_parse()
 
 bool KanDataConnector::get_member_preset_deck_parse()
 {
+	// hensei
+	ControlManager::getInstance().setPortDataDirty();
 	return true;
 }
 
@@ -670,6 +676,7 @@ bool KanDataConnector::req_kousyou_destroyship_parse()
 
 		updateRepairTable();
 		updateWeaponTable();
+		ControlManager::getInstance().setPortDataDirty();
 	}
 	return true;
 }
@@ -955,6 +962,9 @@ bool KanDataConnector::req_sortie_battleresult_parse()
 
 	logBattleResult();
 	logBattleDetail(false);
+
+	ControlManager::getInstance().clearPortDataDirtyFlag();
+
 	return true;
 }
 
@@ -1056,6 +1066,9 @@ bool KanDataConnector::req_combined_battle_battleresult_parse()
 
 	logBattleResult();
 	logBattleDetail(true);
+
+	ControlManager::getInstance().clearPortDataDirtyFlag();
+
 	return true;
 }
 

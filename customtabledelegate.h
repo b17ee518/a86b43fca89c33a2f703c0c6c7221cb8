@@ -16,15 +16,15 @@ enum {
 class CustomTableDelegate : public QStyledItemDelegate
 {
 public:
-    CustomTableDelegate(QTableWidget* tableWidget);
+	CustomTableDelegate(QTableWidget* tableWidget);
 protected:
-    void paint(QPainter* painter, const QStyleOptionViewItem& option, const QModelIndex& index) const;
+	void paint(QPainter* painter, const QStyleOptionViewItem& option, const QModelIndex& index) const;
 private:
-    QPen _gridPen;
+	QPen _gridPen;
 
-    QBrush _orangeBrush;
-    QBrush _yellowBrush;
-    QBrush _greenBrush;
+	QBrush _orangeBrush;
+	QBrush _yellowBrush;
+	QBrush _greenBrush;
 };
 
 

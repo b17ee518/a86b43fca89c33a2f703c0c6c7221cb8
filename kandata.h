@@ -9,73 +9,73 @@
 
 /*
  * End points
-	"/kcsapi/api_start2",
-	"/kcsapi/api_port/port",
-	"/kcsapi/api_get_member/basic",
-	"/kcsapi/api_get_member/ship",
-	"/kcsapi/api_get_member/ship2",
-	"/kcsapi/api_get_member/ship3",
-	"/kcsapi/api_get_member/ship_deck",
-	"/kcsapi/api_get_member/slot_item",
-	"/kcsapi/api_get_member/useitem",
-	"/kcsapi/api_get_member/deck",
-	"/kcsapi/api_get_member/deck_port",
-	"/kcsapi/api_get_member/ndock",
-	"/kcsapi/api_get_member/kdock",
-	"/kcsapi/api_get_member/material",
-	"/kcsapi/api_get_member/questlist",
-	"/kcsapi/api_req_hensei/change",
-	"/kcsapi/api_req_kousyou/getship",
-	"/kcsapi/api_req_kousyou/createitem",
-	"/kcsapi/api_req_kousyou/createship",
-	"/kcsapi/api_req_kousyou/createship_speedchange",
-	"/kcsapi/api_req_kousyou/destroyship",
-	"/kcsapi/api_req_kousyou/destroyitem2",
-	"/kcsapi/api_req_nyukyo/start",
-	"/kcsapi/api_req_nyukyo/speedchange",
-	"/kcsapi/api_req_hokyu/charge",
-	"/kcsapi/api_req_kaisou/powerup",
-	"/kcsapi/api_req_member/updatedeckname",
-	"/kcsapi/api_req_member/updatecomment",
-	"/kcsapi/api_req_sortie/battle",
-	"/kcsapi/api_req_sortie/battleresult",
-*/
+ "/kcsapi/api_start2",
+ "/kcsapi/api_port/port",
+ "/kcsapi/api_get_member/basic",
+ "/kcsapi/api_get_member/ship",
+ "/kcsapi/api_get_member/ship2",
+ "/kcsapi/api_get_member/ship3",
+ "/kcsapi/api_get_member/ship_deck",
+ "/kcsapi/api_get_member/slot_item",
+ "/kcsapi/api_get_member/useitem",
+ "/kcsapi/api_get_member/deck",
+ "/kcsapi/api_get_member/deck_port",
+ "/kcsapi/api_get_member/ndock",
+ "/kcsapi/api_get_member/kdock",
+ "/kcsapi/api_get_member/material",
+ "/kcsapi/api_get_member/questlist",
+ "/kcsapi/api_req_hensei/change",
+ "/kcsapi/api_req_kousyou/getship",
+ "/kcsapi/api_req_kousyou/createitem",
+ "/kcsapi/api_req_kousyou/createship",
+ "/kcsapi/api_req_kousyou/createship_speedchange",
+ "/kcsapi/api_req_kousyou/destroyship",
+ "/kcsapi/api_req_kousyou/destroyitem2",
+ "/kcsapi/api_req_nyukyo/start",
+ "/kcsapi/api_req_nyukyo/speedchange",
+ "/kcsapi/api_req_hokyu/charge",
+ "/kcsapi/api_req_kaisou/powerup",
+ "/kcsapi/api_req_member/updatedeckname",
+ "/kcsapi/api_req_member/updatecomment",
+ "/kcsapi/api_req_sortie/battle",
+ "/kcsapi/api_req_sortie/battleresult",
+ */
 
 /*
  * Full List
-kcsapi_basic
-kcsapi_battleresult
-kcsapi_battleresult_enemyinfo
-kcsapi_battleresult_getship
-kcsapi_charge
-kcsapi_charge_ship
-kcsapi_createitem
-kcsapi_createship
-kcsapi_deck
-kcsapi_destroyitem2
-kcsapi_destroyship
-kcsapi_kdock
-kcsapi_kdock_getship
-kcsapi_material
-kcsapi_mst_ship
-kcsapi_mst_slotitem
-kcsapi_mst_slotitem_equiptype
-kcsapi_mst_stype
-kcsapi_mst_useitem
-kcsapi_ndock
-kcsapi_port
-kcsapi_powerup
-kcsapi_quest
-kcsapi_questlist
-kcsapi_ship
-kcsapi_ship2
-kcsapi_ship3
-kcsapi_ship_deck
-kcsapi_slot_data
-kcsapi_slotitem
-kcsapi_start2
-kcsapi_useitem
-*/
+ kcsapi_basic
+ kcsapi_battleresult
+ kcsapi_battleresult_enemyinfo
+ kcsapi_battleresult_getship
+ kcsapi_charge
+ kcsapi_charge_ship
+ kcsapi_createitem
+ kcsapi_createship
+ kcsapi_deck
+ kcsapi_destroyitem2
+ kcsapi_destroyship
+ kcsapi_kdock
+ kcsapi_kdock_getship
+ kcsapi_material
+ kcsapi_mst_ship
+ kcsapi_mst_slotitem
+ kcsapi_mst_slotitem_equiptype
+ kcsapi_mst_stype
+ kcsapi_mst_useitem
+ kcsapi_ndock
+ kcsapi_port
+ kcsapi_powerup
+ kcsapi_quest
+ kcsapi_questlist
+ kcsapi_ship
+ kcsapi_ship2
+ kcsapi_ship3
+ kcsapi_ship_deck
+ kcsapi_slot_data
+ kcsapi_slotitem
+ kcsapi_start2
+ kcsapi_useitem
+ */
 
 
 
@@ -193,7 +193,7 @@ public:
 	kcsapi_battle_kouku(){}
 	virtual bool ReadFromJObj(const QJsonObject &jobj);
 
-    QList< QList<int> > api_plane_from; //? f, e list
+	QList< QList<int> > api_plane_from; //? f, e list
 	kcsapi_battle_kouku_stage1 api_stage1;
 	kcsapi_battle_kouku_stage2 api_stage2;
 	kcsapi_battle_kouku_stage3 api_stage3;
@@ -243,7 +243,7 @@ public:
 	QList<int> api_ship_id;
 	QList<int> api_undressing_flag; //??
 	QList<int> api_stage_flag;
-    QList< QList<int> > api_plane_from;
+	QList< QList<int> > api_plane_from;
 	kcsapi_battle_support_airatack_stage1 api_stage1;
 	kcsapi_battle_support_airatack_stage2 api_stage2;
 	kcsapi_battle_support_airatack_stage3 api_stage3;
@@ -270,7 +270,7 @@ public:
 	QList<kcsapi_battle_base_attack_squadron> api_squadron_plane;
 
 	QList<int> api_stage_flag;
-    QList<QList<int> > api_plane_from;
+	QList<QList<int> > api_plane_from;
 	kcsapi_battle_support_airatack_stage1 api_stage1;
 	kcsapi_battle_support_airatack_stage2 api_stage2;
 	kcsapi_battle_support_airatack_stage3 api_stage3;
@@ -339,9 +339,9 @@ public:
 	8　爆雷
 	*/
 	// must skip #0
-    QList<QList<int> > api_df_list;
-    QList<QList<int> > api_si_list;
-    QList<QList<int> > api_cl_list;
+	QList<QList<int> > api_df_list;
+	QList<QList<int> > api_si_list;
+	QList<QList<int> > api_cl_list;
 
 	// midnight
 	QList<int> api_sp_list;
@@ -354,7 +354,7 @@ public:
 	5　主砲主砲主砲
 	*/
 
-    QList<QList<float> > api_damage;
+	QList<QList<float> > api_damage;
 };
 
 class kcsapi_battle_raigeki : public KAPIBaseData
@@ -410,8 +410,8 @@ public:
 	int api_midnight_flag;
 	QList<QList<int> > api_eSlot; // from #0
 	QList<QList<int> > api_eSlot_combined; // from #0
-    QList<QList<int> > api_eKyouka; // from #0
-    QList<QList<int> > api_fParam; // from #0
+	QList<QList<int> > api_eKyouka; // from #0
+	QList<QList<int> > api_fParam; // from #0
 	// combined
 	QList<QList<int> > api_fParam_combined; // from #0
 	QList<QList<int> > api_eParam; // from #0
@@ -517,10 +517,10 @@ public:
 	int api_member_exp;
 	int api_get_base_exp;
 	QList<int> api_get_ship_exp;
-    QList<QList<int> > api_get_exp_lvup;
+	QList<QList<int> > api_get_exp_lvup;
 	// combined
 	QList<int> api_get_ship_exp_combined;
-    QList<QList<int> > api_get_exp_lvup_combined;
+	QList<QList<int> > api_get_exp_lvup_combined;
 
 	int api_dests;
 	int api_destsf;
@@ -601,7 +601,7 @@ public:
 
 	int api_id;
 	int api_slotitem_id;
-    int api_locked;
+	int api_locked;
 	int api_level;
 	int api_alv;
 };
@@ -732,7 +732,7 @@ public:
 /**
  * @brief The kcsapi_ship class
  */
-class kcsapi_ship: public KAPIBaseData
+class kcsapi_ship : public KAPIBaseData
 {
 
 public:
@@ -929,7 +929,7 @@ public:
 /**
  * @brief The kcsapi_material class
  */
-class kcsapi_material: public KAPIBaseData
+class kcsapi_material : public KAPIBaseData
 {
 
 public:
@@ -945,7 +945,7 @@ public:
 /**
  * @brief The kcsapi_mst_slotitem class
  */
-class kcsapi_mst_slotitem: public KAPIBaseData
+class kcsapi_mst_slotitem : public KAPIBaseData
 {
 
 public:
@@ -985,7 +985,7 @@ public:
 /**
  * @brief The kcsapi_mst_slotitem_equiptype class
  */
-class kcsapi_mst_slotitem_equiptype: public KAPIBaseData
+class kcsapi_mst_slotitem_equiptype : public KAPIBaseData
 {
 
 public:
@@ -1000,7 +1000,7 @@ public:
 /**
  * @brief The kcsapi_mst_stype class
  */
-class kcsapi_mst_stype: public KAPIBaseData
+class kcsapi_mst_stype : public KAPIBaseData
 {
 
 public:
@@ -1018,7 +1018,7 @@ public:
 /**
  * @brief The kcsapi_mst_useitem class
  */
-class kcsapi_mst_useitem: public KAPIBaseData
+class kcsapi_mst_useitem : public KAPIBaseData
 {
 
 public:
@@ -1036,7 +1036,7 @@ public:
 /**
  * @brief The kcsapi_ndock class
  */
-class kcsapi_ndock: public KAPIBaseData
+class kcsapi_ndock : public KAPIBaseData
 {
 
 public:
@@ -1059,7 +1059,7 @@ public:
 /**
  * @brief The kcsapi_powerup class
  */
-class kcsapi_powerup: public KAPIBaseData
+class kcsapi_powerup : public KAPIBaseData
 {
 
 public:
@@ -1110,7 +1110,7 @@ public:
 /**
  * @brief The kcsapi_quest class
  */
-class kcsapi_quest: public KAPIBaseData
+class kcsapi_quest : public KAPIBaseData
 {
 
 public:
@@ -1133,7 +1133,7 @@ public:
 /**
  * @brief The kcsapi_questlist class
  */
-class kcsapi_questlist: public KAPIBaseData
+class kcsapi_questlist : public KAPIBaseData
 {
 
 public:
@@ -1152,7 +1152,7 @@ public:
 /**
  * @brief The kcsapi_ship3 class
  */
-class kcsapi_ship3: public KAPIBaseData
+class kcsapi_ship3 : public KAPIBaseData
 {
 
 public:
@@ -1215,7 +1215,7 @@ public:
 	QList<kcsapi_air_base_corps_plane_info> api_plane_info;
 };
 
-class kcsapi_slot_data: public KAPIBaseData
+class kcsapi_slot_data : public KAPIBaseData
 {
 
 public:
@@ -1260,46 +1260,46 @@ public:
 	QList<int> api_slottype36;
 };
 
-class Api_Mst_Item_Shop: public KAPIBaseData
+class Api_Mst_Item_Shop : public KAPIBaseData
 {
 
 public:
 	Api_Mst_Item_Shop(){}
 
-virtual bool ReadFromJObj(const QJsonObject &jobj);
+	virtual bool ReadFromJObj(const QJsonObject &jobj);
 	QList<int> api_cabinet_1;
 	QList<int> api_cabinet_2;
 };
 
-class Api_Boko_Max_Ships: public KAPIBaseData
+class Api_Boko_Max_Ships : public KAPIBaseData
 {
 
 public:
 	Api_Boko_Max_Ships(){}
 
-virtual bool ReadFromJObj(const QJsonObject &jobj);
+	virtual bool ReadFromJObj(const QJsonObject &jobj);
 	QString api_string_value;
 	int api_int_value;
 };
 
-class Api_Mst_Const: public KAPIBaseData
+class Api_Mst_Const : public KAPIBaseData
 {
 
 public:
 	Api_Mst_Const(){}
 
-virtual bool ReadFromJObj(const QJsonObject &jobj);
+	virtual bool ReadFromJObj(const QJsonObject &jobj);
 	Api_Boko_Max_Ships api_boko_max_ships;
 };
 
 
-class Api_Mst_Ship: public KAPIBaseData
+class Api_Mst_Ship : public KAPIBaseData
 {
 
 public:
 	Api_Mst_Ship(){}
 
-virtual bool ReadFromJObj(const QJsonObject &jobj);
+	virtual bool ReadFromJObj(const QJsonObject &jobj);
 	int api_id;
 	int api_sortno;
 	QString api_name;
@@ -1355,13 +1355,13 @@ virtual bool ReadFromJObj(const QJsonObject &jobj);
 	int api_voicef;
 };
 
-class Api_Mst_Shipgraph: public KAPIBaseData
+class Api_Mst_Shipgraph : public KAPIBaseData
 {
 
 public:
 	Api_Mst_Shipgraph(){}
 
-virtual bool ReadFromJObj(const QJsonObject &jobj);
+	virtual bool ReadFromJObj(const QJsonObject &jobj);
 	int api_id;
 	int api_sortno;
 	QString api_filename;
@@ -1383,13 +1383,13 @@ virtual bool ReadFromJObj(const QJsonObject &jobj);
 	QList<int> api_wedb;
 };
 
-class Api_Equip_Type: public KAPIBaseData
+class Api_Equip_Type : public KAPIBaseData
 {
 
 public:
 	Api_Equip_Type(){}
 
-virtual bool ReadFromJObj(const QJsonObject &jobj);
+	virtual bool ReadFromJObj(const QJsonObject &jobj);
 	int _1;
 	int _2;
 	int _3;
@@ -1423,13 +1423,13 @@ virtual bool ReadFromJObj(const QJsonObject &jobj);
 	int _31;
 };
 
-class Api_Mst_Stype: public KAPIBaseData
+class Api_Mst_Stype : public KAPIBaseData
 {
 
 public:
 	Api_Mst_Stype(){}
 
-virtual bool ReadFromJObj(const QJsonObject &jobj);
+	virtual bool ReadFromJObj(const QJsonObject &jobj);
 	int api_id;
 	int api_sortno;
 	QString api_name;
@@ -1438,13 +1438,13 @@ virtual bool ReadFromJObj(const QJsonObject &jobj);
 	Api_Equip_Type api_equip_type;
 };
 
-class Api_Mst_Slotitem: public KAPIBaseData
+class Api_Mst_Slotitem : public KAPIBaseData
 {
 
 public:
 	Api_Mst_Slotitem(){}
 
-virtual bool ReadFromJObj(const QJsonObject &jobj);
+	virtual bool ReadFromJObj(const QJsonObject &jobj);
 	int api_id;
 	int api_sortno;
 	QString api_name;
@@ -1475,26 +1475,26 @@ virtual bool ReadFromJObj(const QJsonObject &jobj);
 	int api_distance;
 };
 
-class Api_Mst_Slotitemgraph: public KAPIBaseData
+class Api_Mst_Slotitemgraph : public KAPIBaseData
 {
 
 public:
 	Api_Mst_Slotitemgraph(){}
 
-virtual bool ReadFromJObj(const QJsonObject &jobj);
+	virtual bool ReadFromJObj(const QJsonObject &jobj);
 	int api_id;
 	int api_sortno;
 	QString api_filename;
 	QString api_version;
 };
 
-class Api_Mst_Furniture: public KAPIBaseData
+class Api_Mst_Furniture : public KAPIBaseData
 {
 
 public:
 	Api_Mst_Furniture(){}
 
-virtual bool ReadFromJObj(const QJsonObject &jobj);
+	virtual bool ReadFromJObj(const QJsonObject &jobj);
 	int api_id;
 	int api_type;
 	int api_no;
@@ -1505,13 +1505,13 @@ virtual bool ReadFromJObj(const QJsonObject &jobj);
 	int api_saleflg;
 };
 
-class Api_Mst_Furnituregraph: public KAPIBaseData
+class Api_Mst_Furnituregraph : public KAPIBaseData
 {
 
 public:
 	Api_Mst_Furnituregraph(){}
 
-virtual bool ReadFromJObj(const QJsonObject &jobj);
+	virtual bool ReadFromJObj(const QJsonObject &jobj);
 	int api_id;
 	int api_type;
 	int api_no;
@@ -1519,13 +1519,13 @@ virtual bool ReadFromJObj(const QJsonObject &jobj);
 	QString api_version;
 };
 
-class Api_Mst_Useitem: public KAPIBaseData
+class Api_Mst_Useitem : public KAPIBaseData
 {
 
 public:
 	Api_Mst_Useitem(){}
 
-virtual bool ReadFromJObj(const QJsonObject &jobj);
+	virtual bool ReadFromJObj(const QJsonObject &jobj);
 	int api_id;
 	int api_usetype;
 	int api_category;
@@ -1534,13 +1534,13 @@ virtual bool ReadFromJObj(const QJsonObject &jobj);
 	int api_price;
 };
 
-class Api_Mst_Payitem: public KAPIBaseData
+class Api_Mst_Payitem : public KAPIBaseData
 {
 
 public:
 	Api_Mst_Payitem(){}
 
-virtual bool ReadFromJObj(const QJsonObject &jobj);
+	virtual bool ReadFromJObj(const QJsonObject &jobj);
 	int api_id;
 	int api_type;
 	QString api_name;
@@ -1549,13 +1549,13 @@ virtual bool ReadFromJObj(const QJsonObject &jobj);
 	int api_price;
 };
 
-class Api_Mst_Maparea: public KAPIBaseData
+class Api_Mst_Maparea : public KAPIBaseData
 {
 
 public:
 	Api_Mst_Maparea(){}
 
-virtual bool ReadFromJObj(const QJsonObject &jobj);
+	virtual bool ReadFromJObj(const QJsonObject &jobj);
 	int api_id;
 	QString api_name;
 	int api_type;
@@ -1563,13 +1563,13 @@ virtual bool ReadFromJObj(const QJsonObject &jobj);
 
 //"api_mst_item_shop":{"api_cabinet_1":[1,2,3,4,15,5,7,6,11,14,10,13],"api_cabinet_2":[16,17,20,19,8,9,18,-1,-1,-1]},"api_mst_maparea":[{"api_id":1,"api_name":"\u93ae\u5b88\u5e9c\u6d77\u57df","api_type":0},{"api_id":2,"api_name":"\u5357\u897f\u8af8\u5cf6\u6d77\u57df","api_type":0},{"api_id":3,"api_name":"\u5317\u65b9\u6d77\u57df","api_type":0},{"api_id":4,"api_name":"\u897f\u65b9\u6d77\u57df","api_type":0},{"api_id":5,"api_name":"\u5357\u65b9\u6d77\u57df","api_type":0},{"api_id":27,"api_name":"AL \/ MI\u4f5c\u6226","api_type":1}],
 
-class Api_Mst_Mapinfo: public KAPIBaseData
+class Api_Mst_Mapinfo : public KAPIBaseData
 {
 
 public:
 	Api_Mst_Mapinfo(){}
 
-virtual bool ReadFromJObj(const QJsonObject &jobj);
+	virtual bool ReadFromJObj(const QJsonObject &jobj);
 	int api_id;
 	int api_maparea_id;
 	int api_no;
@@ -1583,13 +1583,13 @@ virtual bool ReadFromJObj(const QJsonObject &jobj);
 	// "api_sally_flag":[1,0]
 };
 
-class Api_Mst_Mapbgm: public KAPIBaseData
+class Api_Mst_Mapbgm : public KAPIBaseData
 {
 
 public:
 	Api_Mst_Mapbgm(){}
 
-virtual bool ReadFromJObj(const QJsonObject &jobj);
+	virtual bool ReadFromJObj(const QJsonObject &jobj);
 	int api_id;
 	int api_maparea_id;
 	int api_no;
@@ -1597,13 +1597,13 @@ virtual bool ReadFromJObj(const QJsonObject &jobj);
 	QList<int> api_boss_bgm;
 };
 
-class Api_Mst_Mapcell: public KAPIBaseData
+class Api_Mst_Mapcell : public KAPIBaseData
 {
 
 public:
 	Api_Mst_Mapcell(){}
 
-virtual bool ReadFromJObj(const QJsonObject &jobj);
+	virtual bool ReadFromJObj(const QJsonObject &jobj);
 	int api_map_no;
 	int api_maparea_id;
 	int api_mapinfo_no;
@@ -1612,13 +1612,13 @@ virtual bool ReadFromJObj(const QJsonObject &jobj);
 	int api_color_no;
 };
 
-class Api_Mst_Mission: public KAPIBaseData
+class Api_Mst_Mission : public KAPIBaseData
 {
 
 public:
 	Api_Mst_Mission(){}
 
-virtual bool ReadFromJObj(const QJsonObject &jobj);
+	virtual bool ReadFromJObj(const QJsonObject &jobj);
 	int api_id;
 	int api_maparea_id;
 	QString api_name;
@@ -1632,13 +1632,13 @@ virtual bool ReadFromJObj(const QJsonObject &jobj);
 	// "api_return_flag":1
 };
 
-class Api_Mst_Shipupgrade: public KAPIBaseData
+class Api_Mst_Shipupgrade : public KAPIBaseData
 {
 
 public:
 	Api_Mst_Shipupgrade(){}
 
-virtual bool ReadFromJObj(const QJsonObject &jobj);
+	virtual bool ReadFromJObj(const QJsonObject &jobj);
 	int api_id;
 	int api_original_ship_id;
 	int api_upgrade_type;
@@ -1649,7 +1649,7 @@ virtual bool ReadFromJObj(const QJsonObject &jobj);
 /**
  * @brief The kcsapi_start2 class
  */
-class kcsapi_start2: public KAPIBaseData
+class kcsapi_start2 : public KAPIBaseData
 {
 
 public:
@@ -1684,7 +1684,7 @@ public:
 /**
  * @brief The kcsapi_port class
  */
-class kcsapi_port: public KAPIBaseData
+class kcsapi_port : public KAPIBaseData
 {
 
 public:
@@ -1702,7 +1702,7 @@ public:
 /**
  * @brief The kcsapi_useitem class
  */
-class kcsapi_useitem: public KAPIBaseData
+class kcsapi_useitem : public KAPIBaseData
 {
 
 public:
@@ -1755,7 +1755,7 @@ public:
 /**
  * @brief The kcsapi_next class
  */
-class kcsapi_next: public KAPIBaseData
+class kcsapi_next : public KAPIBaseData
 {
 public:
 	kcsapi_next(){}
@@ -1772,8 +1772,8 @@ public:
 	int api_next;
 	int api_bosscell_no;
 	int api_bosscomp;
-    int api_comment_kind;
-    int api_production_kind;
+	int api_comment_kind;
+	int api_production_kind;
 	kcsapi_next_enemy api_enemy;
 	kcsapi_airsearch api_airsearch;
 	kcsapi_eventmap api_eventmap;

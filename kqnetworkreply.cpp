@@ -22,13 +22,13 @@ struct KQNetworkReplyPrivate{
 	QNetworkAccessManager *manager;
 };
 
-KQNetworkReply::KQNetworkReply(QObject *parent, QNetworkReply *toCopy, QNetworkAccessManager *mgr) :
-QNetworkReply(parent) {
+KQNetworkReply::KQNetworkReply(QObject *parent, QNetworkReply *toCopy, QNetworkAccessManager *mgr)
+	: QNetworkReply(parent) {
 	d = new KQNetworkReplyPrivate;
 	d->finished = false;
 	d->copied = toCopy;
 	d->manager = mgr;
-    
+
 	setOperation(d->copied->operation());
 	setRequest(d->copied->request());
 	setUrl(d->copied->url());
@@ -74,7 +74,7 @@ void KQNetworkReply::handleResponse() {
 	QByteArray data = d->copied->readAll();
 	d->copied->abort();
 
-//	qDebug() << "content:" << data;
+	//	qDebug() << "content:" << data;
 
 	d->content = data;
 	d->offset = 0;
@@ -86,11 +86,11 @@ void KQNetworkReply::handleResponse() {
 	if (mimetype.contains("text/plain"))
 	{
 		QUrl url = d->copied->request().url();
-        QString PathAndQuery = url.path();
+		QString PathAndQuery = url.path();
 		if (PathAndQuery.startsWith("/kcsapi"))
 		{
-            QString responseBody = QString::fromUtf8(d->content.constData(), d->content.size());
-            QString requestBody = property("requestBody").toString();
+			QString responseBody = QString::fromUtf8(d->content.constData(), d->content.size());
+			QString requestBody = property("requestBody").toString();
 			MainWindow::mainWindow()->onGetNetworkReply(PathAndQuery, requestBody, responseBody);
 		}
 	}

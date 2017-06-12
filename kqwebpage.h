@@ -10,29 +10,29 @@
 #endif
 #include <QApplication>
 
-class KQWebPage 
+class KQWebPage
 #if (QT_VERSION >= QT_VERSION_CHECK(5, 6, 0))
 	: public QWebEnginePage
 #else
 	: public QWebPage
 #endif
 {
-    Q_OBJECT
+	Q_OBJECT
 public:
-    explicit KQWebPage(QWidget *parent = 0);
+	explicit KQWebPage(QWidget *parent = 0);
 
 signals:
 
-public slots:
-    virtual bool shouldInterruptJavaScript() 
+	public slots :
+		virtual bool shouldInterruptJavaScript()
 #if (QT_VERSION < QT_VERSION_CHECK(5, 6, 0))
-	override
+		override
 #endif
 	{
-//        QApplication::processEvents(QEventLoop::AllEvents, 42);
-        // Ignore the error
-        return false;
-    }
+		// QApplication::processEvents(QEventLoop::AllEvents, 42);
+		// Ignore the error
+		return false;
+	}
 
 };
 

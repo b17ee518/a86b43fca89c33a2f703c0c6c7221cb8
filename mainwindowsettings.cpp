@@ -62,7 +62,7 @@ void MainWindow::postInit(InfoMainWindow *pInfo, TimerMainWindow *pTimer, Weapon
 	QObject::connect(_pShipWindow, SIGNAL(sigActivated(QWidget*, bool)), _pWeaponWindow, SLOT(slotActivate(QWidget*, bool)));
 	QObject::connect(_pShipWindow, SIGNAL(sigActivated(QWidget*, bool)), _pInfoWindow, SLOT(slotActivate(QWidget*, bool)));
 
-    connect(_pInfoWindow, SIGNAL(sigRestoreMinimizeToggled(bool)), this, SLOT(slotToggleRestoreMinimize(bool)));
+	connect(_pInfoWindow, SIGNAL(sigRestoreMinimizeToggled(bool)), this, SLOT(slotToggleRestoreMinimize(bool)));
 	connect(_pTimerWindow, SIGNAL(sigRestoreMinimizeToggled(bool)), this, SLOT(slotToggleRestoreMinimize(bool)));
 	connect(_pWeaponWindow, SIGNAL(sigRestoreMinimizeToggled(bool)), this, SLOT(slotToggleRestoreMinimize(bool)));
 	connect(_pShipWindow, SIGNAL(sigRestoreMinimizeToggled(bool)), this, SLOT(slotToggleRestoreMinimize(bool)));
@@ -71,7 +71,7 @@ void MainWindow::postInit(InfoMainWindow *pInfo, TimerMainWindow *pTimer, Weapon
 
 	connect(ui->pbCheckInfo, SIGNAL(toggled(bool)), _pInfoWindow, SLOT(setVisible(bool)));
 	connect(ui->pbCheckTimer, SIGNAL(toggled(bool)), _pTimerWindow, SLOT(setVisible(bool)));
-    connect(ui->pbCheckWeapon, SIGNAL(toggled(bool)), _pWeaponWindow, SLOT(slotSetVisible(bool)));
+	connect(ui->pbCheckWeapon, SIGNAL(toggled(bool)), _pWeaponWindow, SLOT(slotSetVisible(bool)));
 	connect(ui->pbCheckShip, SIGNAL(toggled(bool)), _pShipWindow, SLOT(slotSetVisible(bool)));
 
 	connect(ui->pbCheckTransparent, SIGNAL(toggled(bool)), this, SLOT(on_pbCheckTransparent_toggled(bool)));
@@ -93,7 +93,7 @@ void MainWindow::setSleepMode(bool val)
 
 		emit this->sigToggleSleepMode(_bSleep);
 	}
-//	qDebug("state changed");
+	//	qDebug("state changed");
 }
 
 bool MainWindow::isSleepMode()
@@ -143,8 +143,29 @@ void MainWindow::setWebSettings()
 		_pTitanium->Startup(_useport);
 #endif
 	}
+	else if (_proxyMode == ProxyMode::Shark)
+	{
+		_pSharkProcess = new QProcess();
+		_pSharkProcess->setWorkingDirectory(_sharkWorkingPath);
+		QObject::connect(_pSharkProcess, SIGNAL(readyReadStandardOutput()), this, SLOT(slotSharkProcessReadyRead()));
+		QObject::connect(_pSharkProcess, SIGNAL(readyReadStandardError()), this, SLOT(slotSharkProcessReadyReadError()));
 
-	if (_proxyMode != ProxyMode::NoProxy && _proxyMode != ProxyMode::QtProxy)
+#ifdef Q_OS_WIN
+		_pSharkProcess->start("cmd");
+#else
+        _pSharkProcess->start("sh");
+#endif
+
+		if (!_pSharkProcess->waitForStarted())
+		{
+			return;
+        }
+        _pSharkProcess->write(_sharkCommand.toLocal8Bit());
+		_pSharkProcess->write("\n");
+		_pSharkProcess->closeWriteChannel();
+	}
+
+	if (_proxyMode != ProxyMode::NoProxy && _proxyMode != ProxyMode::QtProxy && _proxyMode != ProxyMode::Shark)
 	{
 		if (exceptionSender)
 		{
@@ -154,7 +175,7 @@ void MainWindow::setWebSettings()
 				this,
 				SLOT(slotWebViewException(int, const QString &, const QString &, const QString &)));
 		}
-		
+
 		_proxyFactory.init(_useport);
 
 		// TODO: check why
@@ -182,7 +203,7 @@ void MainWindow::setWebSettings()
 		}
 		CookieJar* jar = new CookieJar(this);
 		_webView->page()->networkAccessManager()->setCookieJar(jar);
-		
+
 		//WebView
 		QNetworkDiskCache *cache = new QNetworkDiskCache(this);
 		cache->setCacheDirectory(QStandardPaths::writableLocation(QStandardPaths::CacheLocation));
@@ -225,24 +246,24 @@ void MainWindow::setWebSettings()
 
 	webSettingFunc(QWebEngineSettings::defaultSettings());
 #else
-		QWebSettings *websetting = QWebSettings::globalSettings();
-		//JavaScript関連設定
-		websetting->setAttribute(QWebSettings::JavascriptCanOpenWindows, true);
-		websetting->setAttribute(QWebSettings::JavascriptCanCloseWindows, true);
-		websetting->setAttribute(QWebSettings::PluginsEnabled, true);
-		websetting->setAttribute(QWebSettings::JavascriptEnabled, true);
+	QWebSettings *websetting = QWebSettings::globalSettings();
+	//JavaScript関連設定
+	websetting->setAttribute(QWebSettings::JavascriptCanOpenWindows, true);
+	websetting->setAttribute(QWebSettings::JavascriptCanCloseWindows, true);
+	websetting->setAttribute(QWebSettings::PluginsEnabled, true);
+	websetting->setAttribute(QWebSettings::JavascriptEnabled, true);
 	//フォント設定
 #if defined(Q_OS_WIN32)
-		websetting->setFontFamily(QWebSettings::StandardFont, "Meiryo UI");
-		websetting->setFontFamily(QWebSettings::SerifFont, "MS PMincho");
-		websetting->setFontFamily(QWebSettings::SansSerifFont, "MS PGothic");
-		websetting->setFontFamily(QWebSettings::FixedFont, "MS Gothic");
+	websetting->setFontFamily(QWebSettings::StandardFont, "Meiryo UI");
+	websetting->setFontFamily(QWebSettings::SerifFont, "MS PMincho");
+	websetting->setFontFamily(QWebSettings::SansSerifFont, "MS PGothic");
+	websetting->setFontFamily(QWebSettings::FixedFont, "MS Gothic");
 #elif defined(Q_OS_LINUX)
 #elif defined(Q_OS_MAC)
-		websetting->setFontFamily(QWebSettings::StandardFont, "ヒラギノ角ゴPro");
-		websetting->setFontFamily(QWebSettings::SerifFont, "ヒラギノ明朝Pro");
-		websetting->setFontFamily(QWebSettings::SansSerifFont, "ヒラギノ角ゴPro");
-		websetting->setFontFamily(QWebSettings::FixedFont, "Osaka");
+	websetting->setFontFamily(QWebSettings::StandardFont, "ヒラギノ角ゴPro");
+	websetting->setFontFamily(QWebSettings::SerifFont, "ヒラギノ明朝Pro");
+	websetting->setFontFamily(QWebSettings::SansSerifFont, "ヒラギノ角ゴPro");
+	websetting->setFontFamily(QWebSettings::FixedFont, "Osaka");
 #else
 #endif
 #endif
@@ -343,25 +364,25 @@ void MainWindow::SetProgressBarPos(int pos, ProgressBarState state)
 #endif
 }
 void MainWindow::setupCss()
-{	
+{
 	/*
 	 *
-body {
-	margin:0;
-	overflow:hidden
-}
+	 body {
+	 margin:0;
+	 overflow:hidden
+	 }
 
-#game_frame {
-	position:fixed;
-	top:-16px;
-	left:-50px;
-	z-index:1
-}
-*/
-	_ieCsses[(int)QWebViewCSSIndex::Normal] = "body {margin:0;overflow:hidden;} #game_frame{position:fixed;top:-16px;left:-50px;z-index:1}";
-	_webViewCsses[(int)QWebViewCSSIndex::Normal] = QUrl(QString("data:text/css;charset=utf-8;base64,") 
+	 #game_frame {
+	 position:fixed;
+	 top:-16px;
+	 left:-50px;
+	 z-index:1
+	 }
+	 */
+    _ieCsses[(int)QWebViewCSSIndex::Normal] = "body {margin:0;overflow:hidden;} #game_frame{position:fixed;top:-16px;left:-50px;z-index:1}";
+	_webViewCsses[(int)QWebViewCSSIndex::Normal] = QUrl(QString("data:text/css;charset=utf-8;base64,")
 		+ _ieCsses[(int)QWebViewCSSIndex::Normal].toUtf8().toBase64());
-//		(QUrl("data:text/css;charset=utf-8;base64,Ym9keSB7DQoJbWFyZ2luOjA7DQoJb3ZlcmZsb3c6aGlkZGVuDQp9DQoNCiNnYW1lX2ZyYW1lIHsNCglwb3NpdGlvbjpmaXhlZDsNCgl0b3A6LTE2cHg7DQoJbGVmdDotNTBweDsNCgl6LWluZGV4OjENCn0="));
+	//		(QUrl("data:text/css;charset=utf-8;base64,Ym9keSB7DQoJbWFyZ2luOjA7DQoJb3ZlcmZsb3c6aGlkZGVuDQp9DQoNCiNnYW1lX2ZyYW1lIHsNCglwb3NpdGlvbjpmaXhlZDsNCgl0b3A6LTE2cHg7DQoJbGVmdDotNTBweDsNCgl6LWluZGV4OjENCn0="));
 
 
 	/*
@@ -379,25 +400,25 @@ body {
 	zoom:0.5
 	}
 	*/
-	
+
 	_ieCsses[(int)QWebViewCSSIndex::Compact] = "body {margin:0;overflow:hidden;} #game_frame{position:fixed;top:-16px;left:-50px;z-index:1}";
 	_webViewCsses[(int)QWebViewCSSIndex::Compact] = QUrl(QString("data:text/css;charset=utf-8;base64,")
 		+ _ieCsses[(int)QWebViewCSSIndex::Compact].toUtf8().toBase64());
 	/*
 body {
-	margin:0;
-	overflow:hidden;
-	opacity: 0.4;
+margin:0;
+overflow:hidden;
+opacity: 0.4;
 }
 
 #game_frame {
-	position:fixed;
-	top:-16px;
-	left:-50px;
-	z-index:1;
+position:fixed;
+top:-16px;
+left:-50px;
+z-index:1;
 }
 */
-//	csses[QWebViewCSS::TRANSPARENT] = QUrl("data:text/css;charset=utf-8;base64,Ym9keSB7DQoJbWFyZ2luOjA7DQoJb3ZlcmZsb3c6aGlkZGVuOw0KCW9wYWNpdHk6IDAuNDsNCn0NCg0KI2dhbWVfZnJhbWUgew0KCXBvc2l0aW9uOmZpeGVkOw0KCXRvcDotMTZweDsNCglsZWZ0Oi01MHB4Ow0KCXotaW5kZXg6MTsNCn0=");
+	//	csses[QWebViewCSS::TRANSPARENT] = QUrl("data:text/css;charset=utf-8;base64,Ym9keSB7DQoJbWFyZ2luOjA7DQoJb3ZlcmZsb3c6aGlkZGVuOw0KCW9wYWNpdHk6IDAuNDsNCn0NCg0KI2dhbWVfZnJhbWUgew0KCXBvc2l0aW9uOmZpeGVkOw0KCXRvcDotMTZweDsNCglsZWZ0Oi01MHB4Ow0KCXotaW5kZXg6MTsNCn0=");
 
 	/*
 	body {
@@ -413,12 +434,12 @@ body {
 	z-index:1;
 	}
 	*/
-	_webViewCsses[(int)QWebViewCSSIndex::Transparent] = 
+	_webViewCsses[(int)QWebViewCSSIndex::Transparent] =
 		QUrl("data:text/css;charset=utf-8;base64,Ym9keSB7DQoJbWFyZ2luOjA7DQoJb3ZlcmZsb3c6aGlkZGVuOw0KCW9wYWNpdHk6IDAuMjsNCn0NCg0KI2dhbWVfZnJhbWUgew0KCXBvc2l0aW9uOmZpeGVkOw0KCXRvcDotMTZweDsNCglsZWZ0Oi01MHB4Ow0KCXotaW5kZXg6MTsNCn0=");
 
 	// do not set opacity
 	_ieCsses[(int)QWebViewCSSIndex::Transparent] = "body {margin:0;overflow:hidden;} #game_frame{position:fixed;top:-16px;left:-50px;z-index:1}";
-	
+
 	applyCss(QWebViewCSSIndex::Normal);
 }
 
@@ -426,7 +447,7 @@ void MainWindow::loadSettings()
 {
 	// platform
 #ifdef Q_OS_WIN
-	if (QSysInfo::WindowsVersion >= QSysInfo::WV_WINDOWS8 
+	if (QSysInfo::WindowsVersion >= QSysInfo::WV_WINDOWS8
 #if (QT_VERSION >= QT_VERSION_CHECK(5, 6, 0))
 		&& QSysInfo::WindowsVersion < QSysInfo::WV_WINDOWS10
 #endif
@@ -434,20 +455,20 @@ void MainWindow::loadSettings()
 	{
 		_platformType = PlatformType::SlowTablet;
 	}
-	else 
+	else
 
 #if (QT_VERSION >= QT_VERSION_CHECK(5, 6, 0))
 		if (QSysInfo::WindowsVersion >= QSysInfo::WV_WINDOWS10)
 #else 
 		if (false)
 #endif
-	{
-		_platformType = PlatformType::FastTablet;
-	}
-	else
-	{
-		_platformType = PlatformType::Windows7;
-	}
+		{
+			_platformType = PlatformType::FastTablet;
+		}
+		else
+		{
+			_platformType = PlatformType::Windows7;
+		}
 #else
 	_platformType = PlatformType::Mac;
 #endif
@@ -463,9 +484,14 @@ void MainWindow::loadSettings()
 	const QString itemUsePort = "UsePort";
 	const QString itemIntervalMul = "IntervalMul";
 	const QString itemProxyMode = "ProxyMode";
-//	const QString itemExpeditionMode = "ExpeditionMode";
+
+	const QString itemSharkWorkingPath = "SharkWorkingPath";
+	const QString itemSharkCommand = "SharkCommand";
+	const QString itemShouldFatalOnMismatchResponse = "SharkShouldFatalOnMismatchResponse";
+
+	//	const QString itemExpeditionMode = "ExpeditionMode";
 	const QString itemTimeShift = "TimeShift";
-	
+
 	setting->beginGroup("Settings");
 	if (!setting->contains(itemWebWidgetType))
 	{
@@ -503,19 +529,49 @@ void MainWindow::loadSettings()
 	}
 	if (!setting->contains(itemProxyMode))
 	{
-        if (_platformType == PlatformType::Mac)
-        {
-            setting->setValue(itemProxyMode, "QtProxy");
-        }
-        else
-        {
-            setting->setValue(itemProxyMode, "Nekoxy");
-        }
+		if (_platformType == PlatformType::Mac)
+		{
+			if (QT_VERSION >= QT_VERSION_CHECK(5, 6, 0))
+			{
+				setting->setValue(itemProxyMode, "Shark");
+			}
+			else
+			{
+				setting->setValue(itemProxyMode, "QtProxy");
+			}
+		}
+		else
+		{
+			setting->setValue(itemProxyMode, "Nekoxy");
+		}
 	}
+
+	if (!setting->contains(itemSharkWorkingPath))
+	{
+		if (_platformType == PlatformType::Mac)
+		{
+			setting->setValue(itemSharkWorkingPath, "");
+		}
+		else
+		{
+			setting->setValue(itemSharkWorkingPath, "c:/Program Files/Wireshark/");
+		}
+	}
+
+	if (!setting->contains(itemSharkCommand))
+	{
+		setting->setValue(itemSharkCommand, "tshark -Y \"http.request.uri contains \\\"kcsapi\\\" || http.file_data contains \\\"svdata=\\\"\" -Tfields -e http.request.uri -e http.file_data -e frame.number -X lua_script:extract.lua -X lua_script1:data-text-lines -T fields -e extractor.value.string -e http.request_in -l");
+	}
+
+	if (!setting->contains(itemShouldFatalOnMismatchResponse))
+	{
+		setting->setValue(itemShouldFatalOnMismatchResponse, true);
+	}
+
 	/*
 	if (!setting->contains(itemExpeditionMode))
 	{
-		setting->setValue(itemExpeditionMode, "General");
+	setting->setValue(itemExpeditionMode, "General");
 	}
 	*/
 	if (!setting->contains(itemTimeShift))
@@ -553,7 +609,7 @@ void MainWindow::loadSettings()
 	_gameUrl = setting->value(itemGameUrl).toString();
 	_gameUrlId = setting->value(itemUrlId).toString();
 	_useport = setting->value(itemUsePort).toInt();
-	ControlManager::getInstance().setIntervalMul(setting->value(itemIntervalMul).toInt()/100.0);
+	ControlManager::getInstance().setIntervalMul(setting->value(itemIntervalMul).toInt() / 100.0);
 
 	QString proxymode = setting->value(itemProxyMode).toString();
 	if (!proxymode.compare("NoProxy", Qt::CaseInsensitive))
@@ -576,6 +632,15 @@ void MainWindow::loadSettings()
 	{
 		_proxyMode = ProxyMode::Titanium;
 	}
+	else if (!proxymode.compare("Shark", Qt::CaseInsensitive))
+	{
+		_proxyMode = ProxyMode::Shark;
+	}
+
+	_sharkWorkingPath = setting->value(itemSharkWorkingPath).toString();
+	_sharkCommand = setting->value(itemSharkCommand).toString();
+
+	_sharkShouldRaiseFatalOnMismatchResponse = setting->value(itemShouldFatalOnMismatchResponse).toBool();
 
 	// no longer use ini file for expedition
 	ExpeditionManager::getInstance().BuildByPreset("Default");
@@ -642,16 +707,15 @@ void MainWindow::applyCss(QWebViewCSSIndex css)
 	else
 	{
 #if (QT_VERSION >= QT_VERSION_CHECK(5, 6, 0))
-		QString jsStr = 
-			"function addStyleString(str) {\
-				var node = document.createElement('style');\
-				node.innerHTML = str;\
-				document.body.appendChild(node);\
-			}\
-			addStyleString('" + _ieCsses[(int)css] + "'); \
-			addStyleString('body { background: silver }'); ";
-
-		_webView->page()->runJavaScript(jsStr);
+        QString jsStr =
+                "function addStyleString(str) {"
+                "var node = document.createElement('style');"
+                "node.innerHTML = str;"
+                "document.body.appendChild(node);"
+                "}"
+                "addStyleString('" + _ieCsses[(int)css] + "'); "
+                "addStyleString('body { background: silver }'); ";
+        _webView->page()->runJavaScript(jsStr);
 #else
 		_webView->page()->settings()->setUserStyleSheetUrl(_webViewCsses[(int)css]);
 #endif

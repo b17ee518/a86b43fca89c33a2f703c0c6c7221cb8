@@ -10,6 +10,8 @@
 #include "anyactionselectdialog.h"
 #include "developactionselectdialog.h"
 
+#include <QCheckBox>
+
 #define TIMESHIFT_MIN	30
 
 void MainWindow::onDoJobFuel()
@@ -34,12 +36,16 @@ void MainWindow::onDoJobFuel()
 		auto foreverButton = pMessageBox->addButton(QString::fromLocal8Bit("永久"), QMessageBox::RejectRole);
 		Q_UNUSED(foreverButton);
 
+		ControlManager::SouthEastSetting southEastSetting = cm.getSouthEastSetting();
+
+		QCheckBox* p22CheckBox = new QCheckBox(QString::fromLocal8Bit("2-2"));
+		p22CheckBox->setChecked(southEastSetting.is2_2);
+		pMessageBox->setCheckBox(p22CheckBox);
+
 		pMessageBox->setDefaultButton(QMessageBox::NoButton);
-		//		pMessageBox->setAttribute(Qt::WA_DeleteOnClose, true);
 		pMessageBox->exec();
 
 		auto clickedButton = pMessageBox->clickedButton();
-		ControlManager::SouthEastSetting southEastSetting;
 		if (clickedButton == resetButton)
 		{
 			KanSaveData::getInstance().resetTotals();
@@ -59,36 +65,21 @@ void MainWindow::onDoJobFuel()
 		{
 			southEastSetting.stopWhen = ControlManager::StopWhen::None;
 		}
+
+		southEastSetting.is2_2 = p22CheckBox->isChecked();
+
 		cm.setSouthEastSetting(southEastSetting);
 		delete pMessageBox;
 	}
 
-	if (cm.isFlagshipOnly(0))
+	if (cm.BuildNext_Fuel())
 	{
-		if (cm.BuildNext_Fuel())
-		{
-			cm.StartJob();
-		}
-		else
-		{
-			switchToExpeditionWait();
-		}
-
+		cm.StartJob();
 	}
 	else
 	{
-		if (cm.BuildNext_SouthEast())
-		{
-			cm.StartJob();
-		}
-		else
-		{
-			switchToExpeditionWait();
-		}
-
+		switchToExpeditionWait();
 	}
-
-	cm.StartJob();
 }
 
 void MainWindow::onDoJobKira()

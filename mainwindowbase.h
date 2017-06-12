@@ -16,19 +16,19 @@ public:
 
 	virtual void minimizeWindow();
 	virtual void restoreWindow();
-    
-    void clickAtGlobalPos(const QPoint& pt);
+
+	void clickAtGlobalPos(const QPoint& pt);
 
 protected:
 	virtual void closeEvent(QCloseEvent *event);
 	virtual void changeEvent(QEvent *event);
 
-public slots:
-	virtual void slotActivate(QWidget* w , bool bActivate);
+	public slots:
+	virtual void slotActivate(QWidget* w, bool bActivate);
 	virtual void slotToggleRestoreMinimize(bool bRestore);
 
 signals:
-	void sigActivated( QWidget* w, bool bActivate );
+	void sigActivated(QWidget* w, bool bActivate);
 	void sigRestoreMinimizeToggled(bool bRestore);
 };
 

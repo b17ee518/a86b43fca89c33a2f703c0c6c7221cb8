@@ -3,6 +3,7 @@
 
 #include <QtGlobal>
 #include <QMainWindow>
+#include <QProcess>
 #include "mainwindowbase.h"
 #include "infomainwindow.h"
 #include "timermainwindow.h"
@@ -60,6 +61,7 @@ enum class ProxyMode
 	Fid,
 	Nekoxy,
 	Titanium,
+	Shark,
 };
 
 enum class WebWidgetType
@@ -130,6 +132,11 @@ signals:
 	void slotParse(const QString &PathAndQuery, const QString &requestBody, const QString &responseBody);
 	void slotSoundEnded();
 	void slotTogglePanicTimer(int timeVal);
+
+	void slotSharkProcessReadyRead();
+	void slotSharkProcessReadyReadError();
+
+	void onFatalSharkResponseError(bool fatalOnProxy);
 
 protected:
 	virtual void changeEvent(QEvent * e);
@@ -206,6 +213,26 @@ private:
 	Nekoxy::HttpProxy * _pNekoxy = NULL;
 	Titanium_Web_Proxy::ProxyServer* _pTitanium = NULL;
 #endif
+
+	class SharkRequestResponseRecord
+	{
+	public:
+		SharkRequestResponseRecord(){}
+		int requestFrame;
+		QString pathAndQuery;
+		QString requestBody;
+		QString responseBody;
+	};
+
+	QProcess * _pSharkProcess = NULL;
+	QString _sharkWorkingPath;
+	QString _sharkCommand;
+	QList<SharkRequestResponseRecord> _sharkRequestStack;
+	QList<SharkRequestResponseRecord> _sharkResponseStack;
+	const int _sharkStackMax = 10;
+	bool _sharkShouldRaiseFatalOnMismatchResponse = true;
+	QString _sharkReadingBuffer;
+	QMutex _sharkReadingMutex;
 
 	bool _bIEPageLoaded = false;
 	QWebViewCSSIndex _applyCssWhenLoaded = QWebViewCSSIndex::Invalid;

@@ -2,8 +2,8 @@
 #include "mainwindow.h"
 #include <QApplication>
 
-SubMainWindow::SubMainWindow(QWidget *parent) :
-	MainWindowBase(parent)
+SubMainWindow::SubMainWindow(QWidget *parent)
+	: MainWindowBase(parent)
 {
 	_bDockingOnTop = false;
 
@@ -54,18 +54,18 @@ void SubMainWindow::moveEvent(QMoveEvent *event)
 
 void SubMainWindow::mouseReleaseEvent(QMouseEvent *event)
 {
-	if (y() < 20 && y()!=0)
+	if (y() < 20 && y() != 0)
 	{
 		move(x(), 0);
 	}
 
 	MainWindow * pMain = MainWindow::mainWindow();
-	if (x()+width() <= pMain->x()+pMain->width()
-			&& x()>= pMain->x()
-			&& y()>=pMain->y()+pMain->height()-20
-			&& y()<=pMain->y()+pMain->height()+20)
+	if (x() + width() <= pMain->x() + pMain->width()
+		&& x() >= pMain->x()
+		&& y() >= pMain->y() + pMain->height() - 20
+		&& y() <= pMain->y() + pMain->height() + 20)
 	{
-		move(x(), pMain->y()+pMain->height());
+		move(x(), pMain->y() + pMain->height());
 	}
 
 	MainWindowBase::mouseReleaseEvent(event);
@@ -75,7 +75,7 @@ void SubMainWindow::slotDockingTimerCallback()
 {
 	QPoint pt = QCursor::pos();
 	QRect rc(x(), 0, size().width(), 20);
-	QRect rcwhole(x()-10, y()-10, size().width()+20, size().height()+20);
+	QRect rcwhole(x() - 10, y() - 10, size().width() + 20, size().height() + 20);
 
 	if (y() == 0)
 	{
@@ -87,7 +87,7 @@ void SubMainWindow::slotDockingTimerCallback()
 		else
 		{
 			// to collapse
-			move(x(), -size().height()+5);
+			move(x(), -size().height() + 5);
 		}
 	}
 	else if (rc.contains(pt))

@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 
-QT       += core gui multimedia
+QT       += core gui multimedia network
 CONFIG += c++11
 
 greaterThan(QT_MAJOR_VERSION, 4) {
@@ -16,7 +16,9 @@ greaterThan(QT_MAJOR_VERSION, 4) {
     }
 }
 
-win: QT += axcontainer winextras
+windows: QT += axcontainer winextras
+
+msvc: LIBS += -luser32 -lole32
 
 DEFINES += NOMINMAX
 
@@ -65,7 +67,7 @@ SOURCES += main.cpp\
     anyactionselectdialog.cpp \
     developactionselectdialog.cpp
 
-win: SOURCES += \
+windows: SOURCES += \
     shdocvw.cpp \
     nekoxy.cpp \
     fidcom.cpp \
@@ -104,7 +106,7 @@ HEADERS  += mainwindow.h \
     anyactionselectdialog.h \
     developactionselectdialog.h
 
-win: HEADERS += \
+windowes: HEADERS += \
     shdocvw.h \
     nekoxy.h \
     fidcom.h \

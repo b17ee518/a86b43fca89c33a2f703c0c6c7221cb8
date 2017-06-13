@@ -12,7 +12,8 @@
 
 #include "QNetworkProxyFactorySet.h"
 #include <QShowEvent>
-#ifdef Q_OS_WIN
+
+#if defined Q_OS_WIN && !defined NO_WIN_EXTRA
 #include <QWinTaskbarButton>
 #endif
 #include <QNetworkReply>
@@ -23,7 +24,7 @@
 #include <QWebView>
 #endif
 
-#ifdef Q_OS_WIN
+#if defined Q_OS_WIN && !defined NO_WIN_EXTRA
 #include <QAxWidget>
 #include "shdocvw.h"
 
@@ -158,7 +159,7 @@ protected:
 	void slotJobtTimeout();
 	void on_pbCheckLowVol_toggled(bool checked);
 
-#ifdef Q_OS_WIN
+#if defined Q_OS_WIN && !defined NO_WIN_EXTRA
 	void slotNavigateComplete2(IDispatch*, QVariant&);
 #endif
 	void slotWebViewException(int code, const QString & source, const QString & desc, const QString & help);
@@ -208,7 +209,7 @@ private:
 	ProxyMode _proxyMode = ProxyMode::Nekoxy;
 
 	int _useport = 0;
-#ifdef Q_OS_WIN
+#if defined Q_OS_WIN && !defined NO_WIN_EXTRA
 	FidCOM::FidCOMClass * _pFid = NULL;
 	Nekoxy::HttpProxy * _pNekoxy = NULL;
 	Titanium_Web_Proxy::ProxyServer* _pTitanium = NULL;
@@ -246,7 +247,7 @@ private:
 
 	static MainWindow * s_pMainWindow;
 
-#ifdef Q_OS_WIN
+#if defined Q_OS_WIN && !defined NO_WIN_EXTRA
 	QWinTaskbarButton * _pTaskbarButton = NULL;
 #endif
 	bool _bMoveSubTogether = true;
@@ -268,7 +269,7 @@ private:
 	QWebView* _webView = NULL;
 #endif
 
-#ifdef Q_OS_WIN
+#if defined Q_OS_WIN && !defined NO_WIN_EXTRA
 	WebBrowser* _axWidget = NULL;
 #endif
 

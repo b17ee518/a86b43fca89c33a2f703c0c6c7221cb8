@@ -2,7 +2,7 @@
 #include "ui_mainwindow.h"
 
 #include <QDesktopWidget>
-#ifdef Q_OS_WIN
+#if defined Q_OS_WIN && !defined NO_WIN_EXTRA
 #include <QWinTaskbarProgress>
 #endif
 #include <QMessageBox>
@@ -120,7 +120,7 @@ void MainWindow::closeEvent(QCloseEvent *e)
 		}
 	}
 
-#ifdef Q_OS_WIN
+#if defined Q_OS_WIN && !defined NO_WIN_EXTRA
 	if (_proxyMode == ProxyMode::Fid && _pFid)
 	{
 		_pFid->Shutdown();
@@ -338,7 +338,7 @@ void MainWindow::showEvent(QShowEvent *event)
 {
 	MainWindowBase::showEvent(event);
 
-#ifdef Q_OS_WIN
+#if defined Q_OS_WIN && !defined NO_WIN_EXTRA
 	if (!_pTaskbarButton)
 	{
 		_pTaskbarButton = new QWinTaskbarButton(this);

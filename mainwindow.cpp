@@ -150,7 +150,7 @@ MainWindow::MainWindow(QWidget *parent)
 MainWindow::~MainWindow()
 {
 
-#ifdef Q_OS_WIN
+#if defined Q_OS_WIN && !defined NO_WIN_EXTRA
 	if (_pFid)
 	{
 		delete _pFid;
@@ -175,26 +175,26 @@ MainWindow::~MainWindow()
 
 void MainWindow::slotParse(const QString &PathAndQuery, const QString &requestBody, const QString &responseBody)
 {
-    if (_proxyMode == ProxyMode::Shark)
-    {
-        if (s_pMainWindow->_applyCssToGameFlag && s_pMainWindow->_webWidgetType == WebWidgetType::WebEngine)
-        {
+	if (_proxyMode == ProxyMode::Shark)
+	{
+		if (s_pMainWindow->_applyCssToGameFlag && s_pMainWindow->_webWidgetType == WebWidgetType::WebEngine)
+		{
 
 #if QT_OS_WIN
-            s_pMainWindow->installWebEngineMouseEventFilter();
+			s_pMainWindow->installWebEngineMouseEventFilter();
 #endif
 
-            s_pMainWindow->applyCss(QWebViewCSSIndex::Normal);
-            s_pMainWindow->_applyCssToGameFlag = false;
-        }
-    }
-    KanDataConnector::getInstance().Parse(PathAndQuery, requestBody, responseBody);
+			s_pMainWindow->applyCss(QWebViewCSSIndex::Normal);
+			s_pMainWindow->_applyCssToGameFlag = false;
+		}
+	}
+	KanDataConnector::getInstance().Parse(PathAndQuery, requestBody, responseBody);
 }
 
 void MainWindow::slotSharkProcessReadyReadError()
 {
-    auto byteArray = _pSharkProcess->readAllStandardError();
-    qDebug() << byteArray;
+	auto byteArray = _pSharkProcess->readAllStandardError();
+	qDebug() << byteArray;
 }
 
 
@@ -399,7 +399,7 @@ QWidget* MainWindow::getBrowserWidget()
 {
 	if (_webWidgetType == WebWidgetType::IE)
 	{
-#ifdef Q_OS_WIN
+#if defined Q_OS_WIN && !defined NO_WIN_EXTRA
 		return _axWidget;
 #endif
 	}
@@ -410,7 +410,7 @@ void MainWindow::navigateTo(const QString& urlString)
 {
 	if (_webWidgetType == WebWidgetType::IE)
 	{
-#ifdef Q_OS_WIN
+#if defined Q_OS_WIN && !defined NO_WIN_EXTRA
 		_axWidget->Navigate(urlString);
 #endif
 	}
@@ -438,7 +438,7 @@ void MainWindow::navigateReload()
 void MainWindow::rebuildIE(bool bNavigate)
 {
 
-#ifdef Q_OS_WIN
+#if defined Q_OS_WIN && !defined NO_WIN_EXTRA
 	if (_axWidget)
 	{
 		WebBrowser* toDelete = _axWidget;
@@ -464,6 +464,8 @@ void MainWindow::rebuildIE(bool bNavigate)
 	{
 		navigateTo(_gameUrl);
 	}
+#else
+	Q_UNUSED(bNavigate);
 #endif
 }
 
@@ -505,7 +507,7 @@ void MainWindow::installWebEngineMouseEventFilter()
 #endif
 }
 
-#ifdef Q_OS_WIN
+#if defined Q_OS_WIN && !defined NO_WIN_EXTRA
 void MainWindow::slotNavigateComplete2(IDispatch*, QVariant& url)
 {
 	// warning : does not work with 5.6

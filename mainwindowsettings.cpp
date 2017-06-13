@@ -8,8 +8,9 @@
 #include "qnetworkproxyfactoryset.h"
 #include "KQWebPage.h"
 
-#ifdef Q_OS_WIN
+#if defined Q_OS_WIN && !defined NO_WIN_EXTRA
 #include <QWinTaskbarProgress>
+#include <QAxWidget>
 #endif
 
 #if (QT_VERSION >= QT_VERSION_CHECK(5, 6, 0))
@@ -20,7 +21,6 @@
 #include <Audiopolicy.h>
 #include <Mmdeviceapi.h>
 
-#include <QAxWidget>
 #endif
 #include <QSettings>
 #include "ControlManager.h"
@@ -106,7 +106,7 @@ void MainWindow::setWebSettings()
 	QObject * exceptionSender = NULL;
 	if (_proxyMode == ProxyMode::Fid)
 	{
-#ifdef Q_OS_WIN
+#if defined Q_OS_WIN && !defined NO_WIN_EXTRA
 		_pFid = new FidCOM::FidCOMClass(this);
 
 		loadCertKey();
@@ -123,7 +123,7 @@ void MainWindow::setWebSettings()
 	}
 	else if (_proxyMode == ProxyMode::Nekoxy)
 	{
-#ifdef Q_OS_WIN
+#if defined Q_OS_WIN && !defined NO_WIN_EXTRA
 		_pNekoxy = new Nekoxy::HttpProxy(this);
 		exceptionSender = _pNekoxy;
 
@@ -134,7 +134,7 @@ void MainWindow::setWebSettings()
 	}
 	else if (_proxyMode == ProxyMode::Titanium)
 	{
-#ifdef Q_OS_WIN
+#if defined Q_OS_WIN && !defined NO_WIN_EXTRA
 		_pTitanium = new Titanium_Web_Proxy::ProxyServer(this);
 		exceptionSender = _pTitanium;
 		_pTitanium->SetMakecertPath(QApplication::applicationDirPath() + "/makecert.exe");
@@ -153,14 +153,14 @@ void MainWindow::setWebSettings()
 #ifdef Q_OS_WIN
 		_pSharkProcess->start("cmd");
 #else
-        _pSharkProcess->start("sh");
+		_pSharkProcess->start("sh");
 #endif
 
 		if (!_pSharkProcess->waitForStarted())
 		{
 			return;
-        }
-        _pSharkProcess->write(_sharkCommand.toLocal8Bit());
+		}
+		_pSharkProcess->write(_sharkCommand.toLocal8Bit());
 		_pSharkProcess->write("\n");
 		_pSharkProcess->closeWriteChannel();
 	}
@@ -326,7 +326,7 @@ void MainWindow::AdjustVolume(int vol)
 void MainWindow::SetProgressBarPos(int pos, ProgressBarState state)
 {
 
-#ifdef Q_OS_WIN
+#if defined Q_OS_WIN && !defined NO_WIN_EXTRA
 	if (_pTaskbarButton)
 	{
 		QWinTaskbarProgress * pProgress = _pTaskbarButton->progress();
@@ -361,6 +361,9 @@ void MainWindow::SetProgressBarPos(int pos, ProgressBarState state)
 			break;
 		}
 	}
+#else
+	Q_UNUSED(pos);
+	Q_UNUSED(state);
 #endif
 }
 void MainWindow::setupCss()
@@ -379,7 +382,7 @@ void MainWindow::setupCss()
 	 z-index:1
 	 }
 	 */
-    _ieCsses[(int)QWebViewCSSIndex::Normal] = "body {margin:0;overflow:hidden;} #game_frame{position:fixed;top:-16px;left:-50px;z-index:1}";
+	_ieCsses[(int)QWebViewCSSIndex::Normal] = "body {margin:0;overflow:hidden;} #game_frame{position:fixed;top:-16px;left:-50px;z-index:1}";
 	_webViewCsses[(int)QWebViewCSSIndex::Normal] = QUrl(QString("data:text/css;charset=utf-8;base64,")
 		+ _ieCsses[(int)QWebViewCSSIndex::Normal].toUtf8().toBase64());
 	//		(QUrl("data:text/css;charset=utf-8;base64,Ym9keSB7DQoJbWFyZ2luOjA7DQoJb3ZlcmZsb3c6aGlkZGVuDQp9DQoNCiNnYW1lX2ZyYW1lIHsNCglwb3NpdGlvbjpmaXhlZDsNCgl0b3A6LTE2cHg7DQoJbGVmdDotNTBweDsNCgl6LWluZGV4OjENCn0="));
@@ -650,7 +653,7 @@ void MainWindow::loadSettings()
 	setting->endGroup();
 
 	delete setting;
-}
+		}
 
 void MainWindow::loadCertKey()
 {
@@ -674,7 +677,7 @@ void MainWindow::applyCss(QWebViewCSSIndex css)
 	}
 	if (_webWidgetType == WebWidgetType::IE)
 	{
-#ifdef Q_OS_WIN
+#if defined Q_OS_WIN && !defined NO_WIN_EXTRA
 		_applyCssWhenLoaded = css;
 		if (!_bIEPageLoaded)
 		{
@@ -703,21 +706,21 @@ void MainWindow::applyCss(QWebViewCSSIndex css)
 		_applyCssWhenLoaded = QWebViewCSSIndex::Invalid;
 		delete htmlDocObj;
 #endif
-	}
+}
 	else
 	{
 #if (QT_VERSION >= QT_VERSION_CHECK(5, 6, 0))
-        QString jsStr =
-                "function addStyleString(str) {"
-                "var node = document.createElement('style');"
-                "node.innerHTML = str;"
-                "document.body.appendChild(node);"
-                "}"
-                "addStyleString('" + _ieCsses[(int)css] + "'); "
-                "addStyleString('body { background: silver }'); ";
-        _webView->page()->runJavaScript(jsStr);
+		QString jsStr =
+			"function addStyleString(str) {"
+			"var node = document.createElement('style');"
+			"node.innerHTML = str;"
+			"document.body.appendChild(node);"
+			"}"
+			"addStyleString('" + _ieCsses[(int)css] + "'); "
+			"addStyleString('body { background: silver }'); ";
+		_webView->page()->runJavaScript(jsStr);
 #else
 		_webView->page()->settings()->setUserStyleSheetUrl(_webViewCsses[(int)css]);
 #endif
-	}
+}
 }

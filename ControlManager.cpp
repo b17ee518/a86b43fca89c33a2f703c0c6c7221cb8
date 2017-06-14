@@ -53,7 +53,6 @@ bool ControlManager::BuildNext_Kira()
 	while (isShipKiraDone(togoShipId)
 		|| isShipInOtherTeam(togoShipId, 0)
 		|| isShipInDock(togoShipId)
-		|| hasSlotitem(togoShipId, SlotitemType::JouRiKuTei, 3)
 		|| hasSlotitem(togoShipId, SlotitemType::Sonar)
 		|| hasSlotitem(togoShipId, SlotitemType::BaKuRai)
 		|| hasSlotitem(togoShipId, SlotitemType::Sonar_L)
@@ -929,7 +928,7 @@ bool ControlManager::BuildNext_Expedition()
 		return false;
 	}
 	QList<int> ships;
-    if (pksd->portdata.api_deck_port.size() > team)
+	if (pksd->portdata.api_deck_port.size() > team)
 	{
 		auto& fleet = pksd->portdata.api_deck_port.at(team);
 		if (fleet.api_ship.size())
@@ -1989,7 +1988,7 @@ bool ControlManager::isHenseiDone(const QList<int>& ships, int team, int index/*
 {
 	KanSaveData* pksd = &KanSaveData::getInstance();
 
-    if (pksd->portdata.api_deck_port.size() > team)
+	if (pksd->portdata.api_deck_port.size() > team)
 	{
 		auto& fleet = pksd->portdata.api_deck_port.at(team);
 		QList<int> nonEmptyShipList;
@@ -2360,7 +2359,7 @@ WoundState ControlManager::hugestDamageInTeam(int team)
 		return WoundState::Dead;
 	}
 
-    if (pksd->portdata.api_deck_port.size() > team)
+	if (pksd->portdata.api_deck_port.size() > team)
 	{
 		auto& fleet = pksd->portdata.api_deck_port.at(team);
 		if (fleet.api_ship.size())
@@ -2524,7 +2523,7 @@ bool ControlManager::needChargeFlagship(int team)
 		return false;
 	}
 
-    if (pksd->portdata.api_deck_port.size() > team)
+	if (pksd->portdata.api_deck_port.size() > team)
 	{
 		auto& fleet = pksd->portdata.api_deck_port.at(team);
 		if (fleet.api_ship.size())
@@ -2566,7 +2565,7 @@ bool ControlManager::needChargeAnyShip(int team)
 		return false;
 	}
 
-    if (pksd->portdata.api_deck_port.size() > team)
+	if (pksd->portdata.api_deck_port.size() > team)
 	{
 		auto& fleet = pksd->portdata.api_deck_port.at(team);
 		if (fleet.api_ship.size())
@@ -2750,17 +2749,17 @@ void ControlManager::moveMouseToAndClick(float x, float y, float offsetX /*= 5*/
 	}
 	else
 	{
-        auto sendMouseEvents = [this, ptAdjusted](QObject* w){
+		auto sendMouseEvents = [this, ptAdjusted](QObject* w){
 			if (!w)
 			{
 				return;
-            }
+			}
 #if defined Q_OS_WIN || defined Q_OS_MAC
-            QMouseEvent e(QEvent::MouseButtonPress, ptAdjusted, Qt::LeftButton, Qt::LeftButton, Qt::NoModifier);
-            QApplication::sendEvent(w, &e);
+			QMouseEvent e(QEvent::MouseButtonPress, ptAdjusted, Qt::LeftButton, Qt::LeftButton, Qt::NoModifier);
+			QApplication::sendEvent(w, &e);
 
-            QMouseEvent e2(QEvent::MouseButtonRelease, ptAdjusted, Qt::LeftButton, Qt::LeftButton, Qt::NoModifier);
-            QApplication::sendEvent(w, &e2);
+			QMouseEvent e2(QEvent::MouseButtonRelease, ptAdjusted, Qt::LeftButton, Qt::LeftButton, Qt::NoModifier);
+			QApplication::sendEvent(w, &e2);
 #else
 			QPoint ptG = w->mapToGlobal(QPoint(ptAdjusted.x(), ptAdjusted.y()));
 			MainWindow::mainWindow()->clickAtGlobalPos(ptG);
@@ -2780,21 +2779,21 @@ void ControlManager::moveMouseToAndClick(float x, float y, float offsetX /*= 5*/
 				Q_FOREACH(QObject* obj, webView->page()->view()->children())
 				{
 					sendMouseEvents(qobject_cast<QWidget*>(obj));
-		}
-	}
+				}
+			}
 
 			// reset mouse pos for webengine
 			moveMouseTo(0, 0);
 #endif
-}
+		}
 		else
-        {
-            sendMouseEvents(browserWidget);
+		{
+			sendMouseEvents(browserWidget);
 		}
 
 	}
 
-	}
+}
 
 void ControlManager::moveMouseTo(float x, float y, float offsetX /*= 5*/, float offsetY /*= 3*/)
 {
@@ -2844,15 +2843,15 @@ void ControlManager::moveMouseTo(float x, float y, float offsetX /*= 5*/, float 
 				{
 					sendMouseEvents(qobject_cast<QWidget*>(obj));
 				}
-		}
+			}
 #endif
-	}
+		}
 		else
 		{
 			sendMouseEvents(browserWidget);
 		}
 
-}
+	}
 }
 
 void ControlManager::setPauseNextVal(bool bVal)

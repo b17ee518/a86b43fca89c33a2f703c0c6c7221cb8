@@ -30,6 +30,7 @@ public:
 		Any,
 		Destroy,
 		Develop,
+		Repair,
 	};
 
 	enum class StopWhen
@@ -132,6 +133,8 @@ public:
 
 	void pushPreSupplyCheck();
 
+	void pushPreRepairCheck(bool bCanUseFastRepair, bool includingFirstTeam, bool onlyShortSevere);
+
 	QList<int> pushPreShipFullCheck();
 
 	bool BuildNext_Kira();
@@ -151,6 +154,8 @@ public:
 	bool BuildNext_Expedition();
 
 	bool BuildNext_Destroy();
+
+	bool BuildNext_Repair();
 
 	bool BuildNext_Develop();
 
@@ -193,6 +198,7 @@ public:
 	bool isShipKiraDone(int shipno);
 	bool isLowCond(int shipno);
 	bool isShipInOtherTeam(int shipno, int team, bool excludeOnBoardingExpedition = false);
+	bool isShipInTeam(int shipno, int team);
 	bool isShipInDock(int shipno);
 	bool isShipDamaged(int shipno);
 	bool isShipCharged(int shipno);
@@ -266,6 +272,7 @@ public:
 	inline bool isRankMode(){ return _target == ActionTarget::Rank; }
 	inline bool isAnyMode(){ return _target == ActionTarget::Any; }
 	inline bool isDestroyMode(){ return _target == ActionTarget::Destroy; }
+	inline bool isRepairMode(){ return _target == ActionTarget::Repair; }
 	inline bool isDevelopMode(){ return _target == ActionTarget::Develop; }
 
 	void setState(State state, const char* str, bool bSilent = false, bool forceSound = false);

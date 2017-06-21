@@ -171,6 +171,7 @@ protected:
 	void onDoJobAny();
 	void onDoJobExpedition(bool bDo);
 	void onDoJobDestroy();
+	void onDoJobRepair();
 	void onDoJobDevelop();
 	void onToggleJobExpedition();
 	void onExportAllList();

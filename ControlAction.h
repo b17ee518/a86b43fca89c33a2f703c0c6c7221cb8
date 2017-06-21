@@ -303,6 +303,70 @@ private:
 	void setState(State state, const char* str);
 };
 
+class RepairShipAction : public ControlAction
+{
+public:
+	RepairShipAction(QObject* parent = NULL)
+		:ControlAction(parent){}
+
+	enum class State
+	{
+		None,
+		HomePortChecking,
+		HomePortDone, // click koushou
+		NyuKyoSelectChecking,
+		NyuKyoSelectDone, // click ndock
+		SelectSlotChecking,
+		SelectSlotDone,
+		FindShipChecking,	// cur page
+		FindShipChangeSort,	// sort change
+		FindShipDone,		// click ship
+		FindShipFirstPageChecking,
+		FindShipFirstPageDone,
+		FindShipNextPageChecking,
+		FindShipNextPageDone, // skip to
+		FindShipOKChecking,
+		FindShipOKDone, // ok
+		NyuKyoFastToggleChecking,
+		NyuKyoFastTogglDone,
+		NyuKyoOKChecking,
+		NyuKyoOKDone,
+		Skipping,	// click to skip
+		ReturnToPortChecking,
+		ReturnToPortDone,
+		ExpectingPort,
+		Done,
+	};
+	void setShips(const QList<int>& ships, const QList<int>& normalSlots, bool useFastRepair);
+	void resetCurPage()
+	{
+		_curPage = 0;
+	}
+
+	virtual bool action() override;
+
+
+public:
+	QList<int> _ships;
+	QList<int> _usingSlots;
+
+	QList<int> _pageList;
+	QList<int> _posList;
+	int _lastPage = 0;
+
+	int _curPage = 0;
+	int _nowIndex = 0;
+	int _cellHeight = 31;
+
+	int _usingSlot = -1;
+
+	bool _useFastRepair = false;
+
+private:
+	State _state = State::None;
+	void setState(State state, const char* str);
+};
+
 class DevelopAction : public ControlAction
 {
 public:

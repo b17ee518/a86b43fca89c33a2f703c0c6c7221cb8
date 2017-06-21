@@ -229,6 +229,50 @@
         </widget>
        </item>
        <item>
+        <spacer name="horizontalSpacer_24">
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+         <property name="sizeType">
+          <enum>QSizePolicy::Fixed</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>12</width>
+           <height>17</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+       <item>
+        <widget class="QPushButton" name="pbStartRepair">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="minimumSize">
+          <size>
+           <width>20</width>
+           <height>20</height>
+          </size>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>20</width>
+           <height>20</height>
+          </size>
+         </property>
+         <property name="text">
+          <string>修</string>
+         </property>
+         <property name="flat">
+          <bool>true</bool>
+         </property>
+        </widget>
+       </item>
+       <item>
         <spacer name="horizontalSpacer_12">
          <property name="orientation">
           <enum>Qt::Horizontal</enum>
@@ -786,8 +830,10 @@
           </size>
          </property>
          <property name="styleSheet">
-          <string notr="true">background-color: rgb(45, 45, 48);
-border: none;</string>
+          <string notr="true">
+                      background-color: rgb(45, 45, 48);
+                      border: none;
+                    </string>
          </property>
          <property name="text">
           <string>0</string>
@@ -1079,53 +1125,6 @@ border: none;</string>
         </spacer>
        </item>
        <item>
-        <widget class="QPushButton" name="pbCheckTransparent">
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
-         </property>
-         <property name="minimumSize">
-          <size>
-           <width>20</width>
-           <height>20</height>
-          </size>
-         </property>
-         <property name="maximumSize">
-          <size>
-           <width>20</width>
-           <height>20</height>
-          </size>
-         </property>
-         <property name="text">
-          <string>透</string>
-         </property>
-         <property name="checkable">
-          <bool>true</bool>
-         </property>
-         <property name="flat">
-          <bool>true</bool>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <spacer name="horizontalSpacer_6">
-         <property name="orientation">
-          <enum>Qt::Horizontal</enum>
-         </property>
-         <property name="sizeType">
-          <enum>QSizePolicy::Fixed</enum>
-         </property>
-         <property name="sizeHint" stdset="0">
-          <size>
-           <width>16</width>
-           <height>17</height>
-          </size>
-         </property>
-        </spacer>
-       </item>
-       <item>
         <widget class="QPushButton" name="pbMinimize">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
@@ -1235,7 +1234,7 @@ border: none;</string>
    <slot>onDoJobFuel()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>147</x>
+     <x>179</x>
      <y>11</y>
     </hint>
     <hint type="destinationlabel">
@@ -1251,7 +1250,7 @@ border: none;</string>
    <slot>onDoJobKira()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>179</x>
+     <x>211</x>
      <y>8</y>
     </hint>
     <hint type="destinationlabel">
@@ -1267,7 +1266,7 @@ border: none;</string>
    <slot>onJobPauseNext()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>351</x>
+     <x>401</x>
      <y>18</y>
     </hint>
     <hint type="destinationlabel">
@@ -1283,7 +1282,7 @@ border: none;</string>
    <slot>onTerminateJob()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>391</x>
+     <x>441</x>
      <y>11</y>
     </hint>
     <hint type="destinationlabel">
@@ -1299,7 +1298,7 @@ border: none;</string>
    <slot>onExportAllList()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>434</x>
+     <x>481</x>
      <y>9</y>
     </hint>
     <hint type="destinationlabel">
@@ -1315,7 +1314,7 @@ border: none;</string>
    <slot>slotSetLogAll(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>466</x>
+     <x>513</x>
      <y>11</y>
     </hint>
     <hint type="destinationlabel">
@@ -1331,7 +1330,7 @@ border: none;</string>
    <slot>onDoJobExpedition(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>509</x>
+     <x>553</x>
      <y>10</y>
     </hint>
     <hint type="destinationlabel">
@@ -1347,7 +1346,7 @@ border: none;</string>
    <slot>onDoJobLevel()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>261</x>
+     <x>295</x>
      <y>5</y>
     </hint>
     <hint type="destinationlabel">
@@ -1363,7 +1362,7 @@ border: none;</string>
    <slot>onDoJobRank()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>328</x>
+     <x>362</x>
      <y>6</y>
     </hint>
     <hint type="destinationlabel">
@@ -1379,7 +1378,7 @@ border: none;</string>
    <slot>onDoJobAny()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>290</x>
+     <x>324</x>
      <y>11</y>
     </hint>
     <hint type="destinationlabel">
@@ -1395,7 +1394,7 @@ border: none;</string>
    <slot>onDoJobDestroy()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>206</x>
+     <x>239</x>
      <y>11</y>
     </hint>
     <hint type="destinationlabel">
@@ -1411,12 +1410,28 @@ border: none;</string>
    <slot>onDoJobDevelop()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>229</x>
+     <x>267</x>
      <y>3</y>
     </hint>
     <hint type="destinationlabel">
      <x>806</x>
      <y>120</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>pbStartRepair</sender>
+   <signal>clicked()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>onDoJobRepair()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>126</x>
+     <y>11</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>141</x>
+     <y>-10</y>
     </hint>
    </hints>
   </connection>
@@ -1434,5 +1449,6 @@ border: none;</string>
   <slot>onDoJobAny()</slot>
   <slot>onDoJobDestroy()</slot>
   <slot>onDoJobDevelop()</slot>
+  <slot>onDoJobRepair()</slot>
  </slots>
 </ui>

@@ -11,6 +11,7 @@
 #define DELAY_TIME_SUPERLONG	(1200*_intervalMul)
 #define DELAY_TIME_SUPERSUPERLONG	(2000*_intervalMul)
 #define DELAY_TIME_SKIP_DESTROY	(4500*_intervalMul)
+#define DELAY_TIME_SKIP_REPAIR	(4500*_intervalMul)
 #define DELAY_TIME_SKIP	(7000*_intervalMul)
 
 ControlAction::ControlAction(QObject* parent /*= NULL*/)
@@ -1456,6 +1457,523 @@ void DestroyShipAction::setShips(const QList<int>& ships)
 }
 
 
+bool RepairShipAction::action()
+{
+	auto& cm = ControlManager::getInstance();
+	switch (_state)
+	{
+	case RepairShipAction::State::None:
+
+		_nowIndex = 0;
+		setState(State::HomePortChecking, "Repair:HomePortChecking");
+		while (!cm.isShipExist(_ships[_nowIndex]))
+		{
+			_nowIndex++;
+			if (_nowIndex == _ships.size())
+			{
+				setState(State::Done, "Repair:Done");
+				break;
+			}
+		}
+
+		for (int i = 0; i < _ships.size(); i++)
+		{
+			_pageList.append(-1);
+			_posList.append(-1);
+		}
+
+		int page;
+		int pos;
+		if (ControlManager::getInstance().findPagePosByShipId(_ships[_nowIndex], page, pos, _lastPage))
+		{
+			_pageList[_nowIndex] = page;
+			_posList[_nowIndex] = pos;
+		}
+		else
+		{
+			cm.setToTerminate("Terminated:RepairError", true);
+			emit sigCheckFail();
+			return false;
+		}
+		resetRetryAndWainting();
+		break;
+	case RepairShipAction::State::HomePortChecking:
+		if (!_waiting)
+		{
+			_waiting = true;
+			QTimer::singleShot(DELAY_TIME, Qt::PreciseTimer, this, [this, &cm]()
+			{
+				// home port
+				if (cm.checkColors(
+					213, 247, 251, 155, 32
+					, 231, 114, 224, 201, 66))
+				{
+					_waiting = false;
+					setState(State::HomePortDone, "Repair:HomePortDone");
+				}
+				else
+				{
+					tryRetry();
+				}
+			});
+		}
+		break;
+	case RepairShipAction::State::HomePortDone:
+		if (!_waiting)
+		{
+			_waiting = true;
+			if (!cm.isShipExist(_ships[_nowIndex]))
+			{
+				setState(State::Done, "Repair:Done");
+				resetRetryAndWainting();
+			}
+			else
+			{
+				QTimer::singleShot(DELAY_TIME_CLICK, Qt::PreciseTimer, this, [this, &cm]()
+				{
+					cm.moveMouseToAndClick(132, 382, 23, 21.5f); // nyukyo button
+					setState(State::NyuKyoSelectChecking, "Repair:NyuKyoSelectChecking");
+					resetRetryAndWainting();
+				});
+			}
+		}
+		break;
+	case RepairShipAction::State::NyuKyoSelectChecking:
+		if (!_waiting)
+		{
+			_waiting = true;
+			QTimer::singleShot(DELAY_TIME, Qt::PreciseTimer, this, [this, &cm]()
+			{
+				// Repair
+				if (cm.checkColors(
+					27, 306, 231, 100, 5
+					, 74, 221, 209, 178, 65))
+				{
+					_waiting = false;
+					setState(State::NyuKyoSelectDone, "Repair:NyuKyoSelectDone");
+				}
+				else
+				{
+					tryRetry();
+				}
+			});
+		}
+		break;
+	case RepairShipAction::State::NyuKyoSelectDone:
+		if (!_waiting)
+		{
+			_waiting = true;
+			QTimer::singleShot(DELAY_TIME_CLICK, Qt::PreciseTimer, this, [this, &cm]()
+			{
+				cm.moveMouseToAndClick(250, 162 + _usingSlots[_nowIndex] * 82, 42, 12); // Slot
+
+				setState(State::FindShipChecking, "Repair:FindShipChecking");
+				resetRetryAndWainting();
+			});
+		}
+		break;
+	case RepairShipAction::State::FindShipChecking:
+		if (!_waiting)
+		{
+			_waiting = true;
+			QTimer::singleShot(DELAY_TIME, Qt::PreciseTimer, this, [this, &cm]()
+			{
+				if (cm.checkColors(
+					27, 306, 231, 100, 5
+					, 770, 113, 44, 144, 144))
+				{
+					_waiting = false;
+					setState(State::FindShipDone, "Repair:FindShipDone");
+				}
+				else if (cm.checkColors(
+					27, 306, 231, 100, 5
+					, 709, 449, 196, 188, 105))
+				{
+					_waiting = false;
+					setState(State::FindShipChangeSort, "Repair:FindShipChangeSort");
+				}
+				else
+				{
+					tryRetry();
+				}
+			});
+		}
+		break;
+	case RepairShipAction::State::FindShipChangeSort:
+		if (!_waiting)
+		{
+			_waiting = true;
+			QTimer::singleShot(DELAY_TIME_CLICK, Qt::PreciseTimer, this, [this, &cm]()
+			{
+				cm.moveMouseToAndClick(775, 112, 15, 5); // sort button
+				setState(State::FindShipChecking, "Repair:FindShipChecking");
+				resetRetryAndWainting();
+			});
+		}
+		break;
+	case RepairShipAction::State::FindShipDone:
+		if (!_waiting)
+		{
+			_waiting = true;
+			QTimer::singleShot(DELAY_TIME_CLICK, Qt::PreciseTimer, this, [this, &cm]()
+			{
+				if (cm.checkColors(
+					27, 306, 231, 100, 5
+					, 515, 457, 49, 190, 193))
+				{
+					setState(State::FindShipFirstPageDone, "Repair:FindShipFirstPageDone");
+					resetRetryAndWainting();
+				}
+				else
+				{
+					cm.moveMouseToAndClick(435, 449); // left most button
+					setState(State::FindShipFirstPageChecking, "Repair:FindShipFirstPageChecking");
+					resetRetryAndWainting();
+				}
+			});
+		}
+		break;
+	case RepairShipAction::State::FindShipFirstPageChecking:
+		if (!_waiting)
+		{
+			_waiting = true;
+			QTimer::singleShot(DELAY_TIME, Qt::PreciseTimer, this, [this, &cm]()
+			{
+				if (cm.checkColors(
+					27, 306, 231, 100, 5
+					, 515, 457, 49, 190, 193))
+				{
+					_waiting = false;
+					setState(State::FindShipFirstPageDone, "Repair:FindShipFirstPageDone");
+				}
+				else
+				{
+					tryRetry();
+				}
+			});
+		}
+		break;
+	case RepairShipAction::State::FindShipFirstPageDone:
+		if (!_waiting)
+		{
+			_waiting = true;
+			if (_pageList[_nowIndex] < 0 || _posList[_nowIndex] < 0)
+			{
+				cm.setToTerminate("Terminated:RepairPageError", true);
+				emit sigCheckFail();
+				return false;
+			}
+			else if (_pageList[_nowIndex] == 0)
+			{
+				QTimer::singleShot(DELAY_TIME_CLICK, Qt::PreciseTimer, this, [this, &cm]()
+				{
+					cm.moveMouseToAndClick(439, 169 + _cellHeight*_posList[_nowIndex]);
+					setState(State::FindShipOKChecking, "Repair:FindShipOKChecking");
+					resetRetryAndWainting();
+				});
+			}
+			else
+			{
+				QTimer::singleShot(DELAY_TIME_CLICK, Qt::PreciseTimer, this, [this, &cm]()
+				{
+					if (_lastPage == _pageList[_nowIndex])
+					{
+						cm.moveMouseToAndClick(707, 452); // last page
+						_curPage = _lastPage;
+					}
+					else if (_pageList[_nowIndex] >= 5)
+					{
+						cm.moveMouseToAndClick(677, 449); // 6th page
+						_curPage = 5;
+					}
+					else
+					{
+						cm.moveMouseToAndClick(547, 446); // second page
+						_curPage = 1;
+					}
+					setState(State::FindShipNextPageChecking, "Repair:FindShipNextPageChecking");
+					resetRetryAndWainting();
+				});
+			}
+		}
+		break;
+	case RepairShipAction::State::FindShipNextPageChecking:
+		if (!_waiting)
+		{
+			_waiting = true;
+			QTimer::singleShot(DELAY_TIME_PAGE, Qt::PreciseTimer, this, [this, &cm]()
+			{
+				_waiting = false;
+				setState(State::FindShipNextPageDone, "Repair:FindShipNextPageDone");
+				// just assume page flip is ok
+			});
+		}
+		break;
+	case RepairShipAction::State::FindShipNextPageDone:
+		if (!_waiting)
+		{
+			_waiting = true;
+			if (_pageList[_nowIndex] == _curPage)
+			{
+				QTimer::singleShot(DELAY_TIME_CLICK, Qt::PreciseTimer, this, [this, &cm]()
+				{
+					cm.moveMouseToAndClick(439, 169 + _cellHeight*_posList[_nowIndex]);
+					setState(State::FindShipOKChecking, "Repair:FindShipOKChecking");
+					resetRetryAndWainting();
+				});
+			}
+			else
+			{
+				QTimer::singleShot(DELAY_TIME_CLICK, Qt::PreciseTimer, this, [this, &cm]()
+				{
+					if (_curPage == 1)
+					{
+						cm.moveMouseToAndClick(579, 447); // third page
+						_curPage++;
+					}
+					else if (_pageList[_nowIndex] >= _curPage + 5)
+					{
+						cm.moveMouseToAndClick(677, 449); // 6th page
+						_curPage += 5;
+					}
+					else
+					{
+						cm.moveMouseToAndClick(609, 446); // fourth and further
+						_curPage++;
+					}
+					setState(State::FindShipNextPageChecking, "Repair:FindShipNextPageChecking");
+					resetRetryAndWainting();
+				});
+			}
+		}
+		break;
+	case RepairShipAction::State::FindShipOKChecking:
+		if (!_waiting)
+		{
+			_waiting = true;
+			QTimer::singleShot(DELAY_TIME_LONG, Qt::PreciseTimer, this, [this, &cm]()
+			{
+				if (cm.checkColors(
+					650, 422, 57, 189, 186
+					, 675, 441, 16, 78, 86))
+				{
+					_waiting = false;
+					setState(State::FindShipOKDone, "Repair:FindShipOKDone");
+				}
+				else
+				{
+					tryRetry();
+				}
+			});
+		}
+		break;
+	case RepairShipAction::State::FindShipOKDone:
+		if (!_waiting)
+		{
+			_waiting = true;
+			QTimer::singleShot(DELAY_TIME_CLICK, Qt::PreciseTimer, this, [this, &cm]()
+			{
+				if (_useFastRepair)
+				{
+					cm.moveMouseToAndClick(734, 289, 27, 7); // toggle
+					setState(State::NyuKyoFastToggleChecking, "Repair:NyuKyoFastToggleChecking");
+					resetRetryAndWainting();
+				}
+				else
+				{
+					cm.moveMouseToAndClick(685, 432, 40, 12); // Repair button
+					setState(State::NyuKyoOKChecking, "Repair:NyuKyoOKChecking");
+					resetRetryAndWainting();
+				}
+			});
+		}
+		break;
+	case RepairShipAction::State::NyuKyoFastToggleChecking:
+		_waiting = true;
+		QTimer::singleShot(DELAY_TIME_LONG, Qt::PreciseTimer, this, [this, &cm]()
+		{
+			if (cm.checkColors(
+				697, 288, 40, 138, 134
+				, 675, 441, 16, 78, 86))
+			{
+				_waiting = false;
+				setState(State::NyuKyoFastTogglDone, "Repair:NyuKyoFastTogglDone");
+			}
+			else
+			{
+				tryRetry();
+			}
+		});
+		break;
+	case RepairShipAction::State::NyuKyoFastTogglDone:
+		if (!_waiting)
+		{
+			_waiting = true;
+			QTimer::singleShot(DELAY_TIME_CLICK, Qt::PreciseTimer, this, [this, &cm]()
+			{
+				cm.moveMouseToAndClick(685, 432, 40, 12); // Repair button
+				setState(State::NyuKyoOKChecking, "Repair:NyuKyoOKChecking");
+				resetRetryAndWainting();
+			});
+		}
+		break;
+	case RepairShipAction::State::NyuKyoOKChecking:
+		_waiting = true;
+		QTimer::singleShot(DELAY_TIME_LONG, Qt::PreciseTimer, this, [this, &cm]()
+		{
+			if (cm.checkColors(
+				428, 23, 26, 174, 162
+				, 347, 387, 138, 203, 193))
+			{
+				_waiting = false;
+				setState(State::NyuKyoOKDone, "Repair:NyuKyoOKDone");
+			}
+			else
+			{
+				tryRetry();
+			}
+		});
+		break;
+	case RepairShipAction::State::NyuKyoOKDone:
+		if (!_waiting)
+		{
+			_waiting = true;
+			QTimer::singleShot(DELAY_TIME_CLICK, Qt::PreciseTimer, this, [this, &cm]()
+			{
+				cm.moveMouseToAndClick(502, 399, 24, 8); // ok button
+				setState(State::Skipping, "Repair:Skipping");
+				resetRetryAndWainting();
+			});
+		}
+		break;
+
+	case RepairShipAction::State::Skipping:
+		if (!_waiting)
+		{
+			_waiting = true;
+			int delayTime = DELAY_TIME_LONG;
+			if (_useFastRepair)
+			{
+				delayTime = DELAY_TIME_SKIP + cm.randVal(0, 250);
+			}
+
+			if (_nowIndex == _ships.size() - 1)
+			{
+				_waiting = true;
+				{
+					QTimer::singleShot(delayTime, Qt::PreciseTimer, this, [this, &cm]()
+					{
+						setState(State::ReturnToPortChecking, "Repair:ReturnToPortChecking");
+						resetRetryAndWainting();
+					});
+				}
+			}
+			else
+			{
+				_waiting = true;
+				QTimer::singleShot(delayTime, Qt::PreciseTimer, this, [this, &cm]()
+				{
+					if (!cm.isShipDamaged(_ships[_nowIndex]))
+					{
+						_nowIndex++;
+
+						int page;
+						int pos;
+						if (ControlManager::getInstance().findPagePosByShipId(_ships[_nowIndex], page, pos, _lastPage))
+						{
+							_pageList[_nowIndex] = page;
+							_posList[_nowIndex] = pos;
+							setState(State::FindShipChecking, "Repair:Checking");
+							resetRetryAndWainting();
+						}
+						else
+						{
+							cm.setToTerminate("Terminated:RepairError", true);
+							emit sigCheckFail();
+						}
+					}
+					else
+					{
+						qDebug() << "error";
+						cm.setToTerminate("Terminated:RepairError", true);
+						emit sigCheckFail();
+					}
+				});
+			}
+		}
+		break;
+	case RepairShipAction::State::ReturnToPortChecking:
+		if (!_waiting)
+		{
+			_waiting = true;
+			QTimer::singleShot(DELAY_TIME, Qt::PreciseTimer, this, [this, &cm]()
+			{
+				if (cm.checkColors(
+					31, 358, 206, 205, 52
+					, 329, 112, 66, 57, 47))
+				{
+					_waiting = false;
+					setState(State::ReturnToPortDone, "Repair:ReturnToPortDone");
+				}
+				else
+				{
+					tryRetry();
+				}
+			});
+		}
+		break;
+	case  RepairShipAction::State::ReturnToPortDone:
+		if (!_waiting)
+		{
+			_waiting = true;
+			_expectingRequest = "/kcsapi/api_port/port";
+			QTimer::singleShot(DELAY_TIME_CLICK, Qt::PreciseTimer, this, [this, &cm]()
+			{
+				cm.moveMouseToAndClick(74, 252); // port button
+				setState(State::ExpectingPort, "Repair:ExpectingPort");
+				resetRetryAndWainting();
+			});
+		}
+		break;
+	case RepairShipAction::State::ExpectingPort:
+		if (_expectingRequest == "")
+		{
+			cm.moveMouseTo(400, 200);
+			setState(State::Done, "Repair:Done");
+			cm.setupAutoExpedition();
+		}
+		break;
+	case RepairShipAction::State::Done:
+		return true;
+		break;
+	default:
+		break;
+	}
+
+	return false;
+}
+
+void RepairShipAction::setState(State state, const char* str)
+{
+	_state = state;
+	ControlManager::getInstance().setStateStr(str);
+}
+
+void RepairShipAction::setShips(const QList<int>& ships, const QList<int>& usingSlots, bool useFastRepair)
+{
+	for (int i = 0; i < ships.size(); i++)
+	{
+		if (ships[i] < 0)
+		{
+			continue;
+		}
+		_ships.append(ships[i]);
+		_usingSlots.append(usingSlots[i]);
+	}
+
+	_useFastRepair = useFastRepair;
+}
+
 void DevelopAction::addItem(int itemId, int buildCount)
 {
 	_toBuildSlotItems[itemId] = buildCount;// +ControlManager::getInstance().getTotalSlotItemCountForID(itemId);
@@ -2642,6 +3160,11 @@ bool RepeatAction::action()
 			{
 				mainWindow->switchToExpeditionWait();
 			}
+		}
+		else if (cm.isRepairMode())
+		{
+			// do not repeat
+			mainWindow->switchToExpeditionWait();
 		}
 		else if (cm.isDevelopMode())
 		{

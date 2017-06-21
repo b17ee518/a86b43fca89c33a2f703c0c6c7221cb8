@@ -74,7 +74,7 @@ void MainWindow::postInit(InfoMainWindow *pInfo, TimerMainWindow *pTimer, Weapon
 	connect(ui->pbCheckWeapon, SIGNAL(toggled(bool)), _pWeaponWindow, SLOT(slotSetVisible(bool)));
 	connect(ui->pbCheckShip, SIGNAL(toggled(bool)), _pShipWindow, SLOT(slotSetVisible(bool)));
 
-	connect(ui->pbCheckTransparent, SIGNAL(toggled(bool)), this, SLOT(on_pbCheckTransparent_toggled(bool)));
+	//connect(ui->pbCheckTransparent, SIGNAL(toggled(bool)), this, SLOT(on_pbCheckTransparent_toggled(bool)));
 
 	AdjustVolume(-1);
 
@@ -653,7 +653,7 @@ void MainWindow::loadSettings()
 	setting->endGroup();
 
 	delete setting;
-		}
+}
 
 void MainWindow::loadCertKey()
 {
@@ -706,7 +706,7 @@ void MainWindow::applyCss(QWebViewCSSIndex css)
 		_applyCssWhenLoaded = QWebViewCSSIndex::Invalid;
 		delete htmlDocObj;
 #endif
-}
+	}
 	else
 	{
 #if (QT_VERSION >= QT_VERSION_CHECK(5, 6, 0))
@@ -722,5 +722,5 @@ void MainWindow::applyCss(QWebViewCSSIndex css)
 #else
 		_webView->page()->settings()->setUserStyleSheetUrl(_webViewCsses[(int)css]);
 #endif
-}
+	}
 }

@@ -297,6 +297,22 @@ void MainWindow::onDoJobDestroy()
 	}
 }
 
+void MainWindow::onDoJobRepair()
+{
+	auto& cm = ControlManager::getInstance();
+	cm.Terminate();
+	cm.clearLastTarget();
+
+	if (cm.BuildNext_Repair())
+	{
+		cm.StartJob();
+	}
+	else
+	{
+		switchToExpeditionWait();
+	}
+}
+
 void MainWindow::onDoJobDevelop()
 {
 	auto& cm = ControlManager::getInstance();

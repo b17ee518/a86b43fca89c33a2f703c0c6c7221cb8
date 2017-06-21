@@ -130,6 +130,8 @@ bool ControlManager::BuildNext_Fuel()
 	}
 
 	pushPreSupplyCheck();
+	pushPreRepairCheck(false, true, true);
+
 	if (stopWhenCheck())
 	{
 		setToTerminate("Termination:StopWhenDone");
@@ -368,6 +370,7 @@ bool ControlManager::BuildNext_Level()
 {
 	_target = ActionTarget::Level;
 	pushPreSupplyCheck();
+	pushPreRepairCheck(false, true, true);
 
 	KanSaveData* pksd = &KanSaveData::getInstance();
 	KanDataConnector* pkdc = &KanDataConnector::getInstance();
@@ -526,7 +529,7 @@ bool ControlManager::BuildNext_Rank()
 {
 	_target = ActionTarget::Rank;
 	pushPreSupplyCheck();
-
+	pushPreRepairCheck(true, true, false);
 	KanSaveData* pksd = &KanSaveData::getInstance();
 	KanDataConnector* pkdc = &KanDataConnector::getInstance();
 
@@ -1069,6 +1072,15 @@ bool ControlManager::BuildNext_Destroy()
 	return true;
 }
 
+bool ControlManager::BuildNext_Repair()
+{
+	_target = ActionTarget::Repair;
+
+	pushPreRepairCheck(false, false, true);
+	_actionList.append(new RepeatAction());	//should be nothing
+	setState(State::Ready, "Ready");
+	return true;
+}
 
 bool ControlManager::BuildNext_Develop()
 {
@@ -1323,6 +1335,149 @@ void ControlManager::pushPreSupplyCheck()
 			action->setTeam(i);
 			_actionList.append(action);
 		}
+	}
+}
+
+
+void ControlManager::pushPreRepairCheck(bool bCanUseFastRepair, bool includingFirstTeam, bool onlyShortSevere)
+{
+	KanSaveData* pksd = &KanSaveData::getInstance();
+
+	const int useUpToNDockSize = 3;
+	const int repairLessThanTime = 2 * 60 * 60 * 1000;
+
+	QList<int> takenNDock;
+	for (auto& info : pksd->portdata.api_ndock)
+	{
+		if (info.api_ship_id > 0)
+		{
+			takenNDock.append(info.api_id - 1);
+		}
+	}
+
+	if (takenNDock.size() >= useUpToNDockSize)
+	{
+		if (!bCanUseFastRepair)
+		{
+			return;
+		}
+	}
+
+	QList<int> availableNormalSlots;
+	int fastSlot;
+	bool skippedFirst = false;
+	for (int i = 0; i < 4; i++)
+	{
+		if (!takenNDock.contains(i))
+		{
+			if (!skippedFirst)
+			{
+				skippedFirst = true;
+				fastSlot = i;
+				continue;
+			}
+		}
+		availableNormalSlots.append(i);
+	}
+
+	QList<kcsapi_ship2> toRepairShipList;
+	QList<kcsapi_ship2> toFastRepairShipList;
+
+	for (auto& ship : pksd->portdata.api_ship)
+	{
+		if (ship.api_ndock_time > 0
+			&& ship.api_lv > 3
+			&& ship.api_locked)
+		{
+			bool isInAnyTeam = isShipInOtherTeam(ship.api_id, -1);
+			bool isInFirstTeam = isShipInTeam(ship.api_id, 0);
+			WoundState ws = KanDataCalc::GetWoundState(ship.api_nowhp, ship.api_maxhp);
+
+			if (ship.api_ndock_time < repairLessThanTime
+				|| isShipType(ship.api_ship_id, ShipType::SenBou)
+				|| isShipType(ship.api_ship_id, ShipType::SenSui))
+			{
+				bool shouldAdd = true;
+				if (onlyShortSevere)
+				{
+					if (ws < WoundState::Middle)
+					{
+						shouldAdd = false;
+					}
+				}
+
+				if (includingFirstTeam && isInFirstTeam || !isInAnyTeam)
+				{
+					if (shouldAdd)
+					{
+						toRepairShipList.append(ship);
+					}
+				}
+			}
+			else if (bCanUseFastRepair)
+			{
+				if (ws >= WoundState::Middle)
+				{
+					if (includingFirstTeam && isInFirstTeam)
+					{
+						toFastRepairShipList.append(ship);
+					}
+					else if (!isInAnyTeam)
+					{
+						toFastRepairShipList.append(ship);
+					}
+				}
+			}
+		}
+	}
+
+	qSort(toRepairShipList.begin(), toRepairShipList.end(), [](const kcsapi_ship2& left, const kcsapi_ship2& right){
+		if (left.api_ndock_time < right.api_ndock_time)
+		{
+			return true;
+		}
+		return false;
+	});
+
+	if (toFastRepairShipList.size() > 0)
+	{
+		QList<int> ships;
+		QList<int> usingSlots;
+		RepairShipAction* fastAction = new RepairShipAction();
+
+		for (int i = 0; i < toFastRepairShipList.size(); i++)
+		{
+			ships.append(toFastRepairShipList[i].api_id);
+		}
+
+		for (int i = 0; i < toFastRepairShipList.size(); i++)
+		{
+			usingSlots.append(fastSlot);
+		}
+
+		fastAction->setShips(ships, usingSlots, true);
+		_actionList.append(fastAction);
+	}
+
+	if (toRepairShipList.size() > 0)
+	{
+		QList<int> ships;
+		QList<int> usingSlots;
+		RepairShipAction* action = new RepairShipAction();
+
+		for (int i = 0; i < availableNormalSlots.size(); i++)
+		{
+			usingSlots.append(availableNormalSlots[i]);
+		}
+
+		for (int i = 0; i < usingSlots.size(); i++)
+		{
+			ships.append(toRepairShipList[i].api_id);
+		}
+
+		action->setShips(ships, usingSlots, false);
+		_actionList.append(action);
+
 	}
 }
 
@@ -1734,19 +1889,19 @@ bool ControlManager::isShipFull(int keep/* =3*/, bool checkSlotitem/* =true*/)
 	KanSaveData* pksd = &KanSaveData::getInstance();
 	int kancount = pksd->portdata.api_ship.count() + pksd->shipcountoffset;
 	int kanmaxcount = pksd->portdata.api_basic.api_max_chara;
-	if (kancount + keep <= kanmaxcount)
+	if (kancount + keep > kanmaxcount)
 	{
-		return false;
+		return true;
 	}
 	if (checkSlotitem)
 	{
 		// check slotitem too
 		if (isSlotItemFull(keep * 3 - 3))
 		{
-			return false;
+			return true;
 		}
 	}
-	return true;
+	return false;
 }
 
 bool ControlManager::isSlotItemFull(int keep /*= 6*/)
@@ -1754,11 +1909,11 @@ bool ControlManager::isSlotItemFull(int keep /*= 6*/)
 	KanSaveData* pksd = &KanSaveData::getInstance();
 	int slotitemcount = pksd->slotitemdata.count() + pksd->slotitemcountoffset;
 	int slotitemmaxcount = pksd->portdata.api_basic.api_max_slotitem;
-	if (slotitemcount + keep <= slotitemmaxcount)
+	if (slotitemcount + keep > slotitemmaxcount)
 	{
-		return false;
+		return true;
 	}
-	return true;
+	return false;
 
 }
 
@@ -1891,6 +2046,28 @@ bool ControlManager::isShipInOtherTeam(int shipno, int team, bool excludeOnBoard
 	return false;
 }
 
+
+bool ControlManager::isShipInTeam(int shipno, int team)
+{
+	KanSaveData* pksd = &KanSaveData::getInstance();
+
+	for (auto& deck : pksd->portdata.api_deck_port)
+	{
+		if (deck.api_id != team + 1)
+		{
+			continue;
+		}
+
+		for (auto id : deck.api_ship)
+		{
+			if (id == shipno)
+			{
+				return true;
+			}
+		}
+	}
+	return false;
+}
 
 bool ControlManager::isShipInDock(int shipno)
 {

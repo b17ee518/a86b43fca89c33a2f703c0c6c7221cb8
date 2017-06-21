@@ -449,10 +449,12 @@ void MainWindow::on_pbSwitchScreenshot_toggled(bool checked)
 
 void MainWindow::shootScreen()
 {
+	/*
 	if (ui->pbCheckTransparent->isChecked())
 	{
-		applyCss(QWebViewCSSIndex::Normal);
+	applyCss(QWebViewCSSIndex::Normal);
 	}
+	*/
 	QPixmap pixmap = QPixmap::grabWidget(getBrowserWidget());
 
 	QString filename = QApplication::applicationDirPath();
@@ -461,10 +463,12 @@ void MainWindow::shootScreen()
 	filename += QDateTime::currentDateTime().toString("yyyy_MM_dd_HH_mm_ss_zzz.png");
 
 	pixmap.save(filename, "PNG");
+	/*
 	if (ui->pbCheckTransparent->isChecked())
 	{
-		applyCss(QWebViewCSSIndex::Transparent);
+	applyCss(QWebViewCSSIndex::Transparent);
 	}
+	*/
 }
 
 void MainWindow::slotScreenshotTimeout()

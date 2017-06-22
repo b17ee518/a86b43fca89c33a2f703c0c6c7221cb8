@@ -1076,7 +1076,7 @@ bool ControlManager::BuildNext_Repair()
 {
 	_target = ActionTarget::Repair;
 
-	pushPreRepairCheck(false, false, true);
+	pushPreRepairCheck(false, false, false);
 	_actionList.append(new RepeatAction());	//should be nothing
 	setState(State::Ready, "Ready");
 	return true;
@@ -1465,12 +1465,19 @@ void ControlManager::pushPreRepairCheck(bool bCanUseFastRepair, bool includingFi
 		QList<int> usingSlots;
 		RepairShipAction* action = new RepairShipAction();
 
-		for (int i = 0; i < availableNormalSlots.size(); i++)
+		int minSize = availableNormalSlots.size();
+		if (minSize > toRepairShipList.size())
+		{
+			minSize = toRepairShipList.size();
+		}
+
+		for (int i = 0; i < minSize; i++)
 		{
 			usingSlots.append(availableNormalSlots[i]);
 		}
 
-		for (int i = 0; i < usingSlots.size(); i++)
+
+		for (int i = 0; i < minSize; i++)
 		{
 			ships.append(toRepairShipList[i].api_id);
 		}
@@ -2957,18 +2964,18 @@ void ControlManager::moveMouseToAndClick(float x, float y, float offsetX /*= 5*/
 				{
 					sendMouseEvents(qobject_cast<QWidget*>(obj));
 				}
-			}
+	}
 
 			// reset mouse pos for webengine
 			moveMouseTo(0, 0);
 #endif
-		}
+}
 		else
 		{
 			sendMouseEvents(browserWidget);
 		}
 
-	}
+}
 
 }
 
@@ -3020,9 +3027,9 @@ void ControlManager::moveMouseTo(float x, float y, float offsetX /*= 5*/, float 
 				{
 					sendMouseEvents(qobject_cast<QWidget*>(obj));
 				}
-			}
+	}
 #endif
-		}
+}
 		else
 		{
 			sendMouseEvents(browserWidget);

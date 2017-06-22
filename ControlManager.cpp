@@ -1405,7 +1405,7 @@ QList<int> ControlManager::pushPreRepairCheck(bool bCanUseFastRepair, bool inclu
 			bool isInFirstTeam = isShipInTeam(ship.api_id, 0);
 			WoundState ws = KanDataCalc::GetWoundState(ship.api_nowhp, ship.api_maxhp);
 
-			bool isSenSui = isShipType(ship.api_ship_id, ShipType::SenBou) || isShipType(ship.api_ship_id, ShipType::SenSui);
+			bool isSenSui = isShipType(ship.api_id, ShipType::SenBou) || isShipType(ship.api_id, ShipType::SenSui);
 
 			if (ship.api_ndock_time < repairLessThanTime
 				|| isSenSui)
@@ -1418,11 +1418,11 @@ QList<int> ControlManager::pushPreRepairCheck(bool bCanUseFastRepair, bool inclu
 						shouldAdd = false;
 					}
 					else if (!isSenSui
-						&& !isShipType(ship.api_ship_id, ShipType::KuChiKu)
-						&& !isShipType(ship.api_ship_id, ShipType::KeiJun)
-						&& !isShipType(ship.api_ship_id, ShipType::SuiBou)
-						&& !isShipType(ship.api_ship_id, ShipType::KaiBou)
-						&& !isShipType(ship.api_ship_id, ShipType::YouRiKu))
+						&& !isShipType(ship.api_id, ShipType::KuChiKu)
+						&& !isShipType(ship.api_id, ShipType::KeiJun)
+						&& !isShipType(ship.api_id, ShipType::SuiBou)
+						&& !isShipType(ship.api_id, ShipType::KaiBou)
+						&& !isShipType(ship.api_id, ShipType::YouRiKu))
 					{
 						shouldAdd = false;
 					}
@@ -3059,8 +3059,8 @@ void ControlManager::moveMouseTo(float x, float y, float offsetX /*= 5*/, float 
 			sendMouseEvents(browserWidget);
 		}
 
-		}
 	}
+}
 
 void ControlManager::setPauseNextVal(bool bVal)
 {

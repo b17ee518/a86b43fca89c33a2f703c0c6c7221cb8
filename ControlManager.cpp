@@ -31,6 +31,7 @@ bool ControlManager::BuildNext_Kira()
 {
 	_target = ActionTarget::Kira;
 	pushPreSupplyCheck();
+	pushPreRepairCheck(false, false, false);
 	if (_kiraSetting.forceCurrent)
 	{
 		_todoShipids.clear();
@@ -529,7 +530,9 @@ bool ControlManager::BuildNext_Rank()
 {
 	_target = ActionTarget::Rank;
 	pushPreSupplyCheck();
-	pushPreRepairCheck(true, true, false);
+
+	auto fastRepairShips = pushPreRepairCheck(true, true, false);
+
 	KanSaveData* pksd = &KanSaveData::getInstance();
 	KanDataConnector* pkdc = &KanDataConnector::getInstance();
 
@@ -563,12 +566,15 @@ bool ControlManager::BuildNext_Rank()
 						minCond = pship->api_cond;
 					}
 
-					WoundState ws = KanDataCalc::GetWoundState(pship->api_nowhp, pship->api_maxhp);
-
-					if (ws >= WoundState::Middle)
+					if (!fastRepairShips.contains(pship->api_id))
 					{
-						setToTerminate("Terminated:Damage");
-						return false;
+						WoundState ws = KanDataCalc::GetWoundState(pship->api_nowhp, pship->api_maxhp);
+
+						if (ws >= WoundState::Middle)
+						{
+							setToTerminate("Terminated:Damage");
+							return false;
+						}
 					}
 
 					int yusouCount = 0;
@@ -788,6 +794,11 @@ bool ControlManager::BuildNext_Any()
 {
 	_target = ActionTarget::Any;
 	pushPreSupplyCheck();
+
+	if (_anySetting.onlySSTeamSize > 0)
+	{
+		pushPreRepairCheck(false, false, true);
+	}
 
 	KanSaveData* pksd = &KanSaveData::getInstance();
 	KanDataConnector* pkdc = &KanDataConnector::getInstance();
@@ -1339,7 +1350,7 @@ void ControlManager::pushPreSupplyCheck()
 }
 
 
-void ControlManager::pushPreRepairCheck(bool bCanUseFastRepair, bool includingFirstTeam, bool onlyShortSevere)
+QList<int> ControlManager::pushPreRepairCheck(bool bCanUseFastRepair, bool includingFirstTeam, bool onlyShortSevere)
 {
 	KanSaveData* pksd = &KanSaveData::getInstance();
 
@@ -1359,7 +1370,7 @@ void ControlManager::pushPreRepairCheck(bool bCanUseFastRepair, bool includingFi
 	{
 		if (!bCanUseFastRepair)
 		{
-			return;
+			return QList<int>();
 		}
 	}
 
@@ -1376,8 +1387,8 @@ void ControlManager::pushPreRepairCheck(bool bCanUseFastRepair, bool includingFi
 				fastSlot = i;
 				continue;
 			}
+			availableNormalSlots.append(i);
 		}
-		availableNormalSlots.append(i);
 	}
 
 	QList<kcsapi_ship2> toRepairShipList;
@@ -1387,15 +1398,17 @@ void ControlManager::pushPreRepairCheck(bool bCanUseFastRepair, bool includingFi
 	{
 		if (ship.api_ndock_time > 0
 			&& ship.api_lv > 3
-			&& ship.api_locked)
+			&& ship.api_locked
+			&& !isShipInDock(ship.api_id))
 		{
 			bool isInAnyTeam = isShipInOtherTeam(ship.api_id, -1);
 			bool isInFirstTeam = isShipInTeam(ship.api_id, 0);
 			WoundState ws = KanDataCalc::GetWoundState(ship.api_nowhp, ship.api_maxhp);
 
+			bool isSenSui = isShipType(ship.api_ship_id, ShipType::SenBou) || isShipType(ship.api_ship_id, ShipType::SenSui);
+
 			if (ship.api_ndock_time < repairLessThanTime
-				|| isShipType(ship.api_ship_id, ShipType::SenBou)
-				|| isShipType(ship.api_ship_id, ShipType::SenSui))
+				|| isSenSui)
 			{
 				bool shouldAdd = true;
 				if (onlyShortSevere)
@@ -1404,9 +1417,18 @@ void ControlManager::pushPreRepairCheck(bool bCanUseFastRepair, bool includingFi
 					{
 						shouldAdd = false;
 					}
+					else if (!isSenSui
+						&& !isShipType(ship.api_ship_id, ShipType::KuChiKu)
+						&& !isShipType(ship.api_ship_id, ShipType::KeiJun)
+						&& !isShipType(ship.api_ship_id, ShipType::SuiBou)
+						&& !isShipType(ship.api_ship_id, ShipType::KaiBou)
+						&& !isShipType(ship.api_ship_id, ShipType::YouRiKu))
+					{
+						shouldAdd = false;
+					}
 				}
 
-				if (includingFirstTeam && isInFirstTeam || !isInAnyTeam)
+				if (includingFirstTeam && isInFirstTeam && !bCanUseFastRepair || !isInAnyTeam)
 				{
 					if (shouldAdd)
 					{
@@ -1439,15 +1461,15 @@ void ControlManager::pushPreRepairCheck(bool bCanUseFastRepair, bool includingFi
 		return false;
 	});
 
+	QList<int> fastships;
 	if (toFastRepairShipList.size() > 0)
 	{
-		QList<int> ships;
 		QList<int> usingSlots;
 		RepairShipAction* fastAction = new RepairShipAction();
 
 		for (int i = 0; i < toFastRepairShipList.size(); i++)
 		{
-			ships.append(toFastRepairShipList[i].api_id);
+			fastships.append(toFastRepairShipList[i].api_id);
 		}
 
 		for (int i = 0; i < toFastRepairShipList.size(); i++)
@@ -1455,7 +1477,7 @@ void ControlManager::pushPreRepairCheck(bool bCanUseFastRepair, bool includingFi
 			usingSlots.append(fastSlot);
 		}
 
-		fastAction->setShips(ships, usingSlots, true);
+		fastAction->setShips(fastships, usingSlots, true);
 		_actionList.append(fastAction);
 	}
 
@@ -1486,6 +1508,8 @@ void ControlManager::pushPreRepairCheck(bool bCanUseFastRepair, bool includingFi
 		_actionList.append(action);
 
 	}
+
+	return fastships;
 }
 
 QList<int> ControlManager::pushPreShipFullCheck()
@@ -2964,18 +2988,18 @@ void ControlManager::moveMouseToAndClick(float x, float y, float offsetX /*= 5*/
 				{
 					sendMouseEvents(qobject_cast<QWidget*>(obj));
 				}
-	}
+			}
 
 			// reset mouse pos for webengine
 			moveMouseTo(0, 0);
 #endif
-}
+		}
 		else
 		{
 			sendMouseEvents(browserWidget);
 		}
 
-}
+	}
 
 }
 
@@ -3027,16 +3051,16 @@ void ControlManager::moveMouseTo(float x, float y, float offsetX /*= 5*/, float 
 				{
 					sendMouseEvents(qobject_cast<QWidget*>(obj));
 				}
-	}
+			}
 #endif
-}
+		}
 		else
 		{
 			sendMouseEvents(browserWidget);
 		}
 
+		}
 	}
-}
 
 void ControlManager::setPauseNextVal(bool bVal)
 {

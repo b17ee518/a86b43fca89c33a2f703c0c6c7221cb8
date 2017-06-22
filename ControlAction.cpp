@@ -11,7 +11,7 @@
 #define DELAY_TIME_SUPERLONG	(1200*_intervalMul)
 #define DELAY_TIME_SUPERSUPERLONG	(2000*_intervalMul)
 #define DELAY_TIME_SKIP_DESTROY	(4500*_intervalMul)
-#define DELAY_TIME_SKIP_REPAIR	(4500*_intervalMul)
+#define DELAY_TIME_SKIP_REPAIR	(10000*_intervalMul)
 #define DELAY_TIME_SKIP	(7000*_intervalMul)
 
 ControlAction::ControlAction(QObject* parent /*= NULL*/)
@@ -1626,7 +1626,7 @@ bool RepairShipAction::action()
 				}
 				else
 				{
-					cm.moveMouseToAndClick(435, 449); // left most button
+					cm.moveMouseToAndClick(439, 457); // left most button
 					setState(State::FindShipFirstPageChecking, "Repair:FindShipFirstPageChecking");
 					resetRetryAndWainting();
 				}
@@ -1851,10 +1851,10 @@ bool RepairShipAction::action()
 		if (!_waiting)
 		{
 			_waiting = true;
-			int delayTime = DELAY_TIME_LONG;
+			int delayTime = DELAY_TIME_SUPERSUPERLONG;
 			if (_useFastRepair)
 			{
-				delayTime = DELAY_TIME_SKIP + cm.randVal(0, 250);
+				delayTime = DELAY_TIME_SKIP_REPAIR + cm.randVal(0, 250);
 			}
 
 			if (_nowIndex == _ships.size() - 1)
@@ -1873,7 +1873,12 @@ bool RepairShipAction::action()
 				_waiting = true;
 				QTimer::singleShot(delayTime, Qt::PreciseTimer, this, [this, &cm]()
 				{
-					if (!cm.isShipDamaged(_ships[_nowIndex]))
+					if (_state != State::Skipping)
+					{
+						return;
+					}
+					if (_useFastRepair && !cm.isShipDamaged(_ships[_nowIndex]) ||
+						!_useFastRepair && !cm.isShipInDock(_ships[_nowIndex]))
 					{
 						_nowIndex++;
 
@@ -1883,7 +1888,7 @@ bool RepairShipAction::action()
 						{
 							_pageList[_nowIndex] = page;
 							_posList[_nowIndex] = pos;
-							setState(State::FindShipChecking, "Repair:Checking");
+							setState(State::NyuKyoSelectChecking, "Repair:NyuKyoSelectChecking");
 							resetRetryAndWainting();
 						}
 						else
@@ -1909,8 +1914,8 @@ bool RepairShipAction::action()
 			QTimer::singleShot(DELAY_TIME, Qt::PreciseTimer, this, [this, &cm]()
 			{
 				if (cm.checkColors(
-					31, 358, 206, 205, 52
-					, 329, 112, 66, 57, 47))
+					27, 306, 231, 100, 5
+					, 30, 476, 100, 99, 94))
 				{
 					_waiting = false;
 					setState(State::ReturnToPortDone, "Repair:ReturnToPortDone");

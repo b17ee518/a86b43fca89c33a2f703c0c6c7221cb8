@@ -1405,8 +1405,7 @@ QList<int> ControlManager::pushPreRepairCheck(bool bCanUseFastRepair, bool inclu
 		if (ship.api_ndock_time > 0
 			&& ship.api_lv > 3
 			&& ship.api_locked
-			&& !isShipInDock(ship.api_id)
-			&& ship.api_ndock_time + ct < blockRepairTime.toMSecsSinceEpoch())
+			&& !isShipInDock(ship.api_id))
 		{
 			bool isInAnyTeam = isShipInOtherTeam(ship.api_id, -1);
 			bool isInFirstTeam = isShipInTeam(ship.api_id, 0);
@@ -1414,7 +1413,8 @@ QList<int> ControlManager::pushPreRepairCheck(bool bCanUseFastRepair, bool inclu
 
 			bool isSenSui = isShipType(ship.api_id, ShipType::SenBou) || isShipType(ship.api_id, ShipType::SenSui);
 
-			if (ship.api_ndock_time < repairLessThanTime || isSenSui)
+			if ((ship.api_ndock_time < repairLessThanTime || isSenSui)
+				&& ship.api_ndock_time + ct < blockRepairTime.toMSecsSinceEpoch())
 			{
 				bool shouldAdd = true;
 				if (onlyShortSevere)
@@ -2989,13 +2989,13 @@ void ControlManager::moveMouseToAndClick(float x, float y, float offsetX /*= 5*/
 				Q_FOREACH(QObject* obj, webView->page()->view()->children())
 				{
 					sendMouseEvents(qobject_cast<QWidget*>(obj));
-		}
-	}
+				}
+			}
 
 			// reset mouse pos for webengine
 			moveMouseTo(0, 0);
 #endif
-}
+		}
 		else
 		{
 			sendMouseEvents(browserWidget);
@@ -3053,15 +3053,15 @@ void ControlManager::moveMouseTo(float x, float y, float offsetX /*= 5*/, float 
 				{
 					sendMouseEvents(qobject_cast<QWidget*>(obj));
 				}
-		}
+			}
 #endif
-	}
+		}
 		else
 		{
 			sendMouseEvents(browserWidget);
 		}
 
-}
+	}
 }
 
 void ControlManager::setPauseNextVal(bool bVal)

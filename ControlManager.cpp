@@ -1290,11 +1290,7 @@ QList<int> ControlManager::GenerateToDestroyList(QList<int>& wasteShipList)
 		}
 	}
 	std::sort(toTempDestroyList.begin(), toTempDestroyList.end(), [](const kcsapi_ship2& left, const kcsapi_ship2& right){
-		if (left.api_id > right.api_id)
-		{
-			return true;
-		}
-		return false;
+		return left.api_id > right.api_id;
 	});
 
 	int kuchiku[2] = { -1, -1 };

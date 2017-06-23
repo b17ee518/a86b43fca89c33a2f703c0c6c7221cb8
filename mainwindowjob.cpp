@@ -300,8 +300,24 @@ void MainWindow::onDoJobDestroy()
 void MainWindow::onDoJobRepair()
 {
 	auto& cm = ControlManager::getInstance();
+	if (QApplication::queryKeyboardModifiers()&Qt::ShiftModifier)
+	{
+		bool shouldAutoPush = cm.toggleShouldAutoPushRepair();
+		if (shouldAutoPush)
+		{
+			ui->pbStartRepair->setText(QString::fromLocal8Bit("修"));
+		}
+		else
+		{
+			ui->pbStartRepair->setText(QString::fromLocal8Bit("置"));
+		}
+		return;
+	}
+
+
 	cm.Terminate();
 	cm.clearLastTarget();
+
 
 	if (cm.BuildNext_Repair())
 	{

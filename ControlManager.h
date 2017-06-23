@@ -326,7 +326,12 @@ public:
 	void setPortDataDirty();
 	void clearPortDataDirtyFlag();
 
+	bool toggleShouldAutoPushRepair(){ _shouldAutoPushRepair = !_shouldAutoPushRepair; return _shouldAutoPushRepair; }
+	bool shouldAutoPushRepair(){ return _shouldAutoPushRepair; }
+
 private:
+
+	bool _shouldAutoPushRepair = true;
 
 	bool _isPortDataDirty = true;
 

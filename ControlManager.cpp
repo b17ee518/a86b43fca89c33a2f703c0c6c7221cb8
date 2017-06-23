@@ -1348,10 +1348,16 @@ void ControlManager::pushPreSupplyCheck()
 
 QList<int> ControlManager::pushPreRepairCheck(bool bCanUseFastRepair, bool includingFirstTeam, bool onlyShortSevere)
 {
+	if (!_shouldAutoPushRepair)
+	{
+		return QList<int>();
+	}
+
 	KanSaveData* pksd = &KanSaveData::getInstance();
 
 	const int useUpToNDockSize = 3;
 	const int repairLessThanTime = 2 * 60 * 60 * 1000;
+	const int tinyRepairTime = 12 * 60 * 1000;
 
 	QList<int> takenNDock;
 	for (auto& info : pksd->portdata.api_ndock)
@@ -1390,12 +1396,17 @@ QList<int> ControlManager::pushPreRepairCheck(bool bCanUseFastRepair, bool inclu
 	QList<kcsapi_ship2> toRepairShipList;
 	QList<kcsapi_ship2> toFastRepairShipList;
 
+	auto ct = TimerMainWindow::currentMS();
+	QDateTime blockRepairTime = QDateTime::currentDateTime();
+	blockRepairTime.setTime(QTime(22, 30));
+
 	for (auto& ship : pksd->portdata.api_ship)
 	{
 		if (ship.api_ndock_time > 0
 			&& ship.api_lv > 3
 			&& ship.api_locked
-			&& !isShipInDock(ship.api_id))
+			&& !isShipInDock(ship.api_id)
+			&& ship.api_ndock_time + ct < blockRepairTime.toMSecsSinceEpoch())
 		{
 			bool isInAnyTeam = isShipInOtherTeam(ship.api_id, -1);
 			bool isInFirstTeam = isShipInTeam(ship.api_id, 0);
@@ -1403,13 +1414,12 @@ QList<int> ControlManager::pushPreRepairCheck(bool bCanUseFastRepair, bool inclu
 
 			bool isSenSui = isShipType(ship.api_id, ShipType::SenBou) || isShipType(ship.api_id, ShipType::SenSui);
 
-			if (ship.api_ndock_time < repairLessThanTime
-				|| isSenSui)
+			if (ship.api_ndock_time < repairLessThanTime || isSenSui)
 			{
 				bool shouldAdd = true;
 				if (onlyShortSevere)
 				{
-					if (ws < WoundState::Middle)
+					if (ws < WoundState::Middle && ship.api_ndock_time > tinyRepairTime)
 					{
 						shouldAdd = false;
 					}
@@ -2979,21 +2989,21 @@ void ControlManager::moveMouseToAndClick(float x, float y, float offsetX /*= 5*/
 				Q_FOREACH(QObject* obj, webView->page()->view()->children())
 				{
 					sendMouseEvents(qobject_cast<QWidget*>(obj));
-				}
-			}
+		}
+	}
 
 			// reset mouse pos for webengine
 			moveMouseTo(0, 0);
 #endif
-		}
+}
 		else
 		{
 			sendMouseEvents(browserWidget);
-			}
-
 		}
 
-		}
+	}
+
+}
 
 void ControlManager::moveMouseTo(float x, float y, float offsetX /*= 5*/, float offsetY /*= 3*/)
 {
@@ -3043,16 +3053,16 @@ void ControlManager::moveMouseTo(float x, float y, float offsetX /*= 5*/, float 
 				{
 					sendMouseEvents(qobject_cast<QWidget*>(obj));
 				}
-			}
-#endif
 		}
+#endif
+	}
 		else
 		{
 			sendMouseEvents(browserWidget);
-			}
-
 		}
-	}
+
+}
+}
 
 void ControlManager::setPauseNextVal(bool bVal)
 {

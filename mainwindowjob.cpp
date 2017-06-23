@@ -400,7 +400,7 @@ void MainWindow::onExportAllList()
 	}
 	if (infos.size())
 	{
-		qSort(infos.begin(), infos.end(), [](const ExportInfo&left, const ExportInfo&right)
+		std::sort(infos.begin(), infos.end(), [](const ExportInfo&left, const ExportInfo&right)
 		{
 			if (left.shiptype < right.shiptype)
 			{

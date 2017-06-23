@@ -172,11 +172,11 @@ void ShipMainWindow::buildTable()
 	}
 	//
 
-	qSort(_shipGroupList.begin(), _shipGroupList.end(), UIShipGroupData::higherThan);
+	std::sort(_shipGroupList.begin(), _shipGroupList.end(), UIShipGroupData::higherThan);
 	int shiptypecount = _shipGroupList.count();
 	for (int i = 0; i < shiptypecount; i++)
 	{
-		qSort(_shipGroupList[i].ships.begin(), _shipGroupList[i].ships.end(), UIShipData::higherThan);
+		std::sort(_shipGroupList[i].ships.begin(), _shipGroupList[i].ships.end(), UIShipData::higherThan);
 	}
 
 	for (QList<KQUI_CollapsibleFrame*>::iterator it = _lstCollapsibleFrames.begin(); it != _lstCollapsibleFrames.end(); ++it)

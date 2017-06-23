@@ -171,7 +171,7 @@ void WeaponMainWindow::buildTable()
 	}
 	//
 
-	qSort(_weaponGroupList.begin(), _weaponGroupList.end(), UIWeaponGroupData::higherThan);
+	std::sort(_weaponGroupList.begin(), _weaponGroupList.end(), UIWeaponGroupData::higherThan);
 
 	for (QList<KQUI_CollapsibleFrame*>::iterator it = _lstCollapsibleFrames.begin(); it != _lstCollapsibleFrames.end(); ++it)
 	{

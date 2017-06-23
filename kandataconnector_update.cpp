@@ -176,7 +176,7 @@ void KanDataConnector::updateRepairTable()
 			lstShips.append(ship2);
 		}
 	}
-	qSort(lstShips.begin(), lstShips.end(), repairTableSort);
+	std::sort(lstShips.begin(), lstShips.end(), repairTableSort);
 
 	int repaircount = lstShips.count();
 	QList<KQRowData> rows;

@@ -1247,7 +1247,7 @@ bool KanDataConnector::get_member_questlist_parse()
 				pksd->questdata.append(api_questlist.api_list[i]);
 			}
 		}
-		qSort(pksd->questdata.begin(), pksd->questdata.end(), questDataSort);
+		std::sort(pksd->questdata.begin(), pksd->questdata.end(), questDataSort);
 	}
 
 	if (pksd->questdata.size() > api_questlist.api_exec_count)
@@ -1297,7 +1297,7 @@ bool KanDataConnector::get_member_questlist_parse()
 	pksd->questdata.append(api_questlist.api_list[i]);
 	}
 	}
-	qSort(pksd->questdata.begin(), pksd->questdata.end(), questDataSort);
+	std::sort(pksd->questdata.begin(), pksd->questdata.end(), questDataSort);
 	}
 	*/
 

@@ -269,7 +269,7 @@ bool ControlManager::chooseSSShipList(int teamSize, QList<int>& ships, QList<int
 	}
 
 	// sort bestships
-	qSort(bestShips.begin(), bestShips.end(), [](const  kcsapi_ship2* left, const kcsapi_ship2* right)
+	std::sort(bestShips.begin(), bestShips.end(), [](const  kcsapi_ship2* left, const kcsapi_ship2* right)
 	{
 		if (left->api_cond > right->api_cond)
 		{
@@ -1289,7 +1289,7 @@ QList<int> ControlManager::GenerateToDestroyList(QList<int>& wasteShipList)
 			toTempDestroyList.append(ship);
 		}
 	}
-	qSort(toTempDestroyList.begin(), toTempDestroyList.end(), [](const kcsapi_ship2& left, const kcsapi_ship2& right){
+	std::sort(toTempDestroyList.begin(), toTempDestroyList.end(), [](const kcsapi_ship2& left, const kcsapi_ship2& right){
 		if (left.api_id > right.api_id)
 		{
 			return true;
@@ -1453,12 +1453,8 @@ QList<int> ControlManager::pushPreRepairCheck(bool bCanUseFastRepair, bool inclu
 		}
 	}
 
-	qSort(toRepairShipList.begin(), toRepairShipList.end(), [](const kcsapi_ship2& left, const kcsapi_ship2& right){
-		if (left.api_ndock_time < right.api_ndock_time)
-		{
-			return true;
-		}
-		return false;
+	std::sort(toRepairShipList.begin(), toRepairShipList.end(), [](const kcsapi_ship2& left, const kcsapi_ship2& right){
+		return left.api_ndock_time < right.api_ndock_time;
 	});
 
 	QList<int> fastships;
@@ -1960,7 +1956,7 @@ bool ControlManager::findPagePosByShipId(int shipno, int& page, int& pos, int& l
 		return false;
 	}
 	lastPage = (ships.size() - 1) / 10;
-	qSort(ships.begin(), ships.end(), [](const  kcsapi_ship2& left, const kcsapi_ship2& right)
+	std::sort(ships.begin(), ships.end(), [](const  kcsapi_ship2& left, const kcsapi_ship2& right)
 	{
 		return left.api_id > right.api_id; // newer if id is greater
 	});
@@ -2997,11 +2993,11 @@ void ControlManager::moveMouseToAndClick(float x, float y, float offsetX /*= 5*/
 		else
 		{
 			sendMouseEvents(browserWidget);
+			}
+
 		}
 
-	}
-
-}
+		}
 
 void ControlManager::moveMouseTo(float x, float y, float offsetX /*= 5*/, float offsetY /*= 3*/)
 {
@@ -3057,10 +3053,10 @@ void ControlManager::moveMouseTo(float x, float y, float offsetX /*= 5*/, float 
 		else
 		{
 			sendMouseEvents(browserWidget);
-		}
+			}
 
+		}
 	}
-}
 
 void ControlManager::setPauseNextVal(bool bVal)
 {

@@ -1878,7 +1878,7 @@ bool RepairShipAction::action()
 						return;
 					}
 					if (_useFastRepair && !cm.isShipDamaged(_ships[_nowIndex]) ||
-						!_useFastRepair && !cm.isShipInDock(_ships[_nowIndex]))
+						!_useFastRepair && cm.isShipInDock(_ships[_nowIndex]))
 					{
 						_nowIndex++;
 

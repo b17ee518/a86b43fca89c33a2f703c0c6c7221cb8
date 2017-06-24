@@ -3,6 +3,7 @@
 #include <QDebug>
 #include "kandatacalc.h"
 #include "mainwindow.h"
+#include "ExpeditionManager.h"
 
 #define DELAY_TIME			(250*_intervalMul)
 #define DELAY_TIME_CLICK	(250*_intervalMul)
@@ -154,8 +155,41 @@ bool WaitCondAction::action()
 	return false;
 }
 
-void WaitCondAction::setWaitMS(qint64 waitms)
+void WaitCondAction::setWaitMS(qint64 waitms, bool isExpedition)
 {
+	if (!isExpedition)
+	{
+		int team = -1;
+		auto timerWindow = MainWindow::mainWindow()->timerWindow();
+
+		QList<int> excludeTeams;
+		SingleExpedition* pExp;
+		qint64 ct = TimerMainWindow::currentMS();
+		qint64 waitMSExpedition = 0;
+		for (int i = 0; i < 3; i++)
+		{
+			waitMSExpedition = timerWindow->getMinExpeditionMS(team, excludeTeams);
+			pExp = ExpeditionManager::getInstance().getShouldNextSchedule(team, ct, ct + waitMSExpedition);
+			if (!pExp)
+			{
+				excludeTeams.append(team);
+			}
+			else
+			{
+				break;
+			}
+		}
+
+		if (pExp)
+		{
+			waitMSExpedition += 5000 + ControlManager::getInstance().randVal(-1000, 1000);
+			if (waitMSExpedition < waitms)
+			{
+				waitms = waitMSExpedition;
+			}
+		}
+	}
+
 	_waitMS = waitms;
 	if (_waitMS < 0)
 	{

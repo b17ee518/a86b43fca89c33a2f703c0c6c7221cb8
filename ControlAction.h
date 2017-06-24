@@ -62,7 +62,7 @@ public:
 	virtual bool action() override;
 
 public:
-	void setWaitMS(qint64 waitms);
+	void setWaitMS(qint64 waitms, bool isExpedition);
 	void setWaitName(const QString& name);
 
 private:

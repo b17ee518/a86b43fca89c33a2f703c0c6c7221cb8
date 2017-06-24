@@ -298,7 +298,7 @@ bool ControlManager::chooseSSShipList(int teamSize, QList<int>& ships, QList<int
 		// wait
 		qint64 waitMS = qCeil((_sortieWaitCond - minCond) / 3.0) * 3 * 60 * 1000;
 		auto waitAction = new WaitCondAction();
-		waitAction->setWaitMS(waitMS);
+		waitAction->setWaitMS(waitMS, false);
 		_actionList.append(waitAction);
 	}
 
@@ -513,7 +513,7 @@ bool ControlManager::BuildNext_Level()
 		qint64 waitMS = qCeil((_sortieWaitCond - minCond) / 3.0) * 3 * 60 * 1000;
 
 		auto waitAction = new WaitCondAction();
-		waitAction->setWaitMS(waitMS);
+		waitAction->setWaitMS(waitMS, false);
 		_actionList.append(waitAction);
 	}
 	SortieAction* sortieAction = new SortieAction();
@@ -613,7 +613,7 @@ bool ControlManager::BuildNext_Rank()
 		// wait
 		qint64 waitMS = qCeil((_sortieWaitCond - minCond) / 3.0) * 3 * 60 * 1000;
 		auto waitAction = new WaitCondAction();
-		waitAction->setWaitMS(waitMS);
+		waitAction->setWaitMS(waitMS, false);
 		_actionList.append(waitAction);
 	}
 
@@ -876,7 +876,7 @@ bool ControlManager::BuildNext_Any()
 			// wait
 			qint64 waitMS = qCeil((_sortieWaitCond - minCond) / 3.0) * 3 * 60 * 1000;
 			auto waitAction = new WaitCondAction();
-			waitAction->setWaitMS(waitMS);
+			waitAction->setWaitMS(waitMS, false);
 			_actionList.append(waitAction);
 		}
 	}
@@ -1021,7 +1021,7 @@ bool ControlManager::BuildNext_Expedition()
 	{
 		waitMS += 5000 + randVal(-1000, 1000);
 		auto waitAction = new WaitCondAction();
-		waitAction->setWaitMS(waitMS);
+		waitAction->setWaitMS(waitMS, true);
 		waitAction->setWaitName(QString("W:%1").arg(ExpeditionManager::getInstance().getCurrentPreset()).toLocal8Bit());
 		_actionList.append(waitAction);
 	}

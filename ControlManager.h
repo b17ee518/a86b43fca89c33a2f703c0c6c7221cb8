@@ -236,6 +236,7 @@ public:
 
 	bool isRunning(){ return _state == State::Started; }
 	bool isActiveRunning();
+	bool isInactiveWaiting() { return _inactiveWaiting; }
 
 	bool checkColors(const QList<CheckColor>& checklist);
 

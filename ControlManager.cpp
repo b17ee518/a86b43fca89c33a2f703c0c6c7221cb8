@@ -1370,7 +1370,7 @@ QList<int> ControlManager::pushPreRepairCheck(bool bCanUseFastRepair, bool inclu
 
 	if (takenNDock.size() >= useUpToNDockSize)
 	{
-		if (!bCanUseFastRepair)
+		if (!bCanUseFastRepair || takenNDock.size() == 4)
 		{
 			return QList<int>();
 		}
@@ -1467,7 +1467,6 @@ QList<int> ControlManager::pushPreRepairCheck(bool bCanUseFastRepair, bool inclu
 	if (toFastRepairShipList.size() > 0)
 	{
 		QList<int> usingSlots;
-		RepairShipAction* fastAction = new RepairShipAction();
 
 		for (int i = 0; i < toFastRepairShipList.size(); i++)
 		{
@@ -1479,15 +1478,18 @@ QList<int> ControlManager::pushPreRepairCheck(bool bCanUseFastRepair, bool inclu
 			usingSlots.append(fastSlot);
 		}
 
-		fastAction->setShips(fastships, usingSlots, true);
-		_actionList.append(fastAction);
+		if (fastships.size() > 0)
+		{
+			RepairShipAction* fastAction = new RepairShipAction();
+			fastAction->setShips(fastships, usingSlots, true);
+			_actionList.append(fastAction);
+		}
 	}
 
 	if (toRepairShipList.size() > 0)
 	{
 		QList<int> ships;
 		QList<int> usingSlots;
-		RepairShipAction* action = new RepairShipAction();
 
 		int minSize = availableNormalSlots.size();
 		if (minSize > toRepairShipList.size())
@@ -1500,15 +1502,17 @@ QList<int> ControlManager::pushPreRepairCheck(bool bCanUseFastRepair, bool inclu
 			usingSlots.append(availableNormalSlots[i]);
 		}
 
-
 		for (int i = 0; i < minSize; i++)
 		{
 			ships.append(toRepairShipList[i].api_id);
 		}
 
-		action->setShips(ships, usingSlots, false);
-		_actionList.append(action);
-
+		if (ships.size() > 0)
+		{
+			RepairShipAction* action = new RepairShipAction();
+			action->setShips(ships, usingSlots, false);
+			_actionList.append(action);
+		}
 	}
 
 	return fastships;

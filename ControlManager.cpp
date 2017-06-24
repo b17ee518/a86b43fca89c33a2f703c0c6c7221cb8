@@ -131,7 +131,7 @@ bool ControlManager::BuildNext_Fuel()
 	}
 
 	pushPreSupplyCheck();
-	pushPreRepairCheck(false, true, true);
+	pushPreRepairCheck(false, false, true);
 
 	if (stopWhenCheck())
 	{
@@ -371,7 +371,7 @@ bool ControlManager::BuildNext_Level()
 {
 	_target = ActionTarget::Level;
 	pushPreSupplyCheck();
-	pushPreRepairCheck(false, true, true);
+	pushPreRepairCheck(false, false, true);
 
 	KanSaveData* pksd = &KanSaveData::getInstance();
 	KanDataConnector* pkdc = &KanDataConnector::getInstance();

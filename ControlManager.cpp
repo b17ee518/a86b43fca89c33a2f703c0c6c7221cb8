@@ -574,7 +574,10 @@ bool ControlManager::BuildNext_Rank()
 
 					if (pship->api_cond < minCond)
 					{
-						minCond = pship->api_cond;
+						if (!fastRepairShips.contains(pship->api_id))
+						{
+							minCond = pship->api_cond;
+						}
 					}
 
 					if (!fastRepairShips.contains(pship->api_id))
@@ -3070,8 +3073,8 @@ void ControlManager::moveMouseTo(float x, float y, float offsetX /*= 5*/, float 
 				Q_FOREACH(QObject* obj, webView->page()->view()->children())
 				{
 					sendMouseEvents(qobject_cast<QWidget*>(obj));
-				}
 	}
+}
 #endif
 }
 		else

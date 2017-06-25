@@ -133,7 +133,7 @@ public:
 
 	void pushPreSupplyCheck();
 
-	QList<int> pushPreRepairCheck(bool bCanUseFastRepair, bool includingFirstTeam, bool onlyShortSevere);
+	QList<int> pushPreRepairCheck(QList<int>& willBeInDockList, bool bCanUseFastRepair, bool includingFirstTeam, bool onlyShortSevere);
 
 	QList<int> pushPreShipFullCheck();
 
@@ -180,7 +180,7 @@ public:
 	void setToTerminate(const char* title, bool forceSound = false);
 
 	void createSSShipList();
-	bool chooseSSShipList(int teamSize, QList<int>& ships, QList<int>&sortInTeamShips, QString& errorMessage, bool onlySensui = false);
+	bool chooseSSShipList(int teamSize, QList<int>& ships, QList<int>&sortInTeamShips, QList<int> excludeShipList, QString& errorMessage, bool onlySensui = false);
 	bool isTreatedSameShip(int shipno, int oshipno);
 	bool isAfterShip(const kcsapi_mst_ship* pmstship, const kcsapi_mst_ship* pomstship, QList<int> checkedIdList = QList<int>()/*for convert*/);
 	// is pmstship after of pomstship

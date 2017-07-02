@@ -32,7 +32,7 @@ bool ControlManager::BuildNext_Kira()
 	_target = ActionTarget::Kira;
 	pushPreSupplyCheck();
 	QList<int> willBeInDockList;
-	pushPreRepairCheck(willBeInDockList, false, false, false);
+	pushPreRepairCheck(willBeInDockList, false, false, true);
 	if (_kiraSetting.forceCurrent)
 	{
 		_todoShipids.clear();
@@ -3016,13 +3016,13 @@ void ControlManager::moveMouseToAndClick(float x, float y, float offsetX /*= 5*/
 			// reset mouse pos for webengine
 			moveMouseTo(0, 0);
 #endif
-	}
+		}
 		else
 		{
 			sendMouseEvents(browserWidget);
 		}
 
-}
+	}
 
 }
 
@@ -3073,10 +3073,10 @@ void ControlManager::moveMouseTo(float x, float y, float offsetX /*= 5*/, float 
 				Q_FOREACH(QObject* obj, webView->page()->view()->children())
 				{
 					sendMouseEvents(qobject_cast<QWidget*>(obj));
-	}
-}
+				}
+			}
 #endif
-}
+		}
 		else
 		{
 			sendMouseEvents(browserWidget);

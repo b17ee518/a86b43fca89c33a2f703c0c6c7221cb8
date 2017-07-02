@@ -133,7 +133,7 @@ public:
 
 	void pushPreSupplyCheck();
 
-	QList<int> pushPreRepairCheck(QList<int>& willBeInDockList, bool bCanUseFastRepair, bool includingFirstTeam, bool onlyShortSevere);
+	QList<int> pushPreRepairCheck(QList<int>& willBeInDockList, bool bCanUseFastRepair, bool includingFirstTeam, bool onlyShortSevere, bool onlySmallShip);
 
 	QList<int> pushPreShipFullCheck();
 

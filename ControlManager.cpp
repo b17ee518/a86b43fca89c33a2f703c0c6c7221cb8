@@ -32,7 +32,7 @@ bool ControlManager::BuildNext_Kira()
 	_target = ActionTarget::Kira;
 	pushPreSupplyCheck();
 	QList<int> willBeInDockList;
-	pushPreRepairCheck(willBeInDockList, false, false, true);
+	pushPreRepairCheck(willBeInDockList, false, false, false, true);
 	if (_kiraSetting.forceCurrent)
 	{
 		_todoShipids.clear();
@@ -134,7 +134,7 @@ bool ControlManager::BuildNext_Fuel()
 
 	pushPreSupplyCheck();
 	QList<int> willBeInDockList;
-	pushPreRepairCheck(willBeInDockList, false, false, true);
+	pushPreRepairCheck(willBeInDockList, false, false, true, true);
 
 	if (stopWhenCheck())
 	{
@@ -380,7 +380,7 @@ bool ControlManager::BuildNext_Level()
 	_target = ActionTarget::Level;
 	pushPreSupplyCheck();
 	QList<int> willBeInDockList;
-	pushPreRepairCheck(willBeInDockList, false, false, true);
+	pushPreRepairCheck(willBeInDockList, false, false, true, true);
 
 	KanSaveData* pksd = &KanSaveData::getInstance();
 	KanDataConnector* pkdc = &KanDataConnector::getInstance();
@@ -542,7 +542,7 @@ bool ControlManager::BuildNext_Rank()
 	pushPreSupplyCheck();
 
 	QList<int> willBeInDockList;
-	auto fastRepairShips = pushPreRepairCheck(willBeInDockList, true, true, false);
+	auto fastRepairShips = pushPreRepairCheck(willBeInDockList, true, true, false, false);
 
 	KanSaveData* pksd = &KanSaveData::getInstance();
 	KanDataConnector* pkdc = &KanDataConnector::getInstance();
@@ -812,7 +812,7 @@ bool ControlManager::BuildNext_Any()
 	QList<int> willBeInDockList;
 	if (_anySetting.onlySSTeamSize > 0)
 	{
-		pushPreRepairCheck(willBeInDockList, false, false, true);
+		pushPreRepairCheck(willBeInDockList, false, false, true, true);
 	}
 
 	KanSaveData* pksd = &KanSaveData::getInstance();
@@ -1103,7 +1103,7 @@ bool ControlManager::BuildNext_Repair()
 	_target = ActionTarget::Repair;
 
 	QList<int> willBeInDockList;
-	pushPreRepairCheck(willBeInDockList, false, false, false);
+	pushPreRepairCheck(willBeInDockList, false, false, false, false);
 	_actionList.append(new RepeatAction());	//should be nothing
 	setState(State::Ready, "Ready");
 	return true;
@@ -1362,7 +1362,7 @@ void ControlManager::pushPreSupplyCheck()
 }
 
 
-QList<int> ControlManager::pushPreRepairCheck(QList<int>& willBeInDockList, bool bCanUseFastRepair, bool includingFirstTeam, bool onlyShortSevere)
+QList<int> ControlManager::pushPreRepairCheck(QList<int>& willBeInDockList, bool bCanUseFastRepair, bool includingFirstTeam, bool onlyShortSevere, bool onlySmallShip)
 {
 	if (!_shouldAutoPushRepair)
 	{
@@ -1428,23 +1428,30 @@ QList<int> ControlManager::pushPreRepairCheck(QList<int>& willBeInDockList, bool
 			WoundState ws = KanDataCalc::GetWoundState(ship.api_nowhp, ship.api_maxhp);
 
 			bool isSenSui = isShipType(ship.api_id, ShipType::SenBou) || isShipType(ship.api_id, ShipType::SenSui);
+			bool isSmallShip = isSenSui
+				|| isShipType(ship.api_id, ShipType::KuChiKu)
+				|| isShipType(ship.api_id, ShipType::KeiJun)
+				|| isShipType(ship.api_id, ShipType::SuiBou)
+				|| isShipType(ship.api_id, ShipType::KaiBou)
+				|| isShipType(ship.api_id, ShipType::YouRiKu);
 
 			if ((ship.api_ndock_time < repairLessThanTime || isSenSui)
 				&& ship.api_ndock_time + ct < blockRepairTime.toMSecsSinceEpoch())
 			{
 				bool shouldAdd = true;
-				if (onlyShortSevere)
+
+				if (onlySmallShip && !isSmallShip)
+				{
+					shouldAdd = false;
+				}
+
+				if (shouldAdd && onlyShortSevere)
 				{
 					if (ws < WoundState::Middle && ship.api_ndock_time > tinyRepairTime)
 					{
 						shouldAdd = false;
 					}
-					else if (!isSenSui
-						&& !isShipType(ship.api_id, ShipType::KuChiKu)
-						&& !isShipType(ship.api_id, ShipType::KeiJun)
-						&& !isShipType(ship.api_id, ShipType::SuiBou)
-						&& !isShipType(ship.api_id, ShipType::KaiBou)
-						&& !isShipType(ship.api_id, ShipType::YouRiKu))
+					else if (!isSmallShip)
 					{
 						shouldAdd = false;
 					}

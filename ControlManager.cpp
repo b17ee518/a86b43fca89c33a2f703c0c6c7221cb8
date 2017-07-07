@@ -126,7 +126,8 @@ bool ControlManager::BuildNext_Fuel()
 {
 	_target = ActionTarget::Fuel;
 	int flagshipid = getCurrentFlagshipId();
-	if (!isFlagshipOnly(0) || !isShipType(flagshipid, ShipType::SenSui))
+	if (!isFlagshipOnly(0) ||
+		(!isShipType(flagshipid, ShipType::SenSui) && !isShipType(flagshipid, ShipType::SenBou)))
 	{
 		// southeast
 		_target = ActionTarget::SouthEast;
@@ -198,7 +199,7 @@ bool ControlManager::BuildNext_Fuel()
 	return true;
 }
 
-bool ControlManager::chooseSSShipList(int teamSize, QList<int>& ships, QList<int>& sortInTeamShips, QList<int> excludeShipList, QString& errorMessage, bool onlySenSui/*=false*/)
+bool ControlManager::chooseSSShipList(int teamSize, QList<int>& ships, QList<int>& sortInTeamShips, QList<int> excludeShipList, QString& errorMessage, bool onlyHighKaihi/*=false*/)
 {
 	KanSaveData* pksd = &KanSaveData::getInstance();
 	errorMessage = "";
@@ -207,6 +208,8 @@ bool ControlManager::chooseSSShipList(int teamSize, QList<int>& ships, QList<int
 	{
 		createSSShipList();
 	}
+
+	const int kaihiBorderLine = 80;
 
 	// find possible hensei
 	KanDataConnector* pkdc = &KanDataConnector::getInstance();
@@ -219,9 +222,9 @@ bool ControlManager::chooseSSShipList(int teamSize, QList<int>& ships, QList<int
 		{
 			auto pcurship = pkdc->findShipFromShipno(ssid);
 
-			if (onlySenSui)
+			if (onlyHighKaihi)
 			{
-				if (!isShipType(ssid, ShipType::SenSui))
+				if (pcurship->api_kaihi[0] < kaihiBorderLine)
 				{
 					continue;
 				}

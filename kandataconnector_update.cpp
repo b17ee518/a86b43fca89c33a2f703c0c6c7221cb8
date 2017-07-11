@@ -1079,36 +1079,15 @@ void KanDataConnector::updateInfoTitleCond()
 
 	int lvmin = 20;
 
+	QList<int> rawKiraList = ControlManager::getInstance().LoadRawKiraList();
+
 	foreach(const kcsapi_ship2 &v, pksd->portdata.api_ship)
 	{
+		if (!rawKiraList.contains(v.api_id))
+		{
+			continue;
+		}
 		int shipid = v.api_ship_id;
-		/*
-		bool bSkip = false;
-
-		foreach(const kcsapi_deck &deck, pksd->portdata.api_deck_port)
-		{
-		if (deck.api_mission[0] > 0)
-		{
-		foreach(int shipno, deck.api_ship)
-		{
-		if (shipno == v.api_id)
-		{
-		bSkip = true;
-		break;
-		}
-		}
-		}
-		if (bSkip)
-		{
-		break;
-		}
-		}
-
-		if (bSkip)
-		{
-		continue;
-		}
-		*/
 		if (shipid > 0)
 		{
 			const kcsapi_mst_ship * pmstship = findMstShipFromShipid(shipid);
@@ -1171,11 +1150,11 @@ void KanDataConnector::updateInfoTitleCond()
 		.arg(kuchikucount - kuchikukiras);
 
 	int colindex = 0;
-	if (suibokiras == suibocount && kuchikukiras * 2 >= kuchikucount && keijunkiras * 2 >= keijuncount && suibokirawarnings == 0)
+	if (suibokiras == suibocount && kuchikukiras >= 18 && keijunkiras >= 4 && suibokirawarnings == 0)
 	{
 		colindex = 1;
 	}
-	else if (suibokiras < suibocount || kuchikukiras < 10 || keijunkiras < 4)
+	else if (suibokiras < suibocount || kuchikukiras < 10 || keijunkiras < 3)
 	{
 		colindex = 2;
 	}

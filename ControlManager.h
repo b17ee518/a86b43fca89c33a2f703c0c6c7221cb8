@@ -128,6 +128,8 @@ public:
 
 	bool LoadToDoShipList_Kira();
 
+	QList<int> LoadRawKiraList();
+
 	bool LoadDestroyableList();
 	QList<int> GenerateToDestroyList(QList<int>& wasteShipList);
 

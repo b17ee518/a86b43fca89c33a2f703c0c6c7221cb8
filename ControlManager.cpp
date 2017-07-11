@@ -1256,6 +1256,42 @@ bool ControlManager::LoadToDoShipList_Kira()
 }
 
 
+QList<int> ControlManager::LoadRawKiraList()
+{
+	QList<int> kiraList;
+	QFile * file = new QFile(QApplication::applicationDirPath() + "/action/" + "import.table");
+	if (file)
+	{
+		if (file->open(QIODevice::ReadOnly | QIODevice::Text))
+		{
+			QTextStream instream(file);
+			bool bFirstLine = true;
+			while (!instream.atEnd())
+			{
+				QString line = instream.readLine();
+				if (bFirstLine)
+				{
+					bFirstLine = false;
+					continue;
+				}
+				int index = line.indexOf("\t");
+				if (index > 0)
+				{
+					line = line.left(index);
+				}
+				if (!line.isEmpty())
+				{
+					kiraList.append(line.toInt());
+				}
+			}
+			file->close();
+		}
+		delete file;
+	}
+	return kiraList;
+}
+
+
 bool ControlManager::LoadDestroyableList()
 {
 	_destroyableMstIds.clear();

@@ -54,9 +54,17 @@ bool WaitCondAction::action()
 	switch (_state)
 	{
 	case WaitCondAction::State::None:
+	{
+		qint64 ct = TimerMainWindow::currentMS();
+		_waitMS = _waitMSTo - ct;
+		if (_waitMS < 0)
+		{
+			_waitMS = 1;
+		}
 		setState(State::Waiting, _waitName.toLocal8Bit());
 		resetRetryAndWainting();
-		break;
+	}
+	break;
 	case WaitCondAction::State::Waiting:
 
 		if (!_waiting)
@@ -157,6 +165,7 @@ bool WaitCondAction::action()
 
 void WaitCondAction::setWaitMS(qint64 waitms, bool isExpedition)
 {
+	qint64 ct = TimerMainWindow::currentMS();
 	if (!isExpedition)
 	{
 		int team = -1;
@@ -164,7 +173,6 @@ void WaitCondAction::setWaitMS(qint64 waitms, bool isExpedition)
 
 		QList<int> excludeTeams;
 		SingleExpedition* pExp;
-		qint64 ct = TimerMainWindow::currentMS();
 		qint64 waitMSExpedition = 0;
 		for (int i = 0; i < 3; i++)
 		{
@@ -190,11 +198,7 @@ void WaitCondAction::setWaitMS(qint64 waitms, bool isExpedition)
 		}
 	}
 
-	_waitMS = waitms;
-	if (_waitMS < 0)
-	{
-		_waitMS = 1;
-	}
+	_waitMSTo = waitms + ct;
 }
 
 void WaitCondAction::setWaitName(const QString& name)

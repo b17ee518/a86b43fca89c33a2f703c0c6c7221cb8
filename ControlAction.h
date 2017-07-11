@@ -66,6 +66,7 @@ public:
 	void setWaitName(const QString& name);
 
 private:
+	qint64 _waitMSTo = 0;
 	qint64 _waitMS = 1;
 	QString _waitName = "Wait:Waiting";
 

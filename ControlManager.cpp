@@ -3068,6 +3068,7 @@ void ControlManager::moveMouseToAndClick(float x, float y, float offsetX /*= 5*/
 			sendMouseEvents(browserWidget);
 		}
 
+		QTimer::singleShot(0.1f, [this]() {this->moveMouseTo(0, 0); });
 	}
 
 }
@@ -3120,9 +3121,9 @@ void ControlManager::moveMouseTo(float x, float y, float offsetX /*= 5*/, float 
 				{
 					sendMouseEvents(qobject_cast<QWidget*>(obj));
 				}
-			}
+	}
 #endif
-		}
+}
 		else
 		{
 			sendMouseEvents(browserWidget);

@@ -1,6 +1,7 @@
 #pragma once
 #include <QPoint>
 #include <QList>
+#include <QRgb>
 #include "ControlAction.h"
 #include "kansavedata.h"
 #include "kandatacalc.h"
@@ -85,6 +86,8 @@ public:
 		bool bNeedWin = false;
 		bool bTerminateNext = false;
 		bool bAskForProceed = false;
+		int clickX = -1;
+		int clickY = -1;
 	};
 	struct AnySetting
 	{
@@ -241,6 +244,7 @@ public:
 	bool isInactiveWaiting() { return _inactiveWaiting; }
 
 	bool checkColors(const QList<CheckColor>& checklist);
+	QRgb getColorAtPosition(const QPoint& pt);
 
 	bool checkColors(int x, int y, int r, int g, int b)
 	{

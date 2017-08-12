@@ -765,6 +765,33 @@ void ControlManager::LoadAnyTemplateSettings()
 			{
 				continue;
 			}
+
+			// click at selectable position
+			if (settingStr.startsWith("XY_"))
+			{
+				settingStr = settingStr.right(settingStr.length() - 3);
+				auto stringList = settingStr.split('_');
+				if (stringList.size() < 2)
+				{
+					continue;
+				}
+				int x = stringList[0].toInt(&bOk);
+				if (!bOk)
+				{
+					continue;
+				}
+				int y = stringList[1].toInt(&bOk);
+				if (!bOk)
+				{
+					continue;
+				}
+
+				_anyTemplateSettings[pair].cells[cell].clickX = x;
+				_anyTemplateSettings[pair].cells[cell].clickY = y;
+
+				continue;
+			}
+
 			QString formationStr = settingStr.left(1);
 			int formation = formationStr.toInt(&bOk);
 			if (!bOk)
@@ -2733,6 +2760,14 @@ bool ControlManager::checkColors(const QList<CheckColor>& checklist)
 	return true;
 }
 
+QRgb ControlManager::getColorAtPosition(const QPoint& pt)
+{
+	auto w = MainWindow::mainWindow()->getBrowserWidget();
+	auto image = w->grab().toImage();
+	auto col = image.pixel(pt);
+	return col;
+}
+
 bool ControlManager::shouldChangeSecondShip()
 {
 	KanSaveData* pksd = &KanSaveData::getInstance();
@@ -3121,9 +3156,9 @@ void ControlManager::moveMouseTo(float x, float y, float offsetX /*= 5*/, float 
 				{
 					sendMouseEvents(qobject_cast<QWidget*>(obj));
 				}
-	}
+			}
 #endif
-}
+		}
 		else
 		{
 			sendMouseEvents(browserWidget);

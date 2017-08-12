@@ -7,6 +7,9 @@
 
 //#include <QWebFrame>
 #include <QShortcut>
+#include <QMessageBox>
+#include <QRgb>
+#include <QPoint>
 
 #if (QT_VERSION >= QT_VERSION_CHECK(5, 6, 0))
 #include <QWebEngineSettings>
@@ -115,6 +118,11 @@ MainWindow::MainWindow(QWidget *parent)
 
 	QShortcut * shortcutDecreaseSouthEast = new QShortcut(QKeySequence("Ctrl+PgDown"), this);
 	connect(shortcutDecreaseSouthEast, SIGNAL(activated()), this, SLOT(onDecreaseSouthEast()));
+
+	QShortcut * shortcutDisplayColor = new QShortcut(QKeySequence("Ctrl+I"), this);
+	connect(shortcutDisplayColor, SIGNAL(activated()), this, SLOT(onGetColorOnScreen()));
+	QShortcut * shortcutDisplayColorDelay = new QShortcut(QKeySequence("Ctrl+Shift+I"), this);
+	connect(shortcutDisplayColorDelay, SIGNAL(activated()), this, SLOT(onGetColorOnScreen()));
 
 	auto shortcutIncreseTimeShift = new QShortcut(QKeySequence("Ctrl+Shift+Up"), this);
 	connect(shortcutIncreseTimeShift,
@@ -316,6 +324,48 @@ void MainWindow::slotWebViewException(int code, const QString &source, const QSt
 	qDebug(desc.toUtf8());
 	qDebug(help.toUtf8());
 	qDebug("Put dll to exe folder.");
+}
+
+void MainWindow::onGetColorOnScreen()
+{
+	QPoint pt = mapFromGlobal(QCursor::pos());
+
+	if (QApplication::queryKeyboardModifiers()&Qt::ShiftModifier)
+	{
+		QTime dieTime = QTime::currentTime().addSecs(1);
+		while (QTime::currentTime() < dieTime)
+		{
+			QCoreApplication::processEvents(QEventLoop::AllEvents, 100);
+		}
+
+	}
+
+	QRgb col = ControlManager::getInstance().getColorAtPosition(pt);
+
+	QString titleInfo = QString::fromLocal8Bit("%1, %2, %3, %4, %5")
+		.arg(pt.x())
+		.arg(pt.y())
+		.arg(qRed(col))
+		.arg(qGreen(col))
+		.arg(qBlue(col));
+
+	QString textInfo = QString::fromLocal8Bit("X: %1, Y: %2, R: %3, G: %4, B: %5")
+		.arg(pt.x())
+		.arg(pt.y())
+		.arg(qRed(col))
+		.arg(qGreen(col))
+		.arg(qBlue(col));
+
+	QMessageBox * pMessageBox = new QMessageBox(
+		QMessageBox::NoIcon
+		, QString::fromLocal8Bit("")
+		, textInfo
+		, QMessageBox::Ok
+		, this
+		, Qt::Dialog | Qt::MSWindowsFixedSizeDialogHint | Qt::FramelessWindowHint);
+	pMessageBox->setDefaultButton(QMessageBox::Ok);
+	pMessageBox->setAttribute(Qt::WA_DeleteOnClose, true);
+	pMessageBox->exec();
 }
 
 void MainWindow::BeforeRequestFunc(int sessionID, char *fullURL, char *requestBody)

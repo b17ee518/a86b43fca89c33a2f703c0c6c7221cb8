@@ -2647,7 +2647,21 @@ bool SortieAction::action()
 			QTimer::singleShot(DELAY_TIME, Qt::PreciseTimer, this, [this, &cm]()
 			{
 				// blackboard
+
+				// init blackboard
 				if (cm.checkColors(
+					451, 83, 181, 154, 104
+					, 342, 380, 43, 68, 18))
+				{
+					_waiting = true;
+					QTimer::singleShot(DELAY_TIME_CLICK, Qt::PreciseTimer, this, [this, &cm]()
+					{
+						cm.moveMouseToAndClick(365, 253, 136, 88); // blackboard
+						setState(State::SkipBoardChecking, "Sortie:SortieCheckChecking");
+						resetRetryAndWainting();
+					});
+				}
+				else if (cm.checkColors(
 					451, 83, 182, 155, 105
 					, 342, 380, 44, 64, 76))
 				{
@@ -3060,7 +3074,17 @@ bool SortieCommonAdvanceAction::action()
 			_waiting = true;
 			QTimer::singleShot(DELAY_TIME_CLICK, Qt::PreciseTimer, this, [this, &cm]()
 			{
-				cm.moveMouseToAndClick(729, 416, 15, 15);
+				const auto& setting = cm.getAnySetting();
+				int cell = KanSaveData::getInstance().nextdata.api_no;
+				if (setting.cells.contains(cell) && setting.cells[cell].clickX >= 0 && setting.cells[cell].clickY >= 0)
+				{
+					cm.moveMouseToAndClick(setting.cells[cell].clickX, setting.cells[cell].clickY);
+				}
+				else
+				{
+					cm.moveMouseToAndClick(729, 416, 15, 15);
+				}
+
 				setStateToChecking();
 				resetRetryAndWainting();
 			});

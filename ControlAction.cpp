@@ -2736,7 +2736,15 @@ bool SortieAction::action()
 					// with airbase
 					cm.checkColors(630, 434, 156, 48, 31
 					, 82, 230, 218, 196, 196
-					, 608, 454, 88, 179, 83))
+					, 608, 454, 88, 179, 83) ||
+					// normal active)
+					cm.checkColors(
+					600, 467, 237, 235, 210
+					, 551, 237, 255, 246, 242) ||
+					// with airbase
+					cm.checkColors(575, 456, 125, 143, 99
+					, 82, 230, 218, 196, 196,
+					680, 478, 93, 168, 168))
 				{
 					_waiting = false;
 					setState(State::TeamSelectDone, "Sortie:TeamSelectDone");

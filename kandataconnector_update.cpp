@@ -1671,34 +1671,40 @@ void KanDataConnector::updateBattle(const kcsapi_battle &api_battle, KanBattleTy
 				// raigeki
 				if (raigekiflag)
 				{
-					for (int i = 1; i < api_battle.api_raigeki.api_fdam.count(); i++)
+					int damageCount = api_battle.api_raigeki.api_fdam.count();
+					if (bCombinedSelf && damageCount > 7)
 					{
-						// TODO!!!!! check
-						int damagePos = i;
-						if (damagePos > 6)
+						for (int i = 1; i < 7; i++)
 						{
-							damagePos -= 6;
+							totalfdamage[i] += api_battle.api_raigeki.api_fdam[i];
 						}
-						if (bCombinedSelf/*api_battle.api_formation[0] == 11*/)
+						for (int i = 7; i < damageCount; i++)
 						{
-							totalfdamage_combined[damagePos] += api_battle.api_raigeki.api_fdam[i];
+							totalfdamage_combined[i - 6] += api_battle.api_raigeki.api_fdam[i];
 						}
-						else
-						{
-							totalfdamage[damagePos] += api_battle.api_raigeki.api_fdam[i];
-						}
-						/*
-						if (bCombinedSelf)
-						{
-						totalfdamage_combined[i] += api_battle.api_raigeki.api_fdam[i];
-						}
-						else
-						{
-						totalfdamage[i] += api_battle.api_raigeki.api_fdam[i];
-						}
-						*/
 					}
-					int damageCount = api_battle.api_raigeki.api_edam.count();
+					else
+					{
+						for (int i = 1; i < api_battle.api_raigeki.api_fdam.count(); i++)
+						{
+							// TODO!!!!! check
+							int damagePos = i;
+							if (damagePos > 6)
+							{
+								damagePos -= 6;
+							}
+							if (bCombinedSelf/*api_battle.api_formation[0] == 11*/)
+							{
+								totalfdamage_combined[damagePos] += api_battle.api_raigeki.api_fdam[i];
+							}
+							else
+							{
+								totalfdamage[damagePos] += api_battle.api_raigeki.api_fdam[i];
+							}
+						}
+					}
+
+					damageCount = api_battle.api_raigeki.api_edam.count();
 					if (bCombinedEnemy && damageCount > 7)
 					{
 						for (int i = 1; i < 7; i++)

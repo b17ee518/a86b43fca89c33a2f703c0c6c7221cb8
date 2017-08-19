@@ -249,13 +249,16 @@ void MainWindow::onDoJobExpedition(bool bDo)
 	cm.clearLastTarget();
 	if (bDo)
 	{
+		/*
+		// always parse
 		if (QApplication::queryKeyboardModifiers()&Qt::ShiftModifier)
 		{
-			if (!ExpeditionManager::getInstance().ParsePresetBySettingFileAndRebuild())
-			{
-				timerWindow()->playSound(TimerMainWindow::SoundIndex::Terminated);
-			}
+		if (!ExpeditionManager::getInstance().ParsePresetBySettingFileAndRebuild())
+		{
+		timerWindow()->playSound(TimerMainWindow::SoundIndex::Terminated);
 		}
+		}
+		*/
 		if (cm.BuildNext_Expedition())
 		{
 			cm.StartJob();

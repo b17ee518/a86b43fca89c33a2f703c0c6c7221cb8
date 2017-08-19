@@ -949,6 +949,8 @@ bool ControlManager::BuildNext_Expedition()
 	int team = -1;
 	auto timerWindow = MainWindow::mainWindow()->timerWindow();
 
+	ExpeditionManager::getInstance().ParsePresetBySettingFileAndRebuild();
+
 	QList<int> excludeTeams;
 	SingleExpedition* pExp;
 	qint64 ct = TimerMainWindow::currentMS();
@@ -3102,14 +3104,14 @@ void ControlManager::moveMouseToAndClick(float x, float y, float offsetX /*= 5*/
 			// reset mouse pos for webengine
 			moveMouseTo(0, 0);
 #endif
-		}
+	}
 		else
 		{
 			sendMouseEvents(browserWidget);
 		}
 
 		QTimer::singleShot(0.1f, [this]() {this->moveMouseTo(0, 0); });
-	}
+}
 
 }
 
@@ -3160,8 +3162,8 @@ void ControlManager::moveMouseTo(float x, float y, float offsetX /*= 5*/, float 
 				Q_FOREACH(QObject* obj, webView->page()->view()->children())
 				{
 					sendMouseEvents(qobject_cast<QWidget*>(obj));
-				}
-			}
+	}
+}
 #endif
 		}
 		else

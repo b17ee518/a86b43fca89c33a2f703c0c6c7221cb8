@@ -74,7 +74,7 @@ enum class SlotitemType
 	KanSyu = 31,	//	艦艇修理施設
 	SenSuiKanGyoRai = 32,	//	潜水艦魚雷
 	SyouMeiDan = 33,	//	照明弾
-	SiReiBu = 34,	//	司令部施設
+	ShiReiBu = 34,	//	司令部施設
 	KouKuYouIn = 35,	//	航空要員
 	KouSya = 36,	//	高射装置
 	TaiChi = 37,	//	対地装備

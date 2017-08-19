@@ -291,6 +291,9 @@ void KanDataConnector::updateFleetTable()
 			WoundState woundstate;
 
 			int damekonstate = 0;
+			int shireibustate = 0;
+			int hokyustate = 0;
+
 
 			getShipColors(pship, &colCond, &colWound, &condstate, &woundstate);
 			if (pmstship)
@@ -440,8 +443,7 @@ void KanDataConnector::updateFleetTable()
 									drumcount++;
 									bHaveDrum = true;
 								}
-
-								if (type == SlotitemType::OuKyu)
+								else if (type == SlotitemType::OuKyu)
 								{
 									if (pmstslotitem->api_name == QString::fromLocal8Bit("応急修理女神"))
 									{
@@ -451,6 +453,14 @@ void KanDataConnector::updateFleetTable()
 									{
 										damekonstate = 1;
 									}
+								}
+								else if (type == SlotitemType::ShiReiBu)
+								{
+									shireibustate = 1;
+								}
+								else if (type == SlotitemType::HoKyuBuShi)
+								{
+									hokyustate = 1;
 								}
 
 								// new
@@ -494,7 +504,7 @@ void KanDataConnector::updateFleetTable()
 								case SlotitemType::TaiSenKi:
 									slotSakutekiAttribution += pmstslotitem->api_saku * 0.6;
 									break;
-								case SlotitemType::SiReiBu:
+								case SlotitemType::ShiReiBu:
 									slotSakutekiAttribution += pmstslotitem->api_saku * 0.6;
 									break;
 								case SlotitemType::KouKuYouIn:
@@ -553,6 +563,16 @@ void KanDataConnector::updateFleetTable()
 			else if (damekonstate == 2)
 			{
 				damekonstr = QString::fromLocal8Bit("女");
+			}
+
+			if (shireibustate)
+			{
+				damekonstr += QString::fromLocal8Bit("司");
+			}
+
+			if (hokyustate)
+			{
+				damekonstr += QString::fromLocal8Bit("補");
 			}
 
 			rd.appendCell(KQRowCellData(QString("%1:").arg(shipcount)));

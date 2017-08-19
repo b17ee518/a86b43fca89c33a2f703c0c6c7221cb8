@@ -199,6 +199,19 @@ bool ControlManager::BuildNext_Fuel()
 	return true;
 }
 
+class BestShipInfo
+{
+public:
+	kcsapi_ship2* pship;
+	qint64 nDockCompleteTime = 0;
+
+	BestShipInfo(kcsapi_ship2* ship, qint64 completeTime)
+	{
+		pship = ship;
+		nDockCompleteTime = completeTime;
+	}
+};
+
 bool ControlManager::chooseSSShipList(int teamSize, QList<int>& ships, QList<int>& sortInTeamShips, QList<int> excludeShipList, QString& errorMessage, bool onlyHighKaihi/*=false*/)
 {
 	KanSaveData* pksd = &KanSaveData::getInstance();
@@ -214,10 +227,12 @@ bool ControlManager::chooseSSShipList(int teamSize, QList<int>& ships, QList<int
 	// find possible hensei
 	KanDataConnector* pkdc = &KanDataConnector::getInstance();
 	// find best in each group
-	QList<kcsapi_ship2*> bestShips;
+	QList<BestShipInfo> bestShips;
 	for (auto& group : _ssShips)
 	{
 		kcsapi_ship2* pbestship = nullptr;
+		kcsapi_ship2* pbestInDockShip = nullptr;
+		qint64 bestInDockCompleteTime = std::numeric_limits<qint64>::max();
 		for (auto ssid : group)
 		{
 			auto pcurship = pkdc->findShipFromShipno(ssid);
@@ -241,11 +256,7 @@ bool ControlManager::chooseSSShipList(int teamSize, QList<int>& ships, QList<int
 			{
 				continue;
 			}
-			// in dock
-			if (isShipInDock(ssid))
-			{
-				continue;
-			}
+
 			// in other team
 			if (isShipInOtherTeam(ssid, 0))
 			{
@@ -254,6 +265,18 @@ bool ControlManager::chooseSSShipList(int teamSize, QList<int>& ships, QList<int
 
 			if (excludeShipList.contains(ssid))
 			{
+				continue;
+			}
+
+			// in dock
+			qint64 completetime = 0;
+			if (isShipInDock(ssid, &completetime))
+			{
+				if (completetime < bestInDockCompleteTime)
+				{
+					bestInDockCompleteTime = completetime;
+					pbestInDockShip = pcurship;
+				}
 				continue;
 			}
 
@@ -269,7 +292,11 @@ bool ControlManager::chooseSSShipList(int teamSize, QList<int>& ships, QList<int
 		}
 		if (pbestship)
 		{
-			bestShips.append(pbestship);
+			bestShips.append(BestShipInfo(pbestship, 0));
+		}
+		else if (pbestInDockShip)
+		{
+			bestShips.append(BestShipInfo(pbestInDockShip, bestInDockCompleteTime));
 		}
 	}
 
@@ -280,43 +307,69 @@ bool ControlManager::chooseSSShipList(int teamSize, QList<int>& ships, QList<int
 	}
 
 	// sort bestships
-	std::sort(bestShips.begin(), bestShips.end(), [](const  kcsapi_ship2* left, const kcsapi_ship2* right)
+	std::sort(bestShips.begin(), bestShips.end(), [](const  BestShipInfo& left, const BestShipInfo& right)
 	{
-		if (left->api_cond > right->api_cond)
+		if (left.nDockCompleteTime < right.nDockCompleteTime)
 		{
 			return true;
 		}
-		else if (left->api_cond == right->api_cond)
+		else if (left.nDockCompleteTime == right.nDockCompleteTime)
 		{
-			if (left->api_kaihi[0] > right->api_kaihi[0])
+			if (left.pship->api_cond > right.pship->api_cond)
 			{
 				return true;
 			}
-			else if (left->api_kaihi[0] > right->api_kaihi[0])
+			else if (left.pship->api_cond == right.pship->api_cond)
 			{
-				if (left->api_lucky[0] > right->api_lucky[0])
+				if (left.pship->api_kaihi[0] > right.pship->api_kaihi[0])
 				{
 					return true;
 				}
+				else if (left.pship->api_kaihi[0] == right.pship->api_kaihi[0])
+				{
+					if (left.pship->api_lucky[0] > right.pship->api_lucky[0])
+					{
+						return true;
+					}
+				}
 			}
 		}
+
 		return false;
 	});
 
-	int minCond = bestShips.at(teamSize - 1)->api_cond;
+	qint64 maxWaitMS = 0;
+
+	qint64 ct = TimerMainWindow::currentMS();
+
+	qint64 minCompleteTime = bestShips.at(0).nDockCompleteTime;
+	if (minCompleteTime > 0)
+	{
+		maxWaitMS = minCompleteTime - ct - 60 * 1000 + 5000 + randVal(-1000, 1000);
+	}
+
+	int minCond = bestShips.at(teamSize - 1).pship->api_cond;
 	if (minCond <= _sortieMinCond)
 	{
 		// wait
 		qint64 waitMS = qCeil((_sortieWaitCond - minCond) / 3.0) * 3 * 60 * 1000;
+		if (waitMS > maxWaitMS)
+		{
+			maxWaitMS = waitMS;
+		}
+	}
+
+	if (maxWaitMS > 0)
+	{
 		auto waitAction = new WaitCondAction();
-		waitAction->setWaitMS(waitMS, false);
+		waitAction->setWaitMS(maxWaitMS, false);
 		_actionList.append(waitAction);
 	}
 
 	ships.clear();
 	for (int i = 0; i < teamSize; i++)
 	{
-		ships.push_front(bestShips.at(i)->api_id);
+		ships.push_front(bestShips.at(i).pship->api_id);
 	}
 
 	// sort in team first
@@ -2203,13 +2256,21 @@ bool ControlManager::isShipInTeam(int shipno, int team)
 	return false;
 }
 
-bool ControlManager::isShipInDock(int shipno)
+bool ControlManager::isShipInDock(int shipno, qint64* completeTime/* = NULL*/)
 {
 	KanSaveData* pksd = &KanSaveData::getInstance();
+	if (completeTime != NULL)
+	{
+		*completeTime = 0;
+	}
 	for (auto& ndock : pksd->portdata.api_ndock)
 	{
 		if (ndock.api_ship_id == shipno)
 		{
+			if (completeTime != NULL)
+			{
+				*completeTime = ndock.api_complete_time;
+			}
 			return true;
 		}
 	}
@@ -3104,14 +3165,14 @@ void ControlManager::moveMouseToAndClick(float x, float y, float offsetX /*= 5*/
 			// reset mouse pos for webengine
 			moveMouseTo(0, 0);
 #endif
-	}
+		}
 		else
 		{
 			sendMouseEvents(browserWidget);
 		}
 
 		QTimer::singleShot(0.1f, [this]() {this->moveMouseTo(0, 0); });
-}
+	}
 
 }
 
@@ -3162,8 +3223,8 @@ void ControlManager::moveMouseTo(float x, float y, float offsetX /*= 5*/, float 
 				Q_FOREACH(QObject* obj, webView->page()->view()->children())
 				{
 					sendMouseEvents(qobject_cast<QWidget*>(obj));
-	}
-}
+				}
+			}
 #endif
 		}
 		else

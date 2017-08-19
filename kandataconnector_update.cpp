@@ -7,6 +7,8 @@
 #include "ControlManager.h"
 #include <cmath>
 
+#include <QApplication>
+
 void KanDataConnector::updateOverviewTable()
 {
 	QList<QString> lst;
@@ -1079,7 +1081,12 @@ void KanDataConnector::updateInfoTitleCond()
 
 	int lvmin = 20;
 
-	QList<int> rawKiraList = ControlManager::getInstance().LoadRawKiraList();
+	bool hasKiraFile = false;
+	if (QFile::exists(QApplication::applicationDirPath() + "/action/" + "import_kira.table"))
+	{
+		hasKiraFile = true;
+	}
+	QList<int> rawKiraList = ControlManager::getInstance().LoadRawKiraListForExpedition();
 
 	foreach(const kcsapi_ship2 &v, pksd->portdata.api_ship)
 	{
@@ -1139,7 +1146,13 @@ void KanDataConnector::updateInfoTitleCond()
 		}
 	}
 
-	QString titlestr = QString::fromLocal8Bit("キラ - 水母:%1(%2/%3/%4) 軽巡:%5(%6) 駆逐:%7(%8)")
+	QString hasKiraWarn = "";
+	if (hasKiraFile)
+	{
+		hasKiraWarn = "*";
+	}
+	QString titlestr = QString::fromLocal8Bit("キラ%1 - 水母:%2(%3/%4/%5) 軽巡:%6(%7) 駆逐:%8(%9)")
+		.arg(hasKiraWarn)
 		.arg(suibokiras)
 		.arg(suibocount - suibokiras)
 		.arg(suibokirawarnings)

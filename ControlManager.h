@@ -131,7 +131,7 @@ public:
 
 	bool LoadToDoShipList_Kira();
 
-	QList<int> LoadRawKiraList();
+	QList<int> LoadRawKiraListForExpedition();
 
 	bool LoadDestroyableList();
 	QList<int> GenerateToDestroyList(QList<int>& wasteShipList);
@@ -346,7 +346,7 @@ private:
 
 	QList<int> _destroyableMstIds;
 
-	QList<int> _todoShipids;
+	QList<int> _todoKiraShipids;
 	int _toCond = 70;
 	QList<ControlAction*> _actionList;
 

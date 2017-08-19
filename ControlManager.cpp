@@ -35,10 +35,10 @@ bool ControlManager::BuildNext_Kira()
 	pushPreRepairCheck(willBeInDockList, false, false, false, true);
 	if (_kiraSetting.forceCurrent)
 	{
-		_todoShipids.clear();
-		_todoShipids.push_front(getCurrentFlagshipId());
+		_todoKiraShipids.clear();
+		_todoKiraShipids.push_front(getCurrentFlagshipId());
 	}
-	if (_todoShipids.empty())
+	if (_todoKiraShipids.empty())
 	{
 		setToTerminate("Terminated:NoShip");
 		return false;
@@ -51,7 +51,7 @@ bool ControlManager::BuildNext_Kira()
 
 	QList<int> wasteShipListByPreCheck = pushPreShipFullCheck();
 
-	int togoShipId = _todoShipids.at(0);
+	int togoShipId = _todoKiraShipids.at(0);
 	while (isShipKiraDone(togoShipId)
 		|| isShipInOtherTeam(togoShipId, 0)
 		|| isShipInDock(togoShipId)
@@ -64,23 +64,23 @@ bool ControlManager::BuildNext_Kira()
 		|| (!_kiraSetting.forceCurrent&&isLowCond(togoShipId))
 		|| willBeInDockList.contains(togoShipId))
 	{
-		_todoShipids.removeAt(0);
-		if (_todoShipids.empty())
+		_todoKiraShipids.removeAt(0);
+		if (_todoKiraShipids.empty())
 		{
 			setToTerminate("Terminated:NoShip");
 			return false;
 		}
-		togoShipId = _todoShipids.at(0);
+		togoShipId = _todoKiraShipids.at(0);
 	}
 
 	int flagshipid = getCurrentFlagshipId();
-	int flagshipIndex = _todoShipids.indexOf(flagshipid);
+	int flagshipIndex = _todoKiraShipids.indexOf(flagshipid);
 	if (flagshipIndex > 0 && !isShipKiraDone(flagshipid))
 	{
-		_todoShipids.swap(flagshipIndex, 0);
+		_todoKiraShipids.swap(flagshipIndex, 0);
 	}
 
-	togoShipId = _todoShipids.at(0);
+	togoShipId = _todoKiraShipids.at(0);
 	auto chAction = new ChangeHenseiAction();
 
 	int curSecond = getCurrentSecondshipId();
@@ -1009,7 +1009,7 @@ bool ControlManager::BuildNext_Expedition()
 	ships.removeAll(-1);
 
 	LoadToDoShipList_Kira();
-	QList<int> todoships = _todoShipids;
+	QList<int> todoships = LoadRawKiraListForExpedition();
 	srand(ct);
 	std::random_shuffle(todoships.begin(), todoships.end());
 	bool needChangeHensei = false;
@@ -1240,8 +1240,13 @@ void ControlManager::setDoneRequest(const QString& api)
 
 bool ControlManager::LoadToDoShipList_Kira()
 {
-	_todoShipids.clear();
-	QFile * file = new QFile(QApplication::applicationDirPath() + "/action/" + "import.table");
+	_todoKiraShipids.clear();
+	QFile * file = new QFile(QApplication::applicationDirPath() + "/action/" + "import_kira.table");
+	if (!file)
+	{
+		file = new QFile(QApplication::applicationDirPath() + "/action/" + "import.table");
+	}
+
 	if (file)
 	{
 		if (file->open(QIODevice::ReadOnly | QIODevice::Text))
@@ -1271,7 +1276,7 @@ bool ControlManager::LoadToDoShipList_Kira()
 					}
 					if (!line.isEmpty())
 					{
-						_todoShipids.append(line.toInt());
+						_todoKiraShipids.append(line.toInt());
 					}
 				}
 			}
@@ -1283,7 +1288,7 @@ bool ControlManager::LoadToDoShipList_Kira()
 }
 
 
-QList<int> ControlManager::LoadRawKiraList()
+QList<int> ControlManager::LoadRawKiraListForExpedition()
 {
 	QList<int> kiraList;
 	QFile * file = new QFile(QApplication::applicationDirPath() + "/action/" + "import.table");

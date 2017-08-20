@@ -1296,8 +1296,13 @@ void ControlManager::setDoneRequest(const QString& api)
 bool ControlManager::LoadToDoShipList_Kira()
 {
 	_todoKiraShipids.clear();
-	QFile * file = new QFile(QApplication::applicationDirPath() + "/action/" + "import_kira.table");
-	if (!file)
+	QFile * file = NULL;
+
+	if (QFile::exists(QApplication::applicationDirPath() + "/action/" + "import_kira.table"))
+	{
+		file = new QFile(QApplication::applicationDirPath() + "/action/" + "import_kira.table");
+	}
+	else
 	{
 		file = new QFile(QApplication::applicationDirPath() + "/action/" + "import.table");
 	}
@@ -3169,12 +3174,12 @@ void ControlManager::moveMouseToAndClick(float x, float y, float offsetX /*= 5*/
 		else
 		{
 			sendMouseEvents(browserWidget);
-		}
+			}
 
 		QTimer::singleShot(0.1f, [this]() {this->moveMouseTo(0, 0); });
-	}
+		}
 
-}
+		}
 
 void ControlManager::moveMouseTo(float x, float y, float offsetX /*= 5*/, float offsetY /*= 3*/)
 {
@@ -3230,10 +3235,10 @@ void ControlManager::moveMouseTo(float x, float y, float offsetX /*= 5*/, float 
 		else
 		{
 			sendMouseEvents(browserWidget);
-		}
+			}
 
+		}
 	}
-}
 
 void ControlManager::setPauseNextVal(bool bVal)
 {

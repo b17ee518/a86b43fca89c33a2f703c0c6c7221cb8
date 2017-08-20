@@ -252,7 +252,7 @@ bool ControlManager::chooseSSShipList(int teamSize, QList<int>& ships, QList<int
 			}
 			*/
 			// damage ng
-			if (KanDataCalc::GetWoundState(pcurship->api_nowhp, pcurship->api_maxhp) >= WoundState::Middle)
+			if (KanDataCalc::GetWoundState(pcurship->api_nowhp, pcurship->api_maxhp) >= WoundState::Middle && !isShipInDock(ssid))
 			{
 				continue;
 			}

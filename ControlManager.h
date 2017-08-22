@@ -6,6 +6,8 @@
 #include "kansavedata.h"
 #include "kandatacalc.h"
 
+#include "RemoteNotifyHandler.h"
+
 class ControlManager
 {
 public:
@@ -182,7 +184,7 @@ public:
 
 	bool isTerminated(){ return _state == State::Terminated; }
 
-	void setToTerminate(const char* title, bool forceSound = false);
+	void setToTerminate(const char* title, bool forceSound = false, RemoteNotifyHandler::Level overrideLevel = RemoteNotifyHandler::Level::Invalid);
 
 	void createSSShipList();
 	bool chooseSSShipList(int teamSize, QList<int>& ships, QList<int>&sortInTeamShips, QList<int> excludeShipList, QString& errorMessage, bool onlySensui = false);

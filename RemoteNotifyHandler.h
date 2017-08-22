@@ -21,6 +21,7 @@ public:
 
 	enum class Level
 	{
+		Invalid = -1,
 		Debug = 0,
 		Info = 10,
 		Low = 100,

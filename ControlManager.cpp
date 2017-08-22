@@ -42,12 +42,12 @@ bool ControlManager::BuildNext_Kira()
 	}
 	if (_todoKiraShipids.empty())
 	{
-		setToTerminate("Terminated:NoShip");
+		setToTerminate("Terminated:NoShipForKira", false, RemoteNotifyHandler::Level::Low);
 		return false;
 	}
 	if (flagshipSevereDamaged())
 	{
-		setToTerminate("Terminated:Flagship");
+		setToTerminate("Terminated:FlagshipNGKira"); // fatal
 		return false;
 	}
 
@@ -69,7 +69,7 @@ bool ControlManager::BuildNext_Kira()
 		_todoKiraShipids.removeAt(0);
 		if (_todoKiraShipids.empty())
 		{
-			setToTerminate("Terminated:NoShip");
+			setToTerminate("Terminated:NoShip", false, RemoteNotifyHandler::Level::Info);
 			return false;
 		}
 		togoShipId = _todoKiraShipids.at(0);
@@ -141,7 +141,7 @@ bool ControlManager::BuildNext_Fuel()
 
 	if (stopWhenCheck())
 	{
-		setToTerminate("Termination:StopWhenDone");
+		setToTerminate("Termination:StopWhenDone", false, RemoteNotifyHandler::Level::Info);
 		return false;
 	}
 
@@ -151,7 +151,7 @@ bool ControlManager::BuildNext_Fuel()
 		KanSaveData* pksd = &KanSaveData::getInstance();
 		if (pksd->totalSouthEastWin >= 5)
 		{
-			setToTerminate("Terminated:Done Mission");
+			setToTerminate("Terminated:Done Mission", false, RemoteNotifyHandler::Level::Info);
 			return false;
 		}
 
@@ -169,7 +169,7 @@ bool ControlManager::BuildNext_Fuel()
 	QString errorMessage;
 	if (!chooseSSShipList(teamSize, ships, sortInTeamShips, willBeInDockList, errorMessage, _target == ActionTarget::Fuel))
 	{
-		setToTerminate(errorMessage.toLocal8Bit());
+		setToTerminate(errorMessage.toLocal8Bit(), false, RemoteNotifyHandler::Level::Info);
 		return false;
 	}
 
@@ -476,7 +476,7 @@ bool ControlManager::BuildNext_Level()
 					{
 						if (bHaveMaruyu)
 						{
-							setToTerminate("Terminated:MoreThanOneMaruyu");
+							setToTerminate("Terminated:MoreThanOneMaruyu", false, RemoteNotifyHandler::Level::Low);
 							return false;
 						}
 						bHaveMaruyu = true;
@@ -494,7 +494,7 @@ bool ControlManager::BuildNext_Level()
 						toChangeIdList.append(id);
 						if (ws > WoundState::Small)
 						{
-							setToTerminate("Terminated:NeedNDock");
+							setToTerminate("Terminated:NeedNDock", false, RemoteNotifyHandler::Level::Low);
 							return false;
 						}
 						if (pship->api_cond < 30)
@@ -513,12 +513,12 @@ bool ControlManager::BuildNext_Level()
 	}
 	if (totalShipCount < 6)
 	{
-		setToTerminate("Terminated:TeamSize");
+		setToTerminate("Terminated:TeamSize", false, RemoteNotifyHandler::Level::Low);
 		return false;
 	}
 	if (!bHaveMaruyu)
 	{
-		setToTerminate("Terminated:NoMaruyu");
+		setToTerminate("Terminated:NoMaruyu", false, RemoteNotifyHandler::Level::Low);
 		return false;
 	}
 
@@ -560,7 +560,7 @@ bool ControlManager::BuildNext_Level()
 		toChangeIdList.append(maruyuId);
 		if (maruyuId < 0 || toChangeIdList.size() != 6)
 		{
-			setToTerminate("Terminated:NoAvailableMaruyu");
+			setToTerminate("Terminated:NoAvailableMaruyu", false, RemoteNotifyHandler::Level::Info);
 			return false;
 		}
 		// change hensei
@@ -644,7 +644,7 @@ bool ControlManager::BuildNext_Rank()
 
 						if (ws >= WoundState::Middle)
 						{
-							setToTerminate("Terminated:Damage");
+							setToTerminate("Terminated:Damage", false, RemoteNotifyHandler::Level::Low);
 							return false;
 						}
 					}
@@ -659,7 +659,7 @@ bool ControlManager::BuildNext_Rank()
 
 	if (shipCount < 6)
 	{
-		setToTerminate("Terminated:ShipCount");
+		setToTerminate("Terminated:ShipCount", false, RemoteNotifyHandler::Level::Low);
 		return false;
 	}
 
@@ -669,13 +669,13 @@ bool ControlManager::BuildNext_Rank()
 		{
 			if (pksd->deckSaveData.first().totalTaiku < 360)
 			{
-				setToTerminate("Terminated:Taiku");
+				setToTerminate("Terminated:Taiku", false, RemoteNotifyHandler::Level::Low);
 				return false;
 			}
 		}
 		if (totalYusou < 4)
 		{
-			setToTerminate("Terminated:Yusou");
+			setToTerminate("Terminated:Yusou", false, RemoteNotifyHandler::Level::Low);
 			return false;
 		}
 	}
@@ -907,7 +907,7 @@ bool ControlManager::BuildNext_Any()
 
 	if (_anySetting.count >= 0 && _anySetting.count <= pksd->totalAnyCount)
 	{
-		setToTerminate("Terminated:CountReached");
+		setToTerminate("Terminated:CountReached", false, RemoteNotifyHandler::Level::Low);
 		return false;
 	}
 
@@ -921,7 +921,7 @@ bool ControlManager::BuildNext_Any()
 		QString errorMessage;
 		if (!chooseSSShipList(_anySetting.onlySSTeamSize, ships, sortInTeamShips, willBeInDockList, errorMessage))
 		{
-			setToTerminate(errorMessage.toLocal8Bit());
+			setToTerminate(errorMessage.toLocal8Bit(), false, RemoteNotifyHandler::Level::Low);
 			return false;
 		}
 
@@ -966,7 +966,7 @@ bool ControlManager::BuildNext_Any()
 
 			if (ws >= WoundState::Middle && !_anySetting.allowMiddleDamageSortie || ws >= WoundState::Big)
 			{
-				setToTerminate("Terminated:Damage");
+				setToTerminate("Terminated:Damage", false, RemoteNotifyHandler::Level::Low);
 				return false;
 			}
 		}
@@ -1026,7 +1026,7 @@ bool ControlManager::BuildNext_Expedition()
 
 	if (!pExp)
 	{
-		setToTerminate("Termination:FatalOrDateChange", false);
+		setToTerminate("Termination:FatalOrDateChange", false, RemoteNotifyHandler::Level::Low);
 		// date may change here
 		return false;
 	}
@@ -1176,7 +1176,7 @@ bool ControlManager::BuildNext_Destroy()
 	QList<int> toDestroyList = GenerateToDestroyList(wasteShipList);
 	if (toDestroyList.isEmpty())
 	{
-		setToTerminate("Termination:Fatal", true);
+		setToTerminate("Termination:NoShipToDestroy", true, RemoteNotifyHandler::Level::Info);
 		return false;
 	}
 	DestroyShipAction* action = new DestroyShipAction();
@@ -1227,7 +1227,7 @@ bool ControlManager::BuildNext_Develop()
 	if (!bAdded)
 	{
 		delete action;
-		setToTerminate("Termination:Fatal", true);
+		setToTerminate("Termination:DevelopDone", true, RemoteNotifyHandler::Level::Info);
 		return false;
 	}
 	_actionList.append(action);
@@ -1906,9 +1906,21 @@ void ControlManager::setupAutoExpedition()
 	}
 }
 
-void ControlManager::setToTerminate(const char* title, bool forceSound)
+void ControlManager::setToTerminate(const char* title, bool forceSound, RemoteNotifyHandler::Level overrideLevel)
 {
-	RemoteNotifyHandler::getInstance().Notify(title, forceSound ? RemoteNotifyHandler::Level::High : RemoteNotifyHandler::Level::Info);
+	RemoteNotifyHandler::Level level = overrideLevel;
+	if (overrideLevel == RemoteNotifyHandler::Level::Invalid)
+	{
+		if (forceSound)
+		{
+			level = RemoteNotifyHandler::Level::High;
+		}
+		else
+		{
+			level = RemoteNotifyHandler::Level::Info;
+		}
+	}
+	RemoteNotifyHandler::getInstance().Notify(title, level);
 	setState(State::ToTerminate, title, false, forceSound);
 }
 
@@ -3185,7 +3197,7 @@ void ControlManager::moveMouseToAndClick(float x, float y, float offsetX /*= 5*/
 			if (!w)
 			{
 				return;
-			}
+}
 #if defined Q_OS_WIN || defined Q_OS_MAC
 			QMouseEvent e(QEvent::MouseButtonPress, ptAdjusted, Qt::LeftButton, Qt::LeftButton, Qt::NoModifier);
 			QApplication::sendEvent(w, &e);

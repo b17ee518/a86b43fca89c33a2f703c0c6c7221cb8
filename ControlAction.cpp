@@ -2456,7 +2456,7 @@ bool SortieAction::action()
 			// use in every mode
 			if (cm.needChargeCondAirBase(cm.getAnySetting().checkAirBaseCond))
 			{
-				cm.setToTerminate("Terminated:AirBase", true);
+				cm.setToTerminate("Terminated:AirBase", true, RemoteNotifyHandler::Level::Low);
 				emit sigFatal();
 				return false;
 			}
@@ -2895,7 +2895,7 @@ bool SortieCommonAdvanceAction::action()
 			}
 			if (!_shouldRetrieve && cm.shouldTerminateForAny())
 			{
-				cm.setToTerminate("Terminated:TerminateCell", true);
+				cm.setToTerminate("Terminated:TerminateCell", true, RemoteNotifyHandler::Level::Low);
 				emit sigFatal();
 				return false;
 			}
@@ -2952,7 +2952,7 @@ bool SortieCommonAdvanceAction::action()
 					{
 						if (cm.shouldAskForProceedForAny())
 						{
-							cm.setToTerminate("Terminated:TerminateCell", false);
+							cm.setToTerminate("Terminated:TerminateCell", false, RemoteNotifyHandler::Level::Low);
 							MainWindow::mainWindow()->timerWindow()->playSound(TimerMainWindow::SoundIndex::Action);
 							emit sigFatal();
 						}
@@ -2995,7 +2995,7 @@ bool SortieCommonAdvanceAction::action()
 				&& !cm.isLevelMode()	// level mode always set to retrieve
 				)
 			{
-				cm.setToTerminate("Terminated:Fatal", true);
+				cm.setToTerminate("Terminated:SortieShouldRetrieve", true);
 				emit sigFatal();
 				return false;
 			}
@@ -3041,7 +3041,7 @@ bool SortieCommonAdvanceAction::action()
 				&& !cm.isLevelMode()	// level mode always set to retrieve
 				)
 			{
-				cm.setToTerminate("Terminated:Fatal", true);
+				cm.setToTerminate("Terminated:SortieShouldRetrieve", true);
 				emit sigFatal();
 				return false;
 			}
@@ -3227,15 +3227,8 @@ bool RepeatAction::action()
 		}
 		else if (cm.isDestroyMode())
 		{
-			if (cm.BuildNext_Destroy())
-			{
-				setState(State::Done, "Repeat:Done");
-				cm.StartJob();
-			}
-			else
-			{
-				mainWindow->switchToExpeditionWait();
-			}
+			// do not repeat
+			mainWindow->switchToExpeditionWait();
 		}
 		else if (cm.isRepairMode())
 		{

@@ -1160,6 +1160,8 @@ bool ControlManager::BuildNext_Expedition()
 
 	_actionList.append(new RepeatAction());
 
+	_handlingExpeditionTeam = team;
+
 	setState(State::Ready, "Ready");
 	return true;
 }
@@ -1855,6 +1857,45 @@ void ControlManager::setupAutoExpedition()
 			if (BuildNext_Expedition())
 			{
 				StartJob();
+			}
+		}
+		else
+		{
+			int team = -1;
+			auto timerWindow = MainWindow::mainWindow()->timerWindow();
+
+			ExpeditionManager::getInstance().ParsePresetBySettingFileAndRebuild();
+
+			QList<int> excludeTeams;
+			SingleExpedition* pExp;
+			qint64 ct = TimerMainWindow::currentMS();
+			qint64 waitMS = 0;
+			for (int i = 0; i < 3; i++)
+			{
+				waitMS = timerWindow->getMinExpeditionMS(team, excludeTeams);
+				pExp = ExpeditionManager::getInstance().getShouldNextSchedule(team, ct, ct + waitMS);
+				if (!pExp)
+				{
+					excludeTeams.append(team);
+				}
+				else
+				{
+					break;
+				}
+			}
+
+			if (pExp && team >= 0)
+			{
+				if (_handlingExpeditionTeam != team)
+				{
+					// keep lastTarget
+					Terminate(true);
+					_autoExpeditioningFlag = true;
+					if (BuildNext_Expedition())
+					{
+						StartJob();
+					}
+				}
 			}
 		}
 	}
@@ -3170,14 +3211,14 @@ void ControlManager::moveMouseToAndClick(float x, float y, float offsetX /*= 5*/
 			// reset mouse pos for webengine
 			moveMouseTo(0, 0);
 #endif
-		}
+	}
 		else
 		{
 			sendMouseEvents(browserWidget);
-			}
+		}
 
 		QTimer::singleShot(0.1f, [this]() {this->moveMouseTo(0, 0); });
-		}
+}
 
 		}
 
@@ -3229,13 +3270,13 @@ void ControlManager::moveMouseTo(float x, float y, float offsetX /*= 5*/, float 
 				{
 					sendMouseEvents(qobject_cast<QWidget*>(obj));
 				}
-			}
+	}
 #endif
-		}
+}
 		else
 		{
 			sendMouseEvents(browserWidget);
-			}
+		}
 
 		}
 	}

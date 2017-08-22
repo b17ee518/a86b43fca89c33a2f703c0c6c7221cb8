@@ -567,31 +567,36 @@ qint64 TimerMainWindow::getMinExpeditionMS(int& team, QList<int>excludes/*=QList
 	qint64 minTime = std::numeric_limits<qint64>::max();
 	qint64 ct = currentMS();
 	int minTimeTeam = -1;
+
 	for (int i = 0; i < 3; i++)
 	{
 		if (excludes.contains(i + 1))
 		{
 			continue;
 		}
-		if (_exptimerecord[i].desttime - 1000 * 60 - ct < minTime)
+
+		qint64 testTime = _exptimerecord[i].desttime - 1000 * 60 - ct;
+		if (minTime > 0)
 		{
-			if (_exptimerecord[i].desttime < 0)
+			if (testTime < minTime)
 			{
-				minTime = 0;
+				minTime = testTime;
+				minTimeTeam = i + 1;
 			}
-			else
+		}
+		else
+		{
+			if (testTime < 0 && testTime > minTime)
 			{
-				minTime = _exptimerecord[i].desttime - 1000 * 60 - ct;
+				minTime = testTime;
+				minTimeTeam = i + 1;
 			}
-			minTimeTeam = i + 1;
 		}
 	}
-	/*
 	if (minTime < 0)
 	{
-	minTime = 0;
+		minTime = 0;
 	}
-	*/
 	team = minTimeTeam;
 	return minTime;
 }

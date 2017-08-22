@@ -354,6 +354,7 @@ private:
 	bool _inactiveWaiting = false;
 	ActionTarget _target = ActionTarget::None;
 	ActionTarget _lastTarget = ActionTarget::None;
+	int _handlingExpeditionTeam = -1;
 	bool _autoExpeditioningFlag = false;
 
 	QString _stateStr;

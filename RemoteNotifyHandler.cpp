@@ -105,7 +105,7 @@ void RemoteNotifyHandler::RunInstanceNotify()
 
 		MimeMessage message;
 
-		message.setSender(new EmailAddress(senderEmailAddress, "KanNotify"));
+		message.setSender(new EmailAddress(senderEmailAddress, "KN: " + text));
 		message.addRecipient(new EmailAddress(receiverEmailAddress));
 		message.setSubject(text);
 

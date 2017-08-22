@@ -56,7 +56,7 @@
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
-      <AdditionalIncludeDirectories>.;C:\qt\qt5.5.1\5.5\msvc2013\include;C:\qt\qt5.5.1\5.5\msvc2013\include\QtGui;C:\qt\qt5.5.1\5.5\msvc2013\include\QtANGLE;C:\qt\qt5.5.1\5.5\msvc2013\include\QtNetwork;C:\qt\qt5.5.1\5.5\msvc2013\include\QtCore;release;C:\qt\qt5.5.1\5.5\msvc2013\mkspecs\win32-msvc2013;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.;$(QTDIR_5_4_1)\include;$(QTDIR_5_4_1)\include\QtGui;$(QTDIR_5_4_1)\include\QtANGLE;$(QTDIR_5_4_1)\include\QtNetwork;$(QTDIR_5_4_1)\include\QtCore;release;$(QTDIR_5_4_1)\mkspecs\win32-msvc2013;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <AdditionalOptions>-Zc:strictStrings -w34100 -w34189 -w44996 %(AdditionalOptions)</AdditionalOptions>
       <AssemblerListingLocation>release\</AssemblerListingLocation>
       <BrowseInformation>false</BrowseInformation>
@@ -75,7 +75,7 @@
     </ClCompile>
     <Link>
       <AdditionalDependencies>$(QTDIR)\lib\Qt5Gui.lib;$(QTDIR)\lib\Qt5Network.lib;$(QTDIR)\lib\Qt5Core.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>$(QTDIR)\lib;C:\qt\qt5.5.1\5.5\msvc2013\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(QTDIR_5_4_1)\lib;$(QTDIR_5_4_1)\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <DataExecutionPrevention>true</DataExecutionPrevention>
       <GenerateDebugInformation>false</GenerateDebugInformation>
       <IgnoreImportLibrary>true</IgnoreImportLibrary>
@@ -97,7 +97,7 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
-      <AdditionalIncludeDirectories>.;C:\qt\qt5.5.1\5.5\msvc2013\include;C:\qt\qt5.5.1\5.5\msvc2013\include\QtGui;C:\qt\qt5.5.1\5.5\msvc2013\include\QtANGLE;C:\qt\qt5.5.1\5.5\msvc2013\include\QtNetwork;C:\qt\qt5.5.1\5.5\msvc2013\include\QtCore;debug;C:\qt\qt5.5.1\5.5\msvc2013\mkspecs\win32-msvc2013;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.;$(QTDIR_5_4_1)\include;$(QTDIR_5_4_1)\include\QtGui;$(QTDIR_5_4_1)\include\QtANGLE;$(QTDIR_5_4_1)\include\QtNetwork;$(QTDIR_5_4_1)\include\QtCore;debug;$(QTDIR_5_4_1)\mkspecs\win32-msvc2013;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <AdditionalOptions>-w34100 -w34189 -w44996 %(AdditionalOptions)</AdditionalOptions>
       <AssemblerListingLocation>debug\</AssemblerListingLocation>
       <BrowseInformation>false</BrowseInformation>
@@ -116,7 +116,7 @@
     </ClCompile>
     <Link>
       <AdditionalDependencies>$(QTDIR)\lib\Qt5Guid.lib;$(QTDIR)\lib\Qt5Networkd.lib;$(QTDIR)\lib\Qt5Cored.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>$(QTDIR)\lib;C:\qt\qt5.5.1\5.5\msvc2013\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(QTDIR_5_4_1)\lib;$(QTDIR_5_4_1)\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <DataExecutionPrevention>true</DataExecutionPrevention>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <IgnoreImportLibrary>true</IgnoreImportLibrary>
@@ -208,17 +208,15 @@
     <CustomBuild Include="src\emailaddress.h">
       <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">setlocal
 if errorlevel 1 goto VCEnd
-
 if errorlevel 1 goto VCEnd
 endlocal
-"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o "$(ConfigurationName)\moc_%(Filename).cpp"  -D_WINDOWS -DUNICODE -DWIN32 -DSMTP_BUILD -DQT_NO_DEBUG -DQT_GUI_LIB -DQT_NETWORK_LIB -DQT_CORE_LIB -DNDEBUG -D_WINDLL "-I." "-IC:\qt\qt5.5.1\5.5\msvc2013\include" "-IC:\qt\qt5.5.1\5.5\msvc2013\include\QtGui" "-IC:\qt\qt5.5.1\5.5\msvc2013\include\QtANGLE" "-IC:\qt\qt5.5.1\5.5\msvc2013\include\QtNetwork" "-IC:\qt\qt5.5.1\5.5\msvc2013\include\QtCore" "-I.\release" "-IC:\qt\qt5.5.1\5.5\msvc2013\mkspecs\win32-msvc2013"</Command>
+"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o "$(ConfigurationName)\moc_%(Filename).cpp"  -D_WINDOWS -DUNICODE -DWIN32 -DSMTP_BUILD -DQT_NO_DEBUG -DQT_GUI_LIB -DQT_NETWORK_LIB -DQT_CORE_LIB -DNDEBUG -D_WINDLL  "-I." "-I$(QTDIR_5_4_1)\include" "-I$(QTDIR_5_4_1)\include\QtGui" "-I$(QTDIR_5_4_1)\include\QtANGLE" "-I$(QTDIR_5_4_1)\include\QtNetwork" "-I$(QTDIR_5_4_1)\include\QtCore" "-I.\release" "-I$(QTDIR_5_4_1)\mkspecs\win32-msvc2013"</Command>
       <Message Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Moc%27ing emailaddress.h...</Message>
       <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">setlocal
 if errorlevel 1 goto VCEnd
-
 if errorlevel 1 goto VCEnd
 endlocal
-"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o "$(ConfigurationName)\moc_%(Filename).cpp"  -D_WINDOWS -DUNICODE -DWIN32 -DSMTP_BUILD -DQT_GUI_LIB -DQT_NETWORK_LIB -DQT_CORE_LIB -D_WINDLL "-I." "-IC:\qt\qt5.5.1\5.5\msvc2013\include" "-IC:\qt\qt5.5.1\5.5\msvc2013\include\QtGui" "-IC:\qt\qt5.5.1\5.5\msvc2013\include\QtANGLE" "-IC:\qt\qt5.5.1\5.5\msvc2013\include\QtNetwork" "-IC:\qt\qt5.5.1\5.5\msvc2013\include\QtCore" "-I.\debug" "-IC:\qt\qt5.5.1\5.5\msvc2013\mkspecs\win32-msvc2013"</Command>
+"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o "$(ConfigurationName)\moc_%(Filename).cpp"  -D_WINDOWS -DUNICODE -DWIN32 -DSMTP_BUILD -DQT_GUI_LIB -DQT_NETWORK_LIB -DQT_CORE_LIB -D_WINDLL  "-I." "-I$(QTDIR_5_4_1)\include" "-I$(QTDIR_5_4_1)\include\QtGui" "-I$(QTDIR_5_4_1)\include\QtANGLE" "-I$(QTDIR_5_4_1)\include\QtNetwork" "-I$(QTDIR_5_4_1)\include\QtCore" "-I.\debug" "-I$(QTDIR_5_4_1)\mkspecs\win32-msvc2013"</Command>
       <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Moc%27ing emailaddress.h...</Message>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(ConfigurationName)\moc_%(Filename).cpp</Outputs>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(ConfigurationName)\moc_%(Filename).cpp</Outputs>
@@ -228,17 +226,15 @@ endlocal
     <CustomBuild Include="src\mimeattachment.h">
       <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">setlocal
 if errorlevel 1 goto VCEnd
-
 if errorlevel 1 goto VCEnd
 endlocal
-"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o "$(ConfigurationName)\moc_%(Filename).cpp"  -D_WINDOWS -DUNICODE -DWIN32 -DSMTP_BUILD -DQT_NO_DEBUG -DQT_GUI_LIB -DQT_NETWORK_LIB -DQT_CORE_LIB -DNDEBUG -D_WINDLL "-I." "-IC:\qt\qt5.5.1\5.5\msvc2013\include" "-IC:\qt\qt5.5.1\5.5\msvc2013\include\QtGui" "-IC:\qt\qt5.5.1\5.5\msvc2013\include\QtANGLE" "-IC:\qt\qt5.5.1\5.5\msvc2013\include\QtNetwork" "-IC:\qt\qt5.5.1\5.5\msvc2013\include\QtCore" "-I.\release" "-IC:\qt\qt5.5.1\5.5\msvc2013\mkspecs\win32-msvc2013"</Command>
+"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o "$(ConfigurationName)\moc_%(Filename).cpp"  -D_WINDOWS -DUNICODE -DWIN32 -DSMTP_BUILD -DQT_NO_DEBUG -DQT_GUI_LIB -DQT_NETWORK_LIB -DQT_CORE_LIB -DNDEBUG -D_WINDLL  "-I." "-I$(QTDIR_5_4_1)\include" "-I$(QTDIR_5_4_1)\include\QtGui" "-I$(QTDIR_5_4_1)\include\QtANGLE" "-I$(QTDIR_5_4_1)\include\QtNetwork" "-I$(QTDIR_5_4_1)\include\QtCore" "-I.\release" "-I$(QTDIR_5_4_1)\mkspecs\win32-msvc2013"</Command>
       <Message Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Moc%27ing mimeattachment.h...</Message>
       <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">setlocal
 if errorlevel 1 goto VCEnd
-
 if errorlevel 1 goto VCEnd
 endlocal
-"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o "$(ConfigurationName)\moc_%(Filename).cpp"  -D_WINDOWS -DUNICODE -DWIN32 -DSMTP_BUILD -DQT_GUI_LIB -DQT_NETWORK_LIB -DQT_CORE_LIB -D_WINDLL "-I." "-IC:\qt\qt5.5.1\5.5\msvc2013\include" "-IC:\qt\qt5.5.1\5.5\msvc2013\include\QtGui" "-IC:\qt\qt5.5.1\5.5\msvc2013\include\QtANGLE" "-IC:\qt\qt5.5.1\5.5\msvc2013\include\QtNetwork" "-IC:\qt\qt5.5.1\5.5\msvc2013\include\QtCore" "-I.\debug" "-IC:\qt\qt5.5.1\5.5\msvc2013\mkspecs\win32-msvc2013"</Command>
+"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o "$(ConfigurationName)\moc_%(Filename).cpp"  -D_WINDOWS -DUNICODE -DWIN32 -DSMTP_BUILD -DQT_GUI_LIB -DQT_NETWORK_LIB -DQT_CORE_LIB -D_WINDLL  "-I." "-I$(QTDIR_5_4_1)\include" "-I$(QTDIR_5_4_1)\include\QtGui" "-I$(QTDIR_5_4_1)\include\QtANGLE" "-I$(QTDIR_5_4_1)\include\QtNetwork" "-I$(QTDIR_5_4_1)\include\QtCore" "-I.\debug" "-I$(QTDIR_5_4_1)\mkspecs\win32-msvc2013"</Command>
       <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Moc%27ing mimeattachment.h...</Message>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(ConfigurationName)\moc_%(Filename).cpp</Outputs>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(ConfigurationName)\moc_%(Filename).cpp</Outputs>
@@ -248,17 +244,15 @@ endlocal
     <CustomBuild Include="src\mimecontentformatter.h">
       <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">setlocal
 if errorlevel 1 goto VCEnd
-
 if errorlevel 1 goto VCEnd
 endlocal
-"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o "$(ConfigurationName)\moc_%(Filename).cpp"  -D_WINDOWS -DUNICODE -DWIN32 -DSMTP_BUILD -DQT_NO_DEBUG -DQT_GUI_LIB -DQT_NETWORK_LIB -DQT_CORE_LIB -DNDEBUG -D_WINDLL "-I." "-IC:\qt\qt5.5.1\5.5\msvc2013\include" "-IC:\qt\qt5.5.1\5.5\msvc2013\include\QtGui" "-IC:\qt\qt5.5.1\5.5\msvc2013\include\QtANGLE" "-IC:\qt\qt5.5.1\5.5\msvc2013\include\QtNetwork" "-IC:\qt\qt5.5.1\5.5\msvc2013\include\QtCore" "-I.\release" "-IC:\qt\qt5.5.1\5.5\msvc2013\mkspecs\win32-msvc2013"</Command>
+"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o "$(ConfigurationName)\moc_%(Filename).cpp"  -D_WINDOWS -DUNICODE -DWIN32 -DSMTP_BUILD -DQT_NO_DEBUG -DQT_GUI_LIB -DQT_NETWORK_LIB -DQT_CORE_LIB -DNDEBUG -D_WINDLL  "-I." "-I$(QTDIR_5_4_1)\include" "-I$(QTDIR_5_4_1)\include\QtGui" "-I$(QTDIR_5_4_1)\include\QtANGLE" "-I$(QTDIR_5_4_1)\include\QtNetwork" "-I$(QTDIR_5_4_1)\include\QtCore" "-I.\release" "-I$(QTDIR_5_4_1)\mkspecs\win32-msvc2013"</Command>
       <Message Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Moc%27ing mimecontentformatter.h...</Message>
       <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">setlocal
 if errorlevel 1 goto VCEnd
-
 if errorlevel 1 goto VCEnd
 endlocal
-"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o "$(ConfigurationName)\moc_%(Filename).cpp"  -D_WINDOWS -DUNICODE -DWIN32 -DSMTP_BUILD -DQT_GUI_LIB -DQT_NETWORK_LIB -DQT_CORE_LIB -D_WINDLL "-I." "-IC:\qt\qt5.5.1\5.5\msvc2013\include" "-IC:\qt\qt5.5.1\5.5\msvc2013\include\QtGui" "-IC:\qt\qt5.5.1\5.5\msvc2013\include\QtANGLE" "-IC:\qt\qt5.5.1\5.5\msvc2013\include\QtNetwork" "-IC:\qt\qt5.5.1\5.5\msvc2013\include\QtCore" "-I.\debug" "-IC:\qt\qt5.5.1\5.5\msvc2013\mkspecs\win32-msvc2013"</Command>
+"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o "$(ConfigurationName)\moc_%(Filename).cpp"  -D_WINDOWS -DUNICODE -DWIN32 -DSMTP_BUILD -DQT_GUI_LIB -DQT_NETWORK_LIB -DQT_CORE_LIB -D_WINDLL  "-I." "-I$(QTDIR_5_4_1)\include" "-I$(QTDIR_5_4_1)\include\QtGui" "-I$(QTDIR_5_4_1)\include\QtANGLE" "-I$(QTDIR_5_4_1)\include\QtNetwork" "-I$(QTDIR_5_4_1)\include\QtCore" "-I.\debug" "-I$(QTDIR_5_4_1)\mkspecs\win32-msvc2013"</Command>
       <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Moc%27ing mimecontentformatter.h...</Message>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(ConfigurationName)\moc_%(Filename).cpp</Outputs>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(ConfigurationName)\moc_%(Filename).cpp</Outputs>
@@ -268,17 +262,15 @@ endlocal
     <CustomBuild Include="src\mimefile.h">
       <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">setlocal
 if errorlevel 1 goto VCEnd
-
 if errorlevel 1 goto VCEnd
 endlocal
-"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o "$(ConfigurationName)\moc_%(Filename).cpp"  -D_WINDOWS -DUNICODE -DWIN32 -DSMTP_BUILD -DQT_NO_DEBUG -DQT_GUI_LIB -DQT_NETWORK_LIB -DQT_CORE_LIB -DNDEBUG -D_WINDLL "-I." "-IC:\qt\qt5.5.1\5.5\msvc2013\include" "-IC:\qt\qt5.5.1\5.5\msvc2013\include\QtGui" "-IC:\qt\qt5.5.1\5.5\msvc2013\include\QtANGLE" "-IC:\qt\qt5.5.1\5.5\msvc2013\include\QtNetwork" "-IC:\qt\qt5.5.1\5.5\msvc2013\include\QtCore" "-I.\release" "-IC:\qt\qt5.5.1\5.5\msvc2013\mkspecs\win32-msvc2013"</Command>
+"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o "$(ConfigurationName)\moc_%(Filename).cpp"  -D_WINDOWS -DUNICODE -DWIN32 -DSMTP_BUILD -DQT_NO_DEBUG -DQT_GUI_LIB -DQT_NETWORK_LIB -DQT_CORE_LIB -DNDEBUG -D_WINDLL  "-I." "-I$(QTDIR_5_4_1)\include" "-I$(QTDIR_5_4_1)\include\QtGui" "-I$(QTDIR_5_4_1)\include\QtANGLE" "-I$(QTDIR_5_4_1)\include\QtNetwork" "-I$(QTDIR_5_4_1)\include\QtCore" "-I.\release" "-I$(QTDIR_5_4_1)\mkspecs\win32-msvc2013"</Command>
       <Message Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Moc%27ing mimefile.h...</Message>
       <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">setlocal
 if errorlevel 1 goto VCEnd
-
 if errorlevel 1 goto VCEnd
 endlocal
-"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o "$(ConfigurationName)\moc_%(Filename).cpp"  -D_WINDOWS -DUNICODE -DWIN32 -DSMTP_BUILD -DQT_GUI_LIB -DQT_NETWORK_LIB -DQT_CORE_LIB -D_WINDLL "-I." "-IC:\qt\qt5.5.1\5.5\msvc2013\include" "-IC:\qt\qt5.5.1\5.5\msvc2013\include\QtGui" "-IC:\qt\qt5.5.1\5.5\msvc2013\include\QtANGLE" "-IC:\qt\qt5.5.1\5.5\msvc2013\include\QtNetwork" "-IC:\qt\qt5.5.1\5.5\msvc2013\include\QtCore" "-I.\debug" "-IC:\qt\qt5.5.1\5.5\msvc2013\mkspecs\win32-msvc2013"</Command>
+"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o "$(ConfigurationName)\moc_%(Filename).cpp"  -D_WINDOWS -DUNICODE -DWIN32 -DSMTP_BUILD -DQT_GUI_LIB -DQT_NETWORK_LIB -DQT_CORE_LIB -D_WINDLL  "-I." "-I$(QTDIR_5_4_1)\include" "-I$(QTDIR_5_4_1)\include\QtGui" "-I$(QTDIR_5_4_1)\include\QtANGLE" "-I$(QTDIR_5_4_1)\include\QtNetwork" "-I$(QTDIR_5_4_1)\include\QtCore" "-I.\debug" "-I$(QTDIR_5_4_1)\mkspecs\win32-msvc2013"</Command>
       <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Moc%27ing mimefile.h...</Message>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(ConfigurationName)\moc_%(Filename).cpp</Outputs>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(ConfigurationName)\moc_%(Filename).cpp</Outputs>
@@ -288,17 +280,15 @@ endlocal
     <CustomBuild Include="src\mimehtml.h">
       <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">setlocal
 if errorlevel 1 goto VCEnd
-
 if errorlevel 1 goto VCEnd
 endlocal
-"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o "$(ConfigurationName)\moc_%(Filename).cpp"  -D_WINDOWS -DUNICODE -DWIN32 -DSMTP_BUILD -DQT_NO_DEBUG -DQT_GUI_LIB -DQT_NETWORK_LIB -DQT_CORE_LIB -DNDEBUG -D_WINDLL "-I." "-IC:\qt\qt5.5.1\5.5\msvc2013\include" "-IC:\qt\qt5.5.1\5.5\msvc2013\include\QtGui" "-IC:\qt\qt5.5.1\5.5\msvc2013\include\QtANGLE" "-IC:\qt\qt5.5.1\5.5\msvc2013\include\QtNetwork" "-IC:\qt\qt5.5.1\5.5\msvc2013\include\QtCore" "-I.\release" "-IC:\qt\qt5.5.1\5.5\msvc2013\mkspecs\win32-msvc2013"</Command>
+"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o "$(ConfigurationName)\moc_%(Filename).cpp"  -D_WINDOWS -DUNICODE -DWIN32 -DSMTP_BUILD -DQT_NO_DEBUG -DQT_GUI_LIB -DQT_NETWORK_LIB -DQT_CORE_LIB -DNDEBUG -D_WINDLL  "-I." "-I$(QTDIR_5_4_1)\include" "-I$(QTDIR_5_4_1)\include\QtGui" "-I$(QTDIR_5_4_1)\include\QtANGLE" "-I$(QTDIR_5_4_1)\include\QtNetwork" "-I$(QTDIR_5_4_1)\include\QtCore" "-I.\release" "-I$(QTDIR_5_4_1)\mkspecs\win32-msvc2013"</Command>
       <Message Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Moc%27ing mimehtml.h...</Message>
       <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">setlocal
 if errorlevel 1 goto VCEnd
-
 if errorlevel 1 goto VCEnd
 endlocal
-"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o "$(ConfigurationName)\moc_%(Filename).cpp"  -D_WINDOWS -DUNICODE -DWIN32 -DSMTP_BUILD -DQT_GUI_LIB -DQT_NETWORK_LIB -DQT_CORE_LIB -D_WINDLL "-I." "-IC:\qt\qt5.5.1\5.5\msvc2013\include" "-IC:\qt\qt5.5.1\5.5\msvc2013\include\QtGui" "-IC:\qt\qt5.5.1\5.5\msvc2013\include\QtANGLE" "-IC:\qt\qt5.5.1\5.5\msvc2013\include\QtNetwork" "-IC:\qt\qt5.5.1\5.5\msvc2013\include\QtCore" "-I.\debug" "-IC:\qt\qt5.5.1\5.5\msvc2013\mkspecs\win32-msvc2013"</Command>
+"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o "$(ConfigurationName)\moc_%(Filename).cpp"  -D_WINDOWS -DUNICODE -DWIN32 -DSMTP_BUILD -DQT_GUI_LIB -DQT_NETWORK_LIB -DQT_CORE_LIB -D_WINDLL  "-I." "-I$(QTDIR_5_4_1)\include" "-I$(QTDIR_5_4_1)\include\QtGui" "-I$(QTDIR_5_4_1)\include\QtANGLE" "-I$(QTDIR_5_4_1)\include\QtNetwork" "-I$(QTDIR_5_4_1)\include\QtCore" "-I.\debug" "-I$(QTDIR_5_4_1)\mkspecs\win32-msvc2013"</Command>
       <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Moc%27ing mimehtml.h...</Message>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(ConfigurationName)\moc_%(Filename).cpp</Outputs>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(ConfigurationName)\moc_%(Filename).cpp</Outputs>
@@ -310,17 +300,15 @@ endlocal
     <CustomBuild Include="src\mimemultipart.h">
       <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">setlocal
 if errorlevel 1 goto VCEnd
-
 if errorlevel 1 goto VCEnd
 endlocal
-"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o "$(ConfigurationName)\moc_%(Filename).cpp"  -D_WINDOWS -DUNICODE -DWIN32 -DSMTP_BUILD -DQT_NO_DEBUG -DQT_GUI_LIB -DQT_NETWORK_LIB -DQT_CORE_LIB -DNDEBUG -D_WINDLL "-I." "-IC:\qt\qt5.5.1\5.5\msvc2013\include" "-IC:\qt\qt5.5.1\5.5\msvc2013\include\QtGui" "-IC:\qt\qt5.5.1\5.5\msvc2013\include\QtANGLE" "-IC:\qt\qt5.5.1\5.5\msvc2013\include\QtNetwork" "-IC:\qt\qt5.5.1\5.5\msvc2013\include\QtCore" "-I.\release" "-IC:\qt\qt5.5.1\5.5\msvc2013\mkspecs\win32-msvc2013"</Command>
+"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o "$(ConfigurationName)\moc_%(Filename).cpp"  -D_WINDOWS -DUNICODE -DWIN32 -DSMTP_BUILD -DQT_NO_DEBUG -DQT_GUI_LIB -DQT_NETWORK_LIB -DQT_CORE_LIB -DNDEBUG -D_WINDLL  "-I." "-I$(QTDIR_5_4_1)\include" "-I$(QTDIR_5_4_1)\include\QtGui" "-I$(QTDIR_5_4_1)\include\QtANGLE" "-I$(QTDIR_5_4_1)\include\QtNetwork" "-I$(QTDIR_5_4_1)\include\QtCore" "-I.\release" "-I$(QTDIR_5_4_1)\mkspecs\win32-msvc2013"</Command>
       <Message Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Moc%27ing mimemultipart.h...</Message>
       <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">setlocal
 if errorlevel 1 goto VCEnd
-
 if errorlevel 1 goto VCEnd
 endlocal
-"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o "$(ConfigurationName)\moc_%(Filename).cpp"  -D_WINDOWS -DUNICODE -DWIN32 -DSMTP_BUILD -DQT_GUI_LIB -DQT_NETWORK_LIB -DQT_CORE_LIB -D_WINDLL "-I." "-IC:\qt\qt5.5.1\5.5\msvc2013\include" "-IC:\qt\qt5.5.1\5.5\msvc2013\include\QtGui" "-IC:\qt\qt5.5.1\5.5\msvc2013\include\QtANGLE" "-IC:\qt\qt5.5.1\5.5\msvc2013\include\QtNetwork" "-IC:\qt\qt5.5.1\5.5\msvc2013\include\QtCore" "-I.\debug" "-IC:\qt\qt5.5.1\5.5\msvc2013\mkspecs\win32-msvc2013"</Command>
+"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o "$(ConfigurationName)\moc_%(Filename).cpp"  -D_WINDOWS -DUNICODE -DWIN32 -DSMTP_BUILD -DQT_GUI_LIB -DQT_NETWORK_LIB -DQT_CORE_LIB -D_WINDLL  "-I." "-I$(QTDIR_5_4_1)\include" "-I$(QTDIR_5_4_1)\include\QtGui" "-I$(QTDIR_5_4_1)\include\QtANGLE" "-I$(QTDIR_5_4_1)\include\QtNetwork" "-I$(QTDIR_5_4_1)\include\QtCore" "-I.\debug" "-I$(QTDIR_5_4_1)\mkspecs\win32-msvc2013"</Command>
       <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Moc%27ing mimemultipart.h...</Message>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(ConfigurationName)\moc_%(Filename).cpp</Outputs>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(ConfigurationName)\moc_%(Filename).cpp</Outputs>
@@ -330,17 +318,15 @@ endlocal
     <CustomBuild Include="src\mimepart.h">
       <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">setlocal
 if errorlevel 1 goto VCEnd
-
 if errorlevel 1 goto VCEnd
 endlocal
-"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o "$(ConfigurationName)\moc_%(Filename).cpp"  -D_WINDOWS -DUNICODE -DWIN32 -DSMTP_BUILD -DQT_NO_DEBUG -DQT_GUI_LIB -DQT_NETWORK_LIB -DQT_CORE_LIB -DNDEBUG -D_WINDLL "-I." "-IC:\qt\qt5.5.1\5.5\msvc2013\include" "-IC:\qt\qt5.5.1\5.5\msvc2013\include\QtGui" "-IC:\qt\qt5.5.1\5.5\msvc2013\include\QtANGLE" "-IC:\qt\qt5.5.1\5.5\msvc2013\include\QtNetwork" "-IC:\qt\qt5.5.1\5.5\msvc2013\include\QtCore" "-I.\release" "-IC:\qt\qt5.5.1\5.5\msvc2013\mkspecs\win32-msvc2013"</Command>
+"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o "$(ConfigurationName)\moc_%(Filename).cpp"  -D_WINDOWS -DUNICODE -DWIN32 -DSMTP_BUILD -DQT_NO_DEBUG -DQT_GUI_LIB -DQT_NETWORK_LIB -DQT_CORE_LIB -DNDEBUG -D_WINDLL  "-I." "-I$(QTDIR_5_4_1)\include" "-I$(QTDIR_5_4_1)\include\QtGui" "-I$(QTDIR_5_4_1)\include\QtANGLE" "-I$(QTDIR_5_4_1)\include\QtNetwork" "-I$(QTDIR_5_4_1)\include\QtCore" "-I.\release" "-I$(QTDIR_5_4_1)\mkspecs\win32-msvc2013"</Command>
       <Message Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Moc%27ing mimepart.h...</Message>
       <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">setlocal
 if errorlevel 1 goto VCEnd
-
 if errorlevel 1 goto VCEnd
 endlocal
-"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o "$(ConfigurationName)\moc_%(Filename).cpp"  -D_WINDOWS -DUNICODE -DWIN32 -DSMTP_BUILD -DQT_GUI_LIB -DQT_NETWORK_LIB -DQT_CORE_LIB -D_WINDLL "-I." "-IC:\qt\qt5.5.1\5.5\msvc2013\include" "-IC:\qt\qt5.5.1\5.5\msvc2013\include\QtGui" "-IC:\qt\qt5.5.1\5.5\msvc2013\include\QtANGLE" "-IC:\qt\qt5.5.1\5.5\msvc2013\include\QtNetwork" "-IC:\qt\qt5.5.1\5.5\msvc2013\include\QtCore" "-I.\debug" "-IC:\qt\qt5.5.1\5.5\msvc2013\mkspecs\win32-msvc2013"</Command>
+"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o "$(ConfigurationName)\moc_%(Filename).cpp"  -D_WINDOWS -DUNICODE -DWIN32 -DSMTP_BUILD -DQT_GUI_LIB -DQT_NETWORK_LIB -DQT_CORE_LIB -D_WINDLL  "-I." "-I$(QTDIR_5_4_1)\include" "-I$(QTDIR_5_4_1)\include\QtGui" "-I$(QTDIR_5_4_1)\include\QtANGLE" "-I$(QTDIR_5_4_1)\include\QtNetwork" "-I$(QTDIR_5_4_1)\include\QtCore" "-I.\debug" "-I$(QTDIR_5_4_1)\mkspecs\win32-msvc2013"</Command>
       <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Moc%27ing mimepart.h...</Message>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(ConfigurationName)\moc_%(Filename).cpp</Outputs>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(ConfigurationName)\moc_%(Filename).cpp</Outputs>
@@ -351,17 +337,15 @@ endlocal
     <CustomBuild Include="src\quotedprintable.h">
       <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">setlocal
 if errorlevel 1 goto VCEnd
-
 if errorlevel 1 goto VCEnd
 endlocal
-"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o "$(ConfigurationName)\moc_%(Filename).cpp"  -D_WINDOWS -DUNICODE -DWIN32 -DSMTP_BUILD -DQT_NO_DEBUG -DQT_GUI_LIB -DQT_NETWORK_LIB -DQT_CORE_LIB -DNDEBUG -D_WINDLL "-I." "-IC:\qt\qt5.5.1\5.5\msvc2013\include" "-IC:\qt\qt5.5.1\5.5\msvc2013\include\QtGui" "-IC:\qt\qt5.5.1\5.5\msvc2013\include\QtANGLE" "-IC:\qt\qt5.5.1\5.5\msvc2013\include\QtNetwork" "-IC:\qt\qt5.5.1\5.5\msvc2013\include\QtCore" "-I.\release" "-IC:\qt\qt5.5.1\5.5\msvc2013\mkspecs\win32-msvc2013"</Command>
+"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o "$(ConfigurationName)\moc_%(Filename).cpp"  -D_WINDOWS -DUNICODE -DWIN32 -DSMTP_BUILD -DQT_NO_DEBUG -DQT_GUI_LIB -DQT_NETWORK_LIB -DQT_CORE_LIB -DNDEBUG -D_WINDLL  "-I." "-I$(QTDIR_5_4_1)\include" "-I$(QTDIR_5_4_1)\include\QtGui" "-I$(QTDIR_5_4_1)\include\QtANGLE" "-I$(QTDIR_5_4_1)\include\QtNetwork" "-I$(QTDIR_5_4_1)\include\QtCore" "-I.\release" "-I$(QTDIR_5_4_1)\mkspecs\win32-msvc2013"</Command>
       <Message Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Moc%27ing quotedprintable.h...</Message>
       <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">setlocal
 if errorlevel 1 goto VCEnd
-
 if errorlevel 1 goto VCEnd
 endlocal
-"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o "$(ConfigurationName)\moc_%(Filename).cpp"  -D_WINDOWS -DUNICODE -DWIN32 -DSMTP_BUILD -DQT_GUI_LIB -DQT_NETWORK_LIB -DQT_CORE_LIB -D_WINDLL "-I." "-IC:\qt\qt5.5.1\5.5\msvc2013\include" "-IC:\qt\qt5.5.1\5.5\msvc2013\include\QtGui" "-IC:\qt\qt5.5.1\5.5\msvc2013\include\QtANGLE" "-IC:\qt\qt5.5.1\5.5\msvc2013\include\QtNetwork" "-IC:\qt\qt5.5.1\5.5\msvc2013\include\QtCore" "-I.\debug" "-IC:\qt\qt5.5.1\5.5\msvc2013\mkspecs\win32-msvc2013"</Command>
+"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o "$(ConfigurationName)\moc_%(Filename).cpp"  -D_WINDOWS -DUNICODE -DWIN32 -DSMTP_BUILD -DQT_GUI_LIB -DQT_NETWORK_LIB -DQT_CORE_LIB -D_WINDLL  "-I." "-I$(QTDIR_5_4_1)\include" "-I$(QTDIR_5_4_1)\include\QtGui" "-I$(QTDIR_5_4_1)\include\QtANGLE" "-I$(QTDIR_5_4_1)\include\QtNetwork" "-I$(QTDIR_5_4_1)\include\QtCore" "-I.\debug" "-I$(QTDIR_5_4_1)\mkspecs\win32-msvc2013"</Command>
       <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Moc%27ing quotedprintable.h...</Message>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(ConfigurationName)\moc_%(Filename).cpp</Outputs>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(ConfigurationName)\moc_%(Filename).cpp</Outputs>
@@ -371,17 +355,15 @@ endlocal
     <CustomBuild Include="src\smtpclient.h">
       <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">setlocal
 if errorlevel 1 goto VCEnd
-
 if errorlevel 1 goto VCEnd
 endlocal
-"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o "$(ConfigurationName)\moc_%(Filename).cpp"  -D_WINDOWS -DUNICODE -DWIN32 -DSMTP_BUILD -DQT_NO_DEBUG -DQT_GUI_LIB -DQT_NETWORK_LIB -DQT_CORE_LIB -DNDEBUG -D_WINDLL "-I." "-IC:\qt\qt5.5.1\5.5\msvc2013\include" "-IC:\qt\qt5.5.1\5.5\msvc2013\include\QtGui" "-IC:\qt\qt5.5.1\5.5\msvc2013\include\QtANGLE" "-IC:\qt\qt5.5.1\5.5\msvc2013\include\QtNetwork" "-IC:\qt\qt5.5.1\5.5\msvc2013\include\QtCore" "-I.\release" "-IC:\qt\qt5.5.1\5.5\msvc2013\mkspecs\win32-msvc2013"</Command>
+"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o "$(ConfigurationName)\moc_%(Filename).cpp"  -D_WINDOWS -DUNICODE -DWIN32 -DSMTP_BUILD -DQT_NO_DEBUG -DQT_GUI_LIB -DQT_NETWORK_LIB -DQT_CORE_LIB -DNDEBUG -D_WINDLL  "-I." "-I$(QTDIR_5_4_1)\include" "-I$(QTDIR_5_4_1)\include\QtGui" "-I$(QTDIR_5_4_1)\include\QtANGLE" "-I$(QTDIR_5_4_1)\include\QtNetwork" "-I$(QTDIR_5_4_1)\include\QtCore" "-I.\release" "-I$(QTDIR_5_4_1)\mkspecs\win32-msvc2013"</Command>
       <Message Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Moc%27ing smtpclient.h...</Message>
       <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">setlocal
 if errorlevel 1 goto VCEnd
-
 if errorlevel 1 goto VCEnd
 endlocal
-"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o "$(ConfigurationName)\moc_%(Filename).cpp"  -D_WINDOWS -DUNICODE -DWIN32 -DSMTP_BUILD -DQT_GUI_LIB -DQT_NETWORK_LIB -DQT_CORE_LIB -D_WINDLL "-I." "-IC:\qt\qt5.5.1\5.5\msvc2013\include" "-IC:\qt\qt5.5.1\5.5\msvc2013\include\QtGui" "-IC:\qt\qt5.5.1\5.5\msvc2013\include\QtANGLE" "-IC:\qt\qt5.5.1\5.5\msvc2013\include\QtNetwork" "-IC:\qt\qt5.5.1\5.5\msvc2013\include\QtCore" "-I.\debug" "-IC:\qt\qt5.5.1\5.5\msvc2013\mkspecs\win32-msvc2013"</Command>
+"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o "$(ConfigurationName)\moc_%(Filename).cpp"  -D_WINDOWS -DUNICODE -DWIN32 -DSMTP_BUILD -DQT_GUI_LIB -DQT_NETWORK_LIB -DQT_CORE_LIB -D_WINDLL  "-I." "-I$(QTDIR_5_4_1)\include" "-I$(QTDIR_5_4_1)\include\QtGui" "-I$(QTDIR_5_4_1)\include\QtANGLE" "-I$(QTDIR_5_4_1)\include\QtNetwork" "-I$(QTDIR_5_4_1)\include\QtCore" "-I.\debug" "-I$(QTDIR_5_4_1)\mkspecs\win32-msvc2013"</Command>
       <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Moc%27ing smtpclient.h...</Message>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(ConfigurationName)\moc_%(Filename).cpp</Outputs>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(ConfigurationName)\moc_%(Filename).cpp</Outputs>

@@ -141,7 +141,7 @@ bool ControlManager::BuildNext_Fuel()
 
 	if (stopWhenCheck())
 	{
-		setToTerminate("Termination:StopWhenDone", false, RemoteNotifyHandler::Level::Info);
+		setToTerminate("Termination:StopWhenDone", false, RemoteNotifyHandler::Level::Low);
 		return false;
 	}
 
@@ -151,7 +151,7 @@ bool ControlManager::BuildNext_Fuel()
 		KanSaveData* pksd = &KanSaveData::getInstance();
 		if (pksd->totalSouthEastWin >= 5)
 		{
-			setToTerminate("Terminated:Done Mission", false, RemoteNotifyHandler::Level::Info);
+			setToTerminate("Terminated:DoneFuelMission", false, RemoteNotifyHandler::Level::Low);
 			return false;
 		}
 
@@ -1753,7 +1753,7 @@ void ControlManager::Terminate(bool bSilent)
 		setState(State::Terminated, _stateStr.toStdString().c_str(), bSilent);
 	}
 
-	RemoteNotifyHandler::getInstance().Notify("Terminated", bSilent ? RemoteNotifyHandler::Level::Info : RemoteNotifyHandler::Level::Low);
+	RemoteNotifyHandler::getInstance().Notify("Terminated", RemoteNotifyHandler::Level::Info);
 
 	qDeleteAll(_actionList);
 	_actionList.clear();
@@ -3197,7 +3197,7 @@ void ControlManager::moveMouseToAndClick(float x, float y, float offsetX /*= 5*/
 			if (!w)
 			{
 				return;
-}
+			}
 #if defined Q_OS_WIN || defined Q_OS_MAC
 			QMouseEvent e(QEvent::MouseButtonPress, ptAdjusted, Qt::LeftButton, Qt::LeftButton, Qt::NoModifier);
 			QApplication::sendEvent(w, &e);

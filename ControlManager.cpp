@@ -11,6 +11,8 @@
 #include <QApplication>
 #include <QSettings>
 
+#include "RemoteNotifyHandler.h"
+
 #ifdef Q_OS_WIN
 #include <windows.h>
 #endif
@@ -1024,7 +1026,7 @@ bool ControlManager::BuildNext_Expedition()
 
 	if (!pExp)
 	{
-		setToTerminate("Termination:Fatal", false);
+		setToTerminate("Termination:FatalOrDateChange", false);
 		// date may change here
 		return false;
 	}
@@ -1750,6 +1752,9 @@ void ControlManager::Terminate(bool bSilent)
 	{
 		setState(State::Terminated, _stateStr.toStdString().c_str(), bSilent);
 	}
+
+	RemoteNotifyHandler::getInstance().Notify("Terminated", bSilent ? RemoteNotifyHandler::Level::Info : RemoteNotifyHandler::Level::Low);
+
 	qDeleteAll(_actionList);
 	_actionList.clear();
 	setPauseNextVal(false);
@@ -1903,6 +1908,7 @@ void ControlManager::setupAutoExpedition()
 
 void ControlManager::setToTerminate(const char* title, bool forceSound)
 {
+	RemoteNotifyHandler::getInstance().Notify(title, forceSound ? RemoteNotifyHandler::Level::High : RemoteNotifyHandler::Level::Info);
 	setState(State::ToTerminate, title, false, forceSound);
 }
 
@@ -3211,16 +3217,16 @@ void ControlManager::moveMouseToAndClick(float x, float y, float offsetX /*= 5*/
 			// reset mouse pos for webengine
 			moveMouseTo(0, 0);
 #endif
-	}
+		}
 		else
 		{
 			sendMouseEvents(browserWidget);
 		}
 
 		QTimer::singleShot(0.1f, [this]() {this->moveMouseTo(0, 0); });
-}
+	}
 
-		}
+}
 
 void ControlManager::moveMouseTo(float x, float y, float offsetX /*= 5*/, float offsetY /*= 3*/)
 {
@@ -3270,16 +3276,16 @@ void ControlManager::moveMouseTo(float x, float y, float offsetX /*= 5*/, float 
 				{
 					sendMouseEvents(qobject_cast<QWidget*>(obj));
 				}
-	}
+			}
 #endif
-}
+		}
 		else
 		{
 			sendMouseEvents(browserWidget);
 		}
 
-		}
 	}
+}
 
 void ControlManager::setPauseNextVal(bool bVal)
 {

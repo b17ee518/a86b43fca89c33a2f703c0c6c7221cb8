@@ -6,6 +6,7 @@
 #include <QFile>
 #include <QTextStream>
 #include <QApplication>
+#include "RemoteNotifyHandler.h"
 
 //#include <QDebug>
 
@@ -815,6 +816,7 @@ void ExpeditionManager::dateChange()
 	playedDate = QDate::currentDate();
 
 	MainWindow::mainWindow()->timerWindow()->playSound(TimerMainWindow::SoundIndex::GoodNight);
+	RemoteNotifyHandler::getInstance().Notify("GoodNight!", RemoteNotifyHandler::Level::Low);
 	QString exchangeName;
 	if (_currentPreset.startsWith("Pre_"))
 	{

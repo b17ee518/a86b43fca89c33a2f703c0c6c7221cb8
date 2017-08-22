@@ -2236,6 +2236,7 @@ bool SortieAction::action()
 			if (cm.needChargeAnyShip(0) || cm.hugestDamageInTeam(0) >= WoundState::Middle)
 			{
 				cm.setToTerminate("Terminated:Damage", true);
+
 				emit sigFatal();
 				return false;
 			}

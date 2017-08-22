@@ -47,6 +47,9 @@
     <Filter Include="TitaniumCOM">
       <UniqueIdentifier>{007cd908-f165-4d55-9d71-128e13cc611a}</UniqueIdentifier>
     </Filter>
+    <Filter Include="SmtpClientForQt">
+      <UniqueIdentifier>{6df1c5cb-c539-41c8-98ba-4555acc4f1f7}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="cookiejar.cpp">
@@ -229,6 +232,9 @@
     <ClCompile Include="GeneratedFiles\moc_developactionselectdialog.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
+    <ClCompile Include="RemoteNotifyHandler.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="cookiejar.h">
@@ -336,6 +342,33 @@
     <CustomBuild Include="developactionselectdialog.h">
       <Filter>Header Files</Filter>
     </CustomBuild>
+    <CustomBuild Include="SmtpClientForQt\src\emailaddress.h">
+      <Filter>SmtpClientForQt</Filter>
+    </CustomBuild>
+    <CustomBuild Include="SmtpClientForQt\src\mimeattachment.h">
+      <Filter>SmtpClientForQt</Filter>
+    </CustomBuild>
+    <CustomBuild Include="SmtpClientForQt\src\mimecontentformatter.h">
+      <Filter>SmtpClientForQt</Filter>
+    </CustomBuild>
+    <CustomBuild Include="SmtpClientForQt\src\mimefile.h">
+      <Filter>SmtpClientForQt</Filter>
+    </CustomBuild>
+    <CustomBuild Include="SmtpClientForQt\src\mimehtml.h">
+      <Filter>SmtpClientForQt</Filter>
+    </CustomBuild>
+    <CustomBuild Include="SmtpClientForQt\src\mimemultipart.h">
+      <Filter>SmtpClientForQt</Filter>
+    </CustomBuild>
+    <CustomBuild Include="SmtpClientForQt\src\mimepart.h">
+      <Filter>SmtpClientForQt</Filter>
+    </CustomBuild>
+    <CustomBuild Include="SmtpClientForQt\src\quotedprintable.h">
+      <Filter>SmtpClientForQt</Filter>
+    </CustomBuild>
+    <CustomBuild Include="SmtpClientForQt\src\smtpclient.h">
+      <Filter>SmtpClientForQt</Filter>
+    </CustomBuild>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="infomainwindow.ui">
@@ -388,5 +421,25 @@
     <ClInclude Include="GeneratedFiles\ui_developactionselectdialog.h">
       <Filter>Generated Files</Filter>
     </ClInclude>
+    <ClInclude Include="RemoteNotifyHandler.h">
+      <Filter>Generated Files</Filter>
+    </ClInclude>
+    <ClInclude Include="SmtpClientForQt\src\mimeinlinefile.h">
+      <Filter>SmtpClientForQt</Filter>
+    </ClInclude>
+    <ClInclude Include="SmtpClientForQt\src\mimemessage.h">
+      <Filter>SmtpClientForQt</Filter>
+    </ClInclude>
+    <ClInclude Include="SmtpClientForQt\src\mimetext.h">
+      <Filter>SmtpClientForQt</Filter>
+    </ClInclude>
+    <ClInclude Include="SmtpClientForQt\src\smtpexports.h">
+      <Filter>SmtpClientForQt</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="SmtpClientForQt\src\SmtpMime">
+      <Filter>SmtpClientForQt</Filter>
+    </None>
   </ItemGroup>
 </Project>

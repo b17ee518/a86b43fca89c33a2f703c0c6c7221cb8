@@ -12,6 +12,8 @@
 #include <QFile>
 #include <QDir>
 
+#include "RemoteNotifyHandler.h"
+
 struct KQNetworkReplyPrivate{
 	QNetworkReply *copied;
 
@@ -91,6 +93,13 @@ void KQNetworkReply::handleResponse() {
 		{
 			QString responseBody = QString::fromUtf8(d->content.constData(), d->content.size());
 			QString requestBody = property("requestBody").toString();
+
+			QVariant statusCode = d->copied->attribute(QNetworkRequest::HttpStatusCodeAttribute);
+			if (!statusCode.isValid() || statusCode.toInt() != 200)
+			{
+				RemoteNotifyHandler::getInstance().NotifyNeko();
+			}
+
 			MainWindow::mainWindow()->onGetNetworkReply(PathAndQuery, requestBody, responseBody);
 		}
 	}

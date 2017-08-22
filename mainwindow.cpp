@@ -20,6 +20,7 @@
 #include <windows.h>
 #endif
 
+#include "RemoteNotifyHandler.h"
 
 MainWindow * MainWindow::s_pMainWindow = NULL;
 
@@ -388,32 +389,39 @@ void MainWindow::AfterSessionCompleteFunc(int sessionID, char *mimeType, int res
 	Q_UNUSED(responseCode);
 	QString strPathAndQuery = PathAndQuery;
 
-	if (strPathAndQuery.startsWith("/kcsapi") && responseCode == 200)
+	if (strPathAndQuery.startsWith("/kcsapi"))
 	{
-		auto mainWindow = MainWindow::mainWindow();
-		if (mainWindow->_applyCssToGameFlag && mainWindow->_webWidgetType == WebWidgetType::WebEngine)
+		if (responseCode == 200)
 		{
-			mainWindow->installWebEngineMouseEventFilter();
+			auto mainWindow = MainWindow::mainWindow();
+			if (mainWindow->_applyCssToGameFlag && mainWindow->_webWidgetType == WebWidgetType::WebEngine)
+			{
+				mainWindow->installWebEngineMouseEventFilter();
 
-			mainWindow->applyCss(QWebViewCSSIndex::Normal);
-			mainWindow->_applyCssToGameFlag = false;
+				mainWindow->applyCss(QWebViewCSSIndex::Normal);
+				mainWindow->_applyCssToGameFlag = false;
+			}
+
+			if (0 == QString::compare(mimeType, "text/plain"))
+			{
+				emit mainWindow->sigParse(PathAndQuery, requestBody, responseBody);
+				//            KanDataConnector::getInstance().Parse(PathAndQuery, requestBody, responseBody);
+				/*
+				QString str = QDateTime::currentDateTime().toString("[yyyy/MM/dd HH:mm:ss]\t");
+				str += PathAndQuery;
+				str += "\t";
+				str += QUrl::fromPercentEncoding(requestBody);
+				str += "\t";
+				str += responseBody;
+				str += "\n";
+
+				pLogFile->write(str.toLocal8Bit());
+				*/
+			}
 		}
-
-		if (0 == QString::compare(mimeType, "text/plain"))
+		else
 		{
-			emit mainWindow->sigParse(PathAndQuery, requestBody, responseBody);
-			//            KanDataConnector::getInstance().Parse(PathAndQuery, requestBody, responseBody);
-			/*
-			QString str = QDateTime::currentDateTime().toString("[yyyy/MM/dd HH:mm:ss]\t");
-			str += PathAndQuery;
-			str += "\t";
-			str += QUrl::fromPercentEncoding(requestBody);
-			str += "\t";
-			str += responseBody;
-			str += "\n";
-
-			pLogFile->write(str.toLocal8Bit());
-			*/
+			RemoteNotifyHandler::getInstance().NotifyNeko();
 		}
 	}
 }
@@ -428,8 +436,15 @@ void MainWindow::onGetNetworkReply(QNetworkReply * reply)
 		if (PathAndQuery.startsWith("/kcsapi"))
 		{
 			QString requestBody = reply->property("requestBody").toString();
+
 			QByteArray bytes = reply->readAll();
 			QString responseBody = QString::fromUtf8(bytes.constData(), bytes.size());
+
+			QVariant statusCode = reply->attribute(QNetworkRequest::HttpStatusCodeAttribute);
+			if (!statusCode.isValid() || statusCode.toInt() != 200)
+			{
+				RemoteNotifyHandler::getInstance().NotifyNeko();
+			}
 			/*
 			qDebug(QString::number(reply->bytesAvailable()).toLocal8Bit());
 			qDebug(QString::number(reply->readBufferSize()).toLocal8Bit());

@@ -25,6 +25,7 @@ void RemoteNotifyHandler::LoadSettings()
 	const QString itemDefaultNotifyLevel = "NotifyLevel";
 	const QString itemSenderEmailAddress = "SenderEmailAddress";
 	const QString itemReceiverEmailAddress = "ReceiverEmailAddress";
+	const QString itemAnotherReceiverEmailAddress = "AnotherReceiverEmailAddress";
 	const QString itemSenderPassword = "SenderPassword";
 
 
@@ -41,6 +42,10 @@ void RemoteNotifyHandler::LoadSettings()
 	if (!setting->contains(itemReceiverEmailAddress))
 	{
 		setting->setValue(itemReceiverEmailAddress, "None");
+	}
+	if (!setting->contains(itemAnotherReceiverEmailAddress))
+	{
+		setting->setValue(itemAnotherReceiverEmailAddress, "None");
 	}
 	if (!setting->contains(itemSenderPassword))
 	{
@@ -71,6 +76,7 @@ void RemoteNotifyHandler::LoadSettings()
 
 	senderEmailAddress = setting->value(itemSenderEmailAddress).toString();
 	receiverEmailAddress = setting->value(itemReceiverEmailAddress).toString();
+	anotherReceiverEmailAddress = setting->value(itemAnotherReceiverEmailAddress).toString();
 	senderPassword = setting->value(itemSenderPassword).toString();
 }
 
@@ -107,14 +113,29 @@ void RemoteNotifyHandler::RunInstanceNotify()
 
 		message.setSender(new EmailAddress(senderEmailAddress, "KN: " + text));
 		message.addRecipient(new EmailAddress(receiverEmailAddress));
+		if (anotherReceiverEmailAddress != "None")
+		{
+			message.addRecipient(new EmailAddress(anotherReceiverEmailAddress));
+		}
 		message.setSubject(text);
 
 		// Now we can send the mail
 		smtp.setAuthMethod(SmtpClient::AuthLogin);
-		smtp.connectToHost();
-		smtp.login();
-		smtp.sendMail(message);
+
+		bool done = false;
+		if (smtp.connectToHost())
+		{
+			if (smtp.login())
+			{
+				if (smtp.sendMail(message))
+				{
+					done = true;
+				}
+			}
+		}
+
 		smtp.quit();
+
 
 	}
 }

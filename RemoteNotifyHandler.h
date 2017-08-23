@@ -47,6 +47,7 @@ private:
 	QString senderEmailAddress;
 	QString senderPassword;
 	QString receiverEmailAddress;
+	QString anotherReceiverEmailAddress;
 
 	QString text;
 	Level level;

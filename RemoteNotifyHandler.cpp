@@ -1,4 +1,4 @@
-#include "RemoteNotifyHandler.h"
+﻿#include "RemoteNotifyHandler.h"
 
 #include "./SmtpClientForQt/src/smtpmime"
 #include <QTimer>

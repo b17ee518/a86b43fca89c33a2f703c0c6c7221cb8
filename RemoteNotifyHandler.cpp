@@ -142,5 +142,5 @@ void RemoteNotifyHandler::RunInstanceNotify()
 
 void RemoteNotifyHandler::NotifyNeko()
 {
-	Notify(QString::fromLocal8Bit("”L‚Á‚½‚¼I"), Level::Fatal);
+	Notify(QString::fromLocal8Bit("çŒ«ã£ãŸãï¼"), Level::Fatal);
 }

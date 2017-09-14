@@ -3140,10 +3140,15 @@ void ControlManager::setStateStr(const QString& str)
 	MainWindow::mainWindow()->timerWindow()->setTitle(_stateStr);
 }
 
-void ControlManager::switchBackToLastAction()
+bool ControlManager::switchBackToLastAction()
 {
-	_target = _lastTarget;
 	_autoExpeditioningFlag = false;
+	if (_target != _lastTarget && _lastTarget != ActionTarget::None)
+	{
+		_target = _lastTarget;
+		return true;
+	}
+	return false;
 }
 
 void ControlManager::clearLastTarget()

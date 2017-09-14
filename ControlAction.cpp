@@ -3180,8 +3180,10 @@ bool RepeatAction::action()
 		{
 			if (cm.isAutoExpeditioning())
 			{
-				cm.switchBackToLastAction();
-				return action();
+				if (cm.switchBackToLastAction())
+				{
+					return action();
+				}
 			}
 			if (cm.BuildNext_Expedition())
 			{

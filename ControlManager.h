@@ -308,7 +308,7 @@ public:
 
 	inline bool isAutoExpeditioning(){ return _autoExpeditioningFlag; }
 
-	void switchBackToLastAction();
+	bool switchBackToLastAction();
 	void clearLastTarget();
 
 	const KiraSetting& getKiraSetting(){ return _kiraSetting; }

@@ -895,9 +895,10 @@ bool ControlManager::BuildNext_Any()
 	pushPreSupplyCheck();
 
 	QList<int> willBeInDockList;
+	QList<int> fastRepairShips;
 	if (_anySetting.autoFastRepair)
 	{
-		pushPreRepairCheck(willBeInDockList, true, true, false, false);
+		fastRepairShips = pushPreRepairCheck(willBeInDockList, true, true, false, false);
 	}
 	else if (_anySetting.onlySSTeamSize > 0)
 	{
@@ -963,15 +964,21 @@ bool ControlManager::BuildNext_Any()
 
 			if (pship->api_cond < minCond)
 			{
-				minCond = pship->api_cond;
+				if (!fastRepairShips.contains(pship->api_id))
+				{
+					minCond = pship->api_cond;
+				}
 			}
 
-			WoundState ws = KanDataCalc::GetWoundState(pship->api_nowhp, pship->api_maxhp);
-
-			if (ws >= WoundState::Middle && !_anySetting.allowMiddleDamageSortie || ws >= WoundState::Big)
+			if (!fastRepairShips.contains(pship->api_id))
 			{
-				setToTerminate("Terminated:Damage", false, RemoteNotifyHandler::Level::Low);
-				return false;
+				WoundState ws = KanDataCalc::GetWoundState(pship->api_nowhp, pship->api_maxhp);
+
+				if (ws >= WoundState::Middle && !_anySetting.allowMiddleDamageSortie || ws >= WoundState::Big)
+				{
+					setToTerminate("Terminated:Damage", false, RemoteNotifyHandler::Level::Low);
+					return false;
+				}
 			}
 		}
 

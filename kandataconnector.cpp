@@ -174,7 +174,7 @@ bool KanDataConnector::isAutoRepairing(int flagshipno/*=-1*/)
 	if (flagshipno < 0)
 	{
 		KanSaveData * pksd = &KanSaveData::getInstance();
-        if (pksd->portdata.api_deck_port.size() > 0)
+		if (pksd->portdata.api_deck_port.size() > 0)
 		{
 			auto& shiplist = pksd->portdata.api_deck_port.at(0).api_ship;
 			if (shiplist.size())
@@ -551,7 +551,7 @@ QString KanDataConnector::logBattleResult(bool bWrite/*=true*/)
 			{
 				ControlManager& cm = ControlManager::getInstance();
 				if (!cm.isRunning()
-					|| !cm.isSouthEastMode()
+					|| !cm.isSouthEastMode() && !cm.isFuelMode()
 					|| cm.getSouthEastSetting().stopWhen != ControlManager::StopWhen::Yusou3)
 				{
 					pksd->totalSouthEastWin++;

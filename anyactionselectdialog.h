@@ -21,6 +21,7 @@ public:
 
 	int getCountSet();
 	int getOnlySSTeamSize();
+	bool isAutoFastRepair();
 	bool isCheckAirBaseCond();
 	bool isCheckCond();
 	bool isAllowMiddle();

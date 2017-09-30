@@ -895,7 +895,11 @@ bool ControlManager::BuildNext_Any()
 	pushPreSupplyCheck();
 
 	QList<int> willBeInDockList;
-	if (_anySetting.onlySSTeamSize > 0)
+	if (_anySetting.autoFastRepair)
+	{
+		pushPreRepairCheck(willBeInDockList, true, true, false, false);
+	}
+	else if (_anySetting.onlySSTeamSize > 0)
 	{
 		pushPreRepairCheck(willBeInDockList, false, false, true, true);
 	}

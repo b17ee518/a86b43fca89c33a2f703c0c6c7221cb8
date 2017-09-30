@@ -33,6 +33,7 @@ AnyActionSelectDialog::AnyActionSelectDialog(QWidget *parent)
 
 	ui->leCount->setText(QString::number(ControlManager::getInstance().getAnySetting().count));
 	ui->leSSOnlyCount->setText(QString::number(ControlManager::getInstance().getAnySetting().onlySSTeamSize));
+	ui->cbAutoFastRepair->setChecked(ControlManager::getInstance().getAnySetting().autoFastRepair);
 	ui->cbAirBaseCond->setChecked(ControlManager::getInstance().getAnySetting().checkAirBaseCond);
 	ui->cbCond->setChecked(ControlManager::getInstance().getAnySetting().checkCond);
 	ui->cbMiddleDamage->setChecked(ControlManager::getInstance().getAnySetting().allowMiddleDamageSortie);
@@ -127,6 +128,11 @@ void AnyActionSelectDialog::slotOnReset()
 	KanDataConnector::getInstance().callUpdateOverviewTable();
 }
 
+bool AnyActionSelectDialog::isAutoFastRepair()
+{
+	return ui->cbAutoFastRepair->isChecked();
+}
+
 bool AnyActionSelectDialog::isCheckAirBaseCond()
 {
 	return ui->cbAirBaseCond->isChecked();
@@ -188,4 +194,5 @@ void AnyActionSelectDialog::slotResetExtraSettings()
 	ui->cbAirBaseCond->setChecked(false);
 	ui->cbCond->setChecked(true);
 	ui->cbMiddleDamage->setChecked(false);
+	ui->cbAutoFastRepair->setChecked(false);
 }

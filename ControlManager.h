@@ -101,6 +101,7 @@ public:
 		bool allowMiddleDamageSortie = false;
 		bool pauseAtStartMap = false;
 		int onlySSTeamSize = 0;
+		bool autoFastRepair = false;
 		QMap<int, CellAnySetting> cells;
 
 		QList<float> areaCheckList;

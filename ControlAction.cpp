@@ -2344,7 +2344,7 @@ bool SortieAction::action()
 			{
 				// area 1 sortie map
 				if (cm.checkColors(
-					562, 119, 255, 186, 92
+					600, 121, 237, 146, 14
 					, 644, 246, 137, 143, 154))
 					//					, 648, 118, 118, 180, 72))
 				{
@@ -2698,7 +2698,7 @@ bool SortieAction::action()
 			{
 				// sortie ok button
 				if (cm.checkColors(
-					722, 440, 19, 86, 87
+					739, 458, 110, 198, 193
 					, 82, 230, 218, 196, 196))
 				{
 					_waiting = false;
@@ -3376,8 +3376,8 @@ bool ExpeditionAction::action()
 			QTimer::singleShot(DELAY_TIME, Qt::PreciseTimer, this, [this, &cm]()
 			{
 				if (cm.checkColors(
-					508, 112, 250, 174, 89
-					, 592, 165, 35, 158, 159))
+					583, 182, 242, 233, 221
+					, 138, 459, 236, 228, 216))
 				{
 					_waiting = false;
 					setState(State::SelectAreaDone, "Expedition:SelectAreaDone");
@@ -3417,7 +3417,7 @@ bool ExpeditionAction::action()
 			{
 				if (cm.checkColors(
 					75, 210, 244, 222, 168
-					, 508, 113, 251, 184, 90))
+					, 583, 182, 242, 233, 221))
 				{
 					_waiting = false;
 					setState(State::SelectItemDone, "Expedition:SelectItemDone");
@@ -3449,8 +3449,8 @@ bool ExpeditionAction::action()
 			{
 				// expedition ok button
 				if (cm.checkColors(
-					709, 438, 23, 94, 97
-					, 667, 436, 255, 248, 238))
+					749, 460, 119, 255, 237
+					, 673, 460, 143, 245, 222))
 				{
 					_waiting = false;
 					setState(State::SortieCheckDone, "Expedition:SortieCheckDone");

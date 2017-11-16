@@ -234,6 +234,8 @@ public:
 	int totalTokyuWin = 0;
 	int totalAnyCount = 0;
 
+	static const int maxTeamMemberCount = 7;
+
 public:
 	void logAllExport();
 

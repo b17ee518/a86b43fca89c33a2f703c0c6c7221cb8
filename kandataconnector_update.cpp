@@ -613,6 +613,8 @@ void KanDataConnector::updateFleetTable()
 		allsakuteki_sp33 = slotSakutekiAttribution + shipSakutekiAttribution;
 		allsakuteki_sp33 -= ceil(pksd->portdata.api_basic.api_level*0.4);
 		// only calc this team
+
+		// TODO MaxMemberCount
 		allsakuteki_sp33 += (6 - v.api_ship.count()) * 2;
 
 		int colindex = 0;
@@ -1337,22 +1339,22 @@ void KanDataConnector::updateBattle(const kcsapi_battle &api_battle, KanBattleTy
 		}
 
 		QList<float> totalfdamage;
-		for (int i = 0; i < 7; i++)
+		for (int i = 0; i < KanSaveData::maxTeamMemberCount + 1; i++)
 		{
 			totalfdamage.append(0);
 		}
 		QList<float> totalfdamage_combined;
-		for (int i = 0; i < 7; i++)
+		for (int i = 0; i < KanSaveData::maxTeamMemberCount + 1; i++)
 		{
 			totalfdamage_combined.append(0);
 		}
 		QList<float> totaledamage;
-		for (int i = 0; i < 7; i++)
+		for (int i = 0; i < KanSaveData::maxTeamMemberCount + 1; i++)
 		{
 			totaledamage.append(0);
 		}
 		QList<float> totaledamage_combined;
-		for (int i = 0; i < 7; i++)
+		for (int i = 0; i < KanSaveData::maxTeamMemberCount + 1; i++)
 		{
 			totaledamage_combined.append(0);
 		}
@@ -1375,10 +1377,12 @@ void KanDataConnector::updateBattle(const kcsapi_battle &api_battle, KanBattleTy
 		}
 		for (int i = 1; i < api_battle.api_ship_ke.count(); i++)
 		{
+			// TODO MaxTeamMemberCount
 			pksd->beginLastBattleHPs.enemy.append(api_battle.api_nowhps[i + 6]);
 		}
 		for (int i = 1; i < api_battle.api_ship_ke_combined.count(); i++)
 		{
+			// TODO MaxTeamMemberCount
 			pksd->beginLastBattleHPs.combinedEnemy.append(api_battle.api_nowhps_combined[i + 6]);
 		}
 
@@ -1606,6 +1610,7 @@ void KanDataConnector::updateBattle(const kcsapi_battle &api_battle, KanBattleTy
 				{
 					int damagePos = i;
 
+					// TODO MaxTeamMemberCount
 					if (damagePos > 6)
 					{
 						damagePos -= 6;
@@ -1621,14 +1626,18 @@ void KanDataConnector::updateBattle(const kcsapi_battle &api_battle, KanBattleTy
 
 				}
 				int damageCount = api_battle.api_opening_atack.api_edam.count();
+				// TODO MaxTeamMemberCount
 				if (bCombinedEnemy && damageCount > 7)
 				{
+					// TODO MaxTeamMemberCount
 					for (int i = 1; i < 7; i++)
 					{
 						totaledamage[i] += api_battle.api_opening_atack.api_edam[i];
 					}
+					// TODO MaxTeamMemberCount
 					for (int i = 7; i < damageCount; i++)
 					{
+						// TODO MaxTeamMemberCount
 						totaledamage_combined[i - 6] += api_battle.api_opening_atack.api_edam[i];
 					}
 				}
@@ -1705,12 +1714,15 @@ void KanDataConnector::updateBattle(const kcsapi_battle &api_battle, KanBattleTy
 				if (raigekiflag)
 				{
 					int damageCount = api_battle.api_raigeki.api_fdam.count();
+					// TODO MaxTeamMemberCount
 					if (bCombinedSelf && damageCount > 7)
 					{
+						// TODO MaxTeamMemberCount
 						for (int i = 1; i < 7; i++)
 						{
 							totalfdamage[i] += api_battle.api_raigeki.api_fdam[i];
 						}
+						// TODO MaxTeamMemberCount
 						for (int i = 7; i < damageCount; i++)
 						{
 							totalfdamage_combined[i - 6] += api_battle.api_raigeki.api_fdam[i];
@@ -1722,6 +1734,7 @@ void KanDataConnector::updateBattle(const kcsapi_battle &api_battle, KanBattleTy
 						{
 							// TODO!!!!! check
 							int damagePos = i;
+							// TODO MaxTeamMemberCount
 							if (damagePos > 6)
 							{
 								damagePos -= 6;
@@ -1738,6 +1751,7 @@ void KanDataConnector::updateBattle(const kcsapi_battle &api_battle, KanBattleTy
 					}
 
 					damageCount = api_battle.api_raigeki.api_edam.count();
+					// TODO MaxTeamMemberCount
 					if (bCombinedEnemy && damageCount > 7)
 					{
 						for (int i = 1; i < 7; i++)
@@ -1804,6 +1818,7 @@ void KanDataConnector::updateBattle(const kcsapi_battle &api_battle, KanBattleTy
 		pksd->remainLastBattleHPs.enemy.append(0);
 		for (int i = 1; i < api_battle.api_ship_ke.count(); i++)
 		{
+			// TODO MaxTeamMemberCount
 			int nowhp = api_battle.api_nowhps[i + 6] - (int)totaledamage[i];
 			if (nowhp < 0)
 			{
@@ -1814,6 +1829,7 @@ void KanDataConnector::updateBattle(const kcsapi_battle &api_battle, KanBattleTy
 		pksd->remainLastBattleHPs.combinedEnemy.append(0);
 		for (int i = 1; i < api_battle.api_ship_ke_combined.count(); i++)
 		{
+			// TODO MaxTeamMemberCount
 			int nowhp = api_battle.api_nowhps_combined[i + 6] - (int)totaledamage_combined[i];
 			if (nowhp < 0)
 			{
@@ -1888,6 +1904,7 @@ void KanDataConnector::processHouraiDamages(const kcsapi_battle_hougeki* api_hou
 			bool bfdefend = true;
 
 			int attackpos = api_hougeki->api_at_list[j];
+			// TODO MaxTeamMemberCount
 			if (attackpos > 6)
 			{
 				bfattack = false;
@@ -1899,6 +1916,7 @@ void KanDataConnector::processHouraiDamages(const kcsapi_battle_hougeki* api_hou
 				for (int k = 0; k < api_hougeki->api_df_list[j].count(); k++)
 				{
 					int defendpos = api_hougeki->api_df_list[j][k];
+					// TODO MaxTeamMemberCount
 					if (defendpos > 6)
 					{
 						bfdefend = false;
@@ -1933,6 +1951,7 @@ void KanDataConnector::processHouraiDamages(const kcsapi_battle_hougeki* api_hou
 					if (api_hougeki->api_at_eflag[j] > 0)
 					{
 						// from enemy
+						// TODO MaxTeamMemberCount
 						if (defendpos > 6)
 						{
 							fdamage = totalfdamage_combined;
@@ -1946,6 +1965,7 @@ void KanDataConnector::processHouraiDamages(const kcsapi_battle_hougeki* api_hou
 					}
 					else
 					{
+						// TODO MaxTeamMemberCount
 						if (defendpos > 6)
 						{
 							edamage = totaledamage_combined;

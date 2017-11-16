@@ -2253,8 +2253,7 @@ bool SortieAction::action()
 		else
 		{
 			// any
-			if ((cm.needChargeFlagship(0) || cm.hugestDamageInTeam(0) >= WoundState::Big)
-				|| (cm.needChargeFlagship(1) || cm.hugestDamageInTeam(1) >= WoundState::Big))
+			if ((cm.needChargeFlagship(-1) || cm.hugestDamageInTeam(-1) >= WoundState::Big))
 			{
 				cm.setToTerminate("Terminated:Damage", true);
 				emit sigFatal();

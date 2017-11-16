@@ -2737,7 +2737,7 @@ bool ControlManager::shouldRetrieve()
 	{
 		return true;
 	}
-	return (hugestDamageInTeam(0) >= WoundState::Big || hugestDamageInTeam(1) >= WoundState::Big);
+	return (hugestDamageInTeam(-1) >= WoundState::Big);
 }
 
 bool ControlManager::shouldRetrieveForAny()
@@ -2796,6 +2796,7 @@ bool ControlManager::shouldTerminateForAny()
 
 WoundState ControlManager::hugestDamageInTeam(int team)
 {
+
 	KanSaveData* pksd = &KanSaveData::getInstance();
 	KanDataConnector* pkdc = &KanDataConnector::getInstance();
 
@@ -2804,6 +2805,19 @@ WoundState ControlManager::hugestDamageInTeam(int team)
 	if (!pksd->portdata.api_ship.size())
 	{
 		return WoundState::Dead;
+	}
+
+	if (team < 0)
+	{
+		for (auto& deck : pksd->portdata.api_deck_port)
+		{
+			auto state = hugestDamageInTeam(deck.api_id - 1);
+			if (state > maxState)
+			{
+				maxState = state;
+			}
+		}
+		return maxState;
 	}
 
 	if (pksd->portdata.api_deck_port.size() > team)
@@ -2978,6 +2992,18 @@ bool ControlManager::needChargeFlagship(int team)
 		return false;
 	}
 
+	if (team < 0)
+	{
+		for (auto& deck : pksd->portdata.api_deck_port)
+		{
+			if (needChargeFlagship(deck.api_id - 1))
+			{
+				return true;
+			}
+		}
+		return false;
+	}
+
 	if (pksd->portdata.api_deck_port.size() > team)
 	{
 		auto& fleet = pksd->portdata.api_deck_port.at(team);
@@ -3019,6 +3045,19 @@ bool ControlManager::needChargeAnyShip(int team)
 	{
 		return false;
 	}
+
+	if (team < 0)
+	{
+		for (auto& deck : pksd->portdata.api_deck_port)
+		{
+			if (needChargeAnyShip(deck.api_id - 1))
+			{
+				return true;
+			}
+		}
+		return false;
+	}
+
 
 	if (pksd->portdata.api_deck_port.size() > team)
 	{

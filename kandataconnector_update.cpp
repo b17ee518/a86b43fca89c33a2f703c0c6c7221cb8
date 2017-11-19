@@ -1713,17 +1713,17 @@ void KanDataConnector::updateBattle(const kcsapi_battle &api_battle, KanBattleTy
 				{
 					int damageCount = api_battle.api_raigeki.api_fdam.count();
 					// TODO MaxTeamMemberCount
-					if (bCombinedSelf && damageCount > KanSaveData::maxSingleTeamSize)
+					if (bCombinedSelf && damageCount > KanSaveData::maxCombinedTeamSize)
 					{
 						// TODO MaxTeamMemberCount
-						for (int i = 0; i < KanSaveData::maxSingleTeamSize; i++)
+						for (int i = 0; i < KanSaveData::maxCombinedTeamSize; i++)
 						{
 							totalfdamage[i] += api_battle.api_raigeki.api_fdam[i];
 						}
 						// TODO MaxTeamMemberCount
-						for (int i = KanSaveData::maxSingleTeamSize; i < damageCount; i++)
+						for (int i = KanSaveData::maxCombinedTeamSize; i < damageCount; i++)
 						{
-							totalfdamage_combined[i - KanSaveData::maxSingleTeamSize] += api_battle.api_raigeki.api_fdam[i];
+							totalfdamage_combined[i - KanSaveData::maxCombinedTeamSize] += api_battle.api_raigeki.api_fdam[i];
 						}
 					}
 					else
@@ -1749,15 +1749,15 @@ void KanDataConnector::updateBattle(const kcsapi_battle &api_battle, KanBattleTy
 
 					damageCount = api_battle.api_raigeki.api_edam.count();
 					// TODO MaxTeamMemberCount
-					if (bCombinedEnemy && damageCount > KanSaveData::maxSingleTeamSize)
+					if (bCombinedEnemy && damageCount > KanSaveData::maxCombinedTeamSize)
 					{
-						for (int i = 0; i < KanSaveData::maxSingleTeamSize; i++)
+						for (int i = 0; i < KanSaveData::maxCombinedTeamSize; i++)
 						{
 							totaledamage[i] += api_battle.api_raigeki.api_edam[i];
 						}
-						for (int i = KanSaveData::maxSingleTeamSize; i < damageCount; i++)
+						for (int i = KanSaveData::maxCombinedTeamSize; i < damageCount; i++)
 						{
-							totaledamage_combined[i - KanSaveData::maxSingleTeamSize] += api_battle.api_raigeki.api_edam[i];
+							totaledamage_combined[i - KanSaveData::maxCombinedTeamSize] += api_battle.api_raigeki.api_edam[i];
 						}
 					}
 					else

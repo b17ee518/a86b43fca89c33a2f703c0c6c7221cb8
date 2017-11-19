@@ -964,7 +964,7 @@ void KanDataConnector::logBattleDetail(bool bCombined)
 			equiplines[i] += strslotitemname + "\t";
 		}
 
-		beforehpline += QString("%1").arg(pksd->battledata.api_nowhps[shipcount]) + "\t";
+		beforehpline += QString("%1").arg(pksd->battledata.api_f_nowhps[shipcount]) + "\t";
 		afterhpline += QString("%1").arg(pship->api_nowhp) + "\t";
 		if (pmstship)
 		{

@@ -2657,13 +2657,13 @@ bool SortieAction::action()
 					QTimer::singleShot(DELAY_TIME_CLICK, Qt::PreciseTimer, this, [this, &cm]()
 					{
 						cm.moveMouseToAndClick(365, 253, 136, 88); // blackboard
-						setState(State::SkipBoardChecking, "Sortie:SortieCheckChecking");
+						setState(State::SkipBoardChecking, "Sortie:SkipBoardChecking");
 						resetRetryAndWainting();
 					});
 				}
 				else if (cm.checkColors(
-					451, 83, 182, 155, 105
-					, 342, 380, 44, 64, 76))
+					582, 58, 34, 162, 158
+					, 342, 380, 49, 69, 79))
 				{
 					_waiting = false;
 					setState(State::SkipBoardDone, "Sortie:SkipBoardDone");
@@ -2900,20 +2900,29 @@ bool SortieCommonAdvanceAction::action()
 			}
 			QTimer::singleShot(_shouldRetrieve ? DELAY_TIME_SUPERLONG : DELAY_TIME_LONG, Qt::PreciseTimer, this, [this, &cm]()
 			{
+				_totalFormationCount = 0;
 				// select formation
-				if (cm.checkColors(
+				if (/*cm.checkColors(
 					416, 177, 0, 120, 121
 					, 450, 185, 233, 231, 227
-					, 398, 190, 214, 210, 111))
+					, 398, 190, 214, 210, 111)*/
+
+					cm.checkColors(
+					447, 82, 93, 255, 131
+					, 424, 298, 93, 255, 131
+					, 477, 177, 0, 120, 121
+					))
 				{
-					if (cm.isPortDataDirty())
-					{
-						cm.setToTerminate("Fatal:PortDirty", true);
-						emit sigFatal();
-						return;
-					}
-					_waiting = false;
-					setState(State::SelectFormation, "SortieAdv:SelectFormation");
+					_totalFormationCount = 6;
+				}
+				else if (
+					cm.checkColors(
+					513, 82, 93, 255, 131
+					, 424, 298, 93, 255, 131
+					, 539, 177, 0, 120, 121
+					))
+				{
+					_totalFormationCount = 5;
 				}
 				// leave or night
 				else if (cm.checkColors(
@@ -2981,6 +2990,18 @@ bool SortieCommonAdvanceAction::action()
 					_waiting = false;
 					setState(State::ClickElse, "SortieAdv:ClickElse");
 				}
+
+				if (_totalFormationCount > 0)
+				{
+					if (cm.isPortDataDirty())
+					{
+						cm.setToTerminate("Fatal:PortDirty", true);
+						emit sigFatal();
+						return;
+					}
+					_waiting = false;
+					setState(State::SelectFormation, "SortieAdv:SelectFormation");
+				}
 			});
 		}
 		break;
@@ -3003,11 +3024,24 @@ bool SortieCommonAdvanceAction::action()
 				QTimer::singleShot(DELAY_TIME_CLICK, Qt::PreciseTimer, this, [this, &cm]()
 				{
 					QMap<int, QList<float>> points;
-					points[1] = { 445, 184 };
-					points[2] = { 577, 184 };
-					points[3] = { 706, 184 };
-					points[4] = { 513, 341 };
-					points[5] = { 646, 341 };
+					switch (_totalFormationCount)
+					{
+					case 5:
+						points[1] = { 513, 184 };
+						points[2] = { 646, 184 };
+						points[3] = { 445, 341 };
+						points[4] = { 577, 341 };
+						points[5] = { 706, 341 };
+						break;
+					case 6:
+						points[1] = { 445, 184 };
+						points[2] = { 577, 184 };
+						points[3] = { 646, 184 };
+						points[4] = { 445, 341 };
+						points[5] = { 577, 341 };
+						points[6] = { 706, 341 };
+						break;
+					}
 					int formation = 1;
 
 					if (cm.isAnyMode())
@@ -3017,7 +3051,7 @@ bool SortieCommonAdvanceAction::action()
 						if (setting.cells.contains(cell))
 						{
 							formation = setting.cells[cell].formation;
-							if (formation > 5 || formation < 1)
+							if (formation > points.count() || formation < 1)
 							{
 								formation = 1;
 							}

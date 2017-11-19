@@ -342,7 +342,7 @@ bool KanDataConnector::req_hensei_change_parse()
 
 	QList<int> * lstship = &(pksd->portdata.api_deck_port[team - 1].api_ship);
 
-	while (lstship->count() < KanSaveData::maxTeamMemberCount)
+	while (lstship->count() < KanSaveData::maxSingleTeamSize)
 	{
 		lstship->append(-1);
 	}
@@ -356,7 +356,7 @@ bool KanDataConnector::req_hensei_change_parse()
 	else if (shipid == -1)
 	{
 		lstship->removeAt(index);
-		while (lstship->count() < KanSaveData::maxTeamMemberCount)
+		while (lstship->count() < KanSaveData::maxSingleTeamSize)
 		{
 			lstship->append(-1);
 		}
@@ -373,7 +373,7 @@ bool KanDataConnector::req_hensei_change_parse()
 		for (int i = 0; i < teamcount; i++)
 		{
 			QList<int> * lstteamship = &(pksd->portdata.api_deck_port[i].api_ship);
-			while (lstteamship->count() < KanSaveData::maxTeamMemberCount)
+			while (lstteamship->count() < KanSaveData::maxSingleTeamSize)
 			{
 				lstteamship->append(-1);
 			}
@@ -389,7 +389,7 @@ bool KanDataConnector::req_hensei_change_parse()
 						if (prev < 0)
 						{
 							lstteamship->removeAt(j);
-							while (lstteamship->count() < KanSaveData::maxTeamMemberCount)
+							while (lstteamship->count() < KanSaveData::maxSingleTeamSize)
 							{
 								lstteamship->append(-1);
 							}

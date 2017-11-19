@@ -8,109 +8,109 @@
 
 #define _SIREAD(name)\
 	if (jobj[#name].isString())\
-					{\
+									{\
 		name##_s = jobj[#name].toString();\
 		name = name##_s.toInt();\
-					}\
-																else\
-																{\
+									}\
+																																																																																																																																																																																																																																																																else\
+																																																																																																																																																																																																																																																																{\
 		_IREAD(name);\
-																}
+																																																																																																																																																																																																																																																																}
 
 #define _AIREAD(name)   \
 	_jarray=jobj[#name].toArray();\
 	name.clear();\
 	foreach(const QJsonValue &v, _jarray)\
-																{\
+																																																																																																																																																																																																																																																																{\
 		int val = 0;\
 		if (v.isString())\
-										{\
+																		{\
 			val = v.toString().toInt();\
-										}\
-																																else\
-																																{\
+																		}\
+																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																else\
+																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																{\
 			val = v.toInt();\
-																																}\
+																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																}\
 		name.append(val);\
-																}
+																																																																																																																																																																																																																																																																}
 #define _AFREAD(name)   \
 	_jarray=jobj[#name].toArray();\
 	name.clear();\
 	foreach(const QJsonValue &v, _jarray)\
-																{\
+																																																																																																																																																																																																																																																																{\
 		name.append(v.toDouble());\
-																}
+																																																																																																																																																																																																																																																																}
 
 #define _AAIREAD(name) \
 	_jarray = jobj[#name].toArray();\
 	name.clear();\
 	foreach(const QJsonValue &v, _jarray)\
-																{\
+																																																																																																																																																																																																																																																																{\
 	if (v.isArray())\
-						{\
+										{\
 		QJsonArray jt = v.toArray();\
 		QList<int> lt;\
 		foreach(const QJsonValue &vt, jt)\
-																																																{\
+																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																{\
 			lt.append(vt.toInt());\
-																																																}\
+																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																}\
 			name.append(lt);\
-						}\
-																																else\
-																																{\
+										}\
+																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																else\
+																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																{\
 		QList<int> lt;\
 		lt.append(v.toInt());\
 		name.append(lt);\
-																																}\
-																}
+																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																}\
+																																																																																																																																																																																																																																																																}
 #define _AAFREAD(name) \
 	_jarray = jobj[#name].toArray();\
 	name.clear();\
 	foreach(const QJsonValue &v, _jarray)\
-																{\
+																																																																																																																																																																																																																																																																{\
 	if (v.isArray())\
-						{\
+										{\
 		QJsonArray jt = v.toArray();\
 		QList<float> lt;\
 		foreach(const QJsonValue &vt, jt)\
-																																																{\
+																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																{\
 			lt.append(vt.toDouble());\
-																																																}\
+																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																}\
 			name.append(lt);\
-						}\
-																																else\
-																																{\
+										}\
+																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																else\
+																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																{\
 		QList<float> lt;\
 		lt.append(v.toDouble());\
 		name.append(lt);\
-																																}\
-																}
+																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																}\
+																																																																																																																																																																																																																																																																}
 
 #define _ASREAD(name)   \
 	_jarray=jobj[#name].toArray();\
 	name.clear();\
 	foreach(const QJsonValue &v, _jarray)\
-																{\
+																																																																																																																																																																																																																																																																{\
 		name.append(v.toString());\
-																}
+																																																																																																																																																																																																																																																																}
 
 #define _ALREAD(name)   \
 	_jarray=jobj[#name].toArray();\
 	name.clear();\
 	foreach(const QJsonValue &v, _jarray)\
-																{\
+																																																																																																																																																																																																																																																																{\
 		name.append((qint64)v.toDouble());\
-																}
+																																																																																																																																																																																																																																																																}
 
 #define _ACREAD(name, c)   \
 	_jarray=jobj[#name].toArray();\
 	name.clear();\
 	foreach(const QJsonValue &v, _jarray)\
-																{\
+																																																																																																																																																																																																																																																																{\
 		c tc;\
 		tc.ReadFromJObj(v.toObject());\
 		name.append(tc);\
-																}
+																																																																																																																																																																																																																																																																}
 
 #define _CREAD(name, c)\
 	name.ReadFromJObj(jobj[#name].toObject());
@@ -1489,16 +1489,24 @@ bool kcsapi_battle::ReadFromJObj(const QJsonObject &jobj)
 {
 	_IREAD(api_dock_id);
 	_SIREAD(api_deck_id);
-	_AIREAD(api_ship_ke); //enemy ship list from #1
+	_AIREAD(api_ship_ke); //enemy ship list from #0
 	_AIREAD(api_ship_ke_combined);
-	_AIREAD(api_ship_lv); //enemy ship lv from #1
-	_AIREAD(api_ship_lv_combined); //enemy ship lv from #1
+	_AIREAD(api_ship_lv); //enemy ship lv from #0
+	_AIREAD(api_ship_lv_combined); //enemy ship lv from #0
+
+	// old
+	/*
 	_AIREAD(api_nowhps); // both hps from #1 (13)
 	_AIREAD(api_maxhps);
-
 	// combined
 	_AIREAD(api_nowhps_combined);
 	_AIREAD(api_maxhps_combined);
+	*/
+	// new
+	_AIREAD(api_f_nowhps);
+	_AIREAD(api_e_nowhps);
+	_AIREAD(api_f_maxhps);
+	_AIREAD(api_e_maxhps);
 
 	_AIREAD(api_active_deck);
 

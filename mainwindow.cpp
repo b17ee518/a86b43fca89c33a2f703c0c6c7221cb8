@@ -329,7 +329,7 @@ void MainWindow::slotWebViewException(int code, const QString &source, const QSt
 
 void MainWindow::onGetColorOnScreen()
 {
-	QPoint pt = mapFromGlobal(QCursor::pos());
+	QPoint pt = getBrowserWidget()->mapFromGlobal(QCursor::pos());
 
 	if (QApplication::queryKeyboardModifiers()&Qt::ShiftModifier)
 	{

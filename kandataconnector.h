@@ -81,7 +81,9 @@ private:
 		, QList<float>* totalfdamage_combined
 		, QList<float>* totaledamage_combined
 		, bool bOnlyCombinedSelf
-		, bool bOnlyCombinedEnemy);
+		, bool bOnlyCombinedEnemy
+		, bool bCombinedSelf
+		, bool bCombinedEnemy);
 
 	void checkWoundQuit();
 

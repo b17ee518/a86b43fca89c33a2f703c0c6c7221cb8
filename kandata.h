@@ -392,12 +392,19 @@ public:
 	QList<int> api_ship_ke_combined; //enemy ship list from #1 (enemy combined)
 	QList<int> api_ship_lv; //enemy ship lv from #1
 	QList<int> api_ship_lv_combined; //enemy ship lv from #1
+
+	// old	
+	/*
 	QList<int> api_nowhps; // both hps from #1 (13)
 	QList<int> api_maxhps;
-
 	// combined
 	QList<int> api_nowhps_combined; //#1~13
 	QList<int> api_maxhps_combined;
+	*/
+	QList<int> api_f_nowhps;	// from #0
+	QList<int> api_e_nowhps;
+	QList<int> api_f_maxhps;
+	QList<int> api_e_maxhps;
 
 	//TODO!!!! check
 	QList<int> api_active_deck;	// [0]self [1]enemy

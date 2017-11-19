@@ -519,6 +519,8 @@ private:
 
 	void setStateToChecking();
 	bool _shouldRetrieve = false;
+
+	int _totalFormationCount = 0;
 };
 
 class RepeatAction : public ControlAction

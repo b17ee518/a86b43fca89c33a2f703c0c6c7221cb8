@@ -932,7 +932,7 @@ bool ChargeAction::action()
 				{
 					if (cm.isKiraMode() && _team == 0)
 					{
-						cm.moveMouseToAndClick(117, 167, 2, 2); // first ship
+						cm.moveMouseToAndClick(466, 165, 20, 5); // first ship
 						setState(State::OKToChargeChecking, "Charge:OKToChargeChecking");
 					}
 					else

@@ -69,21 +69,29 @@ private:
 
 	void updateBattle(const kcsapi_battle &api_battle, KanBattleType type);
 
+	void processHougekiDamages(const kcsapi_battle_hougeki& api_hougeki
+		, bool bOnlyCombinedSelf
+		, bool bOnlyCombinedEnemy);
+	void processAirBaseAttackDamages(const kcsapi_battle_base_attack& api_air_base_attack);
+	void processKoukuDamages(const kcsapi_battle_kouku& api_kouku);
+	void processSupportDamages(int api_support_flag, const kcsapi_battle_support_info& api_support);
+	void processOpeningDamages(const kcsapi_battle_opening_atack& api_opening_atack);
+	void processRaigekiDamages(const kcsapi_battle_raigeki& api_raigeki);
+
 	void getShipColors(const kcsapi_ship2 *pship, QColor *pcolCond = 0, QColor *pcolWound = 0, CondState* pcondstate = 0, WoundState* pwoundstate = 0);
 	void getShipChargeColors(const kcsapi_ship2 *pship, const kcsapi_mst_ship *pmstship, QColor *pcolFuel, QColor *pcolBullet);
 	QString getShipWoundStateString(const kcsapi_ship2 *pship);
 	bool isShipRepairing(const kcsapi_ship2 *pship);
 	bool isAutoRepairing(int flagshipno = -1);
 
-	void processHouraiDamages(const kcsapi_battle_hougeki* api_hougeki
-		, QList<float>* totalfdamage
-		, QList<float>* totaledamage
-		, QList<float>* totalfdamage_combined
-		, QList<float>* totaledamage_combined
-		, bool bOnlyCombinedSelf
-		, bool bOnlyCombinedEnemy
-		, bool bCombinedSelf
-		, bool bCombinedEnemy);
+private:
+	QList<float> totalFDamage;
+	QList<float> totalEDamage;
+	QList<float> totalFDamageCombined;
+	QList<float> totalEDamageCombined;
+	bool bCombinedSelf;
+	bool bCombinedEnemy;
+private:
 
 	void checkWoundQuit();
 
@@ -160,6 +168,7 @@ private:
 	bool req_combined_battle_goback_port_parse();
 	bool req_combined_battle_ec_battle_parse();
 	bool req_combined_battle_ec_midnight_battle_parse();
+	bool req_combined_battle_ec_night_to_day_parse();
 	bool req_combined_battle_each_battle_parse();
 	bool req_combined_battle_each_battle_water_parse();
 	bool get_member_practice_parse();
@@ -208,6 +217,7 @@ private:
 	bool req_map_start_air_base_parse();
 	bool req_air_corps_supply_parse();
 	bool req_air_corps_set_action_parse();
+	bool req_sortie_goback_port_parse();
 
 
 private:
@@ -273,6 +283,7 @@ private:
 	int req_combined_battle_goback_port_flag;
 	int req_combined_battle_ec_battle_flag;
 	int req_combined_battle_ec_midnight_battle_flag;
+	int req_combined_battle_ec_night_to_day_flag;
 	int req_combined_battle_each_battle_flag;
 	int req_combined_battle_each_battle_water_flag;
 	int get_member_practice_flag;
@@ -321,6 +332,7 @@ private:
 	int req_map_start_air_base_flag;
 	int req_air_corps_supply_flag;
 	int req_air_corps_set_action_flag;
+	int req_sortie_goback_port_flag;
 
 private:
 	QColor _colWhite;

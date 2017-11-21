@@ -388,19 +388,11 @@ public:
 	int api_deck_id;
 	QString api_deck_id_s;
 
-	QList<int> api_ship_ke; //enemy ship list from #1
-	QList<int> api_ship_ke_combined; //enemy ship list from #1 (enemy combined)
-	QList<int> api_ship_lv; //enemy ship lv from #1
-	QList<int> api_ship_lv_combined; //enemy ship lv from #1
+	QList<int> api_ship_ke; //enemy ship list from #0
+	QList<int> api_ship_ke_combined; //enemy ship list from #0 (enemy combined)
+	QList<int> api_ship_lv; //enemy ship lv from #0
+	QList<int> api_ship_lv_combined; //enemy ship lv from #0
 
-	// old	
-	/*
-	QList<int> api_nowhps; // both hps from #1 (13)
-	QList<int> api_maxhps;
-	// combined
-	QList<int> api_nowhps_combined; //#1~13
-	QList<int> api_maxhps_combined;
-	*/
 	QList<int> api_f_nowhps;	// from #0
 	QList<int> api_e_nowhps;
 	QList<int> api_f_maxhps;
@@ -449,15 +441,26 @@ public:
 
 	int api_support_flag; //空爆1　砲撃2　雷撃3
 	kcsapi_battle_support_info api_support_info;
+
+	int api_n_support_flag; //空爆1　砲撃2　雷撃3
+	kcsapi_battle_support_info api_n_support_info;
+
 	int api_opening_taisen_flag;
 	kcsapi_battle_hougeki api_opening_taisen;
 	int api_opening_flag;
 	kcsapi_battle_opening_atack api_opening_atack;
 	QList<int> api_hourai_flag; // hougeki1, hougeki2, hougeki3, raigeki
+
 	kcsapi_battle_hougeki api_hougeki1;
 	kcsapi_battle_hougeki api_hougeki2;
 	kcsapi_battle_hougeki api_hougeki3;
+
 	kcsapi_battle_raigeki api_raigeki;
+
+	kcsapi_battle_hougeki api_n_hougeki1;	// ec_night_to_day
+	kcsapi_battle_hougeki api_n_hougeki2;
+
+	int api_day_flag;
 
 	// midnight
 	kcsapi_battle_hougeki api_hougeki; //midnight

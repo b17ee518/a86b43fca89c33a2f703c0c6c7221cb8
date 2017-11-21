@@ -1119,11 +1119,19 @@ bool KanDataConnector::req_combined_battle_ec_midnight_battle_parse()
 	return true;
 }
 
+bool KanDataConnector::req_combined_battle_ec_night_to_day_parse()
+{
+	pksd->battledata.ReadFromJObj(_jobj);
+
+	updateBattle(pksd->battledata, KanBattleType::Combined_ECNightToDay);
+	return true;
+}
+
 bool KanDataConnector::req_combined_battle_each_battle_parse()
 {
 	pksd->battledata.ReadFromJObj(_jobj);
 
-	updateBattle(pksd->battledata, KanBattleType::Combined_Each);
+	updateBattle(pksd->battledata, KanBattleType::Combined_ECNightToDay);
 	return true;
 }
 
@@ -1697,6 +1705,11 @@ bool KanDataConnector::req_air_corps_supply_parse()
 }
 
 bool KanDataConnector::req_air_corps_set_action_parse()
+{
+	return true;
+}
+
+bool KanDataConnector::req_sortie_goback_port_parse()
 {
 	return true;
 }

@@ -398,6 +398,11 @@ public:
 	QList<int> api_f_maxhps;
 	QList<int> api_e_maxhps;
 
+	QList<int> api_f_nowhps_combined;	// from #0
+	QList<int> api_e_nowhps_combined;
+	QList<int> api_f_maxhps_combined;
+	QList<int> api_e_maxhps_combined;
+
 	//TODO!!!! check
 	QList<int> api_active_deck;	// [0]self [1]enemy
 

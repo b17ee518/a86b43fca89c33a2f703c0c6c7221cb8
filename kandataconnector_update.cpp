@@ -1366,7 +1366,14 @@ void KanDataConnector::updateBattle(const kcsapi_battle &api_battle, KanBattleTy
 		}
 		for (int i = 0; i < pships_combined.count(); i++)
 		{
-			pksd->beginLastBattleHPs.combinedSelf.append(api_battle.api_f_nowhps[i + 6]);
+			if (api_battle.api_f_nowhps_combined.count() > 0)
+			{
+				pksd->beginLastBattleHPs.combinedSelf.append(api_battle.api_f_nowhps_combined[i]);
+			}
+			else
+			{
+				pksd->beginLastBattleHPs.combinedSelf.append(api_battle.api_f_nowhps[i + 6]);
+			}
 		}
 		for (int i = 0; i < api_battle.api_ship_ke.count(); i++)
 		{
@@ -1374,7 +1381,14 @@ void KanDataConnector::updateBattle(const kcsapi_battle &api_battle, KanBattleTy
 		}
 		for (int i = 0; i < api_battle.api_ship_ke_combined.count(); i++)
 		{
-			pksd->beginLastBattleHPs.combinedEnemy.append(api_battle.api_e_nowhps[i + 6]);
+			if (api_battle.api_e_nowhps_combined.count() > 0)
+			{
+				pksd->beginLastBattleHPs.combinedEnemy.append(api_battle.api_e_nowhps_combined[i]);
+			}
+			else
+			{
+				pksd->beginLastBattleHPs.combinedEnemy.append(api_battle.api_e_nowhps[i + 6]);
+			}
 		}
 
 		//////////////////////////////////////////////////////////////////////////

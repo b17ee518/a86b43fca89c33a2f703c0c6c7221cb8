@@ -156,7 +156,7 @@ public:
 	bool BuildNext_Rank();
 
 	void LoadAnyTemplateSettings();
-	bool BuildNext_Any();
+	bool BuildNext_Any(bool onlyAdvance);
 
 	bool LoadExpeditionPossibleList(); // TODO
 	bool BuildNext_Expedition();

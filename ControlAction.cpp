@@ -2911,6 +2911,12 @@ bool SortieCommonAdvanceAction::action()
 					447, 82, 93, 255, 131
 					, 424, 298, 93, 255, 131
 					, 477, 177, 0, 120, 121
+					)
+					||
+					cm.checkColors(
+					447, 81, 93, 255, 131
+					, 470, 252, 93, 255, 131
+					, 477, 177, 0, 120, 121
 					))
 				{
 					_totalFormationCount = 6;
@@ -3250,7 +3256,7 @@ bool RepeatAction::action()
 		}
 		else if (cm.isAnyMode())
 		{
-			if (cm.BuildNext_Any())
+			if (cm.BuildNext_Any(false))
 			{
 				setState(State::Done, "Repeat:Done");
 				cm.StartJob();

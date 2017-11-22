@@ -7,6 +7,8 @@
 #include "ControlManager.h"
 #include <cmath>
 
+#include "klog.h"
+
 #include <QApplication>
 
 void KanDataConnector::updateOverviewTable()
@@ -1287,7 +1289,6 @@ void KanDataConnector::updateBattle(const kcsapi_battle &api_battle, KanBattleTy
 		if (type != KanBattleType::DayToNight
 			&& type != KanBattleType::NightToDay
 			&& type != KanBattleType::Combined_DayToNight
-			//			&& type != KanBattleType::Combined_KouKuNight
 			&& type != KanBattleType::Combined_ECNight)
 		{
 			pksd->lastSeiku = api_battle.api_kouku.api_stage1.api_disp_seiku;
@@ -1382,12 +1383,15 @@ void KanDataConnector::updateBattle(const kcsapi_battle &api_battle, KanBattleTy
 		/************************************************************************/
 		//////////////////////////////////////////////////////////////////////////
 
+		//#define TRYLOG(func, str)	try {func;} catch(...){ERRLOG("Error Parse Battle: " str)}
+#define TRYLOG(func, str) func;
+
 		// air base attack
 		if (!api_battle.api_air_base_attack.isEmpty())
 		{
 			for (const auto& item : api_battle.api_air_base_attack)
 			{
-				processAirBaseAttackDamages(item);
+				TRYLOG(processAirBaseAttackDamages(item), "AirBaseAttack");
 			}
 		}
 
@@ -1396,7 +1400,7 @@ void KanDataConnector::updateBattle(const kcsapi_battle &api_battle, KanBattleTy
 
 		if (api_battle.api_stage_flag[2] > 0)
 		{
-			processKoukuDamages(api_battle.api_injection_kouku);
+			TRYLOG(processKoukuDamages(api_battle.api_injection_kouku), "InjecionKouku");
 		}
 
 		//TODO: formation
@@ -1406,7 +1410,7 @@ void KanDataConnector::updateBattle(const kcsapi_battle &api_battle, KanBattleTy
 			//　航空ダメージ
 			if (api_battle.api_stage_flag[2] > 0)
 			{
-				processKoukuDamages(api_battle.api_kouku);
+				TRYLOG(processKoukuDamages(api_battle.api_kouku), "KoukuSen");
 			}
 		}
 		int stageflagcount2 = api_battle.api_stage_flag2.count();
@@ -1415,103 +1419,89 @@ void KanDataConnector::updateBattle(const kcsapi_battle &api_battle, KanBattleTy
 			//　航空ダメージ
 			if (api_battle.api_stage_flag2[2] > 0)
 			{
-				processKoukuDamages(api_battle.api_kouku2);
+				TRYLOG(processKoukuDamages(api_battle.api_kouku2), "KoukuSen2");
 			}
 		}
 
-		if (type != KanBattleType::Night
-			&& type != KanBattleType::DayToNight
-			&& type != KanBattleType::Combined_DayToNight
-			&& type != KanBattleType::Combined_Night
-			&& type != KanBattleType::Combined_ECNight)
-		{
-			processSupportDamages(api_battle.api_support_flag, api_battle.api_support_info);
-			processSupportDamages(api_battle.api_n_support_flag, api_battle.api_n_support_info);
+		TRYLOG(processSupportDamages(api_battle.api_support_flag, api_battle.api_support_info), "Support");
+		TRYLOG(processSupportDamages(api_battle.api_n_support_flag, api_battle.api_n_support_info), "NightSupport");
 
-			// opening taisen
-			if (api_battle.api_opening_taisen_flag)
+		// opening taisen
+		if (api_battle.api_opening_taisen_flag)
+		{
+			bool bSelfCombineDamage = bCombinedSelf;
+			if (type == KanBattleType::Combined_KouKu || type == KanBattleType::Combined_Day)
 			{
-				bool bSelfCombineDamage = bCombinedSelf;
+				bSelfCombineDamage = false;
+			}
+			TRYLOG(processHougekiDamages(api_battle.api_opening_taisen, bSelfCombineDamage, false), "OpeningTaisen");	// no such condition?
+		}
+
+		// opening
+		if (api_battle.api_opening_flag > 0)
+		{
+			TRYLOG(processOpeningDamages(api_battle.api_opening_atack), "OpeningAttack");
+		}
+
+		// hourai
+		int houraiflagcount = api_battle.api_hourai_flag.count();
+		if (houraiflagcount >= 4)
+		{
+			int hougeki1flag = api_battle.api_hourai_flag[0];
+			int hougeki2flag = api_battle.api_hourai_flag[1];
+			int hougeki3flag = api_battle.api_hourai_flag[2];
+			int raigekiflag = api_battle.api_hourai_flag[3];
+			if (bCombinedSelf &&
+				(type == KanBattleType::Combined_KouKu || type == KanBattleType::Combined_Day))
+			{
+				raigekiflag = api_battle.api_hourai_flag[1];
+				hougeki2flag = api_battle.api_hourai_flag[2];
+				hougeki3flag = api_battle.api_hourai_flag[3];
+			}
+			if (hougeki1flag)
+			{
+				bool bCombineDamageSelf = false;
+				bool bCombineDamageEnemy = bCombinedEnemy;
 				if (type == KanBattleType::Combined_KouKu || type == KanBattleType::Combined_Day)
 				{
-					bSelfCombineDamage = false;
+					bCombineDamageSelf = bCombinedSelf;
 				}
-				processHougekiDamages(api_battle.api_opening_taisen
-					, bSelfCombineDamage
-					, false);	// no such condition?
+				TRYLOG(processHougekiDamages(api_battle.api_hougeki1
+					, bCombineDamageSelf
+					, bCombineDamageEnemy), "Hougeki1");
+			}
+			if (hougeki2flag)
+			{
+				bool bCombineDamageSelf = false;
+				bool bCombineDamageEnemy = false;
+				TRYLOG(processHougekiDamages(api_battle.api_hougeki2
+					, bCombineDamageSelf
+					, bCombineDamageEnemy), "Hougeki2");
+			}
+			if (hougeki3flag)
+			{
+				//TODO!!! check
+				bool bCombineDamageSelf = bCombinedSelf;
+				bool bCombineDamageEnemy = bCombinedEnemy;
+				if (type == KanBattleType::Combined_KouKu || type == KanBattleType::Combined_Day)
+				{
+					bCombineDamageSelf = false;
+				}
+				TRYLOG(processHougekiDamages(api_battle.api_hougeki3
+					, bCombineDamageSelf
+					, bCombineDamageEnemy), "Hougeki3");
 			}
 
-			// opening
-			if (api_battle.api_opening_flag > 0)
+
+			// raigeki
+			if (raigekiflag)
 			{
-				processOpeningDamages(api_battle.api_opening_atack);
-			}
-
-			// hourai
-			int houraiflagcount = api_battle.api_hourai_flag.count();
-			if (houraiflagcount >= 4)
-			{
-				int hougeki1flag = api_battle.api_hourai_flag[0];
-				int hougeki2flag = api_battle.api_hourai_flag[1];
-				int hougeki3flag = api_battle.api_hourai_flag[2];
-				int raigekiflag = api_battle.api_hourai_flag[3];
-				if (bCombinedSelf &&
-					(type == KanBattleType::Combined_KouKu || type == KanBattleType::Combined_Day))
-				{
-					raigekiflag = api_battle.api_hourai_flag[1];
-					hougeki2flag = api_battle.api_hourai_flag[2];
-					hougeki3flag = api_battle.api_hourai_flag[3];
-				}
-				if (hougeki1flag)
-				{
-					bool bCombineDamageSelf = false;
-					bool bCombineDamageEnemy = bCombinedEnemy;
-					if (type == KanBattleType::Combined_KouKu || type == KanBattleType::Combined_Day)
-					{
-						bCombineDamageSelf = bCombinedSelf;
-					}
-					processHougekiDamages(api_battle.api_hougeki1
-						, bCombineDamageSelf
-						, bCombineDamageEnemy);
-				}
-				if (hougeki2flag)
-				{
-					bool bCombineDamageSelf = false;
-					bool bCombineDamageEnemy = false;
-					processHougekiDamages(api_battle.api_hougeki2
-						, bCombineDamageSelf
-						, bCombineDamageEnemy);
-				}
-				if (hougeki3flag)
-				{
-					//TODO!!! check
-					bool bCombineDamageSelf = bCombinedSelf;
-					bool bCombineDamageEnemy = bCombinedEnemy;
-					if (type == KanBattleType::Combined_KouKu || type == KanBattleType::Combined_Day)
-					{
-						bCombineDamageSelf = false;
-					}
-					processHougekiDamages(api_battle.api_hougeki3
-						, bCombineDamageSelf
-						, bCombineDamageEnemy);
-				}
-
-				if (type == KanBattleType::Combined_ECNightToDay)
-				{
-					processHougekiDamages(api_battle.api_n_hougeki1, false, false);
-					processHougekiDamages(api_battle.api_n_hougeki2, false, false);
-				}
-
-				// raigeki
-				if (raigekiflag)
-				{
-					processRaigekiDamages(api_battle.api_raigeki);
-				}
+				TRYLOG(processRaigekiDamages(api_battle.api_raigeki), "Raigeki");
 			}
 		}
-		else
+
+		// midnight
 		{
-			// midnight
 			bool bEnemyDamageCombined = false;
 			if (bCombinedEnemy)
 			{
@@ -1525,9 +1515,11 @@ void KanDataConnector::updateBattle(const kcsapi_battle &api_battle, KanBattleTy
 				}
 			}
 
-			processHougekiDamages(api_battle.api_hougeki
-				, bCombinedSelf		// always second team
-				, bEnemyDamageCombined);
+			TRYLOG(processHougekiDamages(api_battle.api_hougeki
+				, bCombinedSelf		/* always second team*/
+				, bEnemyDamageCombined), "NightHougeki");
+			TRYLOG(processHougekiDamages(api_battle.api_n_hougeki1, bCombinedSelf, bEnemyDamageCombined), "NightHougeki1");
+			TRYLOG(processHougekiDamages(api_battle.api_n_hougeki2, bCombinedSelf, bEnemyDamageCombined), "NightHougeki2");
 		}
 
 		//////////////////////////////////////////////////////////////////////////
@@ -1601,9 +1593,7 @@ void KanDataConnector::updateBattle(const kcsapi_battle &api_battle, KanBattleTy
 			}
 		}
 		updateInfoTitleBattle(true, bSelfDamaged);
-
 	}
-
 }
 
 void KanDataConnector::processHougekiDamages(const kcsapi_battle_hougeki& api_hougeki

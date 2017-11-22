@@ -889,119 +889,126 @@ void ControlManager::LoadAnyTemplateSettings()
 	delete setting;
 }
 
-bool ControlManager::BuildNext_Any()
+bool ControlManager::BuildNext_Any(bool advanceOnly)
 {
 	_target = ActionTarget::Any;
-	pushPreSupplyCheck();
 
-	QList<int> willBeInDockList;
-	QList<int> fastRepairShips;
-	if (_anySetting.autoFastRepair)
+	if (!advanceOnly)
 	{
-		fastRepairShips = pushPreRepairCheck(willBeInDockList, true, true, false, false);
-	}
-	else if (_anySetting.onlySSTeamSize > 0)
-	{
-		pushPreRepairCheck(willBeInDockList, false, false, true, true);
-	}
+		pushPreSupplyCheck();
 
-	KanSaveData* pksd = &KanSaveData::getInstance();
-	KanDataConnector* pkdc = &KanDataConnector::getInstance();
-
-	pushPreShipFullCheck();
-
-	if (_anySetting.count >= 0 && _anySetting.count <= pksd->totalAnyCount)
-	{
-		setToTerminate("Terminated:CountReached", false, RemoteNotifyHandler::Level::Low);
-		return false;
-	}
-
-	QList<int> ships;
-	int minCond = std::numeric_limits<int>::max();
-	int shipCount = 0;
-
-	if (_anySetting.onlySSTeamSize > 0)
-	{
-		QList<int> sortInTeamShips;
-		QString errorMessage;
-		if (!chooseSSShipList(_anySetting.onlySSTeamSize, ships, sortInTeamShips, willBeInDockList, errorMessage))
+		QList<int> willBeInDockList;
+		QList<int> fastRepairShips;
+		if (_anySetting.autoFastRepair)
 		{
-			setToTerminate(errorMessage.toLocal8Bit(), false, RemoteNotifyHandler::Level::Low);
+			fastRepairShips = pushPreRepairCheck(willBeInDockList, true, true, false, false);
+		}
+		else if (_anySetting.onlySSTeamSize > 0)
+		{
+			pushPreRepairCheck(willBeInDockList, false, false, true, true);
+		}
+
+		KanSaveData* pksd = &KanSaveData::getInstance();
+		KanDataConnector* pkdc = &KanDataConnector::getInstance();
+
+		pushPreShipFullCheck();
+
+		if (_anySetting.count >= 0 && _anySetting.count <= pksd->totalAnyCount)
+		{
+			setToTerminate("Terminated:CountReached", false, RemoteNotifyHandler::Level::Low);
 			return false;
 		}
 
-		auto chSortAction = new ChangeHenseiAction();
-		chSortAction->setShips(sortInTeamShips);
-		_actionList.append(chSortAction);
+		QList<int> ships;
+		int minCond = std::numeric_limits<int>::max();
+		int shipCount = 0;
 
-		// change hensei
-		auto chAction = new ChangeHenseiAction();
-		chAction->setShips(ships);
-		_actionList.append(chAction);
-
-	}
-	else
-	{
-		if (pksd->portdata.api_deck_port.size())
+		if (_anySetting.onlySSTeamSize > 0)
 		{
-			auto& firstFleet = pksd->portdata.api_deck_port.first();
-			for (auto id : firstFleet.api_ship)
+			QList<int> sortInTeamShips;
+			QString errorMessage;
+			if (!chooseSSShipList(_anySetting.onlySSTeamSize, ships, sortInTeamShips, willBeInDockList, errorMessage))
 			{
-				if (id >= 0)
+				setToTerminate(errorMessage.toLocal8Bit(), false, RemoteNotifyHandler::Level::Low);
+				return false;
+			}
+
+			auto chSortAction = new ChangeHenseiAction();
+			chSortAction->setShips(sortInTeamShips);
+			_actionList.append(chSortAction);
+
+			// change hensei
+			auto chAction = new ChangeHenseiAction();
+			chAction->setShips(ships);
+			_actionList.append(chAction);
+
+		}
+		else
+		{
+			if (pksd->portdata.api_deck_port.size())
+			{
+				auto& firstFleet = pksd->portdata.api_deck_port.first();
+				for (auto id : firstFleet.api_ship)
 				{
-					ships.append(id);
+					if (id >= 0)
+					{
+						ships.append(id);
+					}
 				}
 			}
 		}
-	}
 
-	for (auto id : ships)
-	{
-		const kcsapi_ship2* pship = pkdc->findShipFromShipno(id);
-		if (pship)
+		for (auto id : ships)
 		{
-			shipCount++;
-
-			if (pship->api_cond < minCond)
+			const kcsapi_ship2* pship = pkdc->findShipFromShipno(id);
+			if (pship)
 			{
+				shipCount++;
+
+				if (pship->api_cond < minCond)
+				{
+					if (!fastRepairShips.contains(pship->api_id))
+					{
+						minCond = pship->api_cond;
+					}
+				}
+
 				if (!fastRepairShips.contains(pship->api_id))
 				{
-					minCond = pship->api_cond;
+					WoundState ws = KanDataCalc::GetWoundState(pship->api_nowhp, pship->api_maxhp);
+
+					if (ws >= WoundState::Middle && !_anySetting.allowMiddleDamageSortie || ws >= WoundState::Big)
+					{
+						setToTerminate("Terminated:Damage", false, RemoteNotifyHandler::Level::Low);
+						return false;
+					}
 				}
 			}
 
-			if (!fastRepairShips.contains(pship->api_id))
+			if (minCond <= _sortieMinCond && _anySetting.checkCond)
 			{
-				WoundState ws = KanDataCalc::GetWoundState(pship->api_nowhp, pship->api_maxhp);
-
-				if (ws >= WoundState::Middle && !_anySetting.allowMiddleDamageSortie || ws >= WoundState::Big)
-				{
-					setToTerminate("Terminated:Damage", false, RemoteNotifyHandler::Level::Low);
-					return false;
-				}
+				// wait
+				qint64 waitMS = qCeil((_sortieWaitCond - minCond) / 3.0) * 3 * 60 * 1000;
+				auto waitAction = new WaitCondAction();
+				waitAction->setWaitMS(waitMS, false);
+				_actionList.append(waitAction);
 			}
 		}
-
-		if (minCond <= _sortieMinCond && _anySetting.checkCond)
-		{
-			// wait
-			qint64 waitMS = qCeil((_sortieWaitCond - minCond) / 3.0) * 3 * 60 * 1000;
-			auto waitAction = new WaitCondAction();
-			waitAction->setWaitMS(waitMS, false);
-			_actionList.append(waitAction);
-		}
+		SortieAction* sortieAction = new SortieAction();
+		sortieAction->setAreaAndMap(_anySetting.area, _anySetting.map
+			, _anySetting.areaCheckList, _anySetting.mapClickPoint
+			, _anySetting.mapExCheckList, _anySetting.mapExClickPoint
+			, _anySetting.mapEx2CheckList, _anySetting.mapEx2ClickPoint);
+		sortieAction->setShouldPauseNext(_anySetting.pauseAtStartMap);
+		_actionList.append(sortieAction);
 	}
 
-	SortieAction* sortieAction = new SortieAction();
-	sortieAction->setAreaAndMap(_anySetting.area, _anySetting.map
-		, _anySetting.areaCheckList, _anySetting.mapClickPoint
-		, _anySetting.mapExCheckList, _anySetting.mapExClickPoint
-		, _anySetting.mapEx2CheckList, _anySetting.mapEx2ClickPoint);
-	sortieAction->setShouldPauseNext(_anySetting.pauseAtStartMap);
-	_actionList.append(sortieAction);
 	_actionList.append(new SortieCommonAdvanceAction());
 	_actionList.append(new ChargeAction());
-	_actionList.append(new RepeatAction());
+	if (!advanceOnly)
+	{
+		_actionList.append(new RepeatAction());
+	}
 	setState(State::Ready, "Ready");
 	return true;
 }

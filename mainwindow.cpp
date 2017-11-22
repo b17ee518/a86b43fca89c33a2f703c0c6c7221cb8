@@ -125,12 +125,12 @@ MainWindow::MainWindow(QWidget *parent)
 	QShortcut * shortcutDisplayColorDelay = new QShortcut(QKeySequence("Ctrl+Shift+I"), this);
 	connect(shortcutDisplayColorDelay, SIGNAL(activated()), this, SLOT(onGetColorOnScreen()));
 
-	auto shortcutIncreseTimeShift = new QShortcut(QKeySequence("Ctrl+Shift+Up"), this);
+	auto shortcutIncreseTimeShift = new QShortcut(QKeySequence("Shift+Up"), this);
 	connect(shortcutIncreseTimeShift,
 		SIGNAL(activated()),
 		this,
 		SLOT(onIncreaseTimeShift()));
-	auto shortcutDecreseTimeShift = new QShortcut(QKeySequence("Ctrl+Shift+Down"), this);
+	auto shortcutDecreseTimeShift = new QShortcut(QKeySequence("Shift+Down"), this);
 	connect(shortcutDecreseTimeShift,
 		SIGNAL(activated()),
 		this,

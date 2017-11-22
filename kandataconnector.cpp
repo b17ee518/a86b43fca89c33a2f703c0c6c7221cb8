@@ -938,7 +938,6 @@ void KanDataConnector::logBattleDetail(bool bCombined)
 	int shipcount = 0;
 	foreach(const kcsapi_ship2 * pship, sships)
 	{
-		shipcount++;
 		const kcsapi_mst_ship * pmstship = findMstShipFromShipid(pship->api_ship_id);
 		if (pmstship)
 		{
@@ -967,23 +966,27 @@ void KanDataConnector::logBattleDetail(bool bCombined)
 			equiplines[i] += strslotitemname + "\t";
 		}
 
-		beforehpline += QString("%1").arg(pksd->battledata.api_f_nowhps[shipcount]) + "\t";
-		afterhpline += QString("%1").arg(pship->api_nowhp) + "\t";
-		if (pmstship)
+		if (pksd->battledata.api_f_nowhps.count() > shipcount)
 		{
-			nenryoline += QString("%1%").arg(pship->api_fuel * 100 / pmstship->api_fuel_max) + "\t";
-			danyakuline += QString("%1%").arg(pship->api_bull * 100 / pmstship->api_bull_max) + "\t";
+			beforehpline += QString("%1").arg(pksd->battledata.api_f_nowhps[shipcount]) + "\t";
+			afterhpline += QString("%1").arg(pship->api_nowhp) + "\t";
+			if (pmstship)
+			{
+				nenryoline += QString("%1%").arg(pship->api_fuel * 100 / pmstship->api_fuel_max) + "\t";
+				danyakuline += QString("%1%").arg(pship->api_bull * 100 / pmstship->api_bull_max) + "\t";
+			}
+			condline += QString("%1").arg(pship->api_cond) + "\t";
 		}
-		condline += QString("%1").arg(pship->api_cond) + "\t";
+
+		shipcount++;
 	}
 
 	int i = 0;
 	foreach(const kcsapi_mst_ship * pmstship, eships)
 	{
-		i++;
 		enemynameline += pmstship->api_name + "\t";
 		int ehp = 0;
-		if (i > 6)
+		if (i >= 6)
 		{
 			ehp = pksd->remainLastBattleHPs.combinedEnemy[i - 6];
 		}
@@ -997,6 +1000,7 @@ void KanDataConnector::logBattleDetail(bool bCombined)
 			ehp = 0;
 		}
 		ehpline += QString("%1").arg(ehp) + "\t";
+		i++;
 	}
 
 	QString writestr = infoline + "\n"

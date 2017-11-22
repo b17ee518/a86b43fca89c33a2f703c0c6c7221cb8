@@ -214,7 +214,7 @@ void MainWindow::onDoJobAny()
 
 	cm.setAnySetting(setting);
 
-	if (cm.BuildNext_Any())
+	if (cm.BuildNext_Any(QApplication::queryKeyboardModifiers()&Qt::ShiftModifier))
 	{
 		cm.StartJob();
 	}

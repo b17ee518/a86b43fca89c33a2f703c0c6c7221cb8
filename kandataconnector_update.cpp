@@ -1445,16 +1445,26 @@ void KanDataConnector::updateBattle(const kcsapi_battle &api_battle, KanBattleTy
 
 		// hourai
 		int houraiflagcount = api_battle.api_hourai_flag.count();
-		if (houraiflagcount >= 4)
+		if (houraiflagcount > 0)
 		{
-			int hougeki1flag = api_battle.api_hourai_flag[0];
-			int hougeki2flag = api_battle.api_hourai_flag[1];
-			int hougeki3flag = api_battle.api_hourai_flag[2];
-			int raigekiflag = api_battle.api_hourai_flag[3];
+			int hougeki1flag = 0;
+			int hougeki2flag = 0;
+			int hougeki3flag = 0;
+
+			hougeki1flag = api_battle.api_hourai_flag[0];
+			if (houraiflagcount > 1)
+			{
+				hougeki2flag = api_battle.api_hourai_flag[1];
+			}
+			if (houraiflagcount > 2)
+			{
+				hougeki3flag = api_battle.api_hourai_flag[2];
+			}
+
 			if (bCombinedSelf &&
 				(type == KanBattleType::Combined_KouKu || type == KanBattleType::Combined_Day))
 			{
-				raigekiflag = api_battle.api_hourai_flag[1];
+				//raigekiflag = api_battle.api_hourai_flag[1];
 				hougeki2flag = api_battle.api_hourai_flag[2];
 				hougeki3flag = api_battle.api_hourai_flag[3];
 			}
@@ -1494,10 +1504,7 @@ void KanDataConnector::updateBattle(const kcsapi_battle &api_battle, KanBattleTy
 
 
 			// raigeki
-			if (raigekiflag)
-			{
-				TRYLOG(processRaigekiDamages(api_battle.api_raigeki), "Raigeki");
-			}
+			TRYLOG(processRaigekiDamages(api_battle.api_raigeki), "Raigeki");
 		}
 
 		// midnight

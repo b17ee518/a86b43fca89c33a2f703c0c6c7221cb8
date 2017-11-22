@@ -1131,7 +1131,7 @@ bool KanDataConnector::req_combined_battle_each_battle_parse()
 {
 	pksd->battledata.ReadFromJObj(_jobj);
 
-	updateBattle(pksd->battledata, KanBattleType::Combined_ECNightToDay);
+	updateBattle(pksd->battledata, KanBattleType::Combined_Each);
 	return true;
 }
 

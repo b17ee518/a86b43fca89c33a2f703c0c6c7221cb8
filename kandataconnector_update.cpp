@@ -1247,6 +1247,10 @@ void KanDataConnector::updateBattle(const kcsapi_battle &api_battle, KanBattleTy
 	}
 	else
 	{
+		if (api_battle.api_deck_id > 0)
+		{
+			dockid = api_battle.api_deck_id - 1;
+		}
 		if (type == KanBattleType::Combined_Each || type == KanBattleType::Combined_EachWater)
 		{
 			bCombinedEnemy = true;

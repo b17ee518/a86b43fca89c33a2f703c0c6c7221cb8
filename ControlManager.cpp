@@ -1515,7 +1515,7 @@ void ControlManager::pushPreSupplyCheck()
 }
 
 
-QList<int> ControlManager::pushPreRepairCheck(QList<int>& willBeInDockList, bool bCanUseFastRepair, bool includingFirstTeam, bool onlyShortSevere, bool onlySmallShip)
+QList<int> ControlManager::pushPreRepairCheck(QList<int>& willBeInDockList, bool bForceUseFastRepair, bool includingFirstTeam, bool onlyShortSevere, bool onlySmallShip)
 {
 	if (!_shouldAutoPushRepair)
 	{
@@ -1539,7 +1539,7 @@ QList<int> ControlManager::pushPreRepairCheck(QList<int>& willBeInDockList, bool
 
 	if (takenNDock.size() >= useUpToNDockSize)
 	{
-		if (!bCanUseFastRepair || takenNDock.size() == 4)
+		if (!bForceUseFastRepair || takenNDock.size() == 4)
 		{
 			return QList<int>();
 		}
@@ -1589,7 +1589,8 @@ QList<int> ControlManager::pushPreRepairCheck(QList<int>& willBeInDockList, bool
 				|| isShipType(ship.api_id, ShipType::YouRiKu);
 
 			if ((ship.api_ndock_time < repairLessThanTime || isSenSui)
-				&& ship.api_ndock_time + ct < blockRepairTime.toMSecsSinceEpoch())
+				&& ship.api_ndock_time + ct < blockRepairTime.toMSecsSinceEpoch()
+				&& !(bForceUseFastRepair && includingFirstTeam && isInFirstTeam))
 			{
 				bool shouldAdd = true;
 
@@ -1610,7 +1611,7 @@ QList<int> ControlManager::pushPreRepairCheck(QList<int>& willBeInDockList, bool
 					}
 				}
 
-				if (includingFirstTeam && isInFirstTeam && !bCanUseFastRepair || !isInAnyTeam)
+				if (includingFirstTeam && isInFirstTeam && !bForceUseFastRepair || !isInAnyTeam)
 				{
 					if (shouldAdd)
 					{
@@ -1618,7 +1619,7 @@ QList<int> ControlManager::pushPreRepairCheck(QList<int>& willBeInDockList, bool
 					}
 				}
 			}
-			else if (bCanUseFastRepair)
+			else if (bForceUseFastRepair)
 			{
 				if (ws >= WoundState::Middle)
 				{
@@ -3295,12 +3296,12 @@ void ControlManager::moveMouseToAndClick(float x, float y, float offsetX /*= 5*/
 		else
 		{
 			sendMouseEvents(browserWidget);
-		}
+			}
 
 		QTimer::singleShot(0.1f, [this]() {this->moveMouseTo(0, 0); });
-	}
+		}
 
-}
+		}
 
 void ControlManager::moveMouseTo(float x, float y, float offsetX /*= 5*/, float offsetY /*= 3*/)
 {
@@ -3356,10 +3357,10 @@ void ControlManager::moveMouseTo(float x, float y, float offsetX /*= 5*/, float 
 		else
 		{
 			sendMouseEvents(browserWidget);
-		}
+			}
 
+		}
 	}
-}
 
 void ControlManager::setPauseNextVal(bool bVal)
 {

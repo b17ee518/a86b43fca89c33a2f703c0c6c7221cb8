@@ -3042,7 +3042,7 @@ bool SortieCommonAdvanceAction::action()
 					case 6:
 						points[1] = { 445, 184 };
 						points[2] = { 577, 184 };
-						points[3] = { 646, 184 };
+						points[3] = { 706, 184 };
 						points[4] = { 445, 341 };
 						points[5] = { 577, 341 };
 						points[6] = { 706, 341 };

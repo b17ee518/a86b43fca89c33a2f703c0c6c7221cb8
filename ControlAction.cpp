@@ -3562,7 +3562,10 @@ bool ExpeditionAction::action()
 				// go button
 				if (cm.checkColors(
 					634, 434, 68, 151, 224
-					, 590, 448, 249, 255, 253))
+					, 590, 448, 249, 255, 253)
+					|| cm.checkColors(
+					684, 436, 238, 169, 25
+					, 570, 436, 255, 235, 191))
 				{
 					_waiting = false;
 					setState(State::TeamSelectedDone, "Expedition:TeamSelectedDone");

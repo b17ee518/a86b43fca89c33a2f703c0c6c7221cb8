@@ -3062,6 +3062,14 @@ bool SortieCommonAdvanceAction::action()
 								formation = 1;
 							}
 						}
+						// all ss always 6
+						if (cm.isAllSSShips(0))
+						{
+							if (formation == 1 || formation == 5)
+							{
+								formation = 6;
+							}
+						}
 					}
 					cm.moveMouseToAndClick(points[formation][0], points[formation][1]); // formation button
 					setStateToChecking();

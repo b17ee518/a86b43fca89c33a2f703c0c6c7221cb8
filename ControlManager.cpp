@@ -667,7 +667,7 @@ bool ControlManager::BuildNext_Rank()
 	{
 		if (!pksd->deckSaveData.empty())
 		{
-			if (pksd->deckSaveData.first().totalTaiku < 360)
+			if (pksd->deckSaveData.first().totalTaiku < 350)
 			{
 				setToTerminate("Terminated:Taiku", false, RemoteNotifyHandler::Level::Low);
 				return false;
@@ -3296,12 +3296,12 @@ void ControlManager::moveMouseToAndClick(float x, float y, float offsetX /*= 5*/
 		else
 		{
 			sendMouseEvents(browserWidget);
-			}
+		}
 
 		QTimer::singleShot(0.1f, [this]() {this->moveMouseTo(0, 0); });
-		}
+	}
 
-		}
+}
 
 void ControlManager::moveMouseTo(float x, float y, float offsetX /*= 5*/, float offsetY /*= 3*/)
 {
@@ -3357,10 +3357,10 @@ void ControlManager::moveMouseTo(float x, float y, float offsetX /*= 5*/, float 
 		else
 		{
 			sendMouseEvents(browserWidget);
-			}
-
 		}
+
 	}
+}
 
 void ControlManager::setPauseNextVal(bool bVal)
 {

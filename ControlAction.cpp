@@ -3063,7 +3063,7 @@ bool SortieCommonAdvanceAction::action()
 							}
 						}
 						// all ss always 6
-						if (cm.isAllSSShips(0))
+						if (cm.isAllSSShips(0) && cm.getTeamSize(0) >= 5)
 						{
 							if (formation == 1 || formation == 5)
 							{

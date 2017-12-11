@@ -2901,13 +2901,7 @@ bool SortieCommonAdvanceAction::action()
 			QTimer::singleShot(_shouldRetrieve ? DELAY_TIME_SUPERLONG : DELAY_TIME_LONG, Qt::PreciseTimer, this, [this, &cm]()
 			{
 				_totalFormationCount = 0;
-				// select formation
-				if (/*cm.checkColors(
-					416, 177, 0, 120, 121
-					, 450, 185, 233, 231, 227
-					, 398, 190, 214, 210, 111)*/
-
-					cm.checkColors(
+				if (cm.checkColors(
 					447, 82, 93, 255, 131
 					, 424, 298, 93, 255, 131
 					, 477, 177, 0, 120, 121
@@ -2919,6 +2913,7 @@ bool SortieCommonAdvanceAction::action()
 					, 477, 177, 0, 120, 121
 					))
 				{
+					_withKeiKaiJin = true;
 					_totalFormationCount = 6;
 				}
 				else if (
@@ -2928,8 +2923,19 @@ bool SortieCommonAdvanceAction::action()
 					, 539, 177, 0, 120, 121
 					))
 				{
+					_withKeiKaiJin = true;
 					_totalFormationCount = 5;
 				}
+				// select formation
+				else if (cm.checkColors(
+					416, 177, 0, 120, 121
+					, 450, 185, 233, 231, 227
+					, 398, 190, 214, 210, 111))
+				{
+					_withKeiKaiJin = false;
+					_totalFormationCount = 5;
+				}
+
 				// leave or night
 				else if (cm.checkColors(
 					380, 33, 0, 3, 8
@@ -3032,12 +3038,26 @@ bool SortieCommonAdvanceAction::action()
 					QMap<int, QList<float>> points;
 					switch (_totalFormationCount)
 					{
+					case 3:
+					case 4:
 					case 5:
-						points[1] = { 513, 184 };
-						points[2] = { 646, 184 };
-						points[3] = { 445, 341 };
-						points[4] = { 577, 341 };
-						points[5] = { 706, 341 };
+						if (_withKeiKaiJin)
+						{
+							points[1] = { 513, 184 };
+							points[2] = { 646, 184 };
+							points[3] = { 445, 341 };
+							points[4] = { 577, 341 };
+							points[5] = { 706, 341 };
+						}
+						else
+						{
+							points[1] = { 445, 184 };
+							points[2] = { 577, 184 };
+							points[3] = { 706, 184 };
+							points[4] = { 513, 341 };
+							points[5] = { 646, 341 };
+
+						}
 						break;
 					case 6:
 						points[1] = { 445, 184 };
@@ -3063,7 +3083,7 @@ bool SortieCommonAdvanceAction::action()
 							}
 						}
 						// all ss always 6
-						if (cm.isAllSSShips(0) && cm.getTeamSize(0) >= 5)
+						if (_withKeiKaiJin && cm.isAllSSShips(0) && cm.getTeamSize(0) >= 5)
 						{
 							if (formation == 1 || formation == 5)
 							{

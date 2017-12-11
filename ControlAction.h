@@ -521,6 +521,8 @@ private:
 	bool _shouldRetrieve = false;
 
 	int _totalFormationCount = 0;
+
+	bool _withKeiKaiJin = false;
 };
 
 class RepeatAction : public ControlAction

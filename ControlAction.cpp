@@ -1360,7 +1360,7 @@ bool DestroyShipAction::action()
 			{
 				if (cm.checkColors(
 					31, 358, 206, 205, 52
-					, 669, 444, 12, 117, 107))
+					, 678, 444, 20, 96, 89))
 				{
 					_waiting = false;
 					setState(State::FindShipOKDone, "Destroy:FindShipOKDone");

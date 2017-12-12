@@ -658,26 +658,29 @@ bool KanDataConnector::req_kousyou_createship_speedchange_parse()
 
 bool KanDataConnector::req_kousyou_destroyship_parse()
 {
-	int shipno = _req.GetItemAsString("api_ship_id").toInt();
-	if (shipno > 0)
+	QString idsstr = _req.GetItemAsString("api_ship_id");
+	QStringList idslst = idsstr.split("%2C");
+
+	foreach(auto& v, idslst)
 	{
-		// material
-		kcsapi_destroyship api_destroyship;
-		api_destroyship.ReadFromJObj(_jobj);
-		QList<int> api_material = api_destroyship.api_material;
-		for (int i = 0; i < api_material.count(); i++)
-		{
-			pksd->portdata.api_material[i].api_value = api_material[i];
-		}
-
-		RemoveShip(shipno);
-		updateOverviewTable();
-		updateFleetTable();
-
-		updateRepairTable();
-		updateWeaponTable();
-		ControlManager::getInstance().setPortDataDirty();
+		int itemid = v.toInt();
+		RemoveShip(itemid);
 	}
+	//	pksd->slotitemcountoffset -= idslst.count();
+
+	kcsapi_destroyitem2 api_destroyitem2;
+	api_destroyitem2.ReadFromJObj(_jobj);
+	QList<int> api_get_material = api_destroyitem2.api_get_material;
+	for (int i = 0; i < api_get_material.count(); i++)
+	{
+		pksd->portdata.api_material[i].api_value += api_get_material[i];
+	}
+	updateOverviewTable();
+	updateFleetTable();
+
+	updateRepairTable();
+	updateWeaponTable();
+	ControlManager::getInstance().setPortDataDirty();
 	return true;
 }
 

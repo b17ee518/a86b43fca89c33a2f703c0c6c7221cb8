@@ -357,6 +357,7 @@ public:
 
 	int _curPage = 0;
 	int _nowIndex = 0;
+	int _nowEndIndex = 0;
 	int _cellHeight = 31;
 
 	int _usingSlot = -1;

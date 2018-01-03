@@ -438,7 +438,7 @@ void MainWindow::onCopyInfo()
 				{
 					if (k > 0)
 					{
-						info += ",";
+						info += ", \t";
 					}
 					auto pslotitem = pkdc->findSlotitemFromId(pship->api_slot[k]);
 					if (pslotitem)
@@ -446,7 +446,11 @@ void MainWindow::onCopyInfo()
 						auto pmstslotitem = pkdc->findMstSlotItemFromSlotitemid(pslotitem->api_slotitem_id);
 						if (pmstslotitem)
 						{
-							info += pmstslotitem->api_name + "+" + QString::number(pslotitem->api_level);
+							info += pmstslotitem->api_name;
+							if (pslotitem->api_level > 0)
+							{
+								info += "+" + QString::number(pslotitem->api_level);
+							}
 						}
 					}
 				}
@@ -461,7 +465,13 @@ void MainWindow::onCopyInfo()
 						auto pmstslotitem = pkdc->findMstSlotItemFromSlotitemid(pslotitem->api_slotitem_id);
 						if (pmstslotitem)
 						{
-							info += positionPrefix + "_ExSlotItemName = " + pmstslotitem->api_name + "+" + QString::number(pslotitem->api_level) + "\n";
+							info += positionPrefix + "_ExSlotItemName = ";
+							info += pmstslotitem->api_name;
+							if (pslotitem->api_level > 0)
+							{
+								info += "+" + QString::number(pslotitem->api_level);
+							}
+							info += "\n";
 						}
 					}
 				}
@@ -636,7 +646,7 @@ void MainWindow::rebuildIE(bool bNavigate)
 #else
 	Q_UNUSED(bNavigate);
 #endif
-}
+	}
 
 void MainWindow::installWebEngineMouseEventFilter()
 {
@@ -672,7 +682,7 @@ void MainWindow::installWebEngineMouseEventFilter()
 	Q_FOREACH(QObject* child, _webView->page()->view()->children())
 	{
 		child->installEventFilter(_webEngineMouseEventFilter);
-	}
+}
 #endif
 }
 

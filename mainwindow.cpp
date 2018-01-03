@@ -425,27 +425,30 @@ void MainWindow::onCopyInfo()
 				info += positionPrefix + "_SlotItem = ";
 				for (int k = 0; k < pship->api_slot.count(); k++)
 				{
-					if (k > 0)
+					if (pship->api_slot[k] > 0)
 					{
-						info += ",";
+						if (k > 0)
+						{
+							info += ",";
+						}
+						info += QString::number(pship->api_slot[k]);
 					}
-					info += QString::number(pship->api_slot[k]);
 				}
 				info += "\n";
 
 				info += positionPrefix + "_SlotItemName = ";
 				for (int k = 0; k < pship->api_slot.count(); k++)
 				{
-					if (k > 0)
-					{
-						info += ", \t";
-					}
 					auto pslotitem = pkdc->findSlotitemFromId(pship->api_slot[k]);
 					if (pslotitem)
 					{
 						auto pmstslotitem = pkdc->findMstSlotItemFromSlotitemid(pslotitem->api_slotitem_id);
 						if (pmstslotitem)
 						{
+							if (k > 0)
+							{
+								info += ", \t";
+							}
 							info += pmstslotitem->api_name;
 							if (pslotitem->api_level > 0)
 							{
@@ -646,7 +649,7 @@ void MainWindow::rebuildIE(bool bNavigate)
 #else
 	Q_UNUSED(bNavigate);
 #endif
-	}
+}
 
 void MainWindow::installWebEngineMouseEventFilter()
 {
@@ -682,7 +685,7 @@ void MainWindow::installWebEngineMouseEventFilter()
 	Q_FOREACH(QObject* child, _webView->page()->view()->children())
 	{
 		child->installEventFilter(_webEngineMouseEventFilter);
-}
+	}
 #endif
 }
 

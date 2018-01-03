@@ -1081,18 +1081,38 @@ bool DestroyShipAction::action()
 			}
 		}
 
-		for (int i = 0; i < _ships.size(); i++)
-		{
-			_pageList.append(-1);
-			_posList.append(-1);
-		}
+		_nowEndIndex = _nowIndex;
+		_nowSelectingPosIndex = 0;
+		_posList.clear();
 
 		int page;
 		int pos;
 		if (ControlManager::getInstance().findPagePosByShipId(_ships[_nowIndex], page, pos, _lastPage))
 		{
-			_pageList[_nowIndex] = page;
-			_posList[_nowIndex] = pos;
+			_page = page;
+			_posList.append(pos);
+
+			for (int i = _nowIndex + 1; i < _ships.count(); i++)
+			{
+				if (!cm.isShipExist(_ships[i]))
+				{
+					continue;
+				}
+				else
+				{
+					int tpage;
+					int tpos;
+					int tlastPage;
+					if (ControlManager::getInstance().findPagePosByShipId(_ships[i], tpage, tpos, tlastPage))
+					{
+						if (tpage == _page)
+						{
+							_nowEndIndex = i;
+							_posList.append(tpos);
+						}
+					}
+				}
+			}
 		}
 		else
 		{
@@ -1262,18 +1282,23 @@ bool DestroyShipAction::action()
 		if (!_waiting)
 		{
 			_waiting = true;
-			if (_pageList[_nowIndex] < 0 || _posList[_nowIndex] < 0)
+			if (_page < 0 || _posList[_nowSelectingPosIndex] < 0)
 			{
 				cm.setToTerminate("Terminated:DestroyPageError", true);
 				emit sigCheckFail();
 				return false;
 			}
-			else if (_pageList[_nowIndex] == 0)
+			else if (_page == 0)
 			{
 				QTimer::singleShot(DELAY_TIME_CLICK, Qt::PreciseTimer, this, [this, &cm]()
 				{
-					cm.moveMouseToAndClick(300, 136 + _cellHeight*_posList[_nowIndex]);
-					setState(State::FindShipOKChecking, "Destroy:FindShipOKChecking");
+					cm.moveMouseToAndClick(300, 136 + _cellHeight*_posList[_nowSelectingPosIndex]);
+
+					_nowSelectingPosIndex++;
+					if (_nowSelectingPosIndex >= _posList.count())
+					{
+						setState(State::FindShipOKChecking, "Destroy:FindShipOKChecking");
+					}
 					resetRetryAndWainting();
 				});
 			}
@@ -1281,12 +1306,12 @@ bool DestroyShipAction::action()
 			{
 				QTimer::singleShot(DELAY_TIME_CLICK, Qt::PreciseTimer, this, [this, &cm]()
 				{
-					if (_lastPage == _pageList[_nowIndex])
+					if (_lastPage == _page)
 					{
 						cm.moveMouseToAndClick(496, 452); // last page
 						_curPage = _lastPage;
 					}
-					else if (_pageList[_nowIndex] >= 5)
+					else if (_page >= 5)
 					{
 						cm.moveMouseToAndClick(461, 449); // 6th page
 						_curPage = 5;
@@ -1318,12 +1343,16 @@ bool DestroyShipAction::action()
 		if (!_waiting)
 		{
 			_waiting = true;
-			if (_pageList[_nowIndex] == _curPage)
+			if (_page == _curPage)
 			{
 				QTimer::singleShot(DELAY_TIME_CLICK, Qt::PreciseTimer, this, [this, &cm]()
 				{
-					cm.moveMouseToAndClick(300, 136 + _cellHeight*_posList[_nowIndex]);
-					setState(State::FindShipOKChecking, "Destroy:FindShipOKChecking");
+					cm.moveMouseToAndClick(300, 136 + _cellHeight*_posList[_nowSelectingPosIndex]);
+					_nowSelectingPosIndex++;
+					if (_nowSelectingPosIndex >= _posList.count())
+					{
+						setState(State::FindShipOKChecking, "Destroy:FindShipOKChecking");
+					}
 					resetRetryAndWainting();
 				});
 			}
@@ -1336,7 +1365,7 @@ bool DestroyShipAction::action()
 						cm.moveMouseToAndClick(362, 447); // third page
 						_curPage++;
 					}
-					else if (_pageList[_nowIndex] >= _curPage + 5)
+					else if (_page >= _curPage + 5)
 					{
 						cm.moveMouseToAndClick(461, 449); // 6th page
 						_curPage += 5;
@@ -1379,7 +1408,7 @@ bool DestroyShipAction::action()
 			QTimer::singleShot(DELAY_TIME_CLICK, Qt::PreciseTimer, this, [this, &cm]()
 			{
 				cm.moveMouseToAndClick(700, 434, 40, 12); // Destroy button
-				if (_nowIndex == _ships.size() - 1)
+				if (_nowEndIndex == _ships.size() - 1)
 				{
 					_waiting = true;
 					{
@@ -1395,16 +1424,57 @@ bool DestroyShipAction::action()
 					_waiting = true;
 					QTimer::singleShot(DELAY_TIME_SKIP_DESTROY + cm.randVal(0, 250), Qt::PreciseTimer, this, [this, &cm]()
 					{
-						if (!cm.isShipExist(_ships[_nowIndex]))
+						bool misDestroyed = false;
+						for (int i = _nowIndex; i <= _nowEndIndex; i++)
 						{
-							_nowIndex++;
+							if (cm.isShipExist(_ships[i]))
+							{
+								misDestroyed = true;
+								break;
+							}
+						}
+
+						if (misDestroyed)
+						{
+							qDebug() << "error";
+							cm.setToTerminate("Terminated:DestroyError", true);
+							emit sigCheckFail();
+						}
+						else
+						{
+							_nowIndex = _nowEndIndex + 1;
+							_nowEndIndex = _nowIndex;
+							_nowSelectingPosIndex = 0;
 
 							int page;
 							int pos;
 							if (ControlManager::getInstance().findPagePosByShipId(_ships[_nowIndex], page, pos, _lastPage))
 							{
-								_pageList[_nowIndex] = page;
-								_posList[_nowIndex] = pos;
+								_page = page;
+								_posList.append(pos);
+
+								for (int i = _nowIndex + 1; i < _ships.count(); i++)
+								{
+									if (!cm.isShipExist(_ships[i]))
+									{
+										continue;
+									}
+									else
+									{
+										int tpage;
+										int tpos;
+										int tlastPage;
+										if (ControlManager::getInstance().findPagePosByShipId(_ships[i], tpage, tpos, tlastPage))
+										{
+											if (tpage == _page)
+											{
+												_nowEndIndex = i;
+												_posList.append(tpos);
+											}
+										}
+									}
+								}
+
 								setState(State::FindShipChecking, "Destroy:Checking");
 								resetRetryAndWainting();
 							}
@@ -1413,12 +1483,6 @@ bool DestroyShipAction::action()
 								cm.setToTerminate("Terminated:DestroyError", true);
 								emit sigCheckFail();
 							}
-						}
-						else
-						{
-							qDebug() << "error";
-							cm.setToTerminate("Terminated:DestroyError", true);
-							emit sigCheckFail();
 						}
 					});
 				}

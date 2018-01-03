@@ -291,12 +291,16 @@ public:
 
 public:
 	QList<int> _ships;
-	QList<int> _pageList;
+	int _page;
 	QList<int> _posList;
 	int _lastPage = 0;
 
 	int _curPage = 0;
 	int _nowIndex = 0;
+	int _nowEndIndex = 0;
+
+	int _nowSelectingPosIndex = 0;
+
 	int _cellHeight = 31;
 
 private:
@@ -357,7 +361,6 @@ public:
 
 	int _curPage = 0;
 	int _nowIndex = 0;
-	int _nowEndIndex = 0;
 	int _cellHeight = 31;
 
 	int _usingSlot = -1;

@@ -190,6 +190,8 @@ protected:
 
 	void onGetColorOnScreen();
 
+	void onCopyInfo();
+
 private:
 	static void __stdcall BeforeRequestFunc(int sessionID, char * fullURL, char * requestBody);
 	static void __stdcall AfterSessionCompleteFunc(int sessionID, char * mimeType, int responseCode, char * PathAndQuery, char * requestBody, char * responseBody);

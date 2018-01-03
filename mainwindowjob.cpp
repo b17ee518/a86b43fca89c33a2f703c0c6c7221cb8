@@ -164,19 +164,57 @@ void MainWindow::onDoJobAny()
 	dialog->setSelections(setting.area, setting.map);
 
 	int result = dialog->exec();
+	QString restoreSettingText = "";
 	if (result == QDialog::Accepted)
 	{
-		dialog->getMapAndArea(area, map);
+		if (dialog->isRestoreMode())
+		{
+			restoreSettingText = dialog->getRestoreSetting();
+			auto& restoreSetting = cm.getRestoreHenseiSetting();
+			restoreSetting.restoreShips.clear();
+			restoreSetting.restoreSettingText = restoreSettingText;
+			if (cm.BuildNext_RestoreHensei())
+			{
+				dialog->getMapAndArea(area, map);
+				if (area > 0 && map > 0)
+				{
+					setting = cm.getAnyTemplateSetting(area, map);
+					setting.count = dialog->getCountSet();
+					//setting.onlySSTeamSize = dialog->getOnlySSTeamSize();
+					setting.autoFastRepair = dialog->isAutoFastRepair();
+					setting.checkAirBaseCond = dialog->isCheckAirBaseCond();
+					setting.checkCond = dialog->isCheckCond();
+					setting.allowMiddleDamageSortie = dialog->isAllowMiddle();
+					setting.pauseAtStartMap = dialog->isPauseStartMap();
+					cm.setAnySetting(setting);
+				}
+				delete dialog;
+				cm.StartJob();
+				return;
+			}
+			else
+			{
+				switchToExpeditionWait();
+				delete dialog;
+				return;
+			}
+		}
+		else
+		{
+			dialog->getMapAndArea(area, map);
+		}
 	}
 	else
 	{
 		switchToExpeditionWait();
+		delete dialog;
 		return;
 	}
 
 	if (area < 1 || map < 1)
 	{
 		switchToExpeditionWait();
+		delete dialog;
 		return;
 	}
 

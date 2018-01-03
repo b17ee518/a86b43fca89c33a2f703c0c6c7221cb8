@@ -36,6 +36,7 @@ public:
 		Repair,
 		Mission,
 		Morning,
+		RestoreHensei,
 	};
 
 	enum class StopWhen
@@ -180,6 +181,12 @@ public:
 		QList<int> acceptedMissionList;
 	};
 
+	struct RestoreHenseiSetting
+	{
+		QString restoreSettingText;
+		QList<int> restoreShips;
+	};
+
 public:
 	static ControlManager& getInstance() {
 		static ControlManager instance;
@@ -233,6 +240,8 @@ public:
 	bool BuildNext_Repair();
 
 	bool BuildNext_Develop();
+
+	bool BuildNext_RestoreHensei();
 
 	bool stopWhenCheck();
 
@@ -353,6 +362,7 @@ public:
 	inline bool isDevelopMode(){ return _target == ActionTarget::Develop; }
 	inline bool isMorningMode(){ return _parentTarget == ActionTarget::Morning; }
 	inline bool isMissionMode(){ return _target == ActionTarget::Mission; }
+	inline bool isRestoreHenseiMode(){ return _target == ActionTarget::RestoreHensei; }
 
 	void setState(State state, const char* str, bool bSilent = false, bool forceSound = false);
 	void setInactiveWaiting(bool waiting){ _inactiveWaiting = waiting; }
@@ -391,6 +401,7 @@ public:
 	const DevelopSetting& getDevelopSetting() { return _developSetting; }
 	MorningSetting& getMorningSetting() { return _morningSetting; }
 	MissionSetting& getMissionSetting() { return _missionSetting; }
+	RestoreHenseiSetting& getRestoreHenseiSetting() { return _restoreHenseiSetting; }
 	AnySetting getAnyTemplateSetting(int area, int map);
 
 	//private:
@@ -455,6 +466,7 @@ private:
 	DevelopSetting _developSetting;
 	MorningSetting _morningSetting;
 	MissionSetting _missionSetting;
+	RestoreHenseiSetting _restoreHenseiSetting;
 
 	QMap<QPair<int, int>, AnySetting> _anyTemplateSettings;
 };

@@ -479,7 +479,7 @@
          <enum>Qt::Horizontal</enum>
         </property>
         <property name="standardButtons">
-         <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok|QDialogButtonBox::Reset</set>
+         <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok|QDialogButtonBox::Reset|QDialogButtonBox::RestoreDefaults</set>
         </property>
        </widget>
       </item>
@@ -524,7 +524,7 @@
   </connection>
  </connections>
  <buttongroups>
-  <buttongroup name="bgArea"/>
   <buttongroup name="bgMap"/>
+  <buttongroup name="bgArea"/>
  </buttongroups>
 </ui>

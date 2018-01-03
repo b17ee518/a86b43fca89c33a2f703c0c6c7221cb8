@@ -3323,6 +3323,11 @@ bool RepeatAction::action()
 			// do not repeat
 			newJobFromSwitch = mainWindow->switchToExpeditionWait();
 		}
+		else if (cm.isRestoreHenseiMode())
+		{
+			// do not repeat
+			newJobFromSwitch = mainWindow->switchToExpeditionWait();
+		}
 		break;
 	case RepeatAction::State::Done:
 		return true;

@@ -30,6 +30,8 @@ AnyActionSelectDialog::AnyActionSelectDialog(QWidget *parent)
 
 	auto resetButton = ui->buttonBox->button(QDialogButtonBox::StandardButton::Reset);
 	connect(resetButton, SIGNAL(clicked()), this, SLOT(slotOnReset()));
+	auto restoreToDefaultButton = ui->buttonBox->button(QDialogButtonBox::StandardButton::RestoreDefaults);
+	connect(restoreToDefaultButton, SIGNAL(clicked()), this, SLOT(slotOnRestoreToDefault()));
 
 	ui->leCount->setText(QString::number(ControlManager::getInstance().getAnySetting().count));
 	ui->leSSOnlyCount->setText(QString::number(ControlManager::getInstance().getAnySetting().onlySSTeamSize));
@@ -121,11 +123,41 @@ int AnyActionSelectDialog::getOnlySSTeamSize()
 
 }
 
+QString AnyActionSelectDialog::getRestoreSetting()
+{
+	QString settingText = "";
+	if (isRestore)
+	{
+		if (!ui->leArea->text().isEmpty())
+		{
+			settingText += ui->leArea->text();
+			if (!ui->leMap->text().isEmpty())
+			{
+				settingText += "-" + ui->leMap->text();
+			}
+		}
+		else
+		{
+			int area;
+			int map;
+			getMapAndArea(area, map);
+			settingText = QString::number(area) + "-" + QString::number(map);
+		}
+	}
+	return settingText;
+}
+
 void AnyActionSelectDialog::slotOnReset()
 {
 	KanSaveData* pksd = &KanSaveData::getInstance();
 	pksd->totalAnyCount = 0;
 	KanDataConnector::getInstance().callUpdateOverviewTable();
+}
+
+void AnyActionSelectDialog::slotOnRestoreToDefault()
+{
+	isRestore = true;
+	accept();
 }
 
 bool AnyActionSelectDialog::isAutoFastRepair()
@@ -152,6 +184,11 @@ bool AnyActionSelectDialog::isAllowMiddle()
 bool AnyActionSelectDialog::isPauseStartMap()
 {
 	return ui->cbPauseStartMap->isChecked();
+}
+
+bool AnyActionSelectDialog::isRestoreMode()
+{
+	return isRestore;
 }
 
 void AnyActionSelectDialog::slotUncheckAllAreaButtons()

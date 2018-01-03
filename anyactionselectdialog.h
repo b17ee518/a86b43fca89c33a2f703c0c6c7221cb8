@@ -21,17 +21,25 @@ public:
 
 	int getCountSet();
 	int getOnlySSTeamSize();
+
+	QString getRestoreSetting();
+
 	bool isAutoFastRepair();
 	bool isCheckAirBaseCond();
 	bool isCheckCond();
 	bool isAllowMiddle();
 	bool isPauseStartMap();
 
+	bool isRestoreMode();
+
 private:
 	Ui::AnyActionSelectDialog *ui;
 
+	bool isRestore = false;
+
 	private slots:
 	void slotOnReset();
+	void slotOnRestoreToDefault();
 	void slotUncheckAllAreaButtons();
 	void slotClearLEAreaAndMap();
 	void slotResetExtraSettings();

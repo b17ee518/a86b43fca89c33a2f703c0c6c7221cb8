@@ -1159,6 +1159,63 @@ void ControlManager::LoadAnyTemplateSettings()
 	delete setting;
 }
 
+bool ControlManager::BuildNext_RestoreHensei()
+{
+	_target = ActionTarget::RestoreHensei;
+
+	bool anyJobOn = false;
+	// load ini to restoreShips
+	if (!_restoreHenseiSetting.restoreSettingText.isEmpty())
+	{
+		QString filename = QApplication::applicationDirPath();
+		filename += "/action/restorehenseisettings.ini";
+		QSettings* setting = new QSettings(filename, QSettings::IniFormat);
+		setting->setIniCodec("UTF-8");
+
+		if (setting->childGroups().contains(_restoreHenseiSetting.restoreSettingText))
+		{
+			setting->beginGroup(_restoreHenseiSetting.restoreSettingText);
+
+			KanSaveData* pksd = &KanSaveData::getInstance();
+
+			for (int i = 0; i < pksd->portdata.api_deck_port.count(); i++)
+			{
+				QList<int> shipList;
+				for (int j = 0; j < 6; j++)
+				{
+					QString valueName = QString::number(i + 1) + "_" + QString::number(j + 1) + "_Ship";
+
+					int shipId = setting->value(valueName, "0").toInt();
+					if (shipId > 0)
+					{
+						shipList.append(shipId);
+					}
+				}
+				if (shipList.count() > 0)
+				{
+					ChangeHenseiAction * action = new ChangeHenseiAction();
+					action->setShips(shipList);
+					action->setTeam(i);
+					_actionList.append(action);
+					anyJobOn = true;
+				}
+			}
+			setting->endGroup();
+		}
+	}
+
+	if (!anyJobOn)
+	{
+		setToTerminate("Terminate:NoRestoreSetting", true, RemoteNotifyHandler::Level::Low);
+		return false;
+	}
+
+	_actionList.append(new RepeatAction());
+
+	setState(State::Ready, "Ready");
+	return true;
+}
+
 bool ControlManager::BuildNext_Any(bool advanceOnly)
 {
 	_target = ActionTarget::Any;
@@ -3631,14 +3688,14 @@ void ControlManager::moveMouseTo(float x, float y, float offsetX /*= 5*/, float 
 				}
 			}
 #endif
-		}
+			}
 		else
 		{
 			sendMouseEvents(browserWidget);
 		}
 
+		}
 	}
-}
 
 void ControlManager::setPauseNextVal(bool bVal)
 {

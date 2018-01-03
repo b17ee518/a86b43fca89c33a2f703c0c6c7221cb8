@@ -11,6 +11,8 @@
 #include <QRgb>
 #include <QPoint>
 
+#include <QClipboard>
+
 #if (QT_VERSION >= QT_VERSION_CHECK(5, 6, 0))
 #include <QWebEngineSettings>
 #include "qwebenginemouseeventfilter.h"
@@ -124,6 +126,11 @@ MainWindow::MainWindow(QWidget *parent)
 	connect(shortcutDisplayColor, SIGNAL(activated()), this, SLOT(onGetColorOnScreen()));
 	QShortcut * shortcutDisplayColorDelay = new QShortcut(QKeySequence("Ctrl+Shift+I"), this);
 	connect(shortcutDisplayColorDelay, SIGNAL(activated()), this, SLOT(onGetColorOnScreen()));
+
+	QShortcut * shortcutCopyInfo = new QShortcut(QKeySequence("Ctrl+C"), this);
+	connect(shortcutCopyInfo, SIGNAL(activated()), this, SLOT(onCopyInfo()));
+	QShortcut * shortcutCopyInfoAll = new QShortcut(QKeySequence("Ctrl+Shift+C"), this);
+	connect(shortcutCopyInfoAll, SIGNAL(activated()), this, SLOT(onCopyInfo()));
 
 	auto shortcutIncreseTimeShift = new QShortcut(QKeySequence("Shift+Up"), this);
 	connect(shortcutIncreseTimeShift,
@@ -367,6 +374,103 @@ void MainWindow::onGetColorOnScreen()
 	pMessageBox->setDefaultButton(QMessageBox::Ok);
 	pMessageBox->setAttribute(Qt::WA_DeleteOnClose, true);
 	pMessageBox->exec();
+}
+
+void MainWindow::onCopyInfo()
+{
+	bool copyAll = false;
+	if (QApplication::queryKeyboardModifiers()&Qt::ShiftModifier)
+	{
+		copyAll = true;
+	}
+
+	QString info = "";
+
+	KanSaveData* pksd = &KanSaveData::getInstance();
+	if (pksd->portdata.api_deck_port.isEmpty())
+	{
+		return;
+	}
+
+	// 1_1_Ship = 10000
+	// 1_1_ShipName = mutsuki
+	// 1_1_SlotItem = 1,2,3,-1,-1,-1
+	// 1_1_SlotItemName = tenzan+5,tenzan+10
+	// 1_1_ExSlotItem = 4
+	// 1_1_ExSlotItemName = tenzan+5
+	KanDataConnector* pkdc = &KanDataConnector::getInstance();
+	for (int i = 0; i < pksd->portdata.api_deck_port.count(); i++)
+	{
+		if (i > 0 && !copyAll)
+		{
+			break;
+		}
+
+		for (int j = 0; j < pksd->portdata.api_deck_port[i].api_ship.count(); j++)
+		{
+			int shipno = pksd->portdata.api_deck_port[i].api_ship[j];
+
+			QString positionPrefix = QString::number(i + 1) + "_" + QString::number(j + 1);
+			info += positionPrefix + "_Ship = " + QString::number(shipno) + "\n";
+
+			auto pship = pkdc->findShipFromShipno(shipno);
+			if (pship)
+			{
+				auto pmstship = pkdc->findMstShipFromShipid(pship->api_ship_id);
+				if (pmstship)
+				{
+					info += positionPrefix + "_ShipName = " + pmstship->api_name + ", Lv:" + QString::number(pship->api_lv) + "\n";
+				}
+
+				info += positionPrefix + "_SlotItem = ";
+				for (int k = 0; k < pship->api_slot.count(); k++)
+				{
+					if (k > 0)
+					{
+						info += ",";
+					}
+					info += QString::number(pship->api_slot[k]);
+				}
+				info += "\n";
+
+				info += positionPrefix + "_SlotItemName = ";
+				for (int k = 0; k < pship->api_slot.count(); k++)
+				{
+					if (k > 0)
+					{
+						info += ",";
+					}
+					auto pslotitem = pkdc->findSlotitemFromId(pship->api_slot[k]);
+					if (pslotitem)
+					{
+						auto pmstslotitem = pkdc->findMstSlotItemFromSlotitemid(pslotitem->api_slotitem_id);
+						if (pmstslotitem)
+						{
+							info += pmstslotitem->api_name + "+" + QString::number(pslotitem->api_level);
+						}
+					}
+				}
+				info += "\n";
+
+				if (pship->api_slot_ex > 0)
+				{
+					info += positionPrefix + "_ExSlotItem = " + QString::number(pship->api_slot_ex) + "\n";
+					auto pslotitem = pkdc->findSlotitemFromId(pship->api_slot_ex);
+					if (pslotitem)
+					{
+						auto pmstslotitem = pkdc->findMstSlotItemFromSlotitemid(pslotitem->api_slotitem_id);
+						if (pmstslotitem)
+						{
+							info += positionPrefix + "_ExSlotItemName = " + pmstslotitem->api_name + "+" + QString::number(pslotitem->api_level) + "\n";
+						}
+					}
+				}
+			}
+		}
+	}
+
+	QClipboard* clipBoard = QApplication::clipboard();
+	clipBoard->setText(info);
 }
 
 void MainWindow::BeforeRequestFunc(int sessionID, char *fullURL, char *requestBody)

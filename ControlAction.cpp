@@ -3216,6 +3216,8 @@ bool RepeatAction::action()
 {
 	auto& cm = ControlManager::getInstance();
 	MainWindow* mainWindow = MainWindow::mainWindow();
+
+	bool newJobFromSwitch = false;
 	switch (_state)
 	{
 	case RepeatAction::State::None:
@@ -3228,7 +3230,7 @@ bool RepeatAction::action()
 			}
 			else
 			{
-				mainWindow->switchToExpeditionWait();
+				newJobFromSwitch = mainWindow->switchToExpeditionWait();
 			}
 		}
 		else if (cm.isKiraMode())
@@ -3240,7 +3242,7 @@ bool RepeatAction::action()
 			}
 			else
 			{
-				mainWindow->switchToExpeditionWait();
+				newJobFromSwitch = mainWindow->switchToExpeditionWait();
 			}
 		}
 		else if (cm.isExpeditionMode())
@@ -3267,7 +3269,7 @@ bool RepeatAction::action()
 			}
 			else
 			{
-				mainWindow->switchToExpeditionWait();
+				newJobFromSwitch = mainWindow->switchToExpeditionWait();
 			}
 		}
 		else if (cm.isRankMode())
@@ -3279,7 +3281,7 @@ bool RepeatAction::action()
 			}
 			else
 			{
-				mainWindow->switchToExpeditionWait();
+				newJobFromSwitch = mainWindow->switchToExpeditionWait();
 			}
 		}
 		else if (cm.isAnyMode())
@@ -3291,18 +3293,18 @@ bool RepeatAction::action()
 			}
 			else
 			{
-				mainWindow->switchToExpeditionWait();
+				newJobFromSwitch = mainWindow->switchToExpeditionWait();
 			}
 		}
 		else if (cm.isDestroyMode())
 		{
 			// do not repeat
-			mainWindow->switchToExpeditionWait();
+			newJobFromSwitch = mainWindow->switchToExpeditionWait();
 		}
 		else if (cm.isRepairMode())
 		{
 			// do not repeat
-			mainWindow->switchToExpeditionWait();
+			newJobFromSwitch = mainWindow->switchToExpeditionWait();
 		}
 		else if (cm.isDevelopMode())
 		{
@@ -3313,8 +3315,13 @@ bool RepeatAction::action()
 			}
 			else
 			{
-				mainWindow->switchToExpeditionWait();
+				newJobFromSwitch = mainWindow->switchToExpeditionWait();
 			}
+		}
+		else if (cm.isMissionMode())
+		{
+			// do not repeat
+			newJobFromSwitch = mainWindow->switchToExpeditionWait();
 		}
 		break;
 	case RepeatAction::State::Done:
@@ -3322,6 +3329,11 @@ bool RepeatAction::action()
 		break;
 	default:
 		break;
+	}
+	if (newJobFromSwitch)
+	{
+		setState(State::Done, "Repeat:Done");
+		cm.StartJob();
 	}
 	return false;
 }
@@ -3649,6 +3661,341 @@ bool ExpeditionAction::action()
 }
 
 void ExpeditionAction::setState(State state, const char* str)
+{
+	_state = state;
+	ControlManager::getInstance().setStateStr(str);
+}
+
+bool MissionAction::action()
+{
+	auto& cm = ControlManager::getInstance();
+	switch (_state)
+	{
+	case MissionAction::State::None:
+
+		cm.moveMouseTo(400, 240);
+		setState(State::HomePortChecking, "Mission:HomePortChecking");
+		resetRetryAndWainting();
+
+		break;
+	case MissionAction::State::HomePortChecking:
+		if (!_waiting)
+		{
+			_waiting = true;
+			QTimer::singleShot(DELAY_TIME, Qt::PreciseTimer, this, [this, &cm]()
+			{
+				// home port
+				if (cm.checkColors(
+					213, 247, 251, 155, 32
+					, 231, 114, 224, 201, 66))
+				{
+					_waiting = false;
+					setState(State::HomePortDone, "Mission:HomePortDone");
+				}
+				else
+				{
+					tryRetry();
+				}
+			});
+		}
+		break;
+	case MissionAction::State::HomePortDone:
+
+		if (!_waiting)
+		{
+			_waiting = true;
+			QTimer::singleShot(DELAY_TIME_CLICK, Qt::PreciseTimer, this, [this, &cm]()
+			{
+				KanSaveData::getInstance().requireRecordQuestList();
+				cm.moveMouseToAndClick(563, 47); // mission button
+				setState(State::CheckingMissionState, "Mission:CheckingMissionState");
+				resetRetryAndWainting();
+			});
+		}
+		break;
+	case MissionAction::State::CheckingMissionState:
+		if (!_waiting)
+		{
+			_waiting = true;
+			QTimer::singleShot(DELAY_TIME, Qt::PreciseTimer, this, [this, &cm]()
+			{
+				do
+				{
+					auto& pksd = KanSaveData::getInstance();
+					if (pksd.isRecordingLastQuestList)
+					{
+						if (!_isSkippingMissionComplete)
+						{
+							tryRetry();
+						}
+						else
+						{
+							_waiting = false;
+							if (cm.checkColors(
+								417, 398, 255, 246, 242
+								, 438, 403, 35, 158, 159))
+							{
+								_waiting = false;
+								setState(State::CompleteSkip, "Mission::CompleteSkip");
+								break;
+							}
+						}
+					}
+					else
+					{
+						_waiting = false;
+						_isSkippingMissionComplete = false;
+						if (cm.checkColors(
+							417, 398, 255, 246, 242
+							, 438, 403, 35, 158, 159))
+						{
+							_waiting = false;
+							setState(State::CompleteSkip, "Mission::CompleteSkip");
+							break;
+						}
+						else if (!cm.checkColors(
+							699, 461, 244, 237, 224
+							))
+
+						{
+							_waiting = false;
+							setState(State::MissionSkipping, "Mission::MissionSkipping");
+							break;
+						}
+						else if (cm.checkColors(
+							202, 77, 196, 169, 87
+							, 26, 132, 205, 233, 235
+							, 52, 475, 178, 178, 178))
+						{
+							const auto& questList = pksd.lastQuestList;
+							if (_isCompleting)
+							{
+								if (questList.api_completed_kind == 0)
+								{
+									_isCompleting = false;
+									if (questList.api_disp_page != 1)
+									{
+										_waiting = false;
+										setState(State::SelectFirstPage, "Mission::SelectFirstPage");
+										break;
+									}
+								}
+							}
+
+							if (_isCompleting)
+							{
+								bool toComplete = false;
+								for (int i = 0; i < questList.api_list.count(); i++)
+								{
+									if (questList.api_list[i].api_state == 3)
+									{
+										_targetIndex = i;
+										_waiting = false;
+										setState(State::CompleteMission, "Mission:CompleteMission");
+										toComplete = true;
+										break;
+									}
+								}
+								if (toComplete)
+								{
+									break;
+								}
+								else
+								{
+									_waiting = false;
+									setState(State::SelectNextPage, "Mission::SelectNextPage");
+									break;
+								}
+							}
+							// to accept new
+							else
+							{
+								auto& missionSetting = cm.getMissionSetting();
+
+								bool toAccept = false;
+								for (int i = 0; i < questList.api_list.count(); i++)
+								{
+									const auto& quest = questList.api_list[i];
+									if (missionSetting.todoMissionList.contains(quest.api_no))
+									{
+										if (quest.api_state == 1)
+										{
+											_targetIndex = i;
+											if (questList.api_exec_count < maxMissionAcceptCount)
+											{
+												_waiting = false;
+												setState(State::AcceptMission, "Mission::AcceptMission");
+												toAccept = true;
+												break;
+											}
+										}
+										else
+										{
+											if (!missionSetting.acceptedMissionList.contains(quest.api_no))
+											{
+												missionSetting.acceptedMissionList.append(quest.api_no);
+											}
+										}
+									}
+								}
+								if (toAccept)
+								{
+									break;
+								}
+								else
+								{
+									if (questList.api_disp_page < questList.api_page_count)
+									{
+										_waiting = false;
+										setState(State::SelectNextPage, "Mission::SelectNextPage");
+										break;
+									}
+									else
+									{
+										_waiting = false;
+										setState(State::ReturnToPortChecking, "Mission::ReturnToPortChecking");
+										break;
+									}
+								}
+							}
+						}
+					}
+
+				} while (false);
+			});
+		}
+		break;
+	case MissionAction::State::MissionSkipping:
+		if (!_waiting)
+		{
+			_waiting = true;
+			QTimer::singleShot(DELAY_TIME_CLICK, Qt::PreciseTimer, this, [this, &cm]()
+			{
+				cm.moveMouseToAndClick(701, 462); // ooyodo
+				setState(State::CheckingMissionState, "Mission:CheckingMissionState");
+				resetRetryAndWainting();
+			});
+		}
+		break;
+	case MissionAction::State::SelectNextPage:
+		if (!_waiting)
+		{
+			_waiting = true;
+			QTimer::singleShot(DELAY_TIME_CLICK, Qt::PreciseTimer, this, [this, &cm]()
+			{
+				KanSaveData::getInstance().requireRecordQuestList();
+				cm.moveMouseToAndClick(619, 462); // next page
+				setState(State::CheckingMissionState, "Mission:CheckingMissionState");
+				resetRetryAndWainting();
+			});
+		}
+		break;
+	case MissionAction::State::SelectFirstPage:
+		if (!_waiting)
+		{
+			_waiting = true;
+			QTimer::singleShot(DELAY_TIME_CLICK, Qt::PreciseTimer, this, [this, &cm]()
+			{
+				KanSaveData::getInstance().requireRecordQuestList();
+				cm.moveMouseToAndClick(263, 464); // first page
+				setState(State::CheckingMissionState, "Mission:CheckingMissionState");
+				resetRetryAndWainting();
+			});
+		}
+		break;
+	case MissionAction::State::AcceptMission:
+		if (!_waiting)
+		{
+			_waiting = true;
+			QTimer::singleShot(DELAY_TIME_CLICK, Qt::PreciseTimer, this, [this, &cm]()
+			{
+				KanSaveData::getInstance().requireRecordQuestList();
+				cm.moveMouseToAndClick(568, 142 + _targetIndex * 68, 113, 17); // cell
+				setState(State::CheckingMissionState, "Mission:CheckingMissionState");
+				resetRetryAndWainting();
+			});
+		}
+		break;
+	case MissionAction::State::CompleteMission:
+		if (!_waiting)
+		{
+			_waiting = true;
+			QTimer::singleShot(DELAY_TIME_CLICK, Qt::PreciseTimer, this, [this, &cm]()
+			{
+				KanSaveData::getInstance().requireRecordQuestList();
+				_isSkippingMissionComplete = true;
+				cm.moveMouseToAndClick(568, 142 + _targetIndex * 68, 113, 17); // cell
+				setState(State::CheckingMissionState, "Mission:CheckingMissionState");
+				cm.moveMouseTo(40, 40);
+				resetRetryAndWainting();
+			});
+		}
+		break;
+	case MissionAction::State::CompleteSkip:
+		if (!_waiting)
+		{
+			_waiting = true;
+			QTimer::singleShot(DELAY_TIME_CLICK, Qt::PreciseTimer, this, [this, &cm]()
+			{
+				cm.moveMouseToAndClick(397, 403, 25, 5); // close
+				setState(State::CheckingMissionState, "Mission:CheckingMissionState");
+				resetRetryAndWainting();
+			});
+		}
+		break;
+	case MissionAction::State::ReturnToPortChecking:
+		if (!_waiting)
+		{
+			_waiting = true;
+			QTimer::singleShot(DELAY_TIME, Qt::PreciseTimer, this, [this, &cm]()
+			{
+				if (cm.checkColors(
+					202, 77, 196, 169, 87
+					, 26, 132, 205, 233, 235
+					, 52, 475, 178, 178, 178))
+				{
+					_waiting = false;
+					setState(State::ReturnToPortDone, "Mission:ReturnToPortDone");
+				}
+				else
+				{
+					tryRetry();
+				}
+			});
+		}
+		break;
+	case  MissionAction::State::ReturnToPortDone:
+		if (!_waiting)
+		{
+			_waiting = true;
+			_expectingRequest = "/kcsapi/api_port/port";
+			QTimer::singleShot(DELAY_TIME_CLICK, Qt::PreciseTimer, this, [this, &cm]()
+			{
+				cm.moveMouseToAndClick(56, 459, 30, 10); // return button
+				setState(State::ExpectingPort, "Mission:ExpectingPort");
+				resetRetryAndWainting();
+			});
+		}
+		break;
+	case MissionAction::State::ExpectingPort:
+		if (_expectingRequest == "")
+		{
+			cm.moveMouseTo(400, 200);
+			setState(State::Done, "Mission:Done");
+			cm.setupAutoExpedition();
+		}
+		break;
+	case MissionAction::State::Done:
+		return true;
+		break;
+	default:
+		break;
+
+	}
+	return false;
+}
+
+void MissionAction::setState(State state, const char* str)
 {
 	_state = state;
 	ControlManager::getInstance().setStateStr(str);

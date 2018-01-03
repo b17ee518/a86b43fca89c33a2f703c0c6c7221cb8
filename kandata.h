@@ -1161,6 +1161,7 @@ public:
 	int api_disp_page;
 	QList<kcsapi_quest> api_list;
 	int api_exec_count;
+	int api_completed_kind;
 };
 
 

@@ -34,6 +34,8 @@ public:
 		Destroy,
 		Develop,
 		Repair,
+		Mission,
+		Morning,
 	};
 
 	enum class StopWhen
@@ -41,6 +43,53 @@ public:
 		None,
 		Yusou3,
 		SouthEast5,
+	};
+
+	enum class MorningStage
+	{
+		None,
+		First1_1_Mission,
+		First1_1,
+		Second1_1_Mission,
+		Second1_1,
+		KiraAMonday_Mission,
+		KiraAMonday,
+		YuSou3_Mission,
+		YuSou3,
+		SouthEast5_Mission,
+		SouthEast5,
+		//SenSui,
+		//Practice_Mission,
+		Done,
+		AssumeJobDone,
+	};
+
+	enum class MissionDefines
+	{
+		First1_1 = 201,
+		Second1_1 = 216,
+		YuSou3 = 218,
+		SouthEast5 = 226,
+		//SenSui = 230,
+
+		KuBou3 = 211,
+		YuSou5 = 212,
+		Defeat10 = 210,
+		Expedition3 = 402,
+		Expedition10 = 403,
+		NyuKyo5 = 503,
+		Charge12 = 504,
+
+		WeeklyA = 214,
+		WeeklyRo = 221,
+		WeeklyI = 220,
+		WeeklyYuSou = 213,
+		//WeeklySenSui = 228,
+		WeeklyExpedition = 404,
+
+		Practice3 = 303,
+		Practice5 = 304,
+		WeeklyPractice = 302,
 	};
 
 	class CheckColor
@@ -62,6 +111,7 @@ public:
 	struct KiraSetting
 	{
 		bool forceCurrent = false;
+		int repeatCounter = -1;
 	};
 	struct SouthEastSetting
 	{
@@ -117,6 +167,19 @@ public:
 		QMap<int, int> toDevelopSlotItemList;
 	};
 
+	struct MorningSetting
+	{
+		MorningStage morningStage = MorningStage::None;
+		MorningStage lastBuiltState = MorningStage::None;
+	};
+
+	struct MissionSetting
+	{
+		QList<int> todoMissionList;
+
+		QList<int> acceptedMissionList;
+	};
+
 public:
 	static ControlManager& getInstance() {
 		static ControlManager instance;
@@ -141,7 +204,7 @@ public:
 
 	void pushPreSupplyCheck();
 
-	QList<int> pushPreRepairCheck(QList<int>& willBeInDockList, bool bForceUseFastRepair, bool includingFirstTeam, bool onlyShortSevere, bool onlySmallShip);
+	QList<int> pushPreRepairCheck(QList<int>& willBeInDockList, bool bForceUseFastRepair, bool onlyInTeam, bool onlyShortSevere, bool onlySmallShip);
 
 	QList<int> pushPreShipFullCheck();
 
@@ -154,6 +217,10 @@ public:
 	bool BuildNext_Level();
 
 	bool BuildNext_Rank();
+
+	bool BuildNext_Morning(bool isFromRepeating = false);
+
+	bool BuildNext_Mission();
 
 	void LoadAnyTemplateSettings();
 	bool BuildNext_Any(bool onlyAdvance);
@@ -284,6 +351,8 @@ public:
 	inline bool isDestroyMode(){ return _target == ActionTarget::Destroy; }
 	inline bool isRepairMode(){ return _target == ActionTarget::Repair; }
 	inline bool isDevelopMode(){ return _target == ActionTarget::Develop; }
+	inline bool isMorningMode(){ return _parentTarget == ActionTarget::Morning; }
+	inline bool isMissionMode(){ return _target == ActionTarget::Mission; }
 
 	void setState(State state, const char* str, bool bSilent = false, bool forceSound = false);
 	void setInactiveWaiting(bool waiting){ _inactiveWaiting = waiting; }
@@ -311,6 +380,7 @@ public:
 
 	bool switchBackToLastAction();
 	void clearLastTarget();
+	void clearParentTarget();
 
 	const KiraSetting& getKiraSetting(){ return _kiraSetting; }
 	const SouthEastSetting& getSouthEastSetting(){ return _southEastSetting; }
@@ -319,6 +389,8 @@ public:
 	const RankSetting& getRankSetting() { return _rankSetting; }
 	const AnySetting& getAnySetting() { return _anySetting; }
 	const DevelopSetting& getDevelopSetting() { return _developSetting; }
+	MorningSetting& getMorningSetting() { return _morningSetting; }
+	MissionSetting& getMissionSetting() { return _missionSetting; }
 	AnySetting getAnyTemplateSetting(int area, int map);
 
 	//private:
@@ -356,6 +428,7 @@ private:
 	State _state = State::None;
 	bool _inactiveWaiting = false;
 	ActionTarget _target = ActionTarget::None;
+	ActionTarget _parentTarget = ActionTarget::None;
 	ActionTarget _lastTarget = ActionTarget::None;
 	int _handlingExpeditionTeam = -1;
 	bool _autoExpeditioningFlag = false;
@@ -380,6 +453,8 @@ private:
 	RankSetting _rankSetting;
 	AnySetting _anySetting;
 	DevelopSetting _developSetting;
+	MorningSetting _morningSetting;
+	MissionSetting _missionSetting;
 
 	QMap<QPair<int, int>, AnySetting> _anyTemplateSettings;
 };

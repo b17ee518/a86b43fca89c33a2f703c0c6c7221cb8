@@ -526,6 +526,53 @@ private:
 	bool _withKeiKaiJin = false;
 };
 
+class MissionAction : public ControlAction
+{
+public:
+	enum class State
+	{
+		None,
+		HomePortChecking,
+		HomePortDone, // click sortie
+		MissionSelectChecking,
+		MissionSelectDone, // click sortie
+
+		MissionSkipping, // ooyodo
+
+		CheckingMissionState,
+
+		SelectNextPage,
+		SelectFirstPage,
+		AcceptMission,
+		CompleteMission,
+
+		CompleteSkip,
+
+		ReturnToPortChecking,
+		ReturnToPortDone,
+		ExpectingPort,
+		Done,
+
+	};
+
+	MissionAction(QObject* parent = NULL)
+		:ControlAction(parent)
+	{
+	}
+
+	virtual bool action() override;
+
+private:
+	State _state = State::None;
+	void setState(State state, const char* str);
+
+	bool _isCompleting = true;
+	int _targetIndex = -1;
+	bool _isSkippingMissionComplete = false;
+
+	const int maxMissionAcceptCount = 6;
+};
+
 class RepeatAction : public ControlAction
 {
 public:
@@ -545,4 +592,3 @@ private:
 	State _state = State::None;
 	void setState(State state, const char* str);
 };
-

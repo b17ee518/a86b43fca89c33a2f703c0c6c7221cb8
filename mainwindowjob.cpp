@@ -95,6 +95,7 @@ void MainWindow::onDoJobKira()
 	{
 		kiraSetting.forceCurrent = true;
 	}
+	kiraSetting.repeatCounter = -1;
 	cm.setKiraSetting(kiraSetting);
 	if (cm.BuildNext_Kira())
 	{
@@ -227,9 +228,23 @@ void MainWindow::onDoJobAny()
 
 
 
-void MainWindow::switchToExpeditionWait()
+bool MainWindow::switchToExpeditionWait()
 {
 	auto& cm = ControlManager::getInstance();
+
+	if (cm.isMorningMode())
+	{
+		if (!cm.BuildNext_Morning(true))
+		{
+			switchToExpeditionWait();
+		}
+		else
+		{
+			cm.clearLastTarget();
+			return true;
+		}
+	}
+
 	cm.Terminate();
 	cm.clearLastTarget();
 	if (cm.BuildNext_Expedition())
@@ -238,9 +253,10 @@ void MainWindow::switchToExpeditionWait()
 	}
 	else
 	{
-		return;
+		return false;
 	}
 	ui->pbWaitExpedition->setChecked(true);
+	return false;
 }
 
 void MainWindow::onDoJobExpedition(bool bDo)
@@ -379,6 +395,26 @@ void MainWindow::onDoJobDevelop()
 		switchToExpeditionWait();
 	}
 }
+
+void MainWindow::onDoJobMorning()
+{
+	auto& cm = ControlManager::getInstance();
+
+	cm.Terminate();
+	cm.clearLastTarget();
+
+	cm.getMorningSetting().lastBuiltState = ControlManager::MorningStage::None;
+
+	if (cm.BuildNext_Morning())
+	{
+		cm.StartJob();
+	}
+	else
+	{
+		switchToExpeditionWait();
+	}
+}
+
 
 
 void MainWindow::onExportAllList()

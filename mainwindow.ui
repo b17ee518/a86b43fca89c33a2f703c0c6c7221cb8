@@ -317,7 +317,7 @@
         </widget>
        </item>
        <item>
-        <spacer name="horizontalSpacer_13">
+        <spacer name="horizontalSpacer_25">
          <property name="orientation">
           <enum>Qt::Horizontal</enum>
          </property>
@@ -326,7 +326,7 @@
          </property>
          <property name="sizeHint" stdset="0">
           <size>
-           <width>12</width>
+           <width>4</width>
            <height>17</height>
           </size>
          </property>
@@ -354,6 +354,50 @@
          </property>
          <property name="text">
           <string>キ</string>
+         </property>
+         <property name="flat">
+          <bool>true</bool>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <spacer name="horizontalSpacer_13">
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+         <property name="sizeType">
+          <enum>QSizePolicy::Fixed</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>4</width>
+           <height>17</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+       <item>
+        <widget class="QPushButton" name="pbStartMorning">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="minimumSize">
+          <size>
+           <width>20</width>
+           <height>20</height>
+          </size>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>20</width>
+           <height>20</height>
+          </size>
+         </property>
+         <property name="text">
+          <string>朝</string>
          </property>
          <property name="flat">
           <bool>true</bool>
@@ -1234,7 +1278,7 @@
    <slot>onDoJobFuel()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>179</x>
+     <x>175</x>
      <y>11</y>
     </hint>
     <hint type="destinationlabel">
@@ -1250,7 +1294,7 @@
    <slot>onDoJobKira()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>211</x>
+     <x>199</x>
      <y>8</y>
     </hint>
     <hint type="destinationlabel">
@@ -1435,6 +1479,22 @@
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>pbStartMorning</sender>
+   <signal>clicked()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>onDoJobMorning()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>217</x>
+     <y>6</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>803</x>
+     <y>61</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
   <slot>onDoJobFuel()</slot>
@@ -1450,5 +1510,6 @@
   <slot>onDoJobDestroy()</slot>
   <slot>onDoJobDevelop()</slot>
   <slot>onDoJobRepair()</slot>
+  <slot>onDoJobMorning()</slot>
  </slots>
 </ui>

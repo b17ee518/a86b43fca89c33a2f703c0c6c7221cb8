@@ -226,6 +226,24 @@ void KanSaveData::clearQuestByType(int type, int beginIndex, int endIndex, int p
 
 }
 
+void KanSaveData::requireRecordQuestList()
+{
+	isRecordingLastQuestList = true;
+	lastQuestList.api_count = -1;
+}
+
+void KanSaveData::recordLastQuestList(const kcsapi_questlist& questList)
+{
+	if (isRecordingLastQuestList)
+	{
+		if (questList.api_list.count() > 0)
+		{
+			lastQuestList = questList;
+			isRecordingLastQuestList = false;
+		}
+	}
+}
+
 void CreateShipSaveData::setValue(int fuel, int bull, int steel, int bauxite, int dev, int kdock)
 {
 	_usefuel = fuel;

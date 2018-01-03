@@ -1188,6 +1188,8 @@ bool KanDataConnector::get_member_questlist_parse()
 	kcsapi_questlist api_questlist;
 	api_questlist.ReadFromJObj(_jobj);
 
+	KanSaveData::getInstance().recordLastQuestList(api_questlist);
+
 	QList<kcsapi_quest>::iterator it = api_questlist.api_list.begin();
 	for (; it != api_questlist.api_list.end();)
 	{

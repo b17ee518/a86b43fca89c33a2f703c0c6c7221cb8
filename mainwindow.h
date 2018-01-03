@@ -117,7 +117,7 @@ public:
 	void setPauseNextChanged(bool bVal);
 	void setJobTerminated();
 
-	void switchToExpeditionWait();
+	bool switchToExpeditionWait();
 
 	WebWidgetType getWebWidgetType() { return _webWidgetType; }
 	PlatformType getPlatformType() { return _platformType; }
@@ -173,6 +173,7 @@ protected:
 	void onDoJobDestroy();
 	void onDoJobRepair();
 	void onDoJobDevelop();
+	void onDoJobMorning();
 	void onToggleJobExpedition();
 	void onExportAllList();
 	void onTerminateJob();

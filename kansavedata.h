@@ -192,6 +192,8 @@ public:
 
 	QList<DeckSaveData> deckSaveData;
 
+	kcsapi_questlist lastQuestList;
+
 	int shipcountoffset = 0;
 	int slotitemcountoffset = 0;
 	KanBattleType lastbattletype = KanBattleType::Day;
@@ -245,6 +247,11 @@ public:
 	void adjustSouthEast(int addval);
 
 	void clearQuestByType(int type, int beginIndex, int endIndex, int page = -1);
+
+	void requireRecordQuestList();
+	void recordLastQuestList(const kcsapi_questlist& questList);
+
+	bool isRecordingLastQuestList = false;
 
 private:
 	KanSaveData(void);

@@ -110,6 +110,19 @@ bool ControlManager::BuildNext_Kira()
 	{
 		wasteId = getOneWasteShipId(togoShipId, flagshipid, wasteShipListByPreCheck);
 	}
+
+	_morningSetting.lastBuiltState = MorningStage::AssumeJobDone;
+	if (_kiraSetting.repeatCounter >= 0)
+	{
+		_kiraSetting.repeatCounter--;
+		if (_kiraSetting.repeatCounter < 0)
+		{
+			qDeleteAll(_actionList);
+			_target = ActionTarget::None;
+			return false;
+		}
+	}
+
 	chAction->setShips(togoShipId, wasteId);
 	_actionList.append(chAction);
 
@@ -141,7 +154,16 @@ bool ControlManager::BuildNext_Fuel()
 
 	if (stopWhenCheck())
 	{
-		setToTerminate("Termination:StopWhenDone", false, RemoteNotifyHandler::Level::Low);
+		if (isMorningMode())
+		{
+			_morningSetting.lastBuiltState = MorningStage::AssumeJobDone;
+			qDeleteAll(_actionList);
+			_target = ActionTarget::None;
+		}
+		else
+		{
+			setToTerminate("Termination:StopWhenDone", false, RemoteNotifyHandler::Level::Low);
+		}
 		return false;
 	}
 
@@ -197,6 +219,7 @@ bool ControlManager::BuildNext_Fuel()
 	_actionList.append(new ChargeAction());
 	_actionList.append(new RepeatAction());
 
+	_morningSetting.lastBuiltState = MorningStage::AssumeJobDone;
 	setState(State::Ready, "Ready");
 	return true;
 }
@@ -694,6 +717,251 @@ bool ControlManager::BuildNext_Rank()
 	_actionList.append(sortieAction);
 	_actionList.append(new SortieCommonAdvanceAction());
 	_actionList.append(new ChargeAction());
+	_actionList.append(new RepeatAction());
+	setState(State::Ready, "Ready");
+	return true;
+}
+
+bool ControlManager::BuildNext_Morning(bool isFromRepeating)
+{
+	_target = ActionTarget::Morning;
+	_parentTarget = ActionTarget::Morning;
+	pushPreSupplyCheck();
+
+	QList<int> willBeInDockList;
+	pushPreRepairCheck(willBeInDockList, false, false, true, true);
+
+	pushPreShipFullCheck();
+
+	KanSaveData* pksd = &KanSaveData::getInstance();
+
+	if (!isFromRepeating)
+	{
+		LoadToDoShipList_Kira();
+	}
+
+	// if quest list hit override step
+	bool hasWeeklyA = false;
+	for (const auto& quest : pksd->questdata)
+	{
+		bool isCompleted = quest.api_state == 3 || _morningSetting.lastBuiltState == MorningStage::AssumeJobDone;
+		switch ((MissionDefines)quest.api_no)
+		{
+		case MissionDefines::First1_1:
+			_morningSetting.morningStage = isCompleted ? MorningStage::Second1_1_Mission : MorningStage::First1_1;
+			break;
+		case MissionDefines::Second1_1:
+			_morningSetting.morningStage = isCompleted ? MorningStage::KiraAMonday_Mission : MorningStage::Second1_1;
+			break;
+		case MissionDefines::WeeklyA:
+			_morningSetting.morningStage = isCompleted ? MorningStage::YuSou3_Mission : MorningStage::KiraAMonday;
+			hasWeeklyA = true;
+			break;
+		case MissionDefines::YuSou3:
+			if (!hasWeeklyA)
+			{
+				_morningSetting.morningStage = isCompleted ? MorningStage::SouthEast5_Mission : MorningStage::YuSou3;
+			}
+			break;
+		case MissionDefines::SouthEast5:
+			if (isCompleted)
+			{
+				_morningSetting.morningStage = MorningStage::Done;
+				setToTerminate("Morning:Done", true, RemoteNotifyHandler::Level::Low);
+				return false;
+			}
+			else if (!hasWeeklyA)
+			{
+				_morningSetting.morningStage = MorningStage::SouthEast5;
+			}
+			break;
+		}
+		if (!_missionSetting.acceptedMissionList.contains(quest.api_no))
+		{
+			_missionSetting.acceptedMissionList.append(quest.api_no);
+		}
+	}
+
+	if (_morningSetting.morningStage == MorningStage::SouthEast5)
+	{
+		if (pksd->totalSouthEastWin >= 5)
+		{
+			_morningSetting.morningStage = MorningStage::None;
+			setToTerminate("Morning:Done", true, RemoteNotifyHandler::Level::Low);
+			return false;
+		}
+	}
+
+	if (isFromRepeating)
+	{
+		if (_morningSetting.morningStage == MorningStage::None || _morningSetting.morningStage == _morningSetting.lastBuiltState)
+		{
+			setToTerminate("Morning:Fatal", true, RemoteNotifyHandler::Level::Low);
+			return false;
+		}
+	}
+
+	_morningSetting.lastBuiltState = _morningSetting.morningStage;
+
+	_missionSetting.todoMissionList.clear();
+	_missionSetting.todoMissionList.append((int)MissionDefines::Expedition3);
+	_missionSetting.todoMissionList.append((int)MissionDefines::Expedition10);
+
+	_missionSetting.todoMissionList.append((int)MissionDefines::WeeklyExpedition);
+
+	_missionSetting.todoMissionList.append((int)MissionDefines::NyuKyo5);
+	_missionSetting.todoMissionList.append((int)MissionDefines::Charge12);
+
+	_missionSetting.todoMissionList.append((int)MissionDefines::First1_1);
+	_missionSetting.todoMissionList.append((int)MissionDefines::Second1_1);
+
+	_missionSetting.todoMissionList.append((int)MissionDefines::WeeklyA);
+
+	_missionSetting.todoMissionList.append((int)MissionDefines::YuSou3);
+	_missionSetting.todoMissionList.append((int)MissionDefines::SouthEast5);
+
+	_missionSetting.todoMissionList.append((int)MissionDefines::WeeklyRo);
+
+	switch (_morningSetting.morningStage)
+	{
+	case MorningStage::None:
+	case MorningStage::First1_1_Mission:
+
+		_target = ActionTarget::Mission;
+		_actionList.append(new MissionAction());
+		_actionList.append(new RepeatAction());
+
+		break;
+	case MorningStage::First1_1:
+
+		if (_missionSetting.acceptedMissionList.contains((int)MissionDefines::First1_1))
+		{
+			_target = ActionTarget::Kira;
+			_kiraSetting.repeatCounter = 1;
+			_actionList.append(new RepeatAction());
+		}
+		else
+		{
+			_morningSetting.morningStage = MorningStage::Second1_1_Mission;
+			return false;
+		}
+
+		break;
+	case MorningStage::Second1_1_Mission:
+
+		_target = ActionTarget::Mission;
+		_actionList.append(new MissionAction());
+		_actionList.append(new RepeatAction());
+
+		break;
+	case MorningStage::Second1_1:
+
+		if (_missionSetting.acceptedMissionList.contains((int)MissionDefines::Second1_1))
+		{
+			_target = ActionTarget::Kira;
+			_kiraSetting.repeatCounter = 1;
+			_actionList.append(new RepeatAction());
+		}
+		else
+		{
+			_morningSetting.morningStage = MorningStage::KiraAMonday_Mission;
+			return false;
+		}
+
+		break;
+	case MorningStage::KiraAMonday_Mission:
+
+		_target = ActionTarget::Mission;
+		_actionList.append(new MissionAction());
+		_actionList.append(new RepeatAction());
+
+		break;
+	case MorningStage::KiraAMonday:
+
+		if (_missionSetting.acceptedMissionList.contains((int)MissionDefines::WeeklyA))
+		{
+			_target = ActionTarget::Kira;
+			_actionList.append(new RepeatAction());
+		}
+		else
+		{
+			_morningSetting.morningStage = MorningStage::YuSou3_Mission;
+			return false;
+		}
+
+		break;
+	case MorningStage::YuSou3_Mission:
+
+		_target = ActionTarget::Mission;
+		_actionList.append(new MissionAction());
+		_actionList.append(new RepeatAction());
+
+		break;
+	case MorningStage::YuSou3:
+
+		if (_missionSetting.acceptedMissionList.contains((int)MissionDefines::YuSou3))
+		{
+			_southEastSetting.stopWhen = StopWhen::Yusou3;
+			_target = ActionTarget::SouthEast;
+			_actionList.append(new RepeatAction());
+		}
+		else
+		{
+			_morningSetting.morningStage = MorningStage::SouthEast5_Mission;
+			return false;
+		}
+
+		break;
+	case MorningStage::SouthEast5_Mission:
+
+		_target = ActionTarget::Mission;
+		_actionList.append(new MissionAction());
+		_actionList.append(new RepeatAction());
+
+		break;
+	case MorningStage::SouthEast5:
+
+		if (_missionSetting.acceptedMissionList.contains((int)MissionDefines::SouthEast5))
+		{
+			_southEastSetting.stopWhen = StopWhen::SouthEast5;
+			_target = ActionTarget::SouthEast;
+			_actionList.append(new RepeatAction());
+		}
+		else
+		{
+			_morningSetting.morningStage = MorningStage::Done;
+			setToTerminate("Morning:Done", true, RemoteNotifyHandler::Level::Low);
+			return false;
+		}
+
+		break;
+	default:
+		break;
+	}
+
+	_missionSetting.acceptedMissionList.clear();
+
+	setState(State::Ready, "Ready");
+	return true;
+}
+
+bool ControlManager::BuildNext_Mission()
+{
+	_target = ActionTarget::Mission;
+	pushPreSupplyCheck();
+
+	QList<int> willBeInDockList;
+	pushPreRepairCheck(willBeInDockList, false, false, true, true);
+
+	pushPreShipFullCheck();
+
+	if (_missionSetting.todoMissionList.isEmpty())
+	{
+		setToTerminate("Terminated:NoMission", true, RemoteNotifyHandler::Level::Low);
+		return false;
+	}
+
+	_actionList.append(new MissionAction());
 	_actionList.append(new RepeatAction());
 	setState(State::Ready, "Ready");
 	return true;
@@ -1515,7 +1783,7 @@ void ControlManager::pushPreSupplyCheck()
 }
 
 
-QList<int> ControlManager::pushPreRepairCheck(QList<int>& willBeInDockList, bool bForceUseFastRepair, bool includingFirstTeam, bool onlyShortSevere, bool onlySmallShip)
+QList<int> ControlManager::pushPreRepairCheck(QList<int>& willBeInDockList, bool bCanUseFastRepair, bool onlyInTeam, bool onlyShortSevere, bool onlySmallShip)
 {
 	if (!_shouldAutoPushRepair)
 	{
@@ -1539,7 +1807,7 @@ QList<int> ControlManager::pushPreRepairCheck(QList<int>& willBeInDockList, bool
 
 	if (takenNDock.size() >= useUpToNDockSize)
 	{
-		if (!bForceUseFastRepair || takenNDock.size() == 4)
+		if (!bCanUseFastRepair || takenNDock.size() == 4)
 		{
 			return QList<int>();
 		}
@@ -1577,7 +1845,6 @@ QList<int> ControlManager::pushPreRepairCheck(QList<int>& willBeInDockList, bool
 			&& !isShipInDock(ship.api_id))
 		{
 			bool isInAnyTeam = isShipInOtherTeam(ship.api_id, -1);
-			bool isInFirstTeam = isShipInTeam(ship.api_id, 0);
 			WoundState ws = KanDataCalc::GetWoundState(ship.api_nowhp, ship.api_maxhp);
 
 			bool isSenSui = isShipType(ship.api_id, ShipType::SenBou) || isShipType(ship.api_id, ShipType::SenSui);
@@ -1588,9 +1855,11 @@ QList<int> ControlManager::pushPreRepairCheck(QList<int>& willBeInDockList, bool
 				|| isShipType(ship.api_id, ShipType::KaiBou)
 				|| isShipType(ship.api_id, ShipType::YouRiKu);
 
-			if ((ship.api_ndock_time < repairLessThanTime || isSenSui)
-				&& ship.api_ndock_time + ct < blockRepairTime.toMSecsSinceEpoch()
-				&& !(bForceUseFastRepair && includingFirstTeam && isInFirstTeam))
+			bool doNotOvernight = ship.api_ndock_time + ct < blockRepairTime.toMSecsSinceEpoch();
+			bool canBeRepairedSoon = (ship.api_ndock_time < repairLessThanTime || isSenSui)
+				&& doNotOvernight;
+
+			if (canBeRepairedSoon && (!isInAnyTeam || !bCanUseFastRepair))
 			{
 				bool shouldAdd = true;
 
@@ -1611,7 +1880,7 @@ QList<int> ControlManager::pushPreRepairCheck(QList<int>& willBeInDockList, bool
 					}
 				}
 
-				if (includingFirstTeam && isInFirstTeam && !bForceUseFastRepair || !isInAnyTeam)
+				if (onlyInTeam && isInAnyTeam && !bCanUseFastRepair || !isInAnyTeam)
 				{
 					if (shouldAdd)
 					{
@@ -1619,17 +1888,17 @@ QList<int> ControlManager::pushPreRepairCheck(QList<int>& willBeInDockList, bool
 					}
 				}
 			}
-			else if (bForceUseFastRepair)
+			else if (bCanUseFastRepair)
 			{
 				if (ws >= WoundState::Middle)
 				{
-					if (includingFirstTeam && isInFirstTeam)
+					if (onlyInTeam && isInAnyTeam)
 					{
 						toFastRepairShipList.append(ship);
 					}
-					else if (!isInAnyTeam)
+					else if (doNotOvernight)
 					{
-						toFastRepairShipList.append(ship);
+						toRepairShipList.append(ship);
 					}
 				}
 			}
@@ -1779,6 +2048,7 @@ void ControlManager::Terminate(bool bSilent)
 	setPauseNextVal(false);
 	setInactiveWaiting(false);
 	_target = ActionTarget::None;
+	_parentTarget = ActionTarget::None;
 	_autoExpeditioningFlag = false;
 	MainWindow::mainWindow()->setJobTerminated();
 	//	_southEastSetting.stopWhen = StopWhen::None;
@@ -3164,6 +3434,7 @@ void ControlManager::setState(State state, const char* str, bool bSilent, bool f
 
 			_autoExpeditioningFlag = false;
 			_target = ActionTarget::None;
+			_parentTarget = ActionTarget::None;
 			if (!_lastTerminationReason.isEmpty())
 			{
 				QTimer::singleShot(4000, Qt::PreciseTimer, [this]()
@@ -3212,6 +3483,11 @@ bool ControlManager::switchBackToLastAction()
 void ControlManager::clearLastTarget()
 {
 	_lastTarget = ActionTarget::None;
+}
+
+void ControlManager::clearParentTarget()
+{
+	_parentTarget = ActionTarget::None;
 }
 
 ControlManager::AnySetting ControlManager::getAnyTemplateSetting(int area, int map)

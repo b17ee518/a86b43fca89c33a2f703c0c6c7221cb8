@@ -32,6 +32,14 @@ ControlManager::~ControlManager()
 bool ControlManager::BuildNext_Kira()
 {
 	_target = ActionTarget::Kira;
+	if (_kiraSetting.repeatCounter == 0)
+	{
+		_morningSetting.lastBuiltState = MorningStage::AssumeJobDone;
+		_target = ActionTarget::None;
+		_kiraSetting.repeatCounter = -1;
+		return false;
+	}
+
 	pushPreSupplyCheck();
 	QList<int> willBeInDockList;
 	pushPreRepairCheck(willBeInDockList, false, false, false, true);
@@ -112,15 +120,9 @@ bool ControlManager::BuildNext_Kira()
 	}
 
 	_morningSetting.lastBuiltState = MorningStage::AssumeJobDone;
-	if (_kiraSetting.repeatCounter >= 0)
+	if (_kiraSetting.repeatCounter > 0)
 	{
 		_kiraSetting.repeatCounter--;
-		if (_kiraSetting.repeatCounter < 0)
-		{
-			qDeleteAll(_actionList);
-			_target = ActionTarget::None;
-			return false;
-		}
 	}
 
 	chAction->setShips(togoShipId, wasteId);
@@ -148,22 +150,22 @@ bool ControlManager::BuildNext_Fuel()
 		_target = ActionTarget::SouthEast;
 	}
 
+	bool stopWhenHit = stopWhenCheck();
+
+	if (stopWhenHit && isMorningMode())
+	{
+		_morningSetting.lastBuiltState = MorningStage::AssumeJobDone;
+		_target = ActionTarget::None;
+		return false;
+	}
+
 	pushPreSupplyCheck();
 	QList<int> willBeInDockList;
 	pushPreRepairCheck(willBeInDockList, false, false, true, true);
 
-	if (stopWhenCheck())
+	if (stopWhenHit)
 	{
-		if (isMorningMode())
-		{
-			_morningSetting.lastBuiltState = MorningStage::AssumeJobDone;
-			qDeleteAll(_actionList);
-			_target = ActionTarget::None;
-		}
-		else
-		{
-			setToTerminate("Termination:StopWhenDone", false, RemoteNotifyHandler::Level::Low);
-		}
+		setToTerminate("Termination:StopWhenDone", false, RemoteNotifyHandler::Level::Low);
 		return false;
 	}
 

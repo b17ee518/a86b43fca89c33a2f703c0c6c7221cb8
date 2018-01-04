@@ -1445,6 +1445,7 @@ bool DestroyShipAction::action()
 							_nowIndex = _nowEndIndex + 1;
 							_nowEndIndex = _nowIndex;
 							_nowSelectingPosIndex = 0;
+							_posList.clear();
 
 							int page;
 							int pos;

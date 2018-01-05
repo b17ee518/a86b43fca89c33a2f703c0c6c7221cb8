@@ -1903,7 +1903,7 @@ QList<int> ControlManager::pushPreRepairCheck(QList<int>& willBeInDockList, bool
 			&& ship.api_locked
 			&& !isShipInDock(ship.api_id))
 		{
-			bool isInAnyTeam = isShipInOtherTeam(ship.api_id, -1);
+			bool isInAnyTeam = isShipInTeam(ship.api_id, -1);
 			WoundState ws = KanDataCalc::GetWoundState(ship.api_nowhp, ship.api_maxhp);
 
 			bool isSenSui = isShipType(ship.api_id, ShipType::SenBou) || isShipType(ship.api_id, ShipType::SenSui);
@@ -3688,14 +3688,14 @@ void ControlManager::moveMouseTo(float x, float y, float offsetX /*= 5*/, float 
 				}
 			}
 #endif
-			}
+		}
 		else
 		{
 			sendMouseEvents(browserWidget);
 		}
 
-		}
 	}
+}
 
 void ControlManager::setPauseNextVal(bool bVal)
 {

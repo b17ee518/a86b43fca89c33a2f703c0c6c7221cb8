@@ -592,11 +592,31 @@ void KanDataConnector::updateFleetTable()
 
 		// 2-5:1 / 3-5:4 / 6-1:4 / 6-2:3 / 6-3:3
 		auto setting = ControlManager::getInstance().getAnySetting();
-		if (setting.area == 3)
+		int mapSakuBorder = 0;
+		int mapMinSakuBorder = 0;
+
+		if (setting.area == 1)
+		{
+			if (setting.map == 6)
+			{
+				areasp33mul = 3;
+				mapSakuBorder = 30;
+			}
+		}
+		else if (setting.area == 2)
+		{
+			if (setting.map == 5)
+			{
+				areasp33mul = 1;
+				mapSakuBorder = 33;
+			}
+		}
+		else if (setting.area == 3)
 		{
 			if (setting.map == 5)
 			{
 				areasp33mul = 4;
+				mapSakuBorder = 28;
 			}
 		}
 		else if (setting.area == 6)
@@ -604,10 +624,24 @@ void KanDataConnector::updateFleetTable()
 			if (setting.map == 1)
 			{
 				areasp33mul = 4;
+				mapSakuBorder = 25;
+				mapMinSakuBorder = 16;
 			}
-			else if (setting.map == 2 || setting.map == 3)
+			else if (setting.map == 2)
 			{
 				areasp33mul = 3;
+				mapSakuBorder = 50;
+				mapMinSakuBorder = 40;
+			}
+			else if (setting.map == 3)
+			{
+				areasp33mul = 3;
+				mapSakuBorder = 38;
+			}
+			else if (setting.map == 5)
+			{
+				areasp33mul = 3;
+				mapSakuBorder = 50;
 			}
 		}
 
@@ -669,20 +703,46 @@ void KanDataConnector::updateFleetTable()
 		{
 			pksd->deckSaveData.append(KanSaveData::DeckSaveData());
 		}
+
+		// do not use above calc
+		QList<ShipWithSlotItemsFullData> teamFullData = pksd->createTeamFullData(v.api_id - 1);
+		int minTyku = 0;
+		int maxTyku = 0;
+		KanDataCalc::CalcTeamTyku(teamFullData, minTyku, maxTyku, KanDataCalc::LandBaseState::None);
+		double totalSaku = KanDataCalc::CalcTeamSakuTeki(teamFullData, pksd->portdata.api_basic.api_level, areasp33mul);
+
 		KanSaveData::DeckSaveData* pdsd = &(pksd->deckSaveData[v.api_id - 1]);
 		pdsd->totalLevel = alllv;
-		pdsd->totalTaiku = alltaiku + alltaikubonus;
-		pdsd->taikuWithoutBonus = alltaiku;
-		pdsd->totalSakuteki = allsakuteki;
-		pdsd->sakutekiSp33 = (int)allsakuteki_sp33;
+		pdsd->totalMinTaiku = minTyku;//alltaiku + alltaikubonus;
+		pdsd->totalMaxTaiku = maxTyku;
+		pdsd->totalSaku = totalSaku;
+		//pdsd->taikuWithoutBonus = alltaiku;
+		//pdsd->totalSakuteki = allsakuteki;
+		//pdsd->sakutekiSp33 = (int)allsakuteki_sp33;
 
-		QString strtitle = QString::fromLocal8Bit("%1 (Lv計:%2 制空:%3[%4] 索敵:%5[%6])")
+
+
+		QString strtitle = QString::fromLocal8Bit("%1 (Lv計:%2 制空:%3 索敵:%4")
 			.arg(v.api_name)
 			.arg(alllv)
-			.arg(alltaiku)
-			.arg(alltaiku + alltaikubonus)
-			.arg(allsakuteki)
-			.arg(allsakuteki_sp33, 0, 'f', 2);
+			.arg(minTyku)
+			.arg(totalSaku, 0, 'f', 2);
+
+		if (mapSakuBorder > 0)
+		{
+			if (mapMinSakuBorder > 0)
+			{
+				strtitle += QString::fromLocal8Bit("[%1~%2]")
+					.arg(mapMinSakuBorder)
+					.arg(mapSakuBorder);
+			}
+			else
+			{
+				strtitle += QString::fromLocal8Bit("[%1]").arg(mapSakuBorder);
+			}
+		}
+
+		strtitle += ")";
 
 		if (areasp33mul > 1)
 		{

@@ -692,7 +692,7 @@ bool ControlManager::BuildNext_Rank()
 	{
 		if (!pksd->deckSaveData.empty())
 		{
-			if (pksd->deckSaveData.first().totalTaiku < 350)
+			if (pksd->deckSaveData.first().totalMinTaiku < 350)
 			{
 				setToTerminate("Terminated:Taiku", false, RemoteNotifyHandler::Level::Low);
 				return false;

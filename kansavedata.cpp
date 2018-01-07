@@ -1,6 +1,8 @@
 ﻿#include "kansavedata.h"
 #include "klog.h"
 
+#include "kandataconnector.h"
+
 void KanSaveData::logAllExport()
 {
 	QString filename;
@@ -244,6 +246,24 @@ void KanSaveData::recordLastQuestList(const kcsapi_questlist& questList)
 	}
 }
 
+QList<ShipWithSlotItemsFullData> KanSaveData::createTeamFullData(int team)
+{
+	QList<ShipWithSlotItemsFullData> datalist;
+	for (const auto& deck : portdata.api_deck_port)
+	{
+		if (deck.api_id == team + 1)
+		{
+			for (int shipno : deck.api_ship)
+			{
+				ShipWithSlotItemsFullData data;
+				data.InitWithShipAndSlots(shipno);
+				datalist.append(data);
+			}
+		}
+	}
+	return datalist;
+}
+
 void CreateShipSaveData::setValue(int fuel, int bull, int steel, int bauxite, int dev, int kdock)
 {
 	_usefuel = fuel;
@@ -258,4 +278,59 @@ void CreateShipSaveData::setValue(int fuel, int bull, int steel, int bauxite, in
 void CreateShipSaveData::clearValue()
 {
 	_flag = 0;
+}
+
+void ShipWithSlotItemsFullData::InitWithShipAndSlots(int shipno)
+{
+	KanDataConnector* pkdc = &KanDataConnector::getInstance();
+	pship = pkdc->findShipFromShipno(shipno);
+	slotitemlist.clear();
+	mstslotitemlist.clear();
+
+	if (pship != NULL)
+	{
+		pmstship = pkdc->findMstShipFromShipid(pship->api_ship_id);
+
+		for (int i = 0; i < pship->api_slot.count(); i++)
+		{
+			int slotitemno = pship->api_slot[i];
+			if (slotitemno >= 0)
+			{
+				kcsapi_slotitem* slotitemdata = pkdc->findSlotitemFromId(slotitemno);
+				slotitemlist.append(slotitemdata);
+				if (slotitemdata != NULL)
+				{
+					mstslotitemlist.append(pkdc->findMstSlotItemFromSlotitemid(slotitemdata->api_slotitem_id));
+				}
+				else
+				{
+					mstslotitemlist.append(NULL);
+				}
+			}
+			else
+			{
+				slotitemlist.append(NULL);
+				mstslotitemlist.append(NULL);
+			}
+		}
+		int slotitemno = pship->api_slot_ex;
+		if (slotitemno >= 0)
+		{
+			kcsapi_slotitem* slotitemdata = pkdc->findSlotitemFromId(slotitemno);
+			slotitemlist.append(slotitemdata);
+			if (slotitemdata != NULL)
+			{
+				mstslotitemlist.append(pkdc->findMstSlotItemFromSlotitemid(slotitemdata->api_slotitem_id));
+			}
+			else
+			{
+				mstslotitemlist.append(NULL);
+			}
+		}
+		else
+		{
+			slotitemlist.append(NULL);
+			mstslotitemlist.append(NULL);
+		}
+	}
 }

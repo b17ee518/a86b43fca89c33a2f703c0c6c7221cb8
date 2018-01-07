@@ -203,3 +203,284 @@ CondState KanDataCalc::GetCondState(int cond)
 	}
 	return CondState::Kira;
 }
+
+int KanDataCalc::CalcTeamTyku(QList<ShipWithSlotItemsFullData> shipFullDataList, int& minTyku, int& maxTyku, LandBaseState landbaseState /*= LandBaseState::None*/)
+{
+	minTyku = 0;
+	maxTyku = 0;
+	int basicTyku = 0;
+	double reconBonus = 1.0;
+
+	for (const auto& shipFullData : shipFullDataList)
+	{
+		const auto* pship = shipFullData.pship;
+		const auto* pmstship = shipFullData.pmstship;
+		if (pship == NULL || pmstship == NULL)
+		{
+			continue;
+		}
+
+		for (int i = 0; i < shipFullData.slotitemlist.count(); i++)
+		{
+			const auto* pslotitem = shipFullData.slotitemlist[i];
+			const kcsapi_mst_slotitem* pmstslotitem = NULL;
+			if (shipFullData.mstslotitemlist.count() > i)
+			{
+				pmstslotitem = shipFullData.mstslotitemlist[i];
+			}
+
+			if (pslotitem == NULL || pmstslotitem == NULL)
+			{
+				continue;
+			}
+
+			if (pship->api_onslot.count() <= i)
+			{
+				continue;
+			}
+
+			int onslot = pship->api_onslot[i];
+			if (onslot < 1)
+			{
+				continue;
+			}
+
+			double tempTyku = 0.0;
+			int tempAlv = pslotitem->api_alv;
+
+			double levelFactor = pmstslotitem->api_baku	> 0 ? 0.25 : 0.2;
+
+			switch ((SlotitemType)(pmstslotitem->api_type[2]))
+			{
+			case SlotitemType::KanSen:
+			case SlotitemType::KanBaKu:
+			case SlotitemType::KanKou:
+			case SlotitemType::SuiJouSenTouKi:
+			case SlotitemType::RiKuJouKouGeKiKi:
+			case SlotitemType::FunSen:
+			case SlotitemType::FunSenBaku:
+			case SlotitemType::FunKou:
+			{
+				tempTyku += sqrt((double)onslot) * (pmstslotitem->api_tyku + pslotitem->api_level*levelFactor);
+				tempTyku += GetAirCraftLevelBonus((SlotitemType)pmstslotitem->api_type[2], tempAlv);
+				basicTyku += (int)(sqrt((double)onslot) * pmstslotitem->api_tyku);
+				minTyku += (int)(tempTyku + sqrt((double)GetAirCraftExp(tempAlv) / 10.0));
+				maxTyku += (int)(tempTyku + sqrt((double)(GetAirCraftExp(tempAlv + 1) - 1) / 10.0));
+			}
+			break;
+			case SlotitemType::SuiBaKu:
+			{
+				// todo check?
+				tempTyku += sqrt((double)onslot) * pmstslotitem->api_tyku;
+				tempTyku += GetAirCraftLevelBonus((SlotitemType)pmstslotitem->api_type[2], tempAlv);
+				basicTyku += (int)(sqrt((double)onslot) * pmstslotitem->api_tyku);
+				minTyku += (int)(tempTyku + sqrt((double)GetAirCraftExp(tempAlv) / 10.0));
+				maxTyku += (int)(tempTyku + sqrt((double)(GetAirCraftExp(tempAlv + 1) - 1) / 10.0));
+			}
+			break;
+			case SlotitemType::KyoKuChiSenTouKi:
+			{
+				double landbaseBonus = 0.0;
+				if (landbaseState == LandBaseState::ShutsuGeki)
+				{
+					landbaseBonus = 1.5 * pmstslotitem->api_houk;
+				}
+				else if (landbaseState == LandBaseState::BouKu)
+				{
+					landbaseBonus = pmstslotitem->api_houk + 2.0 * pmstslotitem->api_houm;
+				}
+				tempTyku += sqrt((double)onslot) * (pmstslotitem->api_tyku + landbaseBonus + pslotitem->api_level*levelFactor);
+				tempTyku += GetAirCraftLevelBonus((SlotitemType)pmstslotitem->api_type[2], tempAlv);
+				basicTyku += (int)(sqrt((double)onslot) * pmstslotitem->api_tyku);
+				minTyku += (int)(tempTyku + sqrt((double)GetAirCraftExp(tempAlv) / 10.0));
+				maxTyku += (int)(tempTyku + sqrt((double)(GetAirCraftExp(tempAlv + 1) - 1) / 10.0));
+			}
+			break;
+			case SlotitemType::SuiTei:
+			case SlotitemType::HiKouTei_L:
+			{
+				if (landbaseState == LandBaseState::BouKu)
+				{
+					if (pmstslotitem->api_saku >= 9)
+					{
+						if (reconBonus <= 1.16)
+						{
+							reconBonus = 1.16;
+						}
+					}
+					else if (pmstslotitem->api_saku == 8)
+					{
+						if (reconBonus <= 1.13)
+						{
+							reconBonus = 1.13;
+						}
+					}
+					else
+					{
+						if (reconBonus <= 1.1)
+						{
+							reconBonus = 1.1;
+						}
+					}
+				}
+				else if (landbaseState == LandBaseState::ShutsuGeki)
+				{
+					tempTyku += sqrt((double)onslot) * pmstslotitem->api_tyku;
+					minTyku += (int)(tempTyku + sqrt((double)GetAirCraftExp(tempAlv) / 10.0));
+					maxTyku += (int)(tempTyku + sqrt((double)(GetAirCraftExp(tempAlv + 1) - 1) / 10.0));
+				}
+			}
+			break;
+			case SlotitemType::KanJouTeiSaTsu:
+			{
+				if (landbaseState == LandBaseState::BouKu)
+				{
+					if (pmstslotitem->api_saku >= 9)
+					{
+						if (reconBonus < 1.3)
+						{
+							reconBonus = 1.3;
+						}
+					}
+					else
+					{
+						if (reconBonus < 1.2)
+						{
+							reconBonus = 1.2;
+						}
+					}
+				}
+			}
+			break;
+			}
+		}
+	}
+
+	minTyku = (int)(minTyku * reconBonus);
+	maxTyku = (int)(maxTyku * reconBonus);
+
+	return (int)(basicTyku*reconBonus);
+}
+
+double KanDataCalc::CalcTeamSakuTeki(QList<ShipWithSlotItemsFullData> shipFullDataList, int teitokuLevel, double mapModifier /*= 1.0*/, int maxSlotCount /*= 6*/)
+{
+	double totalSaku = 0.0;
+	double shipSaku = 0.0;
+	double equipSaku = 0.0;
+	double teitokuSaku = 0.0;
+	int emptySlot = maxSlotCount;
+
+	for (const auto& shipFullData : shipFullDataList)
+	{
+		const auto* pship = shipFullData.pship;
+		const auto* pmstship = shipFullData.pmstship;
+		if (pship == NULL || pmstship == NULL)
+		{
+			continue;
+		}
+
+		emptySlot--;
+		double shipPureSaku = pship->api_sakuteki[0];
+
+		for (int i = 0; i < shipFullData.slotitemlist.count(); i++)
+		{
+			const auto* pslotitem = shipFullData.slotitemlist[i];
+			const kcsapi_mst_slotitem* pmstslotitem = NULL;
+			if (shipFullData.mstslotitemlist.count() > i)
+			{
+				pmstslotitem = shipFullData.mstslotitemlist[i];
+			}
+
+			if (pslotitem == NULL || pmstslotitem == NULL)
+			{
+				continue;
+			}
+
+			shipPureSaku -= pmstslotitem->api_saku;
+
+			switch ((SlotitemType)(pmstslotitem->api_type[2]))
+			{
+			case SlotitemType::KanKou:
+				equipSaku += pmstslotitem->api_saku * 0.8;
+				break;
+			case SlotitemType::KanJouTeiSaTsu:
+				equipSaku += pmstslotitem->api_saku * 1.0;
+				break;
+			case SlotitemType::SuiTei:
+				equipSaku += (pmstslotitem->api_saku + 1.2 * sqrt(pslotitem->api_level)) * 1.2;
+				break;
+			case SlotitemType::SuiBaKu:
+				equipSaku += pmstslotitem->api_saku * 1.1;
+				break;
+			case SlotitemType::DenTan_S:
+				equipSaku += (pmstslotitem->api_saku + 1.25 * sqrt(pslotitem->api_level)) * 0.6;
+				break;
+			case SlotitemType::DenTan_L:
+				equipSaku += (pmstslotitem->api_saku + 1.4 * sqrt(pslotitem->api_level)) * 0.6;
+				break;
+			default:
+				equipSaku += pmstslotitem->api_saku * 0.6;
+			}
+		}
+
+		shipSaku += sqrt(shipPureSaku);
+	}
+
+	equipSaku *= mapModifier;
+	teitokuSaku = (int)(ceil(teitokuLevel * 0.4 + 0.5));
+	totalSaku = shipSaku + equipSaku - teitokuSaku + 2 * emptySlot;
+
+	return totalSaku;
+}
+
+int KanDataCalc::GetAirCraftLevelBonus(SlotitemType slotitemtype, int alv)
+{
+	static QList<int> kansenbonuslist{ 0, 0, 2, 5, 9, 14, 14, 22, 22 };
+	static QList<int> suibakubonuslist{ 0, 1, 1, 1, 1, 3, 3, 6, 6 };
+
+	if (alv < 0)
+	{
+		return 0;
+	}
+
+	switch (slotitemtype)
+	{
+	case SlotitemType::KanSen:
+	case SlotitemType::SuiJouSenTouKi:
+	case SlotitemType::KyoKuChiSenTouKi:
+	{
+		if (alv < kansenbonuslist.count())
+		{
+			return kansenbonuslist[alv];
+		}
+	}
+	break;
+
+	case SlotitemType::SuiBaKu:
+	{
+		if (alv < suibakubonuslist.count())
+		{
+			return suibakubonuslist[alv];
+		}
+	}
+	break;
+	}
+
+	return 0;
+}
+
+int KanDataCalc::GetAirCraftExp(int alv)
+{
+	static QList<int> expTable{ 0, 10, 25, 40, 55, 70, 85, 100, 121 };
+	if (alv < 0)
+	{
+		return 0;
+	}
+
+	if (alv < expTable.count())
+	{
+		return expTable[alv];
+	}
+
+	return expTable[expTable.count() - 1];
+}

@@ -156,6 +156,18 @@ public:
 	int _flag;
 };
 
+class ShipWithSlotItemsFullData
+{
+public:
+	const kcsapi_ship2* pship;
+	const kcsapi_mst_ship* pmstship;
+	QList<const kcsapi_slotitem*> slotitemlist;
+	QList<const kcsapi_mst_slotitem*> mstslotitemlist;
+
+public:
+	void InitWithShipAndSlots(int shipno);
+};
+
 class KanSaveData
 {
 public:
@@ -163,10 +175,9 @@ public:
 	struct DeckSaveData
 	{
 		int totalLevel = 0;
-		int totalTaiku = 0;
-		int taikuWithoutBonus = 0;
-		int totalSakuteki = 0;
-		int sakutekiSp33 = 0;
+		int totalMinTaiku = 0;
+		int totalMaxTaiku = 0;
+		double totalSaku = 0.0;
 	};
 
 	// public member without _
@@ -252,6 +263,8 @@ public:
 
 	void requireRecordQuestList();
 	void recordLastQuestList(const kcsapi_questlist& questList);
+
+	QList<ShipWithSlotItemsFullData> createTeamFullData(int team);
 
 	bool isRecordingLastQuestList = false;
 

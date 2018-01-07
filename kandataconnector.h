@@ -78,6 +78,8 @@ private:
 	void processOpeningDamages(const kcsapi_battle_opening_atack& api_opening_atack);
 	void processRaigekiDamages(const kcsapi_battle_raigeki& api_raigeki);
 
+	void onGetPracticeListData(const kcsapi_practicelist& api_practicelist);
+
 	void getShipColors(const kcsapi_ship2 *pship, QColor *pcolCond = 0, QColor *pcolWound = 0, CondState* pcondstate = 0, WoundState* pwoundstate = 0);
 	void getShipChargeColors(const kcsapi_ship2 *pship, const kcsapi_mst_ship *pmstship, QColor *pcolFuel, QColor *pcolBullet);
 	QString getShipWoundStateString(const kcsapi_ship2 *pship);

@@ -182,6 +182,8 @@ public:
 	kcsapi_battle battledata;
 	kcsapi_battleresult battleresultdata;
 
+	kcsapi_practicelist practicelistdata;
+
 	CreateShipSaveData createshipdata;
 
 	QMap<int, QList<kcsapi_air_base_corps> > airbasedata;

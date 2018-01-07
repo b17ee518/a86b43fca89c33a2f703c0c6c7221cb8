@@ -7,6 +7,9 @@
 
 #include "ControlManager.h"
 
+#include <QMessageBox>
+
+
 void KanDataConnector::getShipColors(const kcsapi_ship2 *pship, QColor *pcolCond/*=0*/, QColor *pcolWound/*=0*/, CondState* pcondstate/*=0*/, WoundState* pwoundstate/*=0*/)
 {
 	if (pcolCond || pcondstate)
@@ -1110,4 +1113,66 @@ QString KanDataConnector::getLogDevLeadStr()
 	writestr += leadnamestr + "\t" + leadlvstr + "\t";
 	writestr += QString("%1").arg(pksd->portdata.api_basic.api_level);
 	return writestr;
+}
+
+void KanDataConnector::onGetPracticeListData(const kcsapi_practicelist& api_practicelist)
+{
+	int emptycount = 0;
+	int practicedcount = 0;
+	for (const auto& practice : api_practicelist.api_list)
+	{
+		if (practice.api_state > 0)
+		{
+			practicedcount++;
+		}
+		else
+		{
+			emptycount++;
+		}
+	}
+
+	bool hasPractice3 = false;
+	bool hasPractice5 = false;
+	if (emptycount > 0)
+	{
+		for (const auto& quest : pksd->questdata)
+		{
+			if (quest.api_no == (int)ControlManager::MissionDefines::Practice3)
+			{
+				hasPractice3 = true;
+			}
+			else if (quest.api_no == (int)ControlManager::MissionDefines::Practice5)
+			{
+				hasPractice5 = true;
+				break;
+			}
+		}
+	}
+
+	if (emptycount > 0 && !hasPractice3 && !hasPractice5)
+	{
+		QMessageBox * pMessageBox = new QMessageBox(
+			QMessageBox::NoIcon
+			, QString::fromLocal8Bit("演習任務チェッカー")
+			, QString::fromLocal8Bit("演習任務を受けていません")
+			, QMessageBox::Ok
+			, MainWindow::mainWindow()
+			, Qt::Dialog | Qt::MSWindowsFixedSizeDialogHint | Qt::FramelessWindowHint);
+		pMessageBox->setDefaultButton(QMessageBox::Ok);
+		pMessageBox->exec();
+		delete pMessageBox;
+	}
+	else if (practicedcount > 3 && !hasPractice5)
+	{
+		QMessageBox * pMessageBox = new QMessageBox(
+			QMessageBox::NoIcon
+			, QString::fromLocal8Bit("演習任務チェッカー")
+			, QString::fromLocal8Bit("圧倒演習を受けていません")
+			, QMessageBox::Ok
+			, MainWindow::mainWindow()
+			, Qt::Dialog | Qt::MSWindowsFixedSizeDialogHint | Qt::FramelessWindowHint);
+		pMessageBox->setDefaultButton(QMessageBox::Ok);
+		pMessageBox->exec();
+		delete pMessageBox;
+	}
 }

@@ -1148,6 +1148,9 @@ bool KanDataConnector::req_combined_battle_each_battle_water_parse()
 
 bool KanDataConnector::get_member_practice_parse()
 {
+	pksd->practicelistdata.ReadFromJObj(_jobj);
+
+	onGetPracticeListData(pksd->practicelistdata);
 	return true;
 }
 

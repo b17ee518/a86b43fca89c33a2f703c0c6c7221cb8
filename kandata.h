@@ -1121,6 +1121,46 @@ public:
 	QList<kcsapi_clearitemget_bounus> api_bounus;
 };
 
+/**
+* @brief The kcsapi_practice class
+*/
+class kcsapi_practice : public KAPIBaseData
+{
+
+public:
+	kcsapi_practice(){}
+
+	virtual bool ReadFromJObj(const QJsonObject &jobj);
+
+	int api_enemy_id;
+	QString api_enemy_name;
+	QString api_enemy_name_id;
+	int api_enemy_level;
+	QString api_enemy_rank;
+	int api_enemy_flag;
+	int api_enemy_flag_ship;
+	QString api_enemy_comment;
+	QString api_enemy_comment_id;
+	int api_state;	// 6:S? 0:n/a
+	int api_medals;
+};
+
+/**
+* @brief The kcsapi_practicelist class
+*/
+class kcsapi_practicelist : public KAPIBaseData
+{
+
+public:
+	kcsapi_practicelist(){}
+
+	virtual bool ReadFromJObj(const QJsonObject &jobj);
+
+	int api_create_kind;
+	int api_selected_kind;
+	int api_entry_limit;
+	QList<kcsapi_practice> api_list;
+};
 
 /**
  * @brief The kcsapi_quest class

@@ -1162,7 +1162,7 @@ void KanDataConnector::onGetPracticeListData(const kcsapi_practicelist& api_prac
 		pMessageBox->exec();
 		delete pMessageBox;
 	}
-	else if (practicedcount > 3 && !hasPractice5)
+	else if (practicedcount >= 3 && !hasPractice5)
 	{
 		QMessageBox * pMessageBox = new QMessageBox(
 			QMessageBox::NoIcon

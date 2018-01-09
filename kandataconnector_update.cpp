@@ -246,16 +246,9 @@ void KanDataConnector::updateFleetTable()
 
 		bool bCondDown = false;
 
-		int alltaiku = 0;
-		int alltaikubonus = 0;
 		int alllv = 0;
 		int flagshipLv = 0;
-		int allsakuteki = 0;
-		//		double allsakuteki_sp = 0;
-		double allsakuteki_sp33 = 0;
 		int areasp33mul = 1;
-		double slotSakutekiAttribution = 0;
-		double shipSakutekiAttribution = 0;
 
 		//		int sakuteki_teisatsu = 0;
 		//		int sakuteki_dentan = 0;
@@ -343,13 +336,9 @@ void KanDataConnector::updateFleetTable()
 				}
 			}
 
-			int taiku = 0;
-			int taikubonus = 0;
-
 			QList<int> slotitems = pship->api_slot;
 			slotitems.append(pship->api_slot_ex);
 
-			int slotsakuteki = 0;
 			for (int i = 0; i < slotitems.count(); i++)
 			{
 				int slotitemid = slotitems[i];
@@ -365,79 +354,6 @@ void KanDataConnector::updateFleetTable()
 							{
 								// ok to cast even if not exist
 								SlotitemType type = static_cast<SlotitemType>(pmstslotitem->api_type[2]);
-
-								// taiku
-								if (type == SlotitemType::KanSen
-									|| type == SlotitemType::SuiJouSenTouKi
-									|| type == SlotitemType::KanBaKu
-									|| type == SlotitemType::KanKou
-									|| type == SlotitemType::SuiBaKu
-									|| type == SlotitemType::RiKuJouKouGeKiKi
-									|| type == SlotitemType::KyoKuChiSenTouKi)
-								{
-									double taikuBase = pmstslotitem->api_tyku*sqrt((double)pship->api_onslot[i]);
-									// geigeki
-									if (type == SlotitemType::KyoKuChiSenTouKi)
-									{
-										taikuBase += pmstslotitem->api_houk*1.5;
-									}
-									// hoshi
-									else if (type == SlotitemType::KanSen
-										|| type == SlotitemType::SuiJouSenTouKi)
-									{
-										taikuBase += v.api_level*0.2;
-									}
-									taiku += (int)taikuBase;
-
-									// >> bonus
-									int alv = v.api_alv;
-									if (type == SlotitemType::KanSen
-										|| type == SlotitemType::SuiJouSenTouKi)
-									{
-										switch (alv)
-										{
-										case 1:
-											taikubonus += 1;
-											break;
-										case 2:
-											taikubonus += 4;
-											break;
-										case 3:
-											taikubonus += 6;
-											break;
-										case 4:
-											taikubonus += 11;
-											break;
-										case 5:
-											taikubonus += 16;
-											break;
-										case 6:
-											taikubonus += 17;
-											break;
-										case 7:
-											taikubonus += 25;
-											break;
-										default:
-											break;
-										}
-									}
-									else if (type == SlotitemType::KanKou
-										|| type == SlotitemType::KanBaKu
-										|| type == SlotitemType::RiKuJouKouGeKiKi)
-									{
-										if (alv >= 7)
-										{
-											taikubonus += 3;
-										}
-									}
-									else if (type == SlotitemType::SuiBaKu)
-									{
-										if (alv >= 7)
-										{
-											taikubonus += 9;
-										}
-									}
-								}
 
 								// drum
 								if (type == SlotitemType::YuSou)
@@ -464,78 +380,6 @@ void KanDataConnector::updateFleetTable()
 								{
 									hokyustate = 1;
 								}
-
-								// new
-								slotsakuteki += pmstslotitem->api_saku;
-								switch (type)
-								{
-								case SlotitemType::KanBaKu:
-									slotSakutekiAttribution += pmstslotitem->api_saku * 0.6;
-									break;
-								case SlotitemType::KanKou:
-									slotSakutekiAttribution += pmstslotitem->api_saku * 0.8;
-									break;
-								case SlotitemType::KanJouTeiSaTsu:
-									slotSakutekiAttribution += pmstslotitem->api_saku * 1.0;
-									break;
-								case SlotitemType::KanJouTeiSaTsu_II:
-									slotSakutekiAttribution += pmstslotitem->api_saku * 1.0;
-									break;
-								case SlotitemType::SuiTei:
-									slotSakutekiAttribution += (pmstslotitem->api_saku + sqrt(v.api_level)*1.2) * 1.2;
-									break;
-								case SlotitemType::SuiBaKu:
-									slotSakutekiAttribution += pmstslotitem->api_saku * 1.1;
-									break;
-								case SlotitemType::DenTan_S:
-									slotSakutekiAttribution += (pmstslotitem->api_saku + sqrt(v.api_level)*1.25) * 0.6;
-									break;
-								case SlotitemType::DenTan_L:
-									slotSakutekiAttribution += (pmstslotitem->api_saku + sqrt(v.api_level)*1.25) * 0.6;
-									break;
-								case SlotitemType::DenTan_L_II:
-									slotSakutekiAttribution += (pmstslotitem->api_saku + sqrt(v.api_level)*1.25) * 0.6;
-									break;
-								case SlotitemType::TanSyouTou:
-									slotSakutekiAttribution += pmstslotitem->api_saku * 0.6;
-									break;
-
-								case SlotitemType::KanSen:
-									slotSakutekiAttribution += pmstslotitem->api_saku * 0.6;
-									break;
-								case SlotitemType::TaiSenKi:
-									slotSakutekiAttribution += pmstslotitem->api_saku * 0.6;
-									break;
-								case SlotitemType::ShiReiBu:
-									slotSakutekiAttribution += pmstslotitem->api_saku * 0.6;
-									break;
-								case SlotitemType::KouKuYouIn:
-									slotSakutekiAttribution += pmstslotitem->api_saku * 0.6;
-									break;
-								case SlotitemType::SuiJouYouIn:
-									slotSakutekiAttribution += pmstslotitem->api_saku * 0.6;
-									break;
-								case SlotitemType::Sonar_L:
-									slotSakutekiAttribution += pmstslotitem->api_saku * 0.6;
-									break;
-								case SlotitemType::HiKouTei_L:
-									slotSakutekiAttribution += pmstslotitem->api_saku * 0.6;
-									break;
-								case SlotitemType::TanSyouTou_L:
-									slotSakutekiAttribution += pmstslotitem->api_saku * 0.6;
-									break;
-								case SlotitemType::SuiJouSenTouKi:
-									slotSakutekiAttribution += pmstslotitem->api_saku * 0.6;
-									break;
-								case SlotitemType::SenSuiKanSouBi:
-									slotSakutekiAttribution += pmstslotitem->api_saku * 0.6;
-									break;
-								case SlotitemType::FunSenBaku:
-									slotSakutekiAttribution += pmstslotitem->api_saku * 0.6;
-									break;
-								default:
-									break;
-								}
 							}
 						}
 					}
@@ -545,17 +389,11 @@ void KanDataConnector::updateFleetTable()
 					drumedshipcount++;
 				}
 			}
-			alltaiku += taiku;
-			alltaikubonus += taikubonus;
 			alllv += pship->api_lv;
 			if (flagshipLv <= 0)
 			{
 				flagshipLv = pship->api_lv;
 			}
-			allsakuteki += pship->api_sakuteki[0];
-
-
-			shipSakutekiAttribution += sqrt((double)pship->api_sakuteki[0] - slotsakuteki);
 
 			QString damekonstr = "";
 			if (damekonstate == 1)
@@ -645,14 +483,6 @@ void KanDataConnector::updateFleetTable()
 			}
 		}
 
-		slotSakutekiAttribution *= areasp33mul;
-		allsakuteki_sp33 = slotSakutekiAttribution + shipSakutekiAttribution;
-		allsakuteki_sp33 -= ceil(pksd->portdata.api_basic.api_level*0.4);
-		// only calc this team
-
-		// TODO MaxMemberCount
-		allsakuteki_sp33 += (6 - v.api_ship.count()) * 2;
-
 		int colindex = 0;
 		if (bNeedCharge || bCondDown)
 		{
@@ -713,14 +543,9 @@ void KanDataConnector::updateFleetTable()
 
 		KanSaveData::DeckSaveData* pdsd = &(pksd->deckSaveData[v.api_id - 1]);
 		pdsd->totalLevel = alllv;
-		pdsd->totalMinTaiku = minTyku;//alltaiku + alltaikubonus;
+		pdsd->totalMinTaiku = minTyku;
 		pdsd->totalMaxTaiku = maxTyku;
 		pdsd->totalSaku = totalSaku;
-		//pdsd->taikuWithoutBonus = alltaiku;
-		//pdsd->totalSakuteki = allsakuteki;
-		//pdsd->sakutekiSp33 = (int)allsakuteki_sp33;
-
-
 
 		QString strtitle = QString::fromLocal8Bit("%1 (Lv計:%2 制空:%3 索敵:%4")
 			.arg(v.api_name)

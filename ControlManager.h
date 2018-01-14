@@ -177,6 +177,7 @@ public:
 	struct MissionSetting
 	{
 		QList<int> todoMissionList;
+		QList<int> todoGreedyMissionList;
 
 		QList<int> acceptedMissionList;
 	};
@@ -228,6 +229,7 @@ public:
 	bool BuildNext_Morning(bool isFromRepeating = false);
 
 	bool BuildNext_Mission();
+	bool switchToGreedyMission();
 
 	void LoadAnyTemplateSettings();
 	bool BuildNext_Any(bool onlyAdvance);

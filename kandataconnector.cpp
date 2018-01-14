@@ -1131,6 +1131,11 @@ void KanDataConnector::onGetPracticeListData(const kcsapi_practicelist& api_prac
 		}
 	}
 
+	if (practicedcount >= 5)
+	{
+		return;
+	}
+
 	bool hasPractice3 = false;
 	bool hasPractice5 = false;
 	if (emptycount > 0)

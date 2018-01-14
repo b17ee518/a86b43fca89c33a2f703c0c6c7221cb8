@@ -573,7 +573,8 @@ private:
 	int _targetIndex = -1;
 	bool _isSkippingMissionComplete = false;
 
-	const int maxMissionAcceptCount = 6;
+public:
+	static const int maxMissionAcceptCount = 6;
 };
 
 class RepeatAction : public ControlAction

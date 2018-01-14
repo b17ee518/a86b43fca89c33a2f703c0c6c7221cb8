@@ -3385,8 +3385,15 @@ bool RepeatAction::action()
 		}
 		else if (cm.isMissionMode())
 		{
-			// do not repeat
-			newJobFromSwitch = mainWindow->switchToExpeditionWait();
+			if (cm.switchToGreedyMission() && cm.BuildNext_Mission())
+			{
+				setState(State::Done, "Repeat:Done");
+				cm.StartJob();
+			}
+			else
+			{
+				newJobFromSwitch = mainWindow->switchToExpeditionWait();
+			}
 		}
 		else if (cm.isRestoreHenseiMode())
 		{

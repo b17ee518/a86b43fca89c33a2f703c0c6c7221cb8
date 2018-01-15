@@ -936,10 +936,6 @@ bool ControlManager::BuildNext_Morning(bool isFromRepeating)
 		_missionSetting.todoGreedyMissionList.append((int)MissionDefines::WeeklyI);
 		_missionSetting.todoGreedyMissionList.append((int)MissionDefines::WeeklyYuSou);
 
-		_missionSetting.todoGreedyMissionList.append((int)MissionDefines::Practice3);
-		_missionSetting.todoGreedyMissionList.append((int)MissionDefines::Practice5);
-		_missionSetting.todoGreedyMissionList.append((int)MissionDefines::WeeklyPractice);
-
 		_actionList.append(new MissionAction());
 		_actionList.append(new RepeatAction());
 
@@ -3663,16 +3659,16 @@ void ControlManager::moveMouseToAndClick(float x, float y, float offsetX /*= 5*/
 			// reset mouse pos for webengine
 			moveMouseTo(0, 0);
 #endif
-	}
+		}
 		else
 		{
 			sendMouseEvents(browserWidget);
-		}
+			}
 
 		QTimer::singleShot(0.1f, [this]() {this->moveMouseTo(0, 0); });
-}
+		}
 
-}
+		}
 
 void ControlManager::moveMouseTo(float x, float y, float offsetX /*= 5*/, float offsetY /*= 3*/)
 {
@@ -3722,16 +3718,16 @@ void ControlManager::moveMouseTo(float x, float y, float offsetX /*= 5*/, float 
 				{
 					sendMouseEvents(qobject_cast<QWidget*>(obj));
 				}
-	}
+			}
 #endif
-}
+		}
 		else
 		{
 			sendMouseEvents(browserWidget);
-		}
+			}
 
+		}
 	}
-}
 
 void ControlManager::setPauseNextVal(bool bVal)
 {

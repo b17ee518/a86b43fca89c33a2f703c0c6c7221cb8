@@ -96,6 +96,9 @@ MainWindow::MainWindow(QWidget *parent)
 	QShortcut *shortcut = new QShortcut(QKeySequence("Escape"), this);
 	connect(shortcut, SIGNAL(activated()), this, SLOT(onPanic()));
 
+	QShortcut *shortcutPing = new QShortcut(QKeySequence("P"), this);
+	connect(shortcutPing, SIGNAL(activated()), this, SLOT(onPingTest()));
+
 	QShortcut *shortcutDoJob = new QShortcut(QKeySequence("Ctrl+F9"), this);
 	connect(shortcutDoJob, SIGNAL(activated()), this, SLOT(onDoJobFuel()));
 

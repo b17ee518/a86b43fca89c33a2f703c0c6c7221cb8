@@ -164,6 +164,10 @@ protected:
 #endif
 	void slotWebViewException(int code, const QString & source, const QString & desc, const QString & help);
 	void onPanic();
+	void onPingTest();
+
+	bool pingTest();
+
 	void onDoJobFuel();
 	void onDoJobKira();
 	void onDoJobLevel();

@@ -433,6 +433,82 @@ void MainWindow::onPanic()
 	}
 }
 
+bool MainWindow::pingTest()
+{
+	QStringList parameters;
+#ifdef Q_OS_WIN
+	parameters << "-n" << "1";
+#else
+	parameters << "-c 1";
+#endif
+
+	parameters << "dmm.co.jp";
+
+	int exitCode = QProcess::execute("ping", parameters);
+	if (exitCode == 0) {
+		return true;
+	}
+	return false;
+}
+
+void MainWindow::onPingTest()
+{
+	bool pingDone = false;
+	if (pingTest())
+	{
+		pingDone = true;
+	}
+
+	QMessageBox* pMessageBox = NULL;
+	if (!pingDone)
+	{
+		pMessageBox = new QMessageBox(
+			QMessageBox::NoIcon
+			, QString::fromLocal8Bit("")
+			, QString::fromLocal8Bit("Pinging")
+			, QMessageBox::Cancel
+			, this
+			, Qt::Dialog | Qt::MSWindowsFixedSizeDialogHint | Qt::FramelessWindowHint);
+		pMessageBox->setDefaultButton(QMessageBox::Cancel);
+		pMessageBox->setAttribute(Qt::WA_DeleteOnClose, false);
+		Qt::WindowFlags flags = pMessageBox->windowFlags();
+		pMessageBox->setWindowFlags(flags | Qt::Tool);
+		pMessageBox->show();
+		connect(pMessageBox, &QMessageBox::rejected, this, [&pMessageBox, this](){
+			pMessageBox->close();
+			delete pMessageBox;
+			pMessageBox = NULL;
+		});
+
+		while (!pingDone && pMessageBox != NULL)
+		{
+			QCoreApplication::processEvents();
+			pingDone = pingTest();
+		}
+	}
+
+	if (pingDone)
+	{
+		if (pMessageBox != NULL)
+		{
+			pMessageBox->close();
+			delete pMessageBox;
+		}
+
+		pMessageBox = new QMessageBox(
+			QMessageBox::NoIcon
+			, QString::fromLocal8Bit("")
+			, QString::fromLocal8Bit("Ping Done")
+			, QMessageBox::Ok
+			, this
+			, Qt::Dialog | Qt::MSWindowsFixedSizeDialogHint | Qt::FramelessWindowHint);
+		pMessageBox->setDefaultButton(QMessageBox::Ok);
+		pMessageBox->setAttribute(Qt::WA_DeleteOnClose, true);
+		pMessageBox->exec();
+	}
+
+}
+
 void MainWindow::on_pbSwitchScreenshot_toggled(bool checked)
 {
 	if (checked)

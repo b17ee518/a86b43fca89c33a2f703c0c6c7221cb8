@@ -2728,7 +2728,10 @@ bool SortieAction::action()
 				}
 				else if (cm.checkColors(
 					582, 58, 34, 162, 158
-					, 342, 380, 49, 69, 79))
+					, 342, 380, 49, 69, 79)
+					|| cm.checkColors(
+					352, 84, 173, 147, 119
+					, 356, 383, 46, 59, 68))
 				{
 					_waiting = false;
 					setState(State::SkipBoardDone, "Sortie:SkipBoardDone");

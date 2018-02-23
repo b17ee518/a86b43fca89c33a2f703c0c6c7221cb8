@@ -2815,7 +2815,44 @@ bool SortieAction::action()
 					680, 478, 93, 168, 168))
 				{
 					_waiting = false;
-					setState(State::TeamSelectDone, "Sortie:TeamSelectDone");
+
+					bool bDone = false;
+					switch (_team)
+					{
+					case 1:
+						if (cm.checkColors(367, 113, 35, 160, 161))
+						{
+							bDone = true;
+						}
+						break;
+					case 2:
+						if (cm.checkColors(398, 111, 35, 160, 161))
+						{
+							bDone = true;
+						}
+						break;
+					case 3:
+						if (cm.checkColors(429, 112, 35, 158, 159))
+						{
+							bDone = true;
+						}
+						break;
+					case 4:
+						if (cm.checkColors(459, 111, 35, 159, 160))
+						{
+							bDone = true;
+						}
+						break;
+					}
+
+					if (!bDone)
+					{
+						setState(State::TeamSelectSelectTeam, "Sortie:TeamSelectSelectTeam");
+					}
+					else
+					{
+						setState(State::TeamSelectDone, "Sortie:TeamSelectDone");
+					}
 				}
 				else
 				{
@@ -2824,6 +2861,21 @@ bool SortieAction::action()
 			});
 		}
 		break;
+
+	case SortieAction::State::TeamSelectSelectTeam:
+		if (!_waiting)
+		{
+			_waiting = true;
+			QTimer::singleShot(DELAY_TIME_CLICK, Qt::PreciseTimer, this, [this, &cm]()
+			{
+				// 363 393 423 453
+				cm.moveMouseToAndClick((_team - 1) * 30 + 363, 114); // team label
+				setState(State::TeamSelectChecking, "Sortie:TeamSelectChecking");
+				resetRetryAndWainting();
+			});
+		}
+		break;
+
 	case SortieAction::State::TeamSelectDone:
 		_expectingRequest = "/kcsapi/api_req_map/start";
 		if (!_waiting)

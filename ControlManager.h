@@ -147,6 +147,7 @@ public:
 		int area = 1;
 		int map = 5;
 		int count = 1;
+		int team = 1;
 		bool checkAirBaseCond = false;
 		bool checkCond = true;
 		bool allowMiddleDamageSortie = false;

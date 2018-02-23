@@ -432,7 +432,11 @@ public:
 		SortieCheckChecking,
 		SortieCheckDone, // click ok
 		TeamSelectChecking,
+
+		TeamSelectSelectTeam, // click other team
+
 		TeamSelectDone, // click go
+
 		ExpectingMapStart, // wait for http	
 		Done,
 	};
@@ -450,10 +454,14 @@ public:
 		, const QList<float>& mapEx2CheckList = QList<float>()
 		, const QList<float>& mapEx2ClickPoint = QList<float>());
 
+	void setTeam(int team) { _team = team; }
+
 	void setShouldPauseNext(bool bPause);
 
 	int _area = 1;
 	int _map = 1;
+
+	int _team = 0;
 
 	bool _isEvent = false;
 

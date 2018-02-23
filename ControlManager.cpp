@@ -1036,6 +1036,13 @@ void ControlManager::LoadAnyTemplateSettings()
 		_anyTemplateSettings[pair].map = map;
 		Q_FOREACH(QString key, setting->childKeys())
 		{
+			if (key.compare("Team", Qt::CaseInsensitive) == 0)
+			{
+				int team = setting->value(key).toInt();
+				_anyTemplateSettings[pair].team = team;
+				continue;
+			}
+
 			int cell = key.toInt(&bOk);
 			if (!bOk)
 			{
@@ -1358,6 +1365,7 @@ bool ControlManager::BuildNext_Any(bool advanceOnly)
 			, _anySetting.areaCheckList, _anySetting.mapClickPoint
 			, _anySetting.mapExCheckList, _anySetting.mapExClickPoint
 			, _anySetting.mapEx2CheckList, _anySetting.mapEx2ClickPoint);
+		sortieAction->setTeam(_anySetting.team);
 		sortieAction->setShouldPauseNext(_anySetting.pauseAtStartMap);
 		_actionList.append(sortieAction);
 	}
@@ -3663,12 +3671,12 @@ void ControlManager::moveMouseToAndClick(float x, float y, float offsetX /*= 5*/
 		else
 		{
 			sendMouseEvents(browserWidget);
-			}
+		}
 
 		QTimer::singleShot(0.1f, [this]() {this->moveMouseTo(0, 0); });
-		}
+	}
 
-		}
+}
 
 void ControlManager::moveMouseTo(float x, float y, float offsetX /*= 5*/, float offsetY /*= 3*/)
 {
@@ -3724,10 +3732,10 @@ void ControlManager::moveMouseTo(float x, float y, float offsetX /*= 5*/, float 
 		else
 		{
 			sendMouseEvents(browserWidget);
-			}
-
 		}
+
 	}
+}
 
 void ControlManager::setPauseNextVal(bool bVal)
 {

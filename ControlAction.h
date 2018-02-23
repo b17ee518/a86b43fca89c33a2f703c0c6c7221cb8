@@ -461,7 +461,7 @@ public:
 	int _area = 1;
 	int _map = 1;
 
-	int _team = 0;
+	int _team = 1;
 
 	bool _isEvent = false;
 

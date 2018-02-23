@@ -428,11 +428,12 @@ bool KanDataConnector::isShipHasSlotitem(const kcsapi_ship2* pship, SlotitemType
 
 void KanDataConnector::checkWoundQuit()
 {
-	int lastdeckid = pksd->lastdeckid;
+	// int lastdeckid = pksd->lastdeckid;
 	bool bClose = false;
-	if (lastdeckid >= 0 && lastdeckid < 4)
+
+	foreach(const auto& deck, pksd->portdata.api_deck_port)
 	{
-		foreach(int shipno, pksd->portdata.api_deck_port[lastdeckid].api_ship)
+		foreach(int shipno, deck.api_ship)
 		{
 			if (shipno > 0)
 			{
@@ -450,32 +451,57 @@ void KanDataConnector::checkWoundQuit()
 				}
 			}
 		}
+
+	}
+
+	/*
+	if (lastdeckid >= 0 && lastdeckid < 4)
+	{
+	foreach(int shipno, pksd->portdata.api_deck_port[lastdeckid].api_ship)
+	{
+	if (shipno > 0)
+	{
+	const kcsapi_ship2 * pship = findShipFromShipno(shipno);
+	if (pship)
+	{
+	if (KanDataCalc::GetWoundState(pship->api_nowhp, pship->api_maxhp) > WoundState::Middle)
+	{
+	if (pship->api_locked > 0 || pship->api_lv > 2)
+	{
+	bClose = true;
+	break;
+	}
+	}
+	}
+	}
+	}
 	}
 	if (pksd->bCombinedSelf && !bClose)
 	{
-		int combineddeckid = lastdeckid + 1;
-		if (combineddeckid >= 0 && combineddeckid < 4)
-		{
-			foreach(int shipno, pksd->portdata.api_deck_port[combineddeckid].api_ship)
-			{
-				if (shipno > 0)
-				{
-					const kcsapi_ship2 * pship = findShipFromShipno(shipno);
-					if (pship)
-					{
-						if (KanDataCalc::GetWoundState(pship->api_nowhp, pship->api_maxhp) > WoundState::Middle)
-						{
-							if (pship->api_locked > 0 || pship->api_lv > 2)
-							{
-								bClose = true;
-								break;
-							}
-						}
-					}
-				}
-			}
-		}
+	int combineddeckid = lastdeckid + 1;
+	if (combineddeckid >= 0 && combineddeckid < 4)
+	{
+	foreach(int shipno, pksd->portdata.api_deck_port[combineddeckid].api_ship)
+	{
+	if (shipno > 0)
+	{
+	const kcsapi_ship2 * pship = findShipFromShipno(shipno);
+	if (pship)
+	{
+	if (KanDataCalc::GetWoundState(pship->api_nowhp, pship->api_maxhp) > WoundState::Middle)
+	{
+	if (pship->api_locked > 0 || pship->api_lv > 2)
+	{
+	bClose = true;
+	break;
 	}
+	}
+	}
+	}
+	}
+	}
+	}
+	*/
 	if (bClose)
 	{
 		MainWindow::mainWindow()->close();

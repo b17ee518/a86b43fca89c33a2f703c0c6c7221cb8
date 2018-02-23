@@ -1313,15 +1313,26 @@ bool ControlManager::BuildNext_Any(bool advanceOnly)
 		{
 			if (pksd->portdata.api_deck_port.size())
 			{
-				auto& firstFleet = pksd->portdata.api_deck_port.first();
-				for (auto id : firstFleet.api_ship)
+				for each (const auto& deck in pksd->portdata.api_deck_port)
 				{
-					if (id >= 0)
+					if (deck.api_id == _anySetting.team)
 					{
-						ships.append(id);
+						for (auto id : deck.api_ship)
+						{
+							if (id >= 0)
+							{
+								ships.append(id);
+							}
+						}
 					}
 				}
 			}
+		}
+
+		if (ships.count() == 0)
+		{
+			setToTerminate("Terminated:NoShip", false, RemoteNotifyHandler::Level::High);
+			return false;
 		}
 
 		for (auto id : ships)
@@ -3635,7 +3646,7 @@ void ControlManager::moveMouseToAndClick(float x, float y, float offsetX /*= 5*/
 			if (!w)
 			{
 				return;
-			}
+	}
 #if defined Q_OS_WIN || defined Q_OS_MAC
 			QMouseEvent e(QEvent::MouseButtonPress, ptAdjusted, Qt::LeftButton, Qt::LeftButton, Qt::NoModifier);
 			QApplication::sendEvent(w, &e);
@@ -3667,7 +3678,7 @@ void ControlManager::moveMouseToAndClick(float x, float y, float offsetX /*= 5*/
 			// reset mouse pos for webengine
 			moveMouseTo(0, 0);
 #endif
-		}
+}
 		else
 		{
 			sendMouseEvents(browserWidget);
@@ -3734,8 +3745,8 @@ void ControlManager::moveMouseTo(float x, float y, float offsetX /*= 5*/, float 
 			sendMouseEvents(browserWidget);
 		}
 
+		}
 	}
-}
 
 void ControlManager::setPauseNextVal(bool bVal)
 {

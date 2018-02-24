@@ -848,6 +848,8 @@ QString KanDataConnector::logBattleResult(bool bWrite/*=true*/)
 		RECLOG(filename, writestr);
 		// for total info
 		updateOverviewTable();
+
+		MainWindow::mainWindow()->timerWindow()->setLastDrop(pksd->battleresultdata.api_get_ship.api_ship_name);
 	}
 
 	return writestr;

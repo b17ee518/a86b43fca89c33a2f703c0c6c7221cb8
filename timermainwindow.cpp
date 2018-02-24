@@ -46,6 +46,7 @@ TimerMainWindow::TimerMainWindow(QWidget *parent)
 	_lstTables.append(ui->expeditionTable);
 	_lstTables.append(ui->repairTable);
 	_lstTables.append(ui->buildTable);
+	_lstTables.append(ui->dropTable);
 
 	initTableItem();
 
@@ -119,6 +120,13 @@ void TimerMainWindow::setBuildTime(int n, qint64 destms/*=-1*/, qint64 totalms/*
 		pNameItem->setTextColor(col);
 	}
 
+}
+
+void TimerMainWindow::setLastDrop(const QString& displayName, const QColor& col/* = QColor(0xff, 0xff, 0xff)*/)
+{
+	QTableWidgetItem * pNameItem = ui->dropTable->item(0, 2);
+	pNameItem->setText(displayName);
+	pNameItem->setTextColor(col);
 }
 
 
@@ -676,6 +684,8 @@ void TimerMainWindow::initTableItem()
 	ui->buildTable->item(0, 1)->setData(Qt::UserRole, CustomTableDelegate_Bottom);
 	ui->buildTable->item(0, 2)->setData(Qt::UserRole, CustomTableDelegate_Bottom);
 
+	ui->dropTable->item(0, 0)->setData(Qt::UserRole, CustomTableDelegate_Right | CustomTableDelegate_Bottom);
+	ui->dropTable->item(0, 1)->setData(Qt::UserRole, CustomTableDelegate_Bottom);
 
 
 	ui->expeditionTable->item(0, 0)->setText(QString::fromLocal8Bit("②"));
@@ -689,6 +699,8 @@ void TimerMainWindow::initTableItem()
 
 	ui->buildTable->item(0, 0)->setText(QString::fromLocal8Bit("①"));
 	ui->buildTable->item(1, 0)->setText(QString::fromLocal8Bit("②"));
+
+	ui->dropTable->item(0, 0)->setText(QString::fromLocal8Bit("D"));
 
 }
 

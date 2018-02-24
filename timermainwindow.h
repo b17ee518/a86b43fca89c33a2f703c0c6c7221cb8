@@ -60,6 +60,7 @@ public:
 		const QString& comment = QString(), const QColor& col = QColor(0xff, 0xff, 0xff));
 	void setBuildTime(int n, qint64 destms = -1, qint64 totalms = -1,
 		const QString& comment = QString(), const QColor& col = QColor(0xff, 0xff, 0xff));
+	void setLastDrop(const QString& displayName, const QColor& col = QColor(0xff, 0xff, 0xff));
 
 	void setAutoRepairTime(bool bOn, bool bResetIfOver = false);
 

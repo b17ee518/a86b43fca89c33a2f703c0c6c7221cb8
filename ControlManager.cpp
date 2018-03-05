@@ -161,7 +161,14 @@ bool ControlManager::BuildNext_Fuel()
 
 	pushPreSupplyCheck();
 	QList<int> willBeInDockList;
-	pushPreRepairCheck(willBeInDockList, false, false, true, true);
+
+	int useUpToDockSize = 3;
+	if (_southEastSetting.stopWhen == StopWhen::None && _target == ActionTarget::Fuel)
+	{
+		useUpToDockSize = 4;
+	}
+
+	pushPreRepairCheck(willBeInDockList, false, false, true, true, useUpToDockSize);
 
 	if (stopWhenHit)
 	{
@@ -249,7 +256,7 @@ bool ControlManager::chooseSSShipList(int teamSize, QList<int>& ships, QList<int
 		createSSShipList();
 	}
 
-	const int kaihiBorderLine = 80;
+	const int kaihiBorderLine = 0;
 
 	// find possible hensei
 	KanDataConnector* pkdc = &KanDataConnector::getInstance();
@@ -1893,7 +1900,7 @@ void ControlManager::pushPreSupplyCheck()
 }
 
 
-QList<int> ControlManager::pushPreRepairCheck(QList<int>& willBeInDockList, bool bCanUseFastRepair, bool onlyInTeam, bool onlyShortSevere, bool onlySmallShip)
+QList<int> ControlManager::pushPreRepairCheck(QList<int>& willBeInDockList, bool bCanUseFastRepair, bool onlyInTeam, bool onlyShortSevere, bool onlySmallShip, int useUpToNDockSize/*=3*/)
 {
 	if (!_shouldAutoPushRepair)
 	{
@@ -1902,7 +1909,6 @@ QList<int> ControlManager::pushPreRepairCheck(QList<int>& willBeInDockList, bool
 
 	KanSaveData* pksd = &KanSaveData::getInstance();
 
-	const int useUpToNDockSize = 3;
 	const int repairLessThanTime = 2 * 60 * 60 * 1000;
 	const int tinyRepairTime = 12 * 60 * 1000;
 
@@ -1924,16 +1930,21 @@ QList<int> ControlManager::pushPreRepairCheck(QList<int>& willBeInDockList, bool
 	}
 
 	QList<int> availableNormalSlots;
-	int fastSlot;
-	bool skippedFirst = false;
-	for (int i = 0; i < 4; i++)
+	int fastSlot = -1;
+
+	int skippedCount = 0;
+	const int dockSize = 4;
+	for (int i = 0; i < dockSize; i++)
 	{
 		if (!takenNDock.contains(i))
 		{
-			if (!skippedFirst)
+			if (skippedCount < dockSize - useUpToNDockSize)
 			{
-				skippedFirst = true;
-				fastSlot = i;
+				skippedCount++;
+				if (fastSlot < 0)
+				{
+					fastSlot = i;
+				}
 				continue;
 			}
 			availableNormalSlots.append(i);
@@ -2020,7 +2031,7 @@ QList<int> ControlManager::pushPreRepairCheck(QList<int>& willBeInDockList, bool
 	});
 
 	QList<int> fastships;
-	if (toFastRepairShipList.size() > 0)
+	if (toFastRepairShipList.size() > 0 && fastSlot >= 0)
 	{
 		QList<int> usingSlots;
 
@@ -3646,7 +3657,7 @@ void ControlManager::moveMouseToAndClick(float x, float y, float offsetX /*= 5*/
 			if (!w)
 			{
 				return;
-	}
+			}
 #if defined Q_OS_WIN || defined Q_OS_MAC
 			QMouseEvent e(QEvent::MouseButtonPress, ptAdjusted, Qt::LeftButton, Qt::LeftButton, Qt::NoModifier);
 			QApplication::sendEvent(w, &e);
@@ -3678,7 +3689,7 @@ void ControlManager::moveMouseToAndClick(float x, float y, float offsetX /*= 5*/
 			// reset mouse pos for webengine
 			moveMouseTo(0, 0);
 #endif
-}
+		}
 		else
 		{
 			sendMouseEvents(browserWidget);

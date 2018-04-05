@@ -12,6 +12,7 @@
 
 #include "ControlManager.h"
 #include "ExpeditionManager.h"
+#include "kqwebpage.h"
 
 void MainWindow::onSubMainWindowShowHide(bool bShow, MainWindowBase *pWindow)
 {
@@ -420,13 +421,21 @@ void MainWindow::onPanic()
 	}
 	else
 	{
-
+		auto page = (KQWebPage*)_webView->page();
+		if (page != NULL)
+		{
+			page->allowJavaPopup = true;
+	}
 #if (QT_VERSION >= QT_VERSION_CHECK(5, 6, 0))
 		_webView->page()->runJavaScript(jsstr);
 #else
 		_webView->page()->mainFrame()->evaluateJavaScript(jsstr);
 #endif
-	}
+		if (page != NULL)
+		{
+			page->allowJavaPopup = false;
+		}
+}
 	if (_panicTimer)
 	{
 		_panicTimer->stop();

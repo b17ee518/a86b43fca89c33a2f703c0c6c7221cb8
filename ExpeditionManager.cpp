@@ -335,15 +335,23 @@ SingleExpedition* ExpeditionManager::getShouldNextSchedule(int team, qint64 ct, 
 	}
 
 	// time shift
+	/*
 	ct -= _timeShiftMin * 60 * 1000;
 	bt -= _timeShiftMin * 60 * 1000;
+	*/
 
-	QDateTime currentTime = QDateTime::fromMSecsSinceEpoch(ct);
-	QDateTime backTime = QDateTime::fromMSecsSinceEpoch(bt);
+	QDateTime currentShiftedTime = fromMSecsSinceEpochShifted(ct);
+	QDateTime backShiftedTime = fromMSecsSinceEpochShifted(bt);
+	/*
 	QDateTime zeroToday = QDateTime::currentDateTime();
 	zeroToday.setTime(QTime(0, 0));
+	QDateTime zeroShiftedToday = zeroToday.addSecs(-_timeShiftMin * 60);
+	*/
 
-	if (backTime > zeroToday.addDays(1))
+	QDateTime zeroShiftedToday = currentShiftedTime;
+	setNormalizedTime(zeroShiftedToday, 0, 0);
+
+	if (backShiftedTime > zeroShiftedToday.addDays(1))
 	{
 		dateChange();
 		return NULL;
@@ -359,8 +367,8 @@ SingleExpedition* ExpeditionManager::getShouldNextSchedule(int team, qint64 ct, 
 			bOverNight = true;
 		}
 
-		QDateTime schEndTime = zeroToday;
-		schEndTime.setTime(it.key());
+		QDateTime schEndShiftedTime = currentShiftedTime;
+		setNormalizedTime(schEndShiftedTime, it.key());
 
 		QTime costTime = it.value().costTime;
 
@@ -369,17 +377,17 @@ SingleExpedition* ExpeditionManager::getShouldNextSchedule(int team, qint64 ct, 
 			return NULL;
 		}
 
-		QDateTime estNextBackTime = backTime;
-		if (estNextBackTime < currentTime)
+		QDateTime estShiftedNextBackTime = backShiftedTime;
+		if (estShiftedNextBackTime < currentShiftedTime)
 		{
-			estNextBackTime = currentTime;
+			estShiftedNextBackTime = currentShiftedTime;
 		}
-		estNextBackTime = estNextBackTime.addMSecs(costTime.msecsSinceStartOfDay());
+		estShiftedNextBackTime = estShiftedNextBackTime.addMSecs(costTime.msecsSinceStartOfDay());
 
 		//		qDebug() << "estNext" << estNextBackTime.toString("dd:hh:mm:ss.zzz");
 		//		qDebug() << "schEndTime" << schEndTime.toString("dd:hh:mm:ss.zzz");
 
-		if (estNextBackTime < schEndTime || bOverNight)
+		if (estShiftedNextBackTime < schEndShiftedTime || bOverNight)
 		{
 			return &(it.value());
 		}
@@ -749,6 +757,31 @@ void ExpeditionManager::setTimeShiftMin(int min)
 	}
 }
 
+
+QDateTime ExpeditionManager::currentShiftedDateTime()
+{
+	return QDateTime::currentDateTime().addSecs(-_timeShiftMin * 60);
+}
+
+
+QDateTime ExpeditionManager::currentShiftedDateTimeUTC()
+{
+	return QDateTime::currentDateTimeUtc().addSecs(-_timeShiftMin * 60);
+}
+
+
+QDateTime ExpeditionManager::fromMSecsSinceEpochShifted(qint64 ms)
+{
+	return QDateTime::fromMSecsSinceEpoch(ms).addSecs(-_timeShiftMin * 60);
+}
+
+void ExpeditionManager::setNormalizedTime(QDateTime& shiftedDateTime, int hour, int min, int sec/*=0*/)
+{
+	QDateTime normalizedDateTime = shiftedDateTime.addSecs(_timeShiftMin);
+	normalizedDateTime.setTime(QTime(hour, min, sec));
+	shiftedDateTime = normalizedDateTime.addSecs(-_timeShiftMin * 60);
+}
+
 void ExpeditionManager::buildSingleByPresetLine(ExpeditionSchedule* pschedule, const QString& presetName, int hour, int minute)
 {
 	if (!presetName.compare("TK1", Qt::CaseInsensitive))
@@ -806,14 +839,15 @@ void ExpeditionManager::buildSingleByPresetLine(ExpeditionSchedule* pschedule, c
 
 void ExpeditionManager::dateChange()
 {
-	// date change:
-	static QDate playedDate = QDate::currentDate().addDays(-1);
+	// date change:	
+	static QDateTime playedShiftedDate = ExpeditionManager::getInstance().currentShiftedDateTime().addDays(-1);
 
-	if (playedDate >= QDate::currentDate())
+	QDateTime currentShiftedTime = ExpeditionManager::getInstance().currentShiftedDateTime();
+	if (playedShiftedDate.date() >= currentShiftedTime.date())
 	{
 		return;
 	}
-	playedDate = QDate::currentDate();
+	playedShiftedDate = currentShiftedTime;
 
 	MainWindow::mainWindow()->timerWindow()->playSound(TimerMainWindow::SoundIndex::GoodNight);
 	RemoteNotifyHandler::getInstance().Notify("GoodNight!", RemoteNotifyHandler::Level::Low);

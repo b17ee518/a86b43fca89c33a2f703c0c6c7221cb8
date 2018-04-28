@@ -374,12 +374,12 @@ bool ControlManager::chooseSSShipList(int teamSize, QList<int>& ships, QList<int
 
 	qint64 maxWaitMS = 0;
 
-	qint64 ct = TimerMainWindow::currentMS();
+	qint64 ctUtc = TimerMainWindow::currentMSUtc();
 
 	qint64 minCompleteTime = bestShips.at(0).nDockCompleteTime;
 	if (minCompleteTime > 0)
 	{
-		maxWaitMS = minCompleteTime - ct - 60 * 1000 + 5000 + randVal(-1000, 1000);
+		maxWaitMS = minCompleteTime - ctUtc - 60 * 1000 + 5000 + randVal(-1000, 1000);
 	}
 
 	int minCond = bestShips.at(teamSize - 1).pship->api_cond;
@@ -1411,12 +1411,12 @@ bool ControlManager::BuildNext_Expedition()
 
 	QList<int> excludeTeams;
 	SingleExpedition* pExp;
-	qint64 ct = TimerMainWindow::currentMS();
+	qint64 ctUtc = TimerMainWindow::currentMSUtc();
 	qint64 waitMS = 0;
 	for (int i = 0; i < 3; i++)
 	{
 		waitMS = timerWindow->getMinExpeditionMS(team, excludeTeams);
-		pExp = ExpeditionManager::getInstance().getShouldNextSchedule(team, ct, ct + waitMS);
+		pExp = ExpeditionManager::getInstance().getShouldNextSchedule(team, ctUtc, ctUtc + waitMS);
 		if (!pExp)
 		{
 			excludeTeams.append(team);
@@ -1470,7 +1470,7 @@ bool ControlManager::BuildNext_Expedition()
 
 	LoadToDoShipList_Kira();
 	QList<int> todoships = LoadRawKiraListForExpedition();
-	srand(ct);
+	srand(ctUtc);
 	std::random_shuffle(todoships.begin(), todoships.end());
 	bool needChangeHensei = false;
 	QList<int> toShips = ships;
@@ -1954,9 +1954,10 @@ QList<int> ControlManager::pushPreRepairCheck(QList<int>& willBeInDockList, bool
 	QList<kcsapi_ship2> toRepairShipList;
 	QList<kcsapi_ship2> toFastRepairShipList;
 
-	auto ct = TimerMainWindow::currentMS();
-	QDateTime blockRepairTime = QDateTime::currentDateTime();
-	blockRepairTime.setTime(QTime(22, 30));
+	auto ctUtc = TimerMainWindow::currentMSUtc();
+	QDateTime blockShiftedRepairTime = ExpeditionManager::getInstance().currentShiftedDateTime();//QDateTime::currentDateTime();
+	ExpeditionManager::getInstance().setNormalizedTime(blockShiftedRepairTime, 22, 30);
+	//blockRepairTime.setTime(QTime(22, 30));
 
 	for (auto& ship : pksd->portdata.api_ship)
 	{
@@ -1976,7 +1977,7 @@ QList<int> ControlManager::pushPreRepairCheck(QList<int>& willBeInDockList, bool
 				|| isShipType(ship.api_id, ShipType::KaiBou)
 				|| isShipType(ship.api_id, ShipType::YouRiKu);
 
-			bool doNotOvernight = ship.api_ndock_time + ct < blockRepairTime.toMSecsSinceEpoch();
+			bool doNotOvernight = ship.api_ndock_time + ctUtc < blockShiftedRepairTime.toMSecsSinceEpoch();
 			bool canBeRepairedSoon = (ship.api_ndock_time < repairLessThanTime || isSenSui)
 				&& doNotOvernight;
 
@@ -2211,12 +2212,12 @@ bool ControlManager::checkShouldAutoWait()
 	int team;
 	QList<int> excludeTeams;
 	SingleExpedition* pExp;
-	qint64 ct = TimerMainWindow::currentMS();
+	qint64 ctUtc = TimerMainWindow::currentMSUtc();
 	qint64 waitMS = std::numeric_limits<int>::max();
 	for (int i = 0; i < 3; i++)
 	{
 		waitMS = MainWindow::mainWindow()->timerWindow()->getMinExpeditionMS(team, excludeTeams);
-		pExp = ExpeditionManager::getInstance().getShouldNextSchedule(team, ct, ct + waitMS);
+		pExp = ExpeditionManager::getInstance().getShouldNextSchedule(team, ctUtc, ctUtc + waitMS);
 		if (!pExp)
 		{
 			excludeTeams.append(team);
@@ -2283,12 +2284,12 @@ void ControlManager::setupAutoExpedition()
 
 			QList<int> excludeTeams;
 			SingleExpedition* pExp;
-			qint64 ct = TimerMainWindow::currentMS();
+			qint64 ctUtc = TimerMainWindow::currentMSUtc();
 			qint64 waitMS = 0;
 			for (int i = 0; i < 3; i++)
 			{
 				waitMS = timerWindow->getMinExpeditionMS(team, excludeTeams);
-				pExp = ExpeditionManager::getInstance().getShouldNextSchedule(team, ct, ct + waitMS);
+				pExp = ExpeditionManager::getInstance().getShouldNextSchedule(team, ctUtc, ctUtc + waitMS);
 				if (!pExp)
 				{
 					excludeTeams.append(team);
@@ -3756,8 +3757,8 @@ void ControlManager::moveMouseTo(float x, float y, float offsetX /*= 5*/, float 
 			sendMouseEvents(browserWidget);
 		}
 
-		}
 	}
+}
 
 void ControlManager::setPauseNextVal(bool bVal)
 {

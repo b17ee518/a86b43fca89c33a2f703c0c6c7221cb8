@@ -95,6 +95,12 @@ public:
 
 	const QString& getCurrentPreset() { return _currentPreset; }
 
+	QDateTime currentShiftedDateTime();
+	QDateTime currentShiftedDateTimeUTC();
+	QDateTime fromMSecsSinceEpochShifted(qint64 ms);
+	void setNormalizedTime(QDateTime& shiftedDateTime, int hour, int min, int sec = 0);
+	void setNormalizedTime(QDateTime& shiftedDateTime, QTime t){ setNormalizedTime(shiftedDateTime, t.hour(), t.minute(), t.second()); }
+
 private:
 	void buildSingleByPresetLine(ExpeditionSchedule* pschedule, const QString& presetName, int hour, int minute);
 	void dateChange();

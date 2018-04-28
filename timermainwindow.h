@@ -70,7 +70,7 @@ public:
 
 	qint64 getMinExpeditionMS(int& team, QList<int>excludes = QList<int>());
 
-	static qint64 currentMS();
+	static qint64 currentMSUtc();
 
 	private slots:
 	void on_pbClose_clicked();

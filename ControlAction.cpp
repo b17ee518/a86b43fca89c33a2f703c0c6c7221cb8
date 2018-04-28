@@ -55,8 +55,8 @@ bool WaitCondAction::action()
 	{
 	case WaitCondAction::State::None:
 	{
-		qint64 ct = TimerMainWindow::currentMS();
-		_waitMS = _waitMSTo - ct;
+		qint64 ctUtc = TimerMainWindow::currentMSUtc();
+		_waitMS = _waitMSTo - ctUtc;
 		if (_waitMS < 0)
 		{
 			_waitMS = 1;
@@ -165,7 +165,7 @@ bool WaitCondAction::action()
 
 void WaitCondAction::setWaitMS(qint64 waitms, bool isExpedition)
 {
-	qint64 ct = TimerMainWindow::currentMS();
+	qint64 ctUtc = TimerMainWindow::currentMSUtc();
 	if (!isExpedition)
 	{
 		int team = -1;
@@ -177,7 +177,7 @@ void WaitCondAction::setWaitMS(qint64 waitms, bool isExpedition)
 		for (int i = 0; i < 3; i++)
 		{
 			waitMSExpedition = timerWindow->getMinExpeditionMS(team, excludeTeams);
-			pExp = ExpeditionManager::getInstance().getShouldNextSchedule(team, ct, ct + waitMSExpedition);
+			pExp = ExpeditionManager::getInstance().getShouldNextSchedule(team, ctUtc, ctUtc + waitMSExpedition);
 			if (!pExp)
 			{
 				excludeTeams.append(team);
@@ -198,7 +198,7 @@ void WaitCondAction::setWaitMS(qint64 waitms, bool isExpedition)
 		}
 	}
 
-	_waitMSTo = waitms + ct;
+	_waitMSTo = waitms + ctUtc;
 }
 
 void WaitCondAction::setWaitName(const QString& name)

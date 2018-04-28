@@ -68,7 +68,7 @@ TimerMainWindow::~TimerMainWindow()
 
 void TimerMainWindow::setExpeditionTime(int n, qint64 destms/*=-1*/, qint64 totalms/*=-1*/, const QString& comment/*=QString()*/, const QColor& col/*=QColor(0xff, 0xff, 0xff)*/)
 {
-	_exptimerecord[n].setValue(destms, totalms, comment, destms - currentMS() < 60000);
+	_exptimerecord[n].setValue(destms, totalms, comment, destms - currentMSUtc() < 60000);
 	QTableWidgetItem * pItem = ui->expeditionTable->item(n * 2 + 1, 1);
 	if (destms < 0)
 	{
@@ -93,7 +93,7 @@ void TimerMainWindow::setExpeditionTime(int n, qint64 destms/*=-1*/, qint64 tota
 
 void TimerMainWindow::setRepairTime(int n, qint64 destms/*=-1*/, qint64 totalms/*=-1*/, const QString& comment/*=QString()*/, const QColor& col/*=QColor(0xff, 0xff, 0xff)*/)
 {
-	_repairtimerecord[n].setValue(destms, totalms, comment, destms - currentMS() < 60000);
+	_repairtimerecord[n].setValue(destms, totalms, comment, destms - currentMSUtc() < 60000);
 	QTableWidgetItem * pItem = ui->repairTable->item(n * 2 + 1, 1);
 	if (destms < 0)
 	{
@@ -134,19 +134,19 @@ void TimerMainWindow::setAutoRepairTime(bool bOn, bool bResetIfOver/*=false*/)
 {
 	if (bOn)
 	{
-		auto ct = currentMS();
+		auto ctUtc = currentMSUtc();
 		_autoRepairOn = true;
 
 		if (bResetIfOver)
 		{
-			if (ct - _autoRepairTimeBegin >= 20 * 60 * 1000)
+			if (ctUtc - _autoRepairTimeBegin >= 20 * 60 * 1000)
 			{
-				_autoRepairTimeBegin = ct;
+				_autoRepairTimeBegin = ctUtc;
 			}
 		}
 		else
 		{
-			_autoRepairTimeBegin = ct;
+			_autoRepairTimeBegin = ctUtc;
 			_autoRepairOn = true;
 			// hensei changed or started
 		}
@@ -187,7 +187,7 @@ void TimerMainWindow::on_pbMinimize_clicked()
 void TimerMainWindow::slotUpdateTimer()
 {
 	bool bRepaint = false;
-	qint64 ct = currentMS();
+	qint64 ctUtc = currentMSUtc();
 
 	int mintdiff = 3600000;
 	ProgressBarState progressbarstate = ProgressBarState::Normal;
@@ -199,13 +199,13 @@ void TimerMainWindow::slotUpdateTimer()
 		if (_exptimerecord[i].desttime >= 0)
 		{
 			qint64 dt = _exptimerecord[i].desttime;
-			if (!_exptimerecord[i].alarmed && dt - ct < 60000)
+			if (!_exptimerecord[i].alarmed && dt - ctUtc < 60000)
 			{
 				playSound(SoundIndex::Expedition);
 				_exptimerecord[i].alarmed = true;
 			}
 			bUpdated = updateDisplay(mintdiff
-				, ct
+				, ctUtc
 				, dt
 				, _exptimerecord[i].totaltime
 				, ui->expeditionTable->item(i * 2, 1)
@@ -252,13 +252,13 @@ void TimerMainWindow::slotUpdateTimer()
 		if (_repairtimerecord[i].desttime >= 0)
 		{
 			qint64 dt = _repairtimerecord[i].desttime;
-			if (!_repairtimerecord[i].alarmed && dt - ct < 60000)
+			if (!_repairtimerecord[i].alarmed && dt - ctUtc < 60000)
 			{
 				playSound(SoundIndex::Repair);
 				_repairtimerecord[i].alarmed = true;
 			}
 			bUpdated = updateDisplay(mintdiff
-				, ct
+				, ctUtc
 				, dt
 				, _repairtimerecord[i].totaltime
 				, ui->repairTable->item(i * 2, 1)
@@ -304,13 +304,13 @@ void TimerMainWindow::slotUpdateTimer()
 		if (_buildtimerecord[i].desttime >= 0)
 		{
 			qint64 dt = _buildtimerecord[i].desttime;
-			if (!_buildtimerecord[i].alarmed && dt <= ct)
+			if (!_buildtimerecord[i].alarmed && dt <= ctUtc)
 			{
 				playSound(SoundIndex::Build);
 				_buildtimerecord[i].alarmed = true;
 			}
 			bUpdated = updateDisplay(nomintdiff
-				, ct
+				, ctUtc
 				, dt
 				, _buildtimerecord[i].totaltime
 				, ui->buildTable->item(i, 1)
@@ -362,11 +362,11 @@ void TimerMainWindow::slotUpdateTimer()
 	}
 	if (_autoRepairOn)
 	{
-		setTitle(titlepre + "AR: " + getPassedTimeStr(ct, _autoRepairTimeBegin));
+		setTitle(titlepre + "AR: " + getPassedTimeStr(ctUtc, _autoRepairTimeBegin));
 	}
 }
 
-qint64 TimerMainWindow::currentMS()
+qint64 TimerMainWindow::currentMSUtc()
 {
 	QDateTime dt = QDateTime::currentDateTimeUtc();
 
@@ -573,7 +573,7 @@ void TimerMainWindow::playSound(SoundIndex i, bool bSilent/*=false*/)
 qint64 TimerMainWindow::getMinExpeditionMS(int& team, QList<int>excludes/*=QList<int>()*/)
 {
 	qint64 minTime = std::numeric_limits<qint64>::max();
-	qint64 ct = currentMS();
+	qint64 ctUtc = currentMSUtc();
 	int minTimeTeam = -1;
 
 	for (int i = 0; i < 3; i++)
@@ -583,7 +583,7 @@ qint64 TimerMainWindow::getMinExpeditionMS(int& team, QList<int>excludes/*=QList
 			continue;
 		}
 
-		qint64 testTime = _exptimerecord[i].desttime - 1000 * 60 - ct;
+		qint64 testTime = _exptimerecord[i].desttime - 1000 * 60 - ctUtc;
 		if (minTime > 0)
 		{
 			if (testTime < minTime)

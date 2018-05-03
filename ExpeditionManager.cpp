@@ -349,6 +349,7 @@ SingleExpedition* ExpeditionManager::getShouldNextSchedule(int team, qint64 ct, 
 	*/
 
 	QDateTime zeroShiftedToday = currentShiftedTime;
+
 	setNormalizedTime(zeroShiftedToday, 0, 0);
 
 	if (backShiftedTime > zeroShiftedToday.addDays(1))
@@ -777,7 +778,7 @@ QDateTime ExpeditionManager::fromMSecsSinceEpochShifted(qint64 ms)
 
 void ExpeditionManager::setNormalizedTime(QDateTime& shiftedDateTime, int hour, int min, int sec/*=0*/)
 {
-	QDateTime normalizedDateTime = shiftedDateTime.addSecs(_timeShiftMin);
+	QDateTime normalizedDateTime = shiftedDateTime.addSecs(_timeShiftMin * 60);
 	normalizedDateTime.setTime(QTime(hour, min, sec));
 	shiftedDateTime = normalizedDateTime.addSecs(-_timeShiftMin * 60);
 }

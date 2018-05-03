@@ -369,7 +369,7 @@ SingleExpedition* ExpeditionManager::getShouldNextSchedule(int team, qint64 ct, 
 		}
 
 		QDateTime schEndShiftedTime = currentShiftedTime;
-		setNormalizedTime(schEndShiftedTime, it.key());
+		schEndShiftedTime.setTime(endTime);
 
 		QTime costTime = it.value().costTime;
 
@@ -385,8 +385,8 @@ SingleExpedition* ExpeditionManager::getShouldNextSchedule(int team, qint64 ct, 
 		}
 		estShiftedNextBackTime = estShiftedNextBackTime.addMSecs(costTime.msecsSinceStartOfDay());
 
-		//		qDebug() << "estNext" << estNextBackTime.toString("dd:hh:mm:ss.zzz");
-		//		qDebug() << "schEndTime" << schEndTime.toString("dd:hh:mm:ss.zzz");
+		qDebug() << "estNext" << backShiftedTime.toString("dd:hh:mm:ss.zzz");
+		qDebug() << "schEndTime" << schEndShiftedTime.toString("dd:hh:mm:ss.zzz");
 
 		if (estShiftedNextBackTime < schEndShiftedTime || bOverNight)
 		{
@@ -778,9 +778,17 @@ QDateTime ExpeditionManager::fromMSecsSinceEpochShifted(qint64 ms)
 
 void ExpeditionManager::setNormalizedTime(QDateTime& shiftedDateTime, int hour, int min, int sec/*=0*/)
 {
+
+	qDebug() << "shiftedDateTime" << shiftedDateTime.toString("dd:hh:mm:ss.zzz");
 	QDateTime normalizedDateTime = shiftedDateTime.addSecs(_timeShiftMin * 60);
+
+	qDebug() << "normalizedDateTime" << normalizedDateTime.toString("dd:hh:mm:ss.zzz");
 	normalizedDateTime.setTime(QTime(hour, min, sec));
+
+	qDebug() << "normalizedDateTime" << normalizedDateTime.toString("dd:hh:mm:ss.zzz");
 	shiftedDateTime = normalizedDateTime.addSecs(-_timeShiftMin * 60);
+
+	qDebug() << "shiftedDateTime" << shiftedDateTime.toString("dd:hh:mm:ss.zzz");
 }
 
 void ExpeditionManager::buildSingleByPresetLine(ExpeditionSchedule* pschedule, const QString& presetName, int hour, int minute)

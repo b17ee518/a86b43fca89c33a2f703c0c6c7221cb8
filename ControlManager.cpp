@@ -1142,8 +1142,8 @@ void ControlManager::LoadAnyTemplateSettings()
 			if (settingStr.contains("XY_"))
 			{
 				int xyIndex = settingStr.indexOf("XY_");
-				settingStr = settingStr.right(settingStr.length() - (3 + xyIndex));
-				auto stringList = settingStr.split('_');
+				QString xyPosStr = settingStr.right(settingStr.length() - (3 + xyIndex));
+				auto stringList = xyPosStr.split('_');
 				if (stringList.size() < 2)
 				{
 					continue;
@@ -3690,19 +3690,19 @@ void ControlManager::moveMouseToAndClick(float x, float y, float offsetX /*= 5*/
 				{
 					sendMouseEvents(qobject_cast<QWidget*>(obj));
 				}
-	}
+			}
 
 			// reset mouse pos for webengine
 			moveMouseTo(0, 0);
 #endif
-}
+		}
 		else
 		{
 			sendMouseEvents(browserWidget);
 		}
 
 		QTimer::singleShot(0.1f, [this]() {this->moveMouseTo(0, 0); });
-}
+	}
 
 }
 
@@ -3754,9 +3754,9 @@ void ControlManager::moveMouseTo(float x, float y, float offsetX /*= 5*/, float 
 				{
 					sendMouseEvents(qobject_cast<QWidget*>(obj));
 				}
-	}
+			}
 #endif
-}
+		}
 		else
 		{
 			sendMouseEvents(browserWidget);

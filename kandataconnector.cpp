@@ -831,7 +831,7 @@ QString KanDataConnector::logBattleResult(bool bWrite/*=true*/)
 
 	QString writestr = mapareastr + "\t"
 		+ pksd->battleresultdata.api_quest_name + "\t"
-		+ pksd->battleresultdata.api_enemy_info.api_deck_name + "\t"
+		+ pksd->battleresultdata.api_enemy_info.api_deck_name + QString(" (%1)").arg(pksd->nextdata.api_no) + "\t"
 		+ battletypestr + "\t"
 		+ pksd->battleresultdata.api_win_rank + "\t"
 		+ dropstr + "\t"

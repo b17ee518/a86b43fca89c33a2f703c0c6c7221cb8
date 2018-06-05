@@ -2539,6 +2539,10 @@ bool SortieAction::action()
 					mapPoints[2] = { 600, 199, 60, 36 };
 					mapPoints[3] = { 288.5f, 350, 102.5f, 36 };
 					mapPoints[4] = { 600, 350, 60, 36 };
+					if (_area >= 6)
+					{
+						mapPoints[4] = { 694, 378, 50, 20 };
+					}
 					mapPoints[5] = mapPoints[6] = { 720, 275, 30, 50 };
 					pPoint = mapPoints[_map];
 				}

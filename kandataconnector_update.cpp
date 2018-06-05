@@ -947,16 +947,18 @@ void KanDataConnector::updateInfoTitleBattle(bool bBattle, bool bSelfDamaged)
 			.arg(subremain)
 			.arg(subtotal);
 
-		pksd->wasLastBossCell = (pksd->nextdata.api_no == pksd->nextdata.api_bosscell_no);
+		pksd->wasLastBossCell = (pksd->nextdata.api_no == pksd->nextdata.api_bosscell_no || pksd->nextdata.api_color_no == 5);
 
 		// special for calc 5-4
+		/*
 		if (pksd->nextdata.api_maparea_id == 5 && pksd->nextdata.api_mapinfo_no == 4)
 		{
-			if (pksd->nextdata.api_no == 19)
-			{
-				pksd->wasLastBossCell = true;
-			}
+		if (pksd->nextdata.api_no == 19)
+		{
+		pksd->wasLastBossCell = true;
 		}
+		}
+		*/
 
 		pksd->lastKilledYusou = transtotal - transremain;
 		pksd->lastKilledKubou = actotal - acremain;
@@ -964,7 +966,7 @@ void KanDataConnector::updateInfoTitleBattle(bool bBattle, bool bSelfDamaged)
 	}
 
 	int colindex = 0;
-	if (pksd->nextdata.api_no == pksd->nextdata.api_bosscell_no)
+	if (pksd->nextdata.api_no == pksd->nextdata.api_bosscell_no || pksd->nextdata.api_color_no == 5)
 	{
 		colindex = 1;
 	}

@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>800</width>
-    <height>500</height>
+    <width>1200</width>
+    <height>740</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -18,14 +18,14 @@
   </property>
   <property name="minimumSize">
    <size>
-    <width>800</width>
-    <height>500</height>
+    <width>1200</width>
+    <height>740</height>
    </size>
   </property>
   <property name="maximumSize">
    <size>
-    <width>800</width>
-    <height>500</height>
+    <width>1200</width>
+    <height>740</height>
    </size>
   </property>
   <property name="windowTitle">
@@ -1228,7 +1228,7 @@
      </widget>
     </item>
     <item>
-     <widget class="QFrame" name="webFrame">
+     <widget class="KQFrame" name="webFrame">
       <property name="frameShape">
        <enum>QFrame::NoFrame</enum>
       </property>
@@ -1266,6 +1266,12 @@
    <class>KQTitleFrame</class>
    <extends>QFrame</extends>
    <header>kqtitleframe.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>KQFrame</class>
+   <extends>QFrame</extends>
+   <header location="global">kqframe.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

@@ -290,6 +290,7 @@
     <ClCompile Include="GeneratedFiles\moc_cookiejar.cpp" />
     <ClCompile Include="GeneratedFiles\moc_developactionselectdialog.cpp" />
     <ClCompile Include="GeneratedFiles\moc_infomainwindow.cpp" />
+    <ClCompile Include="GeneratedFiles\moc_KQFrame.cpp" />
     <ClCompile Include="GeneratedFiles\moc_kqnetworkaccessmanager.cpp" />
     <ClCompile Include="GeneratedFiles\moc_kqnetworkreply.cpp" />
     <ClCompile Include="GeneratedFiles\moc_kqtablewidget.cpp" />
@@ -313,6 +314,7 @@
     <ClCompile Include="kanreqdata.cpp" />
     <ClCompile Include="kansavedata.cpp" />
     <ClCompile Include="klog.cpp" />
+    <ClCompile Include="KQFrame.cpp" />
     <ClCompile Include="kqnetworkaccessmanager.cpp" />
     <ClCompile Include="kqnetworkreply.cpp" />
     <ClCompile Include="kqrowdata.cpp" />
@@ -375,6 +377,7 @@
       <AdditionalInputs>$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>
     </CustomBuild>
     <ClInclude Include="GeneratedFiles\ui_developactionselectdialog.h" />
+    <CustomBuild Include="KQFrame.h" />
     <ClInclude Include="RemoteNotifyHandler.h" />
     <CustomBuild Include="SmtpClientForQt\src\emailaddress.h">
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>
@@ -672,6 +675,16 @@
       <Command Condition="'$(Configuration)|$(Platform)'=='DebugWebEngine|Win32'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o ".\GeneratedFiles\moc_%(Filename).cpp"  -D_WINDOWS -DNOMINMAX -DUNICODE -DWIN32 -DQT_AXCONTAINER_LIB -DQT_WEBKIT_LIB -DQT_WINEXTRAS_LIB -DQT_AXBASE_LIB -DQT_WIDGETS_LIB -DQT_POSITIONING_LIB -DQT_NETWORK_LIB -DQT_GUI_LIB -DQT_CORE_LIB -DQT_OPENGL_ES_2 -DQT_OPENGL_ES_2_ANGLE -DQT_DLL -DQT_MULTIMEDIA_LIB -DQT_MULTIMEDIAWIDGETS_LIB -DQT_CONCURRENT_LIB  "-I$(QTDIR)\include" "-I$(QTDIR)\include\QtWebEngineWidgets" "-I$(QTDIR)\include\QtWebEngine" "-I$(QTDIR)\include\QtWinExtras" "-I$(QTDIR)\include\QtWidgets" "-I$(QTDIR)\include\QtPositioning" "-I$(QTDIR)\include\QtNetwork" "-I$(QTDIR)\include\QtGui" "-I$(QTDIR)\include\QtANGLE" "-I$(QTDIR)\include\QtCore" "-I.\debug" "-I." "-I$(QTDIR)\mkspecs\win32-msvc2010" "-I.\GeneratedFiles" "-I$(QTDIR)\include\ActiveQt" "-I$(QTDIR)\include\QtMultimedia" "-I$(QTDIR)\include\QtMultimediaWidgets" "-I$(QTDIR)\include\QtConcurrent"</Command>
       <AdditionalInputs>$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>
     </CustomBuild>
+    <CustomBuild Include="kqframe.h">
+      <Message>Moc%27ing %(Filename).h...</Message>
+      <Outputs>.\GeneratedFiles\moc_%(Filename).cpp</Outputs>
+      <AdditionalInputs>$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o ".\GeneratedFiles\moc_%(Filename).cpp"  -D_WINDOWS -DNOMINMAX -DUNICODE -DWIN32 -DQT_NO_DEBUG -DQT_AXCONTAINER_LIB -DQT_WEBKIT_LIB -DQT_WINEXTRAS_LIB -DQT_AXBASE_LIB -DQT_WIDGETS_LIB -DQT_POSITIONING_LIB -DQT_NETWORK_LIB -DQT_GUI_LIB -DQT_CORE_LIB -DQT_OPENGL_ES_2 -DQT_OPENGL_ES_2_ANGLE -DNDEBUG -DQT_DLL -DQT_MULTIMEDIA_LIB -DQT_MULTIMEDIAWIDGETS_LIB -DQT_CONCURRENT_LIB  "-I$(QTDIR_5_4_1)\include" "-I$(QTDIR_5_4_1)\include\QtWebEngineWidgets" "-I$(QTDIR_5_4_1)\include\QtWebEngine" "-I$(QTDIR_5_4_1)\include\QtWinExtras" "-I$(QTDIR_5_4_1)\include\QtWidgets" "-I$(QTDIR_5_4_1)\include\QtPositioning" "-I$(QTDIR_5_4_1)\include\QtNetwork" "-I$(QTDIR_5_4_1)\include\QtGui" "-I$(QTDIR_5_4_1)\include\QtANGLE" "-I$(QTDIR_5_4_1)\include\QtCore" "-I.\debug" "-I." "-I$(QTDIR_5_4_1)\mkspecs\win32-msvc2010" "-I.\GeneratedFiles" "-I$(QTDIR_5_4_1)\include\ActiveQt" "-I$(QTDIR_5_4_1)\include\QtMultimedia" "-I$(QTDIR_5_4_1)\include\QtMultimediaWidgets" "-I$(QTDIR_5_4_1)\include\QtWebKit" "-I$(QTDIR_5_4_1)\include\QtWebKitWidgets" "-I$(QTDIR)\include\QtConcurrent"</Command>
+      <Command Condition="'$(Configuration)|$(Platform)'=='ReleaseWebEngine|Win32'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o ".\GeneratedFiles\moc_%(Filename).cpp"  -D_WINDOWS -DNOMINMAX -DUNICODE -DWIN32 -DQT_NO_DEBUG -DQT_AXCONTAINER_LIB -DQT_WEBKIT_LIB -DQT_WINEXTRAS_LIB -DQT_AXBASE_LIB -DQT_WIDGETS_LIB -DQT_POSITIONING_LIB -DQT_NETWORK_LIB -DQT_GUI_LIB -DQT_CORE_LIB -DQT_OPENGL_ES_2 -DQT_OPENGL_ES_2_ANGLE -DNDEBUG -DQT_DLL -DQT_MULTIMEDIA_LIB -DQT_MULTIMEDIAWIDGETS_LIB -DQT_CONCURRENT_LIB  "-I$(QTDIR)\include" "-I$(QTDIR)\include\QtWebEngineWidgets" "-I$(QTDIR)\include\QtWinExtras" "-I$(QTDIR)\include\QtWidgets" "-I$(QTDIR)\include\QtPositioning" "-I$(QTDIR)\include\QtNetwork" "-I$(QTDIR)\include\QtGui" "-I$(QTDIR)\include\QtANGLE" "-I$(QTDIR)\include\QtCore" "-I.\release" "-I." "-I$(QTDIR)\mkspecs\win32-msvc2010" "-I.\GeneratedFiles" "-I$(QTDIR)\include\ActiveQt" "-I$(QTDIR)\include\QtMultimedia" "-I$(QTDIR)\include\QtMultimediaWidgets" "-I$(QTDIR)\include\QtWebKitWidgets" "-I$(QTDIR)\include\QtConcurrent"</Command>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o ".\GeneratedFiles\moc_%(Filename).cpp"  -D_WINDOWS -DNOMINMAX -DUNICODE -DWIN32 -DQT_AXCONTAINER_LIB -DQT_WEBKIT_LIB -DQT_WINEXTRAS_LIB -DQT_AXBASE_LIB -DQT_WIDGETS_LIB -DQT_POSITIONING_LIB -DQT_NETWORK_LIB -DQT_GUI_LIB -DQT_CORE_LIB -DQT_OPENGL_ES_2 -DQT_OPENGL_ES_2_ANGLE -DQT_DLL -DQT_MULTIMEDIA_LIB -DQT_MULTIMEDIAWIDGETS_LIB -DQT_CONCURRENT_LIB  "-I$(QTDIR_5_4_1)\include" "-I$(QTDIR_5_4_1)\include\QtWebEngineWidgets" "-I$(QTDIR_5_4_1)\include\QtWebEngine" "-I$(QTDIR_5_4_1)\include\QtWinExtras" "-I$(QTDIR_5_4_1)\include\QtWidgets" "-I$(QTDIR_5_4_1)\include\QtPositioning" "-I$(QTDIR_5_4_1)\include\QtNetwork" "-I$(QTDIR_5_4_1)\include\QtGui" "-I$(QTDIR_5_4_1)\include\QtANGLE" "-I$(QTDIR_5_4_1)\include\QtCore" "-I.\debug" "-I." "-I$(QTDIR_5_4_1)\mkspecs\win32-msvc2010" "-I.\GeneratedFiles" "-I$(QTDIR_5_4_1)\include\ActiveQt" "-I$(QTDIR_5_4_1)\include\QtMultimedia" "-I$(QTDIR_5_4_1)\include\QtMultimediaWidgets" "-I$(QTDIR_5_4_1)\include\QtWebKit" "-I$(QTDIR_5_4_1)\include\QtWebKitWidgets" "-I$(QTDIR)\include\QtConcurrent"</Command>
+      <Command Condition="'$(Configuration)|$(Platform)'=='DebugWebEngine|Win32'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o ".\GeneratedFiles\moc_%(Filename).cpp"  -D_WINDOWS -DNOMINMAX -DUNICODE -DWIN32 -DQT_AXCONTAINER_LIB -DQT_WEBKIT_LIB -DQT_WINEXTRAS_LIB -DQT_AXBASE_LIB -DQT_WIDGETS_LIB -DQT_POSITIONING_LIB -DQT_NETWORK_LIB -DQT_GUI_LIB -DQT_CORE_LIB -DQT_OPENGL_ES_2 -DQT_OPENGL_ES_2_ANGLE -DQT_DLL -DQT_MULTIMEDIA_LIB -DQT_MULTIMEDIAWIDGETS_LIB -DQT_CONCURRENT_LIB  "-I$(QTDIR)\include" "-I$(QTDIR)\include\QtWebEngineWidgets" "-I$(QTDIR)\include\QtWebEngine" "-I$(QTDIR)\include\QtWinExtras" "-I$(QTDIR)\include\QtWidgets" "-I$(QTDIR)\include\QtPositioning" "-I$(QTDIR)\include\QtNetwork" "-I$(QTDIR)\include\QtGui" "-I$(QTDIR)\include\QtANGLE" "-I$(QTDIR)\include\QtCore" "-I.\debug" "-I." "-I$(QTDIR)\mkspecs\win32-msvc2010" "-I.\GeneratedFiles" "-I$(QTDIR)\include\ActiveQt" "-I$(QTDIR)\include\QtMultimedia" "-I$(QTDIR)\include\QtMultimediaWidgets" "-I$(QTDIR)\include\QtConcurrent"</Command>
+      <AdditionalInputs>$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>
+    </CustomBuild>
     <CustomBuild Include="mainwindow.h">
       <Message>Moc%27ing %(Filename).h...</Message>
       <Outputs>.\GeneratedFiles\moc_%(Filename).cpp</Outputs>
@@ -801,7 +814,7 @@
   <ImportGroup Label="ExtensionTargets" />
   <ProjectExtensions>
     <VisualStudio>
-      <UserProperties MocDir=".\GeneratedFiles" UicDir=".\GeneratedFiles" RccDir=".\GeneratedFiles" Qt5Version_x0020_Win32="msvc2013_5.4.1" Qt5Version_x0020_x64="msvc2013_64_5.6" />
+      <UserProperties MocDir=".\GeneratedFiles" UicDir=".\GeneratedFiles" RccDir=".\GeneratedFiles" Qt5Version_x0020_Win32="msvc2013_5.6.3" Qt5Version_x0020_x64="msvc2013_64_5.6" />
     </VisualStudio>
   </ProjectExtensions>
 </Project>

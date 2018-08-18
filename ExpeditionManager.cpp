@@ -1094,7 +1094,7 @@ QString SingleExpedition::checkMatches(int shipid, int index, int team, int& toS
 				int condVal = cm->getShipCondVal(id);
 				if (cm->isShipType(id, (ShipType)(shipTypes[index]))
 					&& !cm->isShipInDock(id)
-					&& !cm->isShipInOtherTeam(id, -1, !cm->isShipType(shipid, ShipType::SuiBou) && !cm->isShipType(shipid, ShipType::YouRiKu))	// every team but do not change suibou in another team (cause double suibou)
+					&& !cm->isShipInOtherTeam(id, -1, cm->isShipType(shipid, ShipType::SuiBou) || cm->isShipType(shipid, ShipType::YouRiKu))	// every team but do not change suibou in another team (cause double suibou)
 					&& !cm->isShipDamaged(id)
 					&& cm->isShipCharged(id)
 					&& cm->hasSlotitem(id, SlotitemType::YuSou, drumCount[index])

@@ -3665,6 +3665,9 @@ void ControlManager::moveMouseToAndClick(float x, float y, float offsetX /*= 5*/
 				return;
 			}
 #if defined Q_OS_WIN || defined Q_OS_MAC
+			QMouseEvent e0(QEvent::MouseMove, ptAdjusted, Qt::LeftButton, Qt::LeftButton, Qt::NoModifier);
+			QApplication::sendEvent(w, &e0);
+
 			QMouseEvent e(QEvent::MouseButtonPress, ptAdjusted, Qt::LeftButton, Qt::LeftButton, Qt::NoModifier);
 			QApplication::sendEvent(w, &e);
 
@@ -3688,7 +3691,12 @@ void ControlManager::moveMouseToAndClick(float x, float y, float offsetX /*= 5*/
 			{
 				Q_FOREACH(QObject* obj, webView->page()->view()->children())
 				{
-					sendMouseEvents(qobject_cast<QWidget*>(obj));
+					QWidget* w = qobject_cast<QWidget*>(obj);
+					if (w != NULL)
+					{
+						sendMouseEvents(w);
+						break;
+					}
 				}
 			}
 

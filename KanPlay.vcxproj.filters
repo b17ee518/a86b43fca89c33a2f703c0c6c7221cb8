@@ -233,7 +233,13 @@
       <Filter>Generated Files</Filter>
     </ClCompile>
     <ClCompile Include="RemoteNotifyHandler.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_KQFrame.cpp">
       <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="KQFrame.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -369,6 +375,9 @@
     <CustomBuild Include="SmtpClientForQt\src\smtpclient.h">
       <Filter>SmtpClientForQt</Filter>
     </CustomBuild>
+    <CustomBuild Include="KQFrame.h">
+      <Filter>Header Files</Filter>
+    </CustomBuild>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="infomainwindow.ui">
@@ -421,9 +430,6 @@
     <ClInclude Include="GeneratedFiles\ui_developactionselectdialog.h">
       <Filter>Generated Files</Filter>
     </ClInclude>
-    <ClInclude Include="RemoteNotifyHandler.h">
-      <Filter>Generated Files</Filter>
-    </ClInclude>
     <ClInclude Include="SmtpClientForQt\src\mimeinlinefile.h">
       <Filter>SmtpClientForQt</Filter>
     </ClInclude>
@@ -435,6 +441,9 @@
     </ClInclude>
     <ClInclude Include="SmtpClientForQt\src\smtpexports.h">
       <Filter>SmtpClientForQt</Filter>
+    </ClInclude>
+    <ClInclude Include="RemoteNotifyHandler.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

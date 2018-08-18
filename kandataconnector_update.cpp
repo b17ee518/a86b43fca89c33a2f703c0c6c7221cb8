@@ -693,7 +693,10 @@ void KanDataConnector::updateBuildDockTable()
 			int shipid = v.api_created_ship_id;
 			//            const kcsapi_ship2 *pship = findShipFromShipno(shipno);
 			const kcsapi_mst_ship *pmstship = findMstShipFromShipid(shipid);
-			MainWindow::timerWindow()->setBuildTime(v.api_id - 1, v.api_complete_time, pmstship->api_buildtime, pmstship->api_name);
+			if (pmstship != NULL)
+			{
+				MainWindow::timerWindow()->setBuildTime(v.api_id - 1, v.api_complete_time, pmstship->api_buildtime, pmstship->api_name);
+			}
 		}
 	}
 

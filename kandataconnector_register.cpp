@@ -275,19 +275,19 @@ bool KanDataConnector::Parse(const QString& pathAndQuery, const QString& request
 
 #define PARSEAPIF(apistr, api)\
 	if (_pathAndQuery == apistr)\
-					{\
+						{\
 		if ((api##_flag & PARSEFLAG_IGNORE) == 0)\
-										{\
+												{\
 			if (api##_flag & PARSEFLAG_OUTPUT)\
-															{\
+																		{\
 				DAPILOG();\
-															}\
+																		}\
 			bRet = api##_parse();\
-										}\
-					}
+												}\
+						}
 #define PARSEAPI(apistr, api) else PARSEAPIF(apistr, api)
 
-	PARSEAPIF("/kcsapi/api_start2", start2)
+	PARSEAPIF("/kcsapi/api_start2/getData", start2)
 		PARSEAPI("/kcsapi/api_port/port", port_port)
 		PARSEAPI("/kcsapi/api_get_member/basic", get_member_basic)
 		PARSEAPI("/kcsapi/api_get_member/require_info", get_member_require_info)

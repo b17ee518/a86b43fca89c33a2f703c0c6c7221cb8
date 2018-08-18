@@ -20,6 +20,7 @@
 
 int main(int argc, char *argv[])
 {
+	QCoreApplication::setAttribute(Qt::AA_UseOpenGLES);
 	QApplication a(argc, argv);
 	qsrand(QTime::currentTime().msec());
 
@@ -95,7 +96,6 @@ int main(int argc, char *argv[])
 	wTimer->setAttribute(Qt::WA_DeleteOnClose, true);
 	wWeapon->setAttribute(Qt::WA_DeleteOnClose, true);
 	*/
-
 	w->show();
 	wInfo->show();
 	wTimer->show();

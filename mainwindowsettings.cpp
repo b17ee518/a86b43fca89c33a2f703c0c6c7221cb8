@@ -382,7 +382,7 @@ void MainWindow::setupCss()
 	 z-index:1
 	 }
 	 */
-	_ieCsses[(int)QWebViewCSSIndex::Normal] = "body {margin:0;overflow:hidden;} #game_frame{position:fixed;top:-16px;left:-50px;z-index:1}";
+	_ieCsses[(int)QWebViewCSSIndex::Normal] = "body {margin:0;overflow:hidden;} #game_frame{position:fixed;top:-17px;left:0px;z-index:1}";
 	_webViewCsses[(int)QWebViewCSSIndex::Normal] = QUrl(QString("data:text/css;charset=utf-8;base64,")
 		+ _ieCsses[(int)QWebViewCSSIndex::Normal].toUtf8().toBase64());
 	//		(QUrl("data:text/css;charset=utf-8;base64,Ym9keSB7DQoJbWFyZ2luOjA7DQoJb3ZlcmZsb3c6aGlkZGVuDQp9DQoNCiNnYW1lX2ZyYW1lIHsNCglwb3NpdGlvbjpmaXhlZDsNCgl0b3A6LTE2cHg7DQoJbGVmdDotNTBweDsNCgl6LWluZGV4OjENCn0="));

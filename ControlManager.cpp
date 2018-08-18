@@ -3630,7 +3630,7 @@ ControlManager::AnySetting ControlManager::getAnyTemplateSetting(int area, int m
 	return setting;
 }
 
-void ControlManager::moveMouseToAndClick(float x, float y, float offsetX /*= 5*/, float offsetY /*= 3*/)
+void ControlManager::moveMouseToAndClick(float x, float y, float offsetX /*= 5*/, float offsetY /*= 3*/, bool moveOnly/* = false*/)
 {
 	QPointF ptAdjusted = QPointF(x + randVal(-offsetX, offsetX), y + randVal(-offsetY, offsetY));
 
@@ -3659,23 +3659,32 @@ void ControlManager::moveMouseToAndClick(float x, float y, float offsetX /*= 5*/
 	}
 	else
 	{
-		auto sendMouseEvents = [this, ptAdjusted](QObject* w){
+		auto sendMouseEvents = [this, ptAdjusted, moveOnly](QObject* w){
 			if (!w)
 			{
 				return;
 			}
 #if defined Q_OS_WIN || defined Q_OS_MAC
-			QMouseEvent e0(QEvent::MouseMove, ptAdjusted, Qt::LeftButton, Qt::LeftButton, Qt::NoModifier);
-			QApplication::sendEvent(w, &e0);
 
-			QMouseEvent e(QEvent::MouseButtonPress, ptAdjusted, Qt::LeftButton, Qt::LeftButton, Qt::NoModifier);
-			QApplication::sendEvent(w, &e);
+			if (!moveOnly)
+			{
+				QMouseEvent e(QEvent::MouseButtonPress, ptAdjusted, Qt::LeftButton, Qt::LeftButton, Qt::NoModifier);
+				QApplication::sendEvent(w, &e);
 
-			QMouseEvent e2(QEvent::MouseButtonRelease, ptAdjusted, Qt::LeftButton, Qt::LeftButton, Qt::NoModifier);
-			QApplication::sendEvent(w, &e2);
+				QMouseEvent e2(QEvent::MouseButtonRelease, ptAdjusted, Qt::LeftButton, Qt::LeftButton, Qt::NoModifier);
+				QApplication::sendEvent(w, &e2);
+			}
+			else
+			{
+				QMouseEvent e0(QEvent::MouseMove, ptAdjusted, Qt::LeftButton, Qt::LeftButton, Qt::NoModifier);
+				QApplication::sendEvent(w, &e0);
+			}
 #else
-			QPoint ptG = w->mapToGlobal(QPoint(ptAdjusted.x(), ptAdjusted.y()));
-			MainWindow::mainWindow()->clickAtGlobalPos(ptG);
+			if (!moveOnly)
+			{
+				QPoint ptG = w->mapToGlobal(QPoint(ptAdjusted.x(), ptAdjusted.y()));
+				MainWindow::mainWindow()->clickAtGlobalPos(ptG);
+			}
 
 #endif
 
@@ -3699,78 +3708,19 @@ void ControlManager::moveMouseToAndClick(float x, float y, float offsetX /*= 5*/
 					}
 				}
 			}
-
-			// reset mouse pos for webengine
-			moveMouseTo(0, 0);
 #endif
 		}
 		else
 		{
 			sendMouseEvents(browserWidget);
 		}
-
-		QTimer::singleShot(0.1f, [this]() {this->moveMouseTo(0, 0); });
 	}
 
 }
 
 void ControlManager::moveMouseTo(float x, float y, float offsetX /*= 5*/, float offsetY /*= 3*/)
 {
-	QPointF ptAdjusted = QPointF(x + randVal(-offsetX, offsetX), y + randVal(-offsetY, offsetY));
-	if (MainWindow::mainWindow()->getWebWidgetType() == WebWidgetType::IE)
-	{
-#ifdef Q_OS_WIN
-		INPUT input;
-		input.type = INPUT_MOUSE;
-		input.mi.dx = ptAdjusted.x() + 5;
-		input.mi.dy = ptAdjusted.y() + 25;
-		input.mi.dx *= (65536 / GetSystemMetrics(SM_CXSCREEN));
-		input.mi.dy *= (65536 / GetSystemMetrics(SM_CYSCREEN));
-		input.mi.dwFlags = (MOUSEEVENTF_ABSOLUTE | MOUSEEVENTF_MOVE);
-		input.mi.mouseData = 0;
-		input.mi.dwExtraInfo = NULL;
-		input.mi.time = 0;
-		SendInput(1, &input, sizeof(INPUT));
-
-		/*
-		int adjx = ptAdjusted.x();
-		int adjy = ptAdjusted.y() + 20;
-		HWND hwnd = (HWND)MainWindow::mainWindow()->winId();
-		PostMessage(hwnd, WM_MOUSEMOVE, 0, (adjx)& ((adjy) << 16));
-		*/
-#endif
-	}
-	else
-	{
-		auto sendMouseEvents = [this, ptAdjusted](QWidget* w){
-			if (!w)
-			{
-				return;
-			}
-			QMouseEvent e(QEvent::MouseMove, ptAdjusted, Qt::NoButton, Qt::NoButton, Qt::NoModifier);
-			QApplication::sendEvent(w, &e);
-		};
-
-		auto browserWidget = MainWindow::mainWindow()->getBrowserWidget();
-		if (MainWindow::mainWindow()->getWebWidgetType() == WebWidgetType::WebEngine)
-		{
-#if (QT_VERSION >= QT_VERSION_CHECK(5, 6, 0))
-			QWebEngineView *webView = dynamic_cast<QWebEngineView *>(browserWidget);
-			if (NULL != webView)
-			{
-				Q_FOREACH(QObject* obj, webView->page()->view()->children())
-				{
-					sendMouseEvents(qobject_cast<QWidget*>(obj));
-				}
-			}
-#endif
-		}
-		else
-		{
-			sendMouseEvents(browserWidget);
-		}
-
-	}
+	moveMouseToAndClick(x, y, offsetX, offsetY, true);
 }
 
 void ControlManager::setPauseNextVal(bool bVal)

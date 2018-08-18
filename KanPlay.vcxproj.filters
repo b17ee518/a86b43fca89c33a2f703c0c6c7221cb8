@@ -241,6 +241,9 @@
     <ClCompile Include="KQFrame.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="ActionCheckAndClickDefine.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="cookiejar.h">
@@ -378,6 +381,9 @@
     <CustomBuild Include="KQFrame.h">
       <Filter>Header Files</Filter>
     </CustomBuild>
+    <CustomBuild Include="kqframe.h">
+      <Filter>Generated Files</Filter>
+    </CustomBuild>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="infomainwindow.ui">
@@ -443,6 +449,9 @@
       <Filter>SmtpClientForQt</Filter>
     </ClInclude>
     <ClInclude Include="RemoteNotifyHandler.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ActionCheckAndClickDefine.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

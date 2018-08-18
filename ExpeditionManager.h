@@ -82,7 +82,7 @@ public:
 
 	void BuildSingle2last(ExpeditionSchedule* pschedule, int toHour, int toMin);
 	void BuildSingle3last(ExpeditionSchedule* pschedule, int toHour, int toMin);
-	void BuildSingle5last(ExpeditionSchedule* pschedule, int toHour, int toMin);
+	void BuildSingle6last(ExpeditionSchedule* pschedule, int toHour, int toMin);
 
 	void BuildSingleNezumiYusou(ExpeditionSchedule* pschedule, int toHour, int toMin);
 	void BuildSingleBauxiteYusou(ExpeditionSchedule* pschedule, int toHour, int toMin);

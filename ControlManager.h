@@ -408,7 +408,7 @@ public:
 	AnySetting getAnyTemplateSetting(int area, int map);
 
 	//private:
-	void moveMouseToAndClick(float x, float y, float offsetX = 5, float offsetY = 3);
+	void moveMouseToAndClick(float x, float y, float offsetX = 5, float offsetY = 3, bool moveOnly = false);
 	void moveMouseTo(float x, float y, float offsetX = 5, float offsetY = 3);
 
 	void setPauseNextVal(bool bVal);

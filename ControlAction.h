@@ -122,6 +122,7 @@ public:
 
 		FindShipChecking,	// cur page
 		FindShipChangeSort,	// sort change
+		FindShipChangeFilter,	// filter change
 		FindShipDone,		// click leftmost
 		FindShipFirstPageChecking,
 		FindShipFirstPageDone,
@@ -159,7 +160,6 @@ public:
 
 	int _curPage = 0;
 	int _nowIndex = 0;
-	int _cellHeight = 28;
 
 	int _team = 0;
 
@@ -300,8 +300,6 @@ public:
 	int _nowEndIndex = 0;
 
 	int _nowSelectingPosIndex = 0;
-
-	int _cellHeight = 31;
 
 private:
 	State _state = State::None;

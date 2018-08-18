@@ -277,6 +277,7 @@
     </ResourceCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="ActionCheckAndClickDefine.cpp" />
     <ClCompile Include="anyactionselectdialog.cpp" />
     <ClCompile Include="ControlAction.cpp" />
     <ClCompile Include="ControlManager.cpp" />
@@ -353,6 +354,7 @@
       <Command Condition="'$(Configuration)|$(Platform)'=='DebugWebEngine|Win32'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o ".\GeneratedFiles\moc_%(Filename).cpp"  -D_WINDOWS -DNOMINMAX -DUNICODE -DWIN32 -DQT_AXCONTAINER_LIB -DQT_WEBKIT_LIB -DQT_WINEXTRAS_LIB -DQT_AXBASE_LIB -DQT_WIDGETS_LIB -DQT_POSITIONING_LIB -DQT_NETWORK_LIB -DQT_GUI_LIB -DQT_CORE_LIB -DQT_OPENGL_ES_2 -DQT_OPENGL_ES_2_ANGLE -DQT_DLL -DQT_MULTIMEDIA_LIB -DQT_MULTIMEDIAWIDGETS_LIB -DQT_CONCURRENT_LIB  "-I$(QTDIR)\include" "-I$(QTDIR)\include\QtWebEngineWidgets" "-I$(QTDIR)\include\QtWebEngine" "-I$(QTDIR)\include\QtWinExtras" "-I$(QTDIR)\include\QtWidgets" "-I$(QTDIR)\include\QtPositioning" "-I$(QTDIR)\include\QtNetwork" "-I$(QTDIR)\include\QtGui" "-I$(QTDIR)\include\QtANGLE" "-I$(QTDIR)\include\QtCore" "-I.\debug" "-I." "-I$(QTDIR)\mkspecs\win32-msvc2010" "-I.\GeneratedFiles" "-I$(QTDIR)\include\ActiveQt" "-I$(QTDIR)\include\QtMultimedia" "-I$(QTDIR)\include\QtMultimediaWidgets" "-I$(QTDIR)\include\QtConcurrent"</Command>
       <AdditionalInputs>$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>
     </CustomBuild>
+    <ClInclude Include="ActionCheckAndClickDefine.h" />
     <ClInclude Include="GeneratedFiles\ui_anyactionselectdialog.h" />
     <CustomBuild Include="anyactionselectdialog.h">
       <Message>Moc%27ing %(Filename).h...</Message>

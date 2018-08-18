@@ -302,8 +302,8 @@ QMap < ActionCheckAndClickDefine::CheckColorNameDefine, QList<int>> ActionCheckA
 		CheckColorNameDefine::SortieMapExArea,
 		QList<int>{
 			// untested
-			240, 436, 250, 43, 43,
-				243, 418, 255, 255, 255
+			182, 415, 226, 43, 42,
+				219, 411, 255, 255, 255
 		}
 	},
 	{

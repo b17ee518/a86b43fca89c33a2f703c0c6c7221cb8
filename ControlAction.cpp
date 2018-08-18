@@ -2565,10 +2565,11 @@ bool SortieAction::action()
 				else
 				{
 					QMap<int, QList<float>> mapPoints;
-					mapPoints[5] = { 482, 208, 126, 41 };
-					mapPoints[6] = { 466, 349, 121, 51 };
+					mapPoints[5] = { 682, 280, 126, 41 };
+					mapPoints[6] = { 682, 420, 121, 51 };
+					mapPoints[7] = { 682, 560, 121, 51 };
 					pPoint = mapPoints[_map];
-					float scale = 1.5f;
+					float scale = 1.0f;
 					cm.moveMouseToAndClick(pPoint[0] * scale, pPoint[1] * scale, pPoint[2] * scale, pPoint[3] * scale); // map 1
 				}
 

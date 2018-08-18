@@ -157,7 +157,7 @@ QMap < ActionCheckAndClickDefine::CheckColorNameDefine, QList<int>> ActionCheckA
 	{
 		CheckColorNameDefine::KousyouPanel,
 		QList<int>{
-			81, 525, 202, 193, 187,
+			81, 525, 214, 158, 80,
 				447, 376, 141, 74, 52
 		}
 	},
@@ -165,7 +165,6 @@ QMap < ActionCheckAndClickDefine::CheckColorNameDefine, QList<int>> ActionCheckA
 		CheckColorNameDefine::DestroyPanelReady,
 		QList<int>{
 			357, 116, 31, 154, 156,
-				851, 165, 248, 247, 245,
 		}
 	},
 	{
@@ -198,7 +197,7 @@ QMap < ActionCheckAndClickDefine::CheckColorNameDefine, QList<int>> ActionCheckA
 	{
 		CheckColorNameDefine::NyukyoPanel,
 		QList<int>{
-			81, 525, 202, 193, 187,
+			81, 525, 214, 158, 80,
 				38, 451, 226, 126, 34
 		}
 	},
@@ -405,7 +404,7 @@ QMap < ActionCheckAndClickDefine::CheckColorNameDefine, QList<int>> ActionCheckA
 		QList<int>{
 			613, 267, 0, 123, 125,
 				644, 277, 34, 113, 120,
-				597, 266, 203, 194, 74
+				597, 266, 202, 191, 67
 		}
 	},
 	{
@@ -713,13 +712,13 @@ QMap < ActionCheckAndClickDefine::MoveMouseNameDefine, QList<int>> ActionCheckAn
 	{
 		MoveMouseNameDefine::NyukyoRightMost,
 		QList<int> {
-			759, 678
+			1063, 678
 		}
 	},
 	{
 		MoveMouseNameDefine::NyukyoRightButton,
 		QList<int> {
-			1061, 678
+			1008, 678
 		}
 	},
 	{

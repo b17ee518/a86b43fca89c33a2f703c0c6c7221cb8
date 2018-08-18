@@ -1967,7 +1967,7 @@ bool RepairShipAction::action()
 			_waiting = true;
 			QTimer::singleShot(DELAY_TIME, Qt::PreciseTimer, this, [this, &cm]()
 			{
-				if (ActionCheckAndClickDefine::CheckColor(ActionCheckAndClickDefine::CheckColorNameDefine::NyukyoFirstPage))
+				if (ActionCheckAndClickDefine::CheckColor(ActionCheckAndClickDefine::CheckColorNameDefine::NyukyoPanel))
 				{
 					_waiting = false;
 					setState(State::ReturnToPortDone, "Repair:ReturnToPortDone");
@@ -2384,7 +2384,7 @@ bool SortieAction::action()
 					}
 					else
 					{
-						ActionCheckAndClickDefine::MoveAndClick(ActionCheckAndClickDefine::MoveMouseNameDefine::SortieAreaHorizontalButton, _area, 0);
+						ActionCheckAndClickDefine::MoveAndClick(ActionCheckAndClickDefine::MoveMouseNameDefine::SortieAreaHorizontalButton, _area - 1, 0);
 					}
 
 					setState(State::SelectMapChecking, "Sortie:SelectMapChecking");
@@ -2458,7 +2458,7 @@ bool SortieAction::action()
 					mapPoints[2] = { 600, 199, 60, 36 };
 					mapPoints[3] = { 288.5f, 350, 102.5f, 36 };
 					mapPoints[4] = { 600, 350, 60, 36 };
-					if (_area >= 6)
+					if (_area >= 7)
 					{
 						mapPoints[4] = { 694, 378, 50, 20 };
 					}

@@ -527,7 +527,7 @@ void ExpeditionManager::BuildSingleTokyu1(ExpeditionSchedule* pschedule, int toH
 	exp.addSpecialExcludes(SPSHIP_NAGATSUKI);
 	exp.addSpecialExcludes(SPSHIP_KIKUZUKI);
 	exp.addSpecialExcludes(SPSHIP_MIKAZUKI);
-	exp.setInfo(QTime(2, 44), 5, 4);
+	exp.setInfo(QTime(2, 44), 4, 4);
 
 	if (toHour < 0)
 	{
@@ -556,7 +556,7 @@ void ExpeditionManager::BuildSingleTokyu2(ExpeditionSchedule* pschedule, int toH
 	exp.addSpecialExcludes(SPSHIP_NAGATSUKI);
 	exp.addSpecialExcludes(SPSHIP_KIKUZUKI);
 	exp.addSpecialExcludes(SPSHIP_MIKAZUKI);
-	exp.setInfo(QTime(2, 54), 5, 5);
+	exp.setInfo(QTime(2, 54), 4, 5);
 
 	if (toHour < 0)
 	{
@@ -654,7 +654,7 @@ void ExpeditionManager::BuildSingle5last(ExpeditionSchedule* pschedule, int toHo
 	exp.addSpecialExcludes(SPSHIP_NAGATSUKI);
 	exp.addSpecialExcludes(SPSHIP_KIKUZUKI);
 	exp.addSpecialExcludes(SPSHIP_MIKAZUKI);
-	exp.setInfo(QTime(6, 49), 5, 7);
+	exp.setInfo(QTime(6, 49), 4, 7);
 
 	if (toHour < 0)
 	{

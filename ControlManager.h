@@ -2,6 +2,7 @@
 #include <QPoint>
 #include <QList>
 #include <QRgb>
+#include <QMap>
 #include "ControlAction.h"
 #include "kansavedata.h"
 #include "kandatacalc.h"
@@ -424,6 +425,9 @@ public:
 
 	bool toggleShouldAutoPushRepair(){ _shouldAutoPushRepair = !_shouldAutoPushRepair; return _shouldAutoPushRepair; }
 	bool shouldAutoPushRepair(){ return _shouldAutoPushRepair; }
+
+public:
+	static QMap<int, int> areaIndexMap;
 
 private:
 

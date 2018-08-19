@@ -20,6 +20,17 @@
 #define COL_ALLOWRANCE 3
 #define COND_DAIHATSU	80
 
+QMap<int, int> ControlManager::areaIndexMap =
+{
+	{ 1, 1 },
+	{ 2, 2 },
+	{ 3, 3 },
+	{ 7, 4 },
+	{ 4, 5 },
+	{ 5, 6 },
+	{ 6, 7 },
+};
+
 ControlManager::ControlManager()
 {
 }
@@ -920,17 +931,21 @@ bool ControlManager::BuildNext_Morning(bool isFromRepeating)
 		break;
 	case MorningStage::YuSou3:
 
+		_morningSetting.morningStage = MorningStage::Done;
+		setToTerminate("Morning:Done", true, RemoteNotifyHandler::Level::Low);
+		return false;
+		/*
 		if (_missionSetting.acceptedMissionList.contains((int)MissionDefines::YuSou3))
 		{
-			_southEastSetting.stopWhen = StopWhen::Yusou3;
-			_target = ActionTarget::SouthEast;
-			_actionList.append(new RepeatAction());
+		_southEastSetting.stopWhen = StopWhen::Yusou3;
+		_target = ActionTarget::SouthEast;
+		_actionList.append(new RepeatAction());
 		}
 		else
 		{
-			_morningSetting.morningStage = MorningStage::SouthEast5_Mission;
-			return false;
-		}
+		_morningSetting.morningStage = MorningStage::SouthEast5_Mission;
+		return false;
+		}*/
 
 		break;
 	case MorningStage::SouthEast5_Mission:

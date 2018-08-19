@@ -54,7 +54,7 @@ void ExpeditionManager::BuildByPreset(ExpeditionPreset preset)
 			pschedule = &(_schedules[2]);
 			BuildSingleTokyu2(pschedule, 22, 29);
 			BuildSingle40(pschedule, 22, 30);
-			BuildSingle6last(pschedule, -1, -1);
+			BuildSingle5last(pschedule, -1, -1);
 		}
 	}
 	break;
@@ -84,7 +84,7 @@ void ExpeditionManager::BuildByPreset(ExpeditionPreset preset)
 			pschedule = &(_schedules[2]);
 			BuildSingleTokyu2(pschedule, 22, 29);
 			BuildSingle40(pschedule, 22, 30);
-			BuildSingle6last(pschedule, -1, -1);
+			BuildSingle5last(pschedule, -1, -1);
 		}
 	}
 	break;
@@ -113,7 +113,7 @@ void ExpeditionManager::BuildByPreset(ExpeditionPreset preset)
 			BuildSingle40(pschedule, 19, 0);
 			BuildSingleTokyu2(pschedule, 22, 29);
 			BuildSingle40(pschedule, 22, 30);
-			BuildSingle6last(pschedule, -1, -1);
+			BuildSingle5last(pschedule, -1, -1);
 		}
 	}
 	break;
@@ -144,7 +144,7 @@ void ExpeditionManager::BuildByPreset(ExpeditionPreset preset)
 			BuildSingle30(pschedule, 16, 30);
 			BuildSingleBauxiteYusou(pschedule, 22, 29);
 			BuildSingle40(pschedule, 22, 30);
-			BuildSingle6last(pschedule, -1, -1);
+			BuildSingle5last(pschedule, -1, -1);
 		}
 	}
 	break;
@@ -635,7 +635,7 @@ void ExpeditionManager::BuildSingle3last(ExpeditionSchedule* pschedule, int toHo
 
 }
 
-void ExpeditionManager::BuildSingle6last(ExpeditionSchedule* pschedule, int toHour, int toMin)
+void ExpeditionManager::BuildSingle5last(ExpeditionSchedule* pschedule, int toHour, int toMin)
 {
 	SingleExpedition exp;
 
@@ -827,9 +827,9 @@ void ExpeditionManager::buildSingleByPresetLine(ExpeditionSchedule* pschedule, c
 	{
 		BuildSingle3last(pschedule, hour, minute);
 	}
-	else if (!presetName.compare("6L", Qt::CaseInsensitive))
+	else if (!presetName.compare("5L", Qt::CaseInsensitive))
 	{
-		BuildSingle6last(pschedule, hour, minute);
+		BuildSingle5last(pschedule, hour, minute);
 	}
 
 	else if (!presetName.compare("NY", Qt::CaseInsensitive))

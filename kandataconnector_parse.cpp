@@ -347,7 +347,7 @@ bool KanDataConnector::req_hensei_change_parse()
 		lstship->append(-1);
 	}
 
-	if (index == -1)
+	if (index == -1 || shipid == -2)
 	{
 		shipid = lstship->first();
 		lstship->clear();
@@ -450,6 +450,8 @@ bool KanDataConnector::req_hensei_change_parse()
 	if (team == 1)
 	{
 		bool bAutoRepairing = false;
+		// might have crashed?
+		lstship = &(pksd->portdata.api_deck_port[team - 1].api_ship);
 		// has auto repair slotitem
 		if (lstship->size())
 		{

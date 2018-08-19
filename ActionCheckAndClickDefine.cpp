@@ -18,6 +18,8 @@ bool ActionCheckAndClickDefine::CheckColor(CheckColorNameDefine name)
 		int c = v.count();
 		auto& cm = ControlManager::getInstance();
 
+		cm.moveMouseTo(0, 0);
+
 		if (c < 5)
 		{
 			return false;
@@ -496,7 +498,7 @@ QMap < ActionCheckAndClickDefine::MoveMouseNameDefine, QList<int>> ActionCheckAn
 	{
 		MoveMouseNameDefine::ChargeButton,
 		QList<int> {
-			109, 346, 30, 30
+			150, 343
 		}
 	},
 	{

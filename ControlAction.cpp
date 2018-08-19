@@ -2384,7 +2384,7 @@ bool SortieAction::action()
 					}
 					else
 					{
-						ActionCheckAndClickDefine::MoveAndClick(ActionCheckAndClickDefine::MoveMouseNameDefine::SortieAreaHorizontalButton, _area - 1, 0);
+						ActionCheckAndClickDefine::MoveAndClick(ActionCheckAndClickDefine::MoveMouseNameDefine::SortieAreaHorizontalButton, cm.areaIndexMap[_area] - 1, 0);
 					}
 
 					setState(State::SelectMapChecking, "Sortie:SelectMapChecking");
@@ -2414,7 +2414,7 @@ bool SortieAction::action()
 				}
 				else
 				{
-					isCheckDone = ActionCheckAndClickDefine::CheckColor((ActionCheckAndClickDefine::CheckColorNameDefine)((int)ActionCheckAndClickDefine::CheckColorNameDefine::SortieMapArea1 + _area - 1));
+					isCheckDone = ActionCheckAndClickDefine::CheckColor((ActionCheckAndClickDefine::CheckColorNameDefine)((int)ActionCheckAndClickDefine::CheckColorNameDefine::SortieMapArea1 + cm.areaIndexMap[_area] - 1));
 				}
 
 				if (isCheckDone)
@@ -2513,28 +2513,6 @@ bool SortieAction::action()
 				else
 				{
 					isCheckDone = ActionCheckAndClickDefine::CheckColor(ActionCheckAndClickDefine::CheckColorNameDefine::SortieMapExArea);
-					/*
-					QMap<int, QList<float>> areaPoints;
-					areaPoints[1] = {
-					160, 291, 250, 43, 43
-					, 162, 279, 255, 255, 255 };
-					areaPoints[2] = {
-					160, 291, 250, 43, 43
-					, 162, 279, 255, 255, 255 };
-					areaPoints[3] = {
-					160, 291, 250, 43, 43
-					, 162, 279, 255, 255, 255 };
-					areaPoints[4] = {
-					160, 291, 250, 43, 43
-					, 162, 279, 255, 255, 255 };
-					areaPoints[5] = {
-					160, 291, 250, 43, 43
-					, 162, 279, 255, 255, 255 };
-					areaPoints[6] = {
-					160, 291, 250, 43, 43
-					, 162, 279, 255, 255, 255 };
-					pPoint = areaPoints[_area];
-					*/
 				}
 
 				if (isCheckDone)
@@ -3537,7 +3515,7 @@ bool ExpeditionAction::action()
 				_waiting = true;
 				QTimer::singleShot(DELAY_TIME_CLICK, Qt::PreciseTimer, this, [this, &cm]()
 				{
-					ActionCheckAndClickDefine::MoveAndClick(ActionCheckAndClickDefine::MoveMouseNameDefine::ExpeditionAreaHorizontal, _area);
+					ActionCheckAndClickDefine::MoveAndClick(ActionCheckAndClickDefine::MoveMouseNameDefine::ExpeditionAreaHorizontal, cm.areaIndexMap[_area]);
 					setState(State::SelectItemChecking, "Expedition:SelectItemChecking");
 					resetRetryAndWainting();
 				});

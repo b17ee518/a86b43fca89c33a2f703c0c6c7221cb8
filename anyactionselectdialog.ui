@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>422</width>
-    <height>360</height>
+    <height>409</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -104,6 +104,22 @@
        <widget class="QPushButton" name="pbArea06">
         <property name="text">
          <string>6</string>
+        </property>
+        <property name="checkable">
+         <bool>true</bool>
+        </property>
+        <property name="flat">
+         <bool>true</bool>
+        </property>
+        <attribute name="buttonGroup">
+         <string notr="true">bgArea</string>
+        </attribute>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="pbArea07">
+        <property name="text">
+         <string>7</string>
         </property>
         <property name="checkable">
          <bool>true</bool>
@@ -219,6 +235,22 @@
        <widget class="QPushButton" name="pbMap06">
         <property name="text">
          <string>6</string>
+        </property>
+        <property name="checkable">
+         <bool>true</bool>
+        </property>
+        <property name="flat">
+         <bool>true</bool>
+        </property>
+        <attribute name="buttonGroup">
+         <string notr="true">bgMap</string>
+        </attribute>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="pbMap07">
+        <property name="text">
+         <string>7</string>
         </property>
         <property name="checkable">
          <bool>true</bool>
@@ -497,8 +529,8 @@
    <slot>accept()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>295</x>
-     <y>320</y>
+     <x>314</x>
+     <y>380</y>
     </hint>
     <hint type="destinationlabel">
      <x>157</x>
@@ -513,8 +545,8 @@
    <slot>reject()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>305</x>
-     <y>320</y>
+     <x>324</x>
+     <y>380</y>
     </hint>
     <hint type="destinationlabel">
      <x>286</x>

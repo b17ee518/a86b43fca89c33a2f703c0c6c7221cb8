@@ -18,6 +18,7 @@ AnyActionSelectDialog::AnyActionSelectDialog(QWidget *parent)
 	ui->bgArea->setId(ui->pbArea04, 4);
 	ui->bgArea->setId(ui->pbArea05, 5);
 	ui->bgArea->setId(ui->pbArea06, 6);
+	ui->bgArea->setId(ui->pbArea07, 7);
 
 	ui->bgMap->setId(ui->pbMap01, 1);
 	ui->bgMap->setId(ui->pbMap02, 2);
@@ -25,6 +26,7 @@ AnyActionSelectDialog::AnyActionSelectDialog(QWidget *parent)
 	ui->bgMap->setId(ui->pbMap04, 4);
 	ui->bgMap->setId(ui->pbMap05, 5);
 	ui->bgMap->setId(ui->pbMap06, 6);
+	ui->bgMap->setId(ui->pbMap07, 7);
 
 	this->setWindowFlags(Qt::Dialog | Qt::MSWindowsFixedSizeDialogHint | Qt::FramelessWindowHint);
 
@@ -44,7 +46,7 @@ AnyActionSelectDialog::AnyActionSelectDialog(QWidget *parent)
 	connect(ui->leArea, SIGNAL(textEdited()), this, SLOT(slotUncheckAllAreaButtons()));
 	connect(ui->leMap, SIGNAL(textEdited()), this, SLOT(slotUncheckAllAreaButtons()));
 
-	for (int i = 0; i < 6; i++)
+	for (int i = 0; i < 7; i++)
 	{
 		auto button = ui->bgArea->button(i);
 		if (button)
@@ -76,7 +78,7 @@ void AnyActionSelectDialog::getMapAndArea(int&area, int&map)
 void AnyActionSelectDialog::setSelections(int area, int map)
 {
 	QAbstractButton* button;
-	if (area > 0 && area <= 6)
+	if (area > 0 && area <= 7)
 	{
 		button = ui->bgArea->button(area);
 		if (button)
@@ -91,7 +93,7 @@ void AnyActionSelectDialog::setSelections(int area, int map)
 		ui->leMap->setText(QString::number(map));
 	}
 
-	if (map > 0 && map <= 6)
+	if (map > 0 && map <= 7)
 	{
 		button = ui->bgMap->button(map);
 		if (button)
@@ -196,7 +198,7 @@ void AnyActionSelectDialog::slotUncheckAllAreaButtons()
 	slotResetExtraSettings();
 	ui->bgArea->setExclusive(false);
 	ui->bgMap->setExclusive(false);
-	for (int i = 0; i < 6; i++)
+	for (int i = 0; i < 7; i++)
 	{
 		auto button = ui->bgArea->button(i);
 		if (button)

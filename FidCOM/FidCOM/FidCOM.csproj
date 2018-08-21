@@ -70,7 +70,7 @@
   <ItemGroup>
     <Reference Include="FiddlerCore, Version=2.4.5.6, Culture=neutral, PublicKeyToken=67cb91587178ac5a, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>E:\FiddlerCoreAPI\FiddlerCore.dll</HintPath>
+      <HintPath>..\packages\FiddlerCore.4.6.2.0\lib\net40\FiddlerCore.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />

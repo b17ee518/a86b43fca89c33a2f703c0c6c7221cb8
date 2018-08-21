@@ -394,7 +394,7 @@
       <Filter>Generated Files</Filter>
     </CustomBuild>
     <CustomBuild Include="kqframe.h">
-      <Filter>Generated Files</Filter>
+      <Filter>Header Files</Filter>
     </CustomBuild>
     <CustomBuild Include="kqframe.h">
       <Filter>Header Files</Filter>

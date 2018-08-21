@@ -34,6 +34,8 @@
 using namespace SHDocVw;
 #endif
 
+#include <QMutex>
+
 #include "qwindowseventfilter.h"
 #include "qwebenginemouseeventfilter.h"
 
@@ -92,13 +94,13 @@ public:
 	explicit MainWindow(QWidget *parent = 0);
 	~MainWindow();
 
-	static inline MainWindow * mainWindow(){ return s_pMainWindow; }
-	static inline void setMainWindow(MainWindow * pWindow){ s_pMainWindow = pWindow; }
+	static inline MainWindow * mainWindow() { return s_pMainWindow; }
+	static inline void setMainWindow(MainWindow * pWindow) { s_pMainWindow = pWindow; }
 	void postInit(InfoMainWindow * pInfo, TimerMainWindow * pTimer, WeaponMainWindow *pWeapon, ShipMainWindow* pShip);
-	static inline InfoMainWindow * infoWindow(){ return s_pMainWindow->_pInfoWindow; }
-	static inline TimerMainWindow * timerWindow(){ return s_pMainWindow->_pTimerWindow; }
-	static inline WeaponMainWindow * weaponWindow(){ return s_pMainWindow->_pWeaponWindow; }
-	static inline ShipMainWindow * shipWindow(){ return s_pMainWindow->_pShipWindow; }
+	static inline InfoMainWindow * infoWindow() { return s_pMainWindow->_pInfoWindow; }
+	static inline TimerMainWindow * timerWindow() { return s_pMainWindow->_pTimerWindow; }
+	static inline WeaponMainWindow * weaponWindow() { return s_pMainWindow->_pWeaponWindow; }
+	static inline ShipMainWindow * shipWindow() { return s_pMainWindow->_pShipWindow; }
 
 	void AdjustVolume(int vol);
 	void onSubMainWindowShowHide(bool bShow, MainWindowBase * pWindow);
@@ -127,7 +129,7 @@ signals:
 	void sigTogglePanicTimer(int timeVal);
 	void sigToggleSleepMode(bool bSleep);
 
-	public slots:
+public slots:
 	virtual void slotToggleRestoreMinimize(bool bRestore);
 	virtual void slotSelfToggleRestoreMinimize(bool bRestore);
 	void slotParse(const QString &PathAndQuery, const QString &requestBody, const QString &responseBody);
@@ -146,7 +148,7 @@ protected:
 	virtual void mouseReleaseEvent(QMouseEvent * event);
 	virtual void showEvent(QShowEvent *event);
 
-	private slots:
+private slots:
 	void on_pbClose_clicked();
 	void on_pbMinimize_clicked();
 	void on_pbCheckTransparent_toggled(bool checked);
@@ -228,7 +230,7 @@ private:
 	class SharkRequestResponseRecord
 	{
 	public:
-		SharkRequestResponseRecord(){}
+		SharkRequestResponseRecord() {}
 		int requestFrame;
 		QString pathAndQuery;
 		QString requestBody;

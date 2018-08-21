@@ -24,11 +24,12 @@
 
 /* [1] Constructors and Destructors */
 MimeMessage::MimeMessage(bool createAutoMimeContent) :
+    replyTo(nullptr),
     hEncoding(MimePart::_8Bit)
 {
     if (createAutoMimeContent)
         this->content = new MimeMultiPart();
-    
+
     autoMimeContentCreated = createAutoMimeContent;
 }
 
@@ -36,8 +37,8 @@ MimeMessage::~MimeMessage()
 {
     if (this->autoMimeContentCreated)
     {
-      this->autoMimeContentCreated = false;
-      delete (this->content);
+        this->autoMimeContentCreated = false;
+        delete (this->content);
     }
 }
 
@@ -52,10 +53,14 @@ MimePart& MimeMessage::getContent() {
 void MimeMessage::setContent(MimePart *content) {
     if (this->autoMimeContentCreated)
     {
-      this->autoMimeContentCreated = false;
-      delete (this->content);
+        this->autoMimeContentCreated = false;
+        delete (this->content);
     }
     this->content = content;
+}
+
+void MimeMessage::setReplyTo(EmailAddress* rto) {
+    replyTo = rto;
 }
 
 void MimeMessage::setSender(EmailAddress* e)
@@ -135,6 +140,10 @@ const QList<EmailAddress*> & MimeMessage::getRecipients(RecipientType type) cons
     }
 }
 
+const EmailAddress* MimeMessage::getReplyTo() const {
+    return replyTo;
+}
+
 const QString & MimeMessage::getSubject() const
 {
     return subject;
@@ -183,7 +192,7 @@ QString MimeMessage::toString()
     /* ---------------------------------- */
 
 
-    /* ------- Recipients / To ---------- */    
+    /* ------- Recipients / To ---------- */
     mime += "To:";
     QList<EmailAddress*>::iterator it;  int i;
     for (i = 0, it = recipientsTo.begin(); it != recipientsTo.end(); ++it, ++i)
@@ -253,16 +262,43 @@ QString MimeMessage::toString()
     default:
         mime += subject;
     }
+    mime += "\r\n";
     /* ---------------------------------- */
 
-    mime += "\r\n";
+    /* ---------- Reply-To -------------- */
+    if (replyTo) {
+        mime += "Reply-To: ";
+        if (replyTo->getName() != "")
+        {
+            switch (hEncoding)
+            {
+            case MimePart::Base64:
+                mime += " =?utf-8?B?" + QByteArray().append(replyTo->getName()).toBase64() + "?=";
+                break;
+            case MimePart::QuotedPrintable:
+                mime += " =?utf-8?Q?" + QuotedPrintable::encode(QByteArray().append(replyTo->getName())).replace(' ', "_").replace(':',"=3A") + "?=";
+                break;
+            default:
+                mime += " " + replyTo->getName();
+            }
+        }
+        mime += " <" + replyTo->getAddress() + ">\r\n";
+    }
+
+    /* ---------------------------------- */
+
     mime += "MIME-Version: 1.0\r\n";
     if (!mInReplyTo.isEmpty())
     {
         mime += "In-Reply-To: <" + mInReplyTo + ">\r\n";
         mime += "References: <" + mInReplyTo + ">\r\n";
     }
+
+#if QT_VERSION_MAJOR < 5 //Qt4 workaround since RFC2822Date isn't defined
+    mime += QString("Date: %1\r\n").arg(QDateTime::currentDateTime().toString("dd MMM yyyy hh:mm:ss +/-TZ"));
+#else //Qt5 supported
     mime += QString("Date: %1\r\n").arg(QDateTime::currentDateTime().toString(Qt::RFC2822Date));
+#endif //support RFC2822Date
 
     mime += content->toString();
     return mime;

@@ -205,21 +205,6 @@
     <ClCompile Include="GeneratedFiles\moc_mainwindowbase.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_qwebenginemouseeventfilter.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_shipmainwindow.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_submainwindow.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_timermainwindow.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_weaponmainwindow.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
     <ClCompile Include="GeneratedFiles\moc_anyactionselectdialog.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
@@ -235,14 +220,29 @@
     <ClCompile Include="RemoteNotifyHandler.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_KQFrame.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
     <ClCompile Include="KQFrame.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="ActionCheckAndClickDefine.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_submainwindow.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_shipmainwindow.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_weaponmainwindow.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_qwebenginemouseeventfilter.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_timermainwindow.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_kqframe.cpp">
+      <Filter>Generated Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -378,11 +378,29 @@
     <CustomBuild Include="SmtpClientForQt\src\smtpclient.h">
       <Filter>SmtpClientForQt</Filter>
     </CustomBuild>
-    <CustomBuild Include="KQFrame.h">
-      <Filter>Header Files</Filter>
+    <CustomBuild Include="kqframe.h">
+      <Filter>Generated Files</Filter>
     </CustomBuild>
     <CustomBuild Include="kqframe.h">
       <Filter>Generated Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="kqframe.h">
+      <Filter>Generated Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="kqframe.h">
+      <Filter>Generated Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="kqframe.h">
+      <Filter>Generated Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="kqframe.h">
+      <Filter>Generated Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="kqframe.h">
+      <Filter>Header Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="kqframe.h">
+      <Filter>Header Files</Filter>
     </CustomBuild>
   </ItemGroup>
   <ItemGroup>

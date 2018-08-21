@@ -115,8 +115,8 @@ void MainWindow::setWebSettings()
 		saveCertKey();
 		exceptionSender = _pFid;
 
-		_pFid->SetBeforeRequest((int)&MainWindow::BeforeRequestFunc);
-		_pFid->SetAfterSessionComplete((int)&MainWindow::AfterSessionCompleteFunc);
+		_pFid->SetBeforeRequest((qlonglong)&MainWindow::BeforeRequestFunc);
+		_pFid->SetAfterSessionComplete((qlonglong)&MainWindow::AfterSessionCompleteFunc);
 
 		_pFid->Startup(_useport, false, true);
 #endif
@@ -421,22 +421,22 @@ left:-50px;
 z-index:1;
 }
 */
-	//	csses[QWebViewCSS::TRANSPARENT] = QUrl("data:text/css;charset=utf-8;base64,Ym9keSB7DQoJbWFyZ2luOjA7DQoJb3ZlcmZsb3c6aGlkZGVuOw0KCW9wYWNpdHk6IDAuNDsNCn0NCg0KI2dhbWVfZnJhbWUgew0KCXBvc2l0aW9uOmZpeGVkOw0KCXRvcDotMTZweDsNCglsZWZ0Oi01MHB4Ow0KCXotaW5kZXg6MTsNCn0=");
+//	csses[QWebViewCSS::TRANSPARENT] = QUrl("data:text/css;charset=utf-8;base64,Ym9keSB7DQoJbWFyZ2luOjA7DQoJb3ZlcmZsb3c6aGlkZGVuOw0KCW9wYWNpdHk6IDAuNDsNCn0NCg0KI2dhbWVfZnJhbWUgew0KCXBvc2l0aW9uOmZpeGVkOw0KCXRvcDotMTZweDsNCglsZWZ0Oi01MHB4Ow0KCXotaW5kZXg6MTsNCn0=");
 
-	/*
-	body {
-	margin:0;
-	overflow:hidden;
-	opacity: 0.2;
-	}
+/*
+body {
+margin:0;
+overflow:hidden;
+opacity: 0.2;
+}
 
-	#game_frame {
-	position:fixed;
-	top:-16px;
-	left:-50px;
-	z-index:1;
-	}
-	*/
+#game_frame {
+position:fixed;
+top:-16px;
+left:-50px;
+z-index:1;
+}
+*/
 	_webViewCsses[(int)QWebViewCSSIndex::Transparent] =
 		QUrl("data:text/css;charset=utf-8;base64,Ym9keSB7DQoJbWFyZ2luOjA7DQoJb3ZlcmZsb3c6aGlkZGVuOw0KCW9wYWNpdHk6IDAuMjsNCn0NCg0KI2dhbWVfZnJhbWUgew0KCXBvc2l0aW9uOmZpeGVkOw0KCXRvcDotMTZweDsNCglsZWZ0Oi01MHB4Ow0KCXotaW5kZXg6MTsNCn0=");
 

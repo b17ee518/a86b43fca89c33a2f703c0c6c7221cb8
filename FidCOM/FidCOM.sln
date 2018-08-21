@@ -1,22 +1,31 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2013
-VisualStudioVersion = 12.0.30110.0
+# Visual Studio 15
+VisualStudioVersion = 15.0.28010.2003
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FidCOM", "FidCOM\FidCOM.csproj", "{71492575-5E89-4BA9-AAC0-DA773953EDE2}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
+		Debug|x64 = Debug|x64
 		Release|Any CPU = Release|Any CPU
+		Release|x64 = Release|x64
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{71492575-5E89-4BA9-AAC0-DA773953EDE2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{71492575-5E89-4BA9-AAC0-DA773953EDE2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{71492575-5E89-4BA9-AAC0-DA773953EDE2}.Debug|x64.ActiveCfg = Debug|x64
+		{71492575-5E89-4BA9-AAC0-DA773953EDE2}.Debug|x64.Build.0 = Debug|x64
 		{71492575-5E89-4BA9-AAC0-DA773953EDE2}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{71492575-5E89-4BA9-AAC0-DA773953EDE2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{71492575-5E89-4BA9-AAC0-DA773953EDE2}.Release|x64.ActiveCfg = Release|x64
+		{71492575-5E89-4BA9-AAC0-DA773953EDE2}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {A72A02CB-656D-48A0-BF16-B847CB13D6E7}
 	EndGlobalSection
 EndGlobal

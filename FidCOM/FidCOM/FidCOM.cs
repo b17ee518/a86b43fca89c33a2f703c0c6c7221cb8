@@ -18,15 +18,15 @@ namespace FidCOMNS
     public interface IFidComClass
     {
         [ComVisible(true)]
-        void SetOnNotification(int f);
+        void SetOnNotification(long f);
         [ComVisible(true)]
-        void SetBeforeRequest(int f);
+        void SetBeforeRequest(long f);
         [ComVisible(true)]
-        void SetBeforeResponse(int f);
+        void SetBeforeResponse(long f);
         [ComVisible(true)]
-        void SetOnLogString(int f);
+        void SetOnLogString(long f);
         [ComVisible(true)]
-        void SetAfterSessionComplete(int f);
+        void SetAfterSessionComplete(long f);
         [ComVisible(true)]
         void Startup(int iListenPort, bool bRegisterAsSystemProxy, bool bDecryptSSL);
         [ComVisible(true)]
@@ -104,9 +104,9 @@ namespace FidCOMNS
         public void Startup(int iListenPort, bool bRegisterAsSystemProxy, bool bDecryptSSL)
         {
             Fiddler.FiddlerApplication.Startup(iListenPort, bRegisterAsSystemProxy, bDecryptSSL);
-            Fiddler.URLMonInterop.SetProxyInProcess("127.0.0.1:"+iListenPort, null);
+            Fiddler.URLMonInterop.SetProxyInProcess("127.0.0.1:" + iListenPort, null);
 
-//            SetIESettings("localhost:" + iListenPort);
+            //            SetIESettings("localhost:" + iListenPort);
         }
         /*
         internal struct INTERNET_PROXY_INFO
@@ -143,34 +143,34 @@ namespace FidCOMNS
             Fiddler.FiddlerApplication.Shutdown();
         }
         [System.Runtime.InteropServices.ComVisible(true)]
-        public void SetOnNotification(int f)
+        public void SetOnNotification(long f)
         {
             Fiddler.FiddlerApplication.OnNotification += FiddlerApplication_OnNotification;
-            _onNotificationFunc = (OnNotificationFunc)Marshal.GetDelegateForFunctionPointer((IntPtr)f, typeof(OnNotificationFunc));
+            _onNotificationFunc = (OnNotificationFunc)Marshal.GetDelegateForFunctionPointer(new IntPtr(f), typeof(OnNotificationFunc));
         }
         [System.Runtime.InteropServices.ComVisible(true)]
-        public void SetBeforeResponse(int f)
+        public void SetBeforeResponse(long f)
         {
             Fiddler.FiddlerApplication.BeforeResponse += FiddlerApplication_BeforeResponse;
-            _beforeResponseFunc = (BeforeResponseFunc)Marshal.GetDelegateForFunctionPointer((IntPtr)f, typeof(BeforeResponseFunc));
+            _beforeResponseFunc = (BeforeResponseFunc)Marshal.GetDelegateForFunctionPointer(new IntPtr(f), typeof(BeforeResponseFunc));
         }
         [System.Runtime.InteropServices.ComVisible(true)]
-        public void SetBeforeRequest(int f)
+        public void SetBeforeRequest(long f)
         {
             Fiddler.FiddlerApplication.BeforeRequest += FiddlerApplication_BeforeRequest;
-            _beforeRequestFunc = (BeforeRequestFunc)Marshal.GetDelegateForFunctionPointer((IntPtr)f, typeof(BeforeRequestFunc));
+            _beforeRequestFunc = (BeforeRequestFunc)Marshal.GetDelegateForFunctionPointer(new IntPtr(f), typeof(BeforeRequestFunc));
         }
         [System.Runtime.InteropServices.ComVisible(true)]
-        public void SetOnLogString(int f)
+        public void SetOnLogString(long f)
         {
             Fiddler.FiddlerApplication.Log.OnLogString += FiddlerApplication_OnLogString;
-            _onLogStringFunc = (OnLogStringFunc)Marshal.GetDelegateForFunctionPointer((IntPtr)f, typeof(OnLogStringFunc));
+            _onLogStringFunc = (OnLogStringFunc)Marshal.GetDelegateForFunctionPointer(new IntPtr(f), typeof(OnLogStringFunc));
         }
         [System.Runtime.InteropServices.ComVisible(true)]
-        public void SetAfterSessionComplete(int f)
+        public void SetAfterSessionComplete(long f)
         {
             Fiddler.FiddlerApplication.AfterSessionComplete += FiddlerApplication_AfterSessionComplete;
-            _afterSessionCompleteFunc = (AfterSessionCompleteFunc)Marshal.GetDelegateForFunctionPointer((IntPtr)f, typeof(AfterSessionCompleteFunc));
+            _afterSessionCompleteFunc = (AfterSessionCompleteFunc)Marshal.GetDelegateForFunctionPointer(new IntPtr(f), typeof(AfterSessionCompleteFunc));
         }
 
         [System.Runtime.InteropServices.ComVisible(false)]

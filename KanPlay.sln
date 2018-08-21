@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2013
-VisualStudioVersion = 12.0.40629.0
+# Visual Studio 15
+VisualStudioVersion = 15.0.27703.2047
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "KanPlay", "KanPlay.vcxproj", "{F44EBE03-D5B5-3BFE-B9D0-4EF7D2E0049F}"
 EndProject
@@ -19,19 +19,25 @@ Global
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{F44EBE03-D5B5-3BFE-B9D0-4EF7D2E0049F}.Debug|Win32.ActiveCfg = Debug|Win32
 		{F44EBE03-D5B5-3BFE-B9D0-4EF7D2E0049F}.Debug|Win32.Build.0 = Debug|Win32
-		{F44EBE03-D5B5-3BFE-B9D0-4EF7D2E0049F}.Debug|Win32.Deploy.0 = Debug|Win32
-		{F44EBE03-D5B5-3BFE-B9D0-4EF7D2E0049F}.Debug|x64.ActiveCfg = Debug|Win32
+		{F44EBE03-D5B5-3BFE-B9D0-4EF7D2E0049F}.Debug|x64.ActiveCfg = Debug|x64
+		{F44EBE03-D5B5-3BFE-B9D0-4EF7D2E0049F}.Debug|x64.Build.0 = Debug|x64
 		{F44EBE03-D5B5-3BFE-B9D0-4EF7D2E0049F}.DebugWebEngine|Win32.ActiveCfg = DebugWebEngine|Win32
 		{F44EBE03-D5B5-3BFE-B9D0-4EF7D2E0049F}.DebugWebEngine|Win32.Build.0 = DebugWebEngine|Win32
-		{F44EBE03-D5B5-3BFE-B9D0-4EF7D2E0049F}.DebugWebEngine|x64.ActiveCfg = DebugWebEngine|Win32
+		{F44EBE03-D5B5-3BFE-B9D0-4EF7D2E0049F}.DebugWebEngine|x64.ActiveCfg = DebugWebEngine|x64
+		{F44EBE03-D5B5-3BFE-B9D0-4EF7D2E0049F}.DebugWebEngine|x64.Build.0 = DebugWebEngine|x64
 		{F44EBE03-D5B5-3BFE-B9D0-4EF7D2E0049F}.Release|Win32.ActiveCfg = Release|Win32
 		{F44EBE03-D5B5-3BFE-B9D0-4EF7D2E0049F}.Release|Win32.Build.0 = Release|Win32
-		{F44EBE03-D5B5-3BFE-B9D0-4EF7D2E0049F}.Release|x64.ActiveCfg = Release|Win32
+		{F44EBE03-D5B5-3BFE-B9D0-4EF7D2E0049F}.Release|x64.ActiveCfg = Release|x64
+		{F44EBE03-D5B5-3BFE-B9D0-4EF7D2E0049F}.Release|x64.Build.0 = Release|x64
 		{F44EBE03-D5B5-3BFE-B9D0-4EF7D2E0049F}.ReleaseWebEngine|Win32.ActiveCfg = ReleaseWebEngine|Win32
 		{F44EBE03-D5B5-3BFE-B9D0-4EF7D2E0049F}.ReleaseWebEngine|Win32.Build.0 = ReleaseWebEngine|Win32
-		{F44EBE03-D5B5-3BFE-B9D0-4EF7D2E0049F}.ReleaseWebEngine|x64.ActiveCfg = ReleaseWebEngine|Win32
+		{F44EBE03-D5B5-3BFE-B9D0-4EF7D2E0049F}.ReleaseWebEngine|x64.ActiveCfg = ReleaseWebEngine|x64
+		{F44EBE03-D5B5-3BFE-B9D0-4EF7D2E0049F}.ReleaseWebEngine|x64.Build.0 = ReleaseWebEngine|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {6403DAAF-E795-4CE7-91CF-9284483B93C2}
 	EndGlobalSection
 EndGlobal

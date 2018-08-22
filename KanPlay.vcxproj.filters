@@ -379,27 +379,6 @@
       <Filter>SmtpClientForQt</Filter>
     </CustomBuild>
     <CustomBuild Include="kqframe.h">
-      <Filter>Generated Files</Filter>
-    </CustomBuild>
-    <CustomBuild Include="kqframe.h">
-      <Filter>Generated Files</Filter>
-    </CustomBuild>
-    <CustomBuild Include="kqframe.h">
-      <Filter>Generated Files</Filter>
-    </CustomBuild>
-    <CustomBuild Include="kqframe.h">
-      <Filter>Generated Files</Filter>
-    </CustomBuild>
-    <CustomBuild Include="kqframe.h">
-      <Filter>Generated Files</Filter>
-    </CustomBuild>
-    <CustomBuild Include="kqframe.h">
-      <Filter>Header Files</Filter>
-    </CustomBuild>
-    <CustomBuild Include="kqframe.h">
-      <Filter>Header Files</Filter>
-    </CustomBuild>
-    <CustomBuild Include="kqframe.h">
       <Filter>Header Files</Filter>
     </CustomBuild>
   </ItemGroup>

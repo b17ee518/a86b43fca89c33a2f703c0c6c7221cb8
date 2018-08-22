@@ -111,11 +111,15 @@ void RemoteNotifyHandler::RunInstanceNotify()
 
 		MimeMessage message;
 
-		message.setSender(new EmailAddress(senderEmailAddress, "KN: " + text));
-		message.addRecipient(new EmailAddress(receiverEmailAddress));
+		EmailAddress senderEmail(senderEmailAddress, "KN: " + text);
+		EmailAddress recipentEmail(receiverEmailAddress);
+		EmailAddress anotherRecipentEmail(anotherReceiverEmailAddress);
+
+		message.setSender(&senderEmail);
+		message.addRecipient(&recipentEmail);
 		if (anotherReceiverEmailAddress != "None")
 		{
-			message.addRecipient(new EmailAddress(anotherReceiverEmailAddress));
+			message.addRecipient(&anotherRecipentEmail);
 		}
 		message.setSubject(text);
 
@@ -134,9 +138,10 @@ void RemoteNotifyHandler::RunInstanceNotify()
 			}
 		}
 
-		smtp.quit();
-
-
+		if (done)
+		{
+			smtp.quit();
+		}
 	}
 }
 

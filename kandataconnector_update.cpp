@@ -1306,15 +1306,14 @@ void KanDataConnector::updateBattle(const kcsapi_battle &api_battle, KanBattleTy
 		// injection
 		//　航空ダメージ
 
-		if (api_battle.api_stage_flag[2] > 0)
-		{
-			TRYLOG(processKoukuDamages(api_battle.api_injection_kouku), "InjecionKouku");
-		}
-
-		//TODO: formation
 		int stageflagcount = api_battle.api_stage_flag.count();
+		//TODO: formation
 		if (stageflagcount >= 3)
 		{
+			if (api_battle.api_stage_flag[2] > 0)
+			{
+				TRYLOG(processKoukuDamages(api_battle.api_injection_kouku), "InjecionKouku");
+			}
 			//　航空ダメージ
 			if (api_battle.api_stage_flag[2] > 0)
 			{

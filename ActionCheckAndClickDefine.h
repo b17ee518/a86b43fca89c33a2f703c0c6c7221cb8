@@ -71,7 +71,6 @@ public:
 		SortieGOButton,
 		SortieGOActiveButton,
 		SortieGOWithAirebaseButton,
-		SortieGOActiveWithAirbaseButton,
 
 		SortieTeam1,
 		SortieTeam2,

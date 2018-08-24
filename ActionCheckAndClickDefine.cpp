@@ -349,13 +349,8 @@ QMap < ActionCheckAndClickDefine::CheckColorNameDefine, QList<int>> ActionCheckA
 {
 	CheckColorNameDefine::SortieGOWithAirebaseButton,
 	QList<int>{
-	// todo
-}
-},
-{
-	CheckColorNameDefine::SortieGOActiveWithAirbaseButton,
-	QList<int>{
-	// todo
+		1018, 689, 69, 108, 74,
+			822, 691, 81, 189, 84,
 }
 },
 {

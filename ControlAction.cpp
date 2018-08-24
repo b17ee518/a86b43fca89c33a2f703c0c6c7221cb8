@@ -2458,7 +2458,7 @@ bool SortieAction::action()
 					mapPoints[2] = { 600, 199, 60, 36 };
 					mapPoints[3] = { 288.5f, 350, 102.5f, 36 };
 					mapPoints[4] = { 600, 350, 60, 36 };
-					if (_area >= 7)
+					if (_area >= 6)
 					{
 						mapPoints[4] = { 694, 378, 50, 20 };
 					}
@@ -2720,7 +2720,6 @@ bool SortieAction::action()
 					ActionCheckAndClickDefine::CheckColor(ActionCheckAndClickDefine::CheckColorNameDefine::SortieGOButton)
 					|| ActionCheckAndClickDefine::CheckColor(ActionCheckAndClickDefine::CheckColorNameDefine::SortieGOActiveButton)
 					|| ActionCheckAndClickDefine::CheckColor(ActionCheckAndClickDefine::CheckColorNameDefine::SortieGOWithAirebaseButton)
-					|| ActionCheckAndClickDefine::CheckColor(ActionCheckAndClickDefine::CheckColorNameDefine::SortieGOActiveWithAirbaseButton)
 					/*cm.checkColors(
 					633, 434, 229, 69, 66
 					, 551, 237, 255, 246, 242) ||

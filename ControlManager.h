@@ -163,6 +163,7 @@ public:
 		QList<float> mapExClickPoint;	// click after Ex
 		QList<float> mapEx2CheckList;	// for Ex only
 		QList<float> mapEx2ClickPoint;	// click after Ex
+		QList<int> additionalToSSTeam;
 	};
 
 	struct DevelopSetting

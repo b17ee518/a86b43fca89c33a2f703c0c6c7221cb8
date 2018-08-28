@@ -20,6 +20,10 @@
 #define COL_ALLOWRANCE 3
 #define COND_DAIHATSU	80
 
+#define SHIP_BAY		111563
+#define SHIP_CHIYODA_2	1353
+#define SHIP_CHITOSE_2	123
+
 QMap<int, int> ControlManager::areaIndexMap =
 {
 	{ 1, 1 },
@@ -920,9 +924,9 @@ bool ControlManager::BuildNext_Morning(bool isFromRepeating)
 		_target = ActionTarget::Mission;
 
 		_missionSetting.todoGreedyMissionList.append((int)MissionDefines::Defeat10);
-		_missionSetting.todoGreedyMissionList.append((int)MissionDefines::KuBou3);
+		//_missionSetting.todoGreedyMissionList.append((int)MissionDefines::KuBou3);
 		_missionSetting.todoGreedyMissionList.append((int)MissionDefines::YuSou5);
-		_missionSetting.todoGreedyMissionList.append((int)MissionDefines::WeeklyI);
+		//_missionSetting.todoGreedyMissionList.append((int)MissionDefines::WeeklyI);
 		_missionSetting.todoGreedyMissionList.append((int)MissionDefines::WeeklyYuSou);
 
 		_actionList.append(new MissionAction());
@@ -931,21 +935,37 @@ bool ControlManager::BuildNext_Morning(bool isFromRepeating)
 		break;
 	case MorningStage::YuSou3:
 
-		_morningSetting.morningStage = MorningStage::Done;
-		setToTerminate("Morning:Done", true, RemoteNotifyHandler::Level::Low);
-		return false;
-		/*
 		if (_missionSetting.acceptedMissionList.contains((int)MissionDefines::YuSou3))
 		{
-		_southEastSetting.stopWhen = StopWhen::Yusou3;
-		_target = ActionTarget::SouthEast;
-		_actionList.append(new RepeatAction());
+			_target = ActionTarget::Any;
+
+			AnySetting setting;
+			setting.area = 2;
+			setting.map = 2;
+			
+			setting.count = 2;
+			if (_missionSetting.acceptedMissionList.count((int)MissionDefines::YuSou5))
+			{
+				setting.count = 3;
+			}
+			setting.additionalToSSTeam.append(SHIP_BAY);
+			setting.additionalToSSTeam.append(SHIP_CHIYODA_2);
+			setting.additionalToSSTeam.append(SHIP_CHITOSE_2);
+			setting.allowMiddleDamageSortie = true;
+
+			setAnySetting(setting);
+
+			KanSaveData::getInstance().totalAnyCount = 0;
+			KanDataConnector::getInstance().callUpdateOverviewTable();
+
+			_target = ActionTarget::Any;
+			_actionList.append(new RepeatAction());
 		}
 		else
 		{
-		_morningSetting.morningStage = MorningStage::SouthEast5_Mission;
-		return false;
-		}*/
+			_morningSetting.morningStage = MorningStage::SouthEast5_Mission;
+			return false;
+		}
 
 		break;
 	case MorningStage::SouthEast5_Mission:
@@ -954,9 +974,7 @@ bool ControlManager::BuildNext_Morning(bool isFromRepeating)
 
 		_missionSetting.todoGreedyMissionList.append((int)MissionDefines::Defeat10);
 		_missionSetting.todoGreedyMissionList.append((int)MissionDefines::KuBou3);
-		_missionSetting.todoGreedyMissionList.append((int)MissionDefines::YuSou5);
 		_missionSetting.todoGreedyMissionList.append((int)MissionDefines::WeeklyI);
-		_missionSetting.todoGreedyMissionList.append((int)MissionDefines::WeeklyYuSou);
 
 		_actionList.append(new MissionAction());
 		_actionList.append(new RepeatAction());
@@ -966,12 +984,25 @@ bool ControlManager::BuildNext_Morning(bool isFromRepeating)
 
 		if (_missionSetting.acceptedMissionList.contains((int)MissionDefines::SouthEast5))
 		{
-			_southEastSetting.stopWhen = StopWhen::SouthEast5;
-			_target = ActionTarget::SouthEast;
+			AnySetting setting;
+			setting.area = 2;
+			setting.map = 1;
+			setting.count = 5;
+
+			setAnySetting(setting);
+
+			_target = ActionTarget::Any;
+
 			_actionList.append(new RepeatAction());
 		}
 		else
 		{
+			AnySetting setting;
+			setAnySetting(setting);
+			
+			KanSaveData::getInstance().totalAnyCount = 0;
+			KanDataConnector::getInstance().callUpdateOverviewTable();
+
 			_morningSetting.morningStage = MorningStage::Done;
 			setToTerminate("Morning:Done", true, RemoteNotifyHandler::Level::Low);
 			return false;
@@ -1324,6 +1355,12 @@ bool ControlManager::BuildNext_Any(bool advanceOnly)
 			{
 				setToTerminate(errorMessage.toLocal8Bit(), false, RemoteNotifyHandler::Level::Low);
 				return false;
+			}
+
+			if (_anySetting.additionalToSSTeam.count() > 0)
+			{
+				sortInTeamShips.append(_anySetting.additionalToSSTeam);
+				ships.append(_anySetting.additionalToSSTeam);
 			}
 
 			auto chSortAction = new ChangeHenseiAction();

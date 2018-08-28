@@ -939,9 +939,8 @@ bool ControlManager::BuildNext_Morning(bool isFromRepeating)
 		{
 			_target = ActionTarget::Any;
 
-			AnySetting setting;
-			setting.area = 2;
-			setting.map = 2;
+			AnySetting setting = getAnyTemplateSetting(2, 2);
+			setting.onlySSTeamSize = 3;
 			
 			setting.count = 2;
 			if (_missionSetting.acceptedMissionList.count((int)MissionDefines::YuSou5))
@@ -984,10 +983,9 @@ bool ControlManager::BuildNext_Morning(bool isFromRepeating)
 
 		if (_missionSetting.acceptedMissionList.contains((int)MissionDefines::SouthEast5))
 		{
-			AnySetting setting;
-			setting.area = 2;
-			setting.map = 1;
+			AnySetting setting = getAnyTemplateSetting(2, 1);
 			setting.count = 5;
+			setting.onlySSTeamSize = 6;
 
 			setAnySetting(setting);
 
@@ -1339,6 +1337,12 @@ bool ControlManager::BuildNext_Any(bool advanceOnly)
 
 		if (_anySetting.count >= 0 && _anySetting.count <= pksd->totalAnyCount)
 		{
+			if (isMorningMode())
+			{
+				_morningSetting.lastBuiltState = MorningStage::AssumeJobDone;
+				_target = ActionTarget::None;
+				return false;
+			}
 			setToTerminate("Terminated:CountReached", false, RemoteNotifyHandler::Level::Low);
 			return false;
 		}
@@ -1451,6 +1455,7 @@ bool ControlManager::BuildNext_Any(bool advanceOnly)
 	{
 		_actionList.append(new RepeatAction());
 	}
+	_morningSetting.lastBuiltState = MorningStage::AssumeJobDone;
 	setState(State::Ready, "Ready");
 	return true;
 }

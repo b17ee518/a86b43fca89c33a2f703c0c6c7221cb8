@@ -3753,7 +3753,7 @@ bool MissionAction::action()
 		if (!_waiting)
 		{
 			_waiting = true;
-			QTimer::singleShot(DELAY_TIME, Qt::PreciseTimer, this, [this, &cm]()
+			QTimer::singleShot(DELAY_TIME_LONG, Qt::PreciseTimer, this, [this, &cm]()
 			{
 				do
 				{

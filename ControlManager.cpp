@@ -939,6 +939,7 @@ bool ControlManager::BuildNext_Morning(bool isFromRepeating)
 		{
 			_target = ActionTarget::Any;
 
+			LoadAnyTemplateSettings();
 			AnySetting setting = getAnyTemplateSetting(2, 2);
 			setting.onlySSTeamSize = 3;
 			
@@ -983,6 +984,7 @@ bool ControlManager::BuildNext_Morning(bool isFromRepeating)
 
 		if (_missionSetting.acceptedMissionList.contains((int)MissionDefines::SouthEast5))
 		{
+			LoadAnyTemplateSettings();
 			AnySetting setting = getAnyTemplateSetting(2, 1);
 			setting.count = 5;
 			setting.onlySSTeamSize = 6;

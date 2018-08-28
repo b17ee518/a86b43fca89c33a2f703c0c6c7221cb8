@@ -1,7 +1,6 @@
 /*
   Copyright (c) 2011-2012 - Tőkés Attila
-
-  This file is part of SmtpClient for Qt.
+  Copyright (C) 2015 Daniel Nicoletti <dantti12@gmail.com>
 
   This library is free software; you can redistribute it and/or
   modify it under the terms of the GNU Lesser General Public
@@ -23,40 +22,18 @@
 
 #include "smtpexports.h"
 
+namespace SimpleMail {
+
 class SMTP_EXPORT MimeText : public MimePart
 {
 public:
-
-    /* [1] Constructors and Destructors */
-
-    MimeText(const QString &text = "");
+    MimeText(const QString &text = QString());
     ~MimeText();
 
-    /* [1] --- */
-
-
-    /* [2] Getters and Setters*/
-
-    void setText(const QString & text);
-
-    const QString & getText() const;
-
-    /* [2] --- */
-
-protected:
-
-    /* [3] Protected members */
-
-    QString text;
-    /* [3] --- */
-
-
-    /* [4] Protected methods */
-
-    void prepare();
-
-    /* [4] --- */
-
+    void setText(const QString &text);
+    QString text() const;
 };
+
+}
 
 #endif // MIMETEXT_H

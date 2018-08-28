@@ -17,41 +17,27 @@
 */
 
 #include "mimehtml.h"
+#include "mimetext_p.h"
 
-/* [1] Constructors and Destructors */
+using namespace SimpleMail;
 
 MimeHtml::MimeHtml(const QString &html) : MimeText(html)
 {
-    this->cType = "text/html";
+    Q_D(MimePart);
+    d->contentType = QByteArrayLiteral("text/html");
 }
 
-MimeHtml::~MimeHtml() {}
-
-/* [1] --- */
-
-
-/* [2] Getters and Setters */
-
-void MimeHtml::setHtml(const QString & html)
+MimeHtml::~MimeHtml()
 {
-    this->text = html;
+
 }
 
-const QString & MimeHtml::getHtml() const
+void MimeHtml::setHtml(const QString &html)
 {
-    return text;
+    setText(html);
 }
 
-
-/* [2] --- */
-
-
-/* [3] Protected methods */
-
-void MimeHtml::prepare()
+QString MimeHtml::html() const
 {
-    /* !!! IMPORTANT !!! */
-    MimeText::prepare();
+    return text();
 }
-
-/* [3] --- */

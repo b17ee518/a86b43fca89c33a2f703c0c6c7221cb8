@@ -1,7 +1,6 @@
 /*
   Copyright (c) 2011-2012 - Tőkés Attila
-
-  This file is part of SmtpClient for Qt.
+  Copyright (C) 2015 Daniel Nicoletti <dantti12@gmail.com>
 
   This library is free software; you can redistribute it and/or
   modify it under the terms of the GNU Lesser General Public
@@ -16,199 +15,380 @@
   See the LICENSE file for more details.
 */
 
-#include "mimepart.h"
+#include "mimepart_p.h"
 #include "quotedprintable.h"
 
-/* [1] Constructors and Destructors */
+#include <QtCore/QIODevice>
+#include <QtCore/QBuffer>
+#include <QtCore/QDebug>
 
-MimePart::MimePart()
+using namespace SimpleMail;
+
+MimePart::MimePart() : d_ptr(new MimePartPrivate)
 {
-    cEncoding = _7Bit;
-    prepared = false;
-    cBoundary = "";
+    qDebug() << Q_FUNC_INFO;
+}
+
+MimePart::MimePart(const MimePart &other)
+{
+    Q_D(MimePart);
+    d->contentCharset = other.charset();
+
+    if (d->contentDevice) {
+        delete d->contentDevice;
+    }
+    d->contentDevice = new QBuffer;
+    d->contentDevice->open(QBuffer::ReadWrite);
+    d->contentDevice->write(other.content());
+
+    d->contentId = other.contentId();
+    d->contentName = other.contentName();
+    d->contentType = other.contentType();
+    d->contentEncoding = other.encoding();
+    d->header = other.header();
 }
 
 MimePart::~MimePart()
 {
-    return;
+    qDebug() << Q_FUNC_INFO;
 }
 
-/* [1] --- */
-
-
-/* [2] Getters and Setters */
-
-void MimePart::setContent(const QByteArray & content)
+MimePart &MimePart::operator=(const MimePart &other)
 {
-    this->content = content;
+    Q_D(MimePart);
+    d->contentCharset = other.charset();
+
+    if (d->contentDevice) {
+        delete d->contentDevice;
+    }
+    d->contentDevice = new QBuffer;
+    d->contentDevice->open(QBuffer::ReadWrite);
+    d->contentDevice->write(other.content());
+
+    d->contentId = other.contentId();
+    d->contentName = other.contentName();
+    d->contentType = other.contentType();
+    d->contentEncoding = other.encoding();
+    d->header = other.header();
+
+    return *this;
 }
 
-void MimePart::setHeader(const QString & header)
+void MimePart::setContent(const QByteArray &content)
 {
-    this->header = header;
+    Q_D(MimePart);
+    if (d->contentDevice) {
+        delete d->contentDevice;
+    }
+    d->contentDevice = new QBuffer;
+    d->contentDevice->open(QBuffer::ReadWrite);
+    d->contentDevice->write(content);
 }
 
-void MimePart::addHeaderLine(const QString & line)
+void MimePart::setHeader(const QByteArray &header)
 {
-    this->header += line + "\r\n";
+    Q_D(MimePart);
+    d->header = header;
 }
 
-const QString& MimePart::getHeader() const
+void MimePart::addHeaderLine(const QByteArray &line)
 {
-    return header;
+    Q_D(MimePart);
+    d->header.append(line + "\r\n");
 }
 
-const QByteArray& MimePart::getContent() const
+QByteArray MimePart::header() const
 {
-    return content;
+    Q_D(const MimePart);
+    return d->header;
 }
 
-void MimePart::setContentId(const QString & cId)
+QByteArray MimePart::content() const
 {
-    this->cId = cId;
+    Q_D(const MimePart);
+    if (d->contentDevice && d->contentDevice->seek(0)) {
+        return d->contentDevice->readAll();
+    }
+    return QByteArray();
 }
 
-const QString & MimePart::getContentId() const
+void MimePart::setContentId(const QByteArray &cId)
 {
-    return this->cId;
+    Q_D(MimePart);
+    d->contentId = cId;
 }
 
-void MimePart::setContentName(const QString & cName)
+QByteArray MimePart::contentId() const
 {
-    this->cName = cName;
+    Q_D(const MimePart);
+    return d->contentId;
 }
 
-const QString & MimePart::getContentName() const
+void MimePart::setContentName(const QByteArray &contentName)
 {
-    return this->cName;
+    Q_D(MimePart);
+    d->contentName = contentName;
 }
 
-void MimePart::setContentType(const QString & cType)
+QByteArray MimePart::contentName() const
 {
-    this->cType = cType;
+    Q_D(const MimePart);
+    return d->contentName;
 }
 
-const QString & MimePart::getContentType() const
+void MimePart::setContentType(const QByteArray &contentType)
 {
-    return this->cType;
+    Q_D(MimePart);
+    d->contentType = contentType;
 }
 
-void MimePart::setCharset(const QString & charset)
+QByteArray MimePart::contentType() const
 {
-    this->cCharset = charset;
+    Q_D(const MimePart);
+    return d->contentType;
 }
 
-const QString & MimePart::getCharset() const
+void MimePart::setCharset(const QByteArray &charset)
 {
-    return this->cCharset;
+    Q_D(MimePart);
+    d->contentCharset = charset;
+}
+
+QByteArray MimePart::charset() const
+{
+    Q_D(const MimePart);
+    return d->contentCharset;
 }
 
 void MimePart::setEncoding(Encoding enc)
 {
-    this->cEncoding = enc;
+    Q_D(MimePart);
+    d->contentEncoding = enc;
 }
 
-MimePart::Encoding MimePart::getEncoding() const
+MimePart::Encoding MimePart::encoding() const
 {
-    return this->cEncoding;
+    Q_D(const MimePart);
+    return d->contentEncoding;
 }
 
-MimeContentFormatter& MimePart::getContentFormatter()
+void MimePart::setData(const QString &data)
 {
-    return this->formatter;
-}
+    Q_D(MimePart);
 
-/* [2] --- */
+    if (d->contentDevice) {
+        delete d->contentDevice;
+    }
+    d->contentDevice = new QBuffer;
+    d->contentDevice->open(QBuffer::ReadWrite);
 
-
-/* [3] Public methods */
-
-QString MimePart::toString()
-{
-    if (!prepared)
-        prepare();
-
-    return mimeString;
-}
-
-/* [3] --- */
-
-
-/* [4] Protected methods */
-
-void MimePart::prepare()
-{
-    mimeString = QString();
-
-    /* === Header Prepare === */
-
-    /* Content-Type */
-    mimeString.append("Content-Type: ").append(cType);
-
-    if (cName != "")
-        mimeString.append("; name=\"").append(cName).append("\"");
-
-    if (cCharset != "")
-        mimeString.append("; charset=").append(cCharset);
-
-    if (cBoundary != "")
-        mimeString.append("; boundary=").append(cBoundary);
-
-    mimeString.append("\r\n");
-    /* ------------ */
-
-    /* Content-Transfer-Encoding */
-    mimeString.append("Content-Transfer-Encoding: ");
-    switch (cEncoding)
-    {
+    switch (d->contentEncoding) {
     case _7Bit:
-        mimeString.append("7bit\r\n");
+        d->contentDevice->write(data.toLatin1());
         break;
     case _8Bit:
-        mimeString.append("8bit\r\n");
-        break;
     case Base64:
-        mimeString.append("base64\r\n");
-        break;
     case QuotedPrintable:
-        mimeString.append("quoted-printable\r\n");
+        d->contentDevice->write(data.toUtf8());
         break;
     }
-    /* ------------------------ */
+}
 
-    /* Content-Id */
-    if (cId != NULL)
-        mimeString.append("Content-ID: <").append(cId).append(">\r\n");
-    /* ---------- */
+QString MimePart::data() const
+{
+    Q_D(const MimePart);
 
-    /* Addition header lines */
+    if (!d->contentDevice || !d->contentDevice->seek(0)) {
+        return QString();
+    }
 
-    mimeString.append(header).append("\r\n");
+    QString ret;
+    switch (d->contentEncoding) {
+    case _7Bit:
+        ret = QString::fromLatin1(d->contentDevice->readAll());
+        break;
+    case _8Bit:
+        ret = QString::fromUtf8(d->contentDevice->readAll());
+        break;
+    case Base64:
+        ret = QString::fromUtf8(QByteArray::fromBase64(d->contentDevice->readAll()));
+        break;
+    case QuotedPrintable:
+        ret = QString::fromUtf8(QuotedPrintable::decode(d->contentDevice->readAll()));
+        break;
+    }
+    return ret;
+}
 
-    /* ------------------------- */
+MimeContentFormatter *MimePart::contentFormatter()
+{
+    Q_D(MimePart);
+    return &d->formatter;
+}
 
-    /* === End of Header Prepare === */
+bool MimePart::write(QIODevice *device)
+{
+    Q_D(const MimePart);
+
+    QByteArray headers;
+
+    // Content-Type
+    headers.append("Content-Type: " + d->contentType);
+    if (!d->contentName.isEmpty()) {
+        headers.append("; name=\"" + d->contentName);
+    }
+    if (!d->contentCharset.isEmpty()) {
+        headers.append("; charset=" + d->contentCharset);
+    }
+    if (!d->contentBoundary.isEmpty()) {
+        headers.append("; boundary=" + d->contentBoundary);
+    }
+    headers.append("\r\n");
+
+    // Content-Transfer-Encoding
+    switch (d->contentEncoding) {
+    case _7Bit:
+        headers.append("Content-Transfer-Encoding: 7bit\r\n");
+        break;
+    case _8Bit:
+        headers.append("Content-Transfer-Encoding: 8bit\r\n");
+        break;
+    case Base64:
+        headers.append("Content-Transfer-Encoding: base64\r\n");
+        break;
+    case QuotedPrintable:
+        headers.append("Content-Transfer-Encoding: quoted-printable\r\n");
+        break;
+    }
+
+    // Content-Id
+    if (!d->contentId.isNull()) {
+        headers.append("Content-ID: <" + d->contentId + ">\r\n");
+    }
+
+    // Addition header lines
+    headers.append(d->header + "\r\n");
+
+    // Write headers
+    if (device->write(headers) != headers.size()) {
+        return false;
+    }
+
+    // Write content data
+    return writeData(device);
+}
+
+MimePart::MimePart(MimePartPrivate *d) : d_ptr(d)
+{
+
+}
+
+bool MimePart::writeData(QIODevice *device)
+{
+    Q_D(MimePart);
 
     /* === Content === */
-    switch (cEncoding)
-    {
-    case _7Bit:
-        mimeString.append(QString(content).toLatin1());
+    QIODevice *input = d->contentDevice;
+    if (!input->isOpen()) {
+        if (!input->open(QIODevice::ReadOnly)) {
+            return false;
+        }
+    } else if (!input->seek(0)) {
+        return false;
+    }
+
+    switch (d->contentEncoding) {
+    case MimePart::_7Bit:
+    case MimePart::_8Bit:
+        if (!d->writeRaw(input, device)) {
+            return false;
+        }
         break;
-    case _8Bit:
-        mimeString.append(content);
+    case MimePart::Base64:
+        if (!d->writeBase64(input, device)) {
+            return false;
+        }
         break;
-    case Base64:
-        mimeString.append(formatter.format(content.toBase64()));
-        break;
-    case QuotedPrintable:
-        mimeString.append(formatter.format(QuotedPrintable::encode(content), true));
+    case MimePart::QuotedPrintable:
+        if (!d->writeQuotedPrintable(input, device)) {
+            return false;
+        }
         break;
     }
-    mimeString.append("\r\n");
-    /* === End of Content === */
 
-    prepared = true;
+    if (device->write("\r\n", 2) != 2) {
+        return false;
+    }
+
+    return true;
 }
 
-/* [4] --- */
+MimePartPrivate *MimePart::d_func()
+{
+    return d_ptr.data();
+}
+
+MimePartPrivate::~MimePartPrivate()
+{
+    delete contentDevice;
+}
+
+bool MimePartPrivate::writeRaw(QIODevice *input, QIODevice *out)
+{
+    char block[4096];
+    qint64 totalRead = 0;
+    while (!input->atEnd()) {
+        qint64 in = input->read(block, sizeof(block));
+        if (in <= 0) {
+            break;
+        }
+
+        totalRead += in;
+        if (in != out->write(block, in)) {
+            return false;
+        }
+    }
+    return true;
+}
+
+bool MimePartPrivate::writeBase64(QIODevice *input, QIODevice *out)
+{
+    char block[6000]; // Must be powers of 6
+    qint64 totalRead = 0;
+    int chars = 0;
+    while (!input->atEnd()) {
+        qint64 in = input->read(block, sizeof(block));
+        if (in <= 0) {
+            break;
+        }
+
+        totalRead += in;
+        QByteArray encoded = QByteArray(block, in).toBase64(QByteArray::Base64Encoding | QByteArray::OmitTrailingEquals);
+        encoded = formatter.format(encoded, chars);
+        if (encoded.size() != out->write(encoded)) {
+            return false;
+        }
+    }
+    return true;
+}
+
+bool MimePartPrivate::writeQuotedPrintable(QIODevice *input, QIODevice *out)
+{
+    char block[4096];
+    qint64 totalRead = 0;
+    int chars = 0;
+    while (!input->atEnd()) {
+        qint64 in = input->read(block, sizeof(block));
+        if (in <= 0) {
+            break;
+        }
+
+        totalRead += in;
+        QByteArray encoded = QuotedPrintable::encode(QByteArray(block, in), false);
+        encoded = formatter.formatQuotedPrintable(encoded, chars);
+        if (encoded.size() != out->write(encoded)) {
+            return false;
+        }
+    }
+    return true;
+}

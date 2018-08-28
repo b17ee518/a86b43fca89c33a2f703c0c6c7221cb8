@@ -104,43 +104,34 @@ void RemoteNotifyHandler::RunInstanceNotify()
 
 	if (level >= notifyLevel)
 	{
-		SmtpClient smtp("smtp.gmail.com", 465, SmtpClient::SslConnection);
-
-		smtp.setUser(senderEmailAddress);
-		smtp.setPassword(senderPassword);
-
-		MimeMessage message;
-
-		EmailAddress senderEmail(senderEmailAddress, "KN: " + text);
-		EmailAddress recipentEmail(receiverEmailAddress);
-		EmailAddress anotherRecipentEmail(anotherReceiverEmailAddress);
-
-		message.setSender(&senderEmail);
-		message.addRecipient(&recipentEmail);
-		if (anotherReceiverEmailAddress != "None")
+		try
 		{
-			message.addRecipient(&anotherRecipentEmail);
-		}
-		message.setSubject(text);
+			SimpleMail::Sender smtp("smtp.gmail.com", 465, SimpleMail::Sender::SslConnection);
 
-		// Now we can send the mail
-		smtp.setAuthMethod(SmtpClient::AuthLogin);
+			smtp.setUser(senderEmailAddress);
+			smtp.setPassword(senderPassword);
 
-		bool done = false;
-		if (smtp.connectToHost())
-		{
-			if (smtp.login())
+			SimpleMail::MimeMessage message;
+
+			SimpleMail::EmailAddress senderEmail(senderEmailAddress, "KN: " + text);
+			SimpleMail::EmailAddress recipentEmail(receiverEmailAddress);
+			SimpleMail::EmailAddress anotherRecipentEmail(anotherReceiverEmailAddress);
+
+			message.setSender(senderEmail);
+			message.addTo(recipentEmail);
+			if (anotherReceiverEmailAddress != "None")
 			{
-				if (smtp.sendMail(message))
-				{
-					done = true;
-				}
+				message.addTo(anotherRecipentEmail);
+			}
+			message.setSubject(text);
+
+			if (smtp.sendMail(message))
+			{
+				smtp.quit();
 			}
 		}
-
-		if (done)
+		catch (...)
 		{
-			smtp.quit();
 		}
 	}
 }

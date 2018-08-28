@@ -18,49 +18,62 @@
 
 #include "mimecontentformatter.h"
 
+using namespace SimpleMail;
+
 MimeContentFormatter::MimeContentFormatter(int max_length) :
     max_length(max_length)
-{}
+{
 
-QString MimeContentFormatter::format(const QString &content, bool quotedPrintable) const {
+}
 
-    QString out;
+QByteArray MimeContentFormatter::format(const QByteArray &content, int &chars) const
+{
+    QByteArray out;
 
-    int chars = 0;
     for (int i = 0; i < content.length() ; ++i) {
         chars++;
-        if (!quotedPrintable) {
-            if (chars > max_length) {
-                    out.append("\r\n");
-                    chars = 1;
-            }
+        if (chars > max_length) {
+            out.append(QByteArrayLiteral("\r\n"));
+            chars = 1;
         }
-        else {
-            if (content[i] == '\n') {       // new line
-                out.append(content[i]);
-                chars = 0;
-                continue;
-            }
 
-            if ((chars > max_length - 1)
-                || ((content[i] == '=') && (chars > max_length - 3) )) {
-                out.append('=');
-                out.append("\r\n");
-                chars = 1;
-            }
-
-        }
         out.append(content[i]);
     }
 
     return out;
-
 }
 
-void MimeContentFormatter::setMaxLength(int l) {
+QByteArray MimeContentFormatter::formatQuotedPrintable(const QByteArray &content, int &chars) const
+{
+    QByteArray out;
+
+    for (int i = 0; i < content.length() ; ++i) {
+        chars++;
+
+        if (content[i] == '\n') {       // new line
+            out.append(content[i]);
+            chars = 0;
+            continue;
+        }
+
+        if ((chars > max_length - 1)
+                || ((content[i] == '=') && (chars > max_length - 3) )) {
+            out.append(QByteArrayLiteral("=\r\n"));
+            chars = 1;
+        }
+
+        out.append(content[i]);
+    }
+
+    return out;
+}
+
+void MimeContentFormatter::setMaxLength(int l)
+{
     max_length = l;
 }
 
-int MimeContentFormatter::getMaxLength() const {
+int MimeContentFormatter::maxLength() const
+{
     return max_length;
 }

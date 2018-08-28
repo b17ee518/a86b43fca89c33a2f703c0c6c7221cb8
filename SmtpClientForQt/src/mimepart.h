@@ -1,7 +1,6 @@
 /*
   Copyright (c) 2011-2012 - Tőkés Attila
-
-  This file is part of SmtpClient for Qt.
+  Copyright (C) 2015 Daniel Nicoletti <dantti12@gmail.com>
 
   This library is free software; you can redistribute it and/or
   modify it under the terms of the GNU Lesser General Public
@@ -19,17 +18,20 @@
 #ifndef MIMEPART_H
 #define MIMEPART_H
 
-#include <QObject>
+#include <QtCore/QSharedDataPointer>
+#include <QtCore/QMetaType>
+
 #include "mimecontentformatter.h"
 
 #include "smtpexports.h"
 
-class SMTP_EXPORT MimePart : public QObject
-{
-    Q_OBJECT
-public:
+class QIODevice;
+namespace SimpleMail {
 
-    /* [0] Enumerations */
+class MimePartPrivate;
+class SMTP_EXPORT MimePart
+{
+public:
     enum Encoding {        
         _7Bit,
         _8Bit,
@@ -37,78 +39,58 @@ public:
         QuotedPrintable
     };
 
-
-    /* [0] --- */
-
-
-    /* [1] Constructors and Destructors */
-
     MimePart();
-    ~MimePart();
+    MimePart(const MimePart &other);
+    virtual ~MimePart();
 
-    /* [1] --- */
+    MimePart &operator=(const MimePart &other);
 
+    QByteArray header() const;
+    QByteArray content() const;
 
-    /* [2] Getters and Setters */
+    void setContent(const QByteArray &content);
+    void setHeader(const QByteArray &header);
 
-    const QString& getHeader() const;
-    const QByteArray& getContent() const;
+    void addHeaderLine(const QByteArray &line);
 
-    void setContent(const QByteArray & content);
-    void setHeader(const QString & header);
+    void setContentId(const QByteArray &cId);
+    QByteArray contentId() const;
 
-    void addHeaderLine(const QString & line);
+    void setContentName(const QByteArray &contentName);
+    QByteArray contentName() const;
 
-    void setContentId(const QString & cId);
-    const QString & getContentId() const;
+    void setContentType(const QByteArray &contentType);
+    QByteArray contentType() const;
 
-    void setContentName(const QString & cName);
-    const QString & getContentName() const;
-
-    void setContentType(const QString & cType);
-    const QString & getContentType() const;
-
-    void setCharset(const QString & charset);
-    const QString & getCharset() const;
+    void setCharset(const QByteArray &charset);
+    QByteArray charset() const;
 
     void setEncoding(Encoding enc);
-    Encoding getEncoding() const;
+    Encoding encoding() const;
 
-    MimeContentFormatter& getContentFormatter();
+    void setData(const QString &data);
+    QString data() const;
 
-    /* [2] --- */
+    MimeContentFormatter *contentFormatter();
 
-
-    /* [3] Public methods */
-
-    virtual QString toString();
-
-    virtual void prepare();
-
-    /* [3] --- */
-
-
+    bool write(QIODevice *device);
 
 protected:
+    MimePart(MimePartPrivate *d);
+    virtual bool writeData(QIODevice *device);
 
-    /* [4] Protected members */
+    QSharedDataPointer<MimePartPrivate> d_ptr;
 
-    QString header;
-    QByteArray content;
-
-    QString cId;
-    QString cName;
-    QString cType;
-    QString cCharset;
-    QString cBoundary;
-    Encoding cEncoding;
-
-    QString mimeString;
-    bool prepared;
-
-    MimeContentFormatter formatter;
-
-    /* [4] --- */
+    // Q_DECLARE_PRIVATE equivalent for shared data pointers
+    MimePartPrivate* d_func();
+    inline const MimePartPrivate* d_func() const
+    {
+        return d_ptr.constData();
+    }
 };
+
+}
+
+Q_DECLARE_METATYPE(SimpleMail::MimePart*)
 
 #endif // MIMEPART_H

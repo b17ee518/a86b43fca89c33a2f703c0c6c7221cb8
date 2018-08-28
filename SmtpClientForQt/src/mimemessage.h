@@ -1,7 +1,6 @@
 /*
   Copyright (c) 2011-2012 - Tőkés Attila
-
-  This file is part of SmtpClient for Qt.
+  Copyright (C) 2015 Daniel Nicoletti <dantti12@gmail.com>
 
   This library is free software; you can redistribute it and/or
   modify it under the terms of the GNU Lesser General Public
@@ -22,77 +21,52 @@
 #include "mimepart.h"
 #include "mimemultipart.h"
 #include "emailaddress.h"
-#include <QList>
 
 #include "smtpexports.h"
 
-class SMTP_EXPORT MimeMessage : public QObject
+class QIODevice;
+namespace SimpleMail {
+
+class MimeMessagePrivate;
+class SMTP_EXPORT MimeMessage
 {
+    Q_DECLARE_PRIVATE(MimeMessage)
 public:
-
-    enum RecipientType {
-        To,                 // primary
-        Cc,                 // carbon copy
-        Bcc                 // blind carbon copy
-    };
-
-    /* [1] Constructors and Destructors */
-
     MimeMessage(bool createAutoMimeConent = true);
-    ~MimeMessage();
+    virtual ~MimeMessage();
 
-    /* [1] --- */
+    void setSender(const EmailAddress &sender);
+    EmailAddress sender() const;
 
+    void setToRecipients(const QList<EmailAddress> &toList);
+    QList<EmailAddress> toRecipients() const;
+    void addTo(const EmailAddress &rcpt);
 
-    /* [2] Getters and Setters */
+    void setCcRecipients(const QList<EmailAddress> &ccList);
+    QList<EmailAddress> ccRecipients() const;
+    void addCc(const EmailAddress &rcpt);
 
-    void setSender(EmailAddress* e);
-    void addRecipient(EmailAddress* rcpt, RecipientType type = To);
-    void addTo(EmailAddress* rcpt);
-    void addCc(EmailAddress* rcpt);
-    void addBcc(EmailAddress* rcpt);
-    void setSubject(const QString & subject);
+    void setBccRecipients(const QList<EmailAddress> &bccList);
+    QList<EmailAddress> bccRecipients() const;
+    void addBcc(const EmailAddress &rcpt);
+
+    void setSubject(const QString &subject);
     void addPart(MimePart* part);
-    void setReplyTo(EmailAddress* rto);
-
-    void setInReplyTo(const QString& inReplyTo);
 
     void setHeaderEncoding(MimePart::Encoding);
 
-    const EmailAddress & getSender() const;
-    const QList<EmailAddress*> & getRecipients(RecipientType type = To) const;
-    const QString & getSubject() const;
-    const QList<MimePart*> & getParts() const;
-    const EmailAddress* getReplyTo() const;
+    QString subject() const;
+    QList<MimePart *> parts() const;
 
     MimePart& getContent();
     void setContent(MimePart *content);
-    /* [2] --- */
 
-
-    /* [3] Public methods */
-
-    virtual QString toString();
-
-    /* [3] --- */
+    bool write(QIODevice *device);
 
 protected:
-
-    /* [4] Protected members */
-
-    EmailAddress* sender;
-    EmailAddress* replyTo;
-    QList<EmailAddress*> recipientsTo, recipientsCc, recipientsBcc;
-    QString subject;
-    QString mInReplyTo;
-    MimePart *content;
-    bool autoMimeContentCreated;
-
-    MimePart::Encoding hEncoding;
-
-    /* [4] --- */
-
-
+    MimeMessagePrivate *d_ptr;
 };
+
+}
 
 #endif // MIMEMESSAGE_H

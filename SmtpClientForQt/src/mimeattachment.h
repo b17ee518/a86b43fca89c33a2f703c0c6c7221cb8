@@ -1,7 +1,6 @@
 /*
   Copyright (c) 2011-2012 - Tőkés Attila
-
-  This file is part of SmtpClient for Qt.
+  Copyright (C) 2015 Daniel Nicoletti <dantti12@gmail.com>
 
   This library is free software; you can redistribute it and/or
   modify it under the terms of the GNU Lesser General Public
@@ -25,27 +24,16 @@
 
 #include "smtpexports.h"
 
+namespace SimpleMail {
+
 class SMTP_EXPORT MimeAttachment : public MimeFile
 {
-    Q_OBJECT
 public:
-
-    /* [1] Constructors and Destructors */
-
-    MimeAttachment(QFile* file);
-    MimeAttachment(const QByteArray& stream, const QString& fileName);
-
-    ~MimeAttachment();
-
-    /* [1] --- */
-
-protected:
-
-    /* [2] Protected methods */
-
-    virtual void prepare();
-
-    /* [2] --- */
+    MimeAttachment(QFile *file);
+    MimeAttachment(const QByteArray &stream, const QString &fileName);
+    virtual ~MimeAttachment();
 };
+
+}
 
 #endif // MIMEATTACHMENT_H

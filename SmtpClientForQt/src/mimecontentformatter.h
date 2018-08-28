@@ -1,7 +1,6 @@
 /*
   Copyright (c) 2011-2012 - Tőkés Attila
-
-  This file is part of SmtpClient for Qt.
+  Copyright (C) 2015 Daniel Nicoletti <dantti12@gmail.com>
 
   This library is free software; you can redistribute it and/or
   modify it under the terms of the GNU Lesser General Public
@@ -19,25 +18,27 @@
 #ifndef MIMECONTENTFORMATTER_H
 #define MIMECONTENTFORMATTER_H
 
-#include <QObject>
 #include <QByteArray>
 
 #include "smtpexports.h"
 
-class SMTP_EXPORT MimeContentFormatter : public QObject
+namespace SimpleMail {
+
+class SMTP_EXPORT MimeContentFormatter
 {
-    Q_OBJECT
 public:
-    MimeContentFormatter (int max_length = 76);
+    explicit MimeContentFormatter(int max_length = 76);
 
     void setMaxLength(int l);
-    int getMaxLength() const;
+    int maxLength() const;
 
-    QString format(const QString &content, bool quotedPrintable = false) const;
+    QByteArray format(const QByteArray &content, int &chars) const;
+    QByteArray formatQuotedPrintable(const QByteArray &content, int &chars) const;
 
 protected:
     int max_length;
-
 };
+
+}
 
 #endif // MIMECONTENTFORMATTER_H

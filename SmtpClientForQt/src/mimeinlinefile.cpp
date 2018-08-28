@@ -1,7 +1,6 @@
 /*
   Copyright (c) 2011-2012 - Tőkés Attila
-
-  This file is part of SmtpClient for Qt.
+  Copyright (C) 2015 Daniel Nicoletti <dantti12@gmail.com>
 
   This library is free software; you can redistribute it and/or
   modify it under the terms of the GNU Lesser General Public
@@ -17,36 +16,17 @@
 */
 
 #include "mimeinlinefile.h"
+#include "mimepart_p.h"
 
-/* [1] Constructors and Destructors */
+using namespace SimpleMail;
 
-MimeInlineFile::MimeInlineFile(QFile *f)
-    : MimeFile(f)
+MimeInlineFile::MimeInlineFile(QFile *f) : MimeFile(f)
 {
+    Q_D(MimePart);
+    d->header.append(QByteArrayLiteral("Content-Disposition: inline\r\n"));
 }
 
 MimeInlineFile::~MimeInlineFile()
-{}
+{
 
-/* [1] --- */
-
-
-/* [2] Getters and Setters */
-
-/* [2] --- */
-
-
-/* [3] Protected methods */
-
-void MimeInlineFile::prepare()
-{       
-    this->header += "Content-Disposition: inline\r\n";
-
-    /* !!! IMPORTANT !!! */
-    MimeFile::prepare();
 }
-
-/* [3] --- */
-
-
-

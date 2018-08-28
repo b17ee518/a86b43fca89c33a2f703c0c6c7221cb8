@@ -1,7 +1,6 @@
 /*
   Copyright (c) 2011-2012 - Tőkés Attila
-
-  This file is part of SmtpClient for Qt.
+  Copyright (C) 2015 Daniel Nicoletti <dantti12@gmail.com>
 
   This library is free software; you can redistribute it and/or
   modify it under the terms of the GNU Lesser General Public
@@ -19,43 +18,42 @@
 #ifndef EMAILADDRESS_H
 #define EMAILADDRESS_H
 
-#include <QObject>
+#include <QtCore/QSharedDataPointer>
+#include <QString>
 
 #include "smtpexports.h"
 
-class SMTP_EXPORT EmailAddress : public QObject
+namespace SimpleMail {
+
+class EmailAddressPrivate;
+class SMTP_EXPORT EmailAddress
 {
-    Q_OBJECT
 public:
-
-    /* [1] Constructors and Destructors */
-
     EmailAddress();
-    EmailAddress(const QString & address, const QString & name="");
+    EmailAddress(const EmailAddress &other);
+    EmailAddress(const QString &address, const QString &name = QString());
+    virtual ~EmailAddress();
 
-    ~EmailAddress();
+    EmailAddress &operator=(const EmailAddress &other);
 
-    /* [1] --- */
+    QString name() const;
+    void setName(const QString &name);
 
+    QString address() const;
+    void setAddress(const QString &address);
 
-    /* [2] Getters and Setters */
-    void setName(const QString & name);
-    void setAddress(const QString & address);
-
-    const QString & getName() const;
-    const QString & getAddress() const;
-
-    /* [2] --- */
-
+protected:
+    QSharedDataPointer<EmailAddressPrivate> d_ptr;
 
 private:
-
-    /* [3] Private members */
-
-    QString name;
-    QString address;
-
-    /* [3] --- */
+    // Q_DECLARE_PRIVATE equivalent for shared data pointers
+    EmailAddressPrivate* d_func();
+    inline const EmailAddressPrivate* d_func() const
+    {
+        return d_ptr.constData();
+    }
 };
+
+}
 
 #endif // EMAILADDRESS_H

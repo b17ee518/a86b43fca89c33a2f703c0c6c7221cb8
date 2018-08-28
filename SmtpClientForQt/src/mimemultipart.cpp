@@ -1,7 +1,6 @@
 /*
   Copyright (c) 2011-2012 - Tőkés Attila
-
-  This file is part of SmtpClient for Qt.
+  Copyright (C) 2015 Daniel Nicoletti <dantti12@gmail.com>
 
   This library is free software; you can redistribute it and/or
   modify it under the terms of the GNU Lesser General Public
@@ -16,63 +15,79 @@
   See the LICENSE file for more details.
 */
 
-#include "mimemultipart.h"
-#include <QTime>
-#include <QCryptographicHash>
+#include "mimemultipart_p.h"
 
-const QString MULTI_PART_NAMES[] = {
-    "multipart/mixed",         //    Mixed
-    "multipart/digest",        //    Digest
-    "multipart/alternative",   //    Alternative
-    "multipart/related",       //    Related
-    "multipart/report",        //    Report
-    "multipart/signed",        //    Signed
-    "multipart/encrypted"      //    Encrypted
+#include <QtCore/QUuid>
+#include <QtCore/QIODevice>
+
+using namespace SimpleMail;
+
+const QByteArray MULTI_PART_NAMES[] = {
+    QByteArrayLiteral("multipart/mixed"),         //    Mixed
+    QByteArrayLiteral("multipart/digest"),        //    Digest
+    QByteArrayLiteral("multipart/alternative"),   //    Alternative
+    QByteArrayLiteral("multipart/related"),       //    Related
+    QByteArrayLiteral("multipart/report"),        //    Report
+    QByteArrayLiteral("multipart/signed"),        //    Signed
+    QByteArrayLiteral("multipart/encrypted")      //    Encrypted
 };
 
-MimeMultiPart::MimeMultiPart(MultiPartType type)
+MimeMultiPart::MimeMultiPart(MultiPartType type) : MimePart(new MimeMultiPartPrivate)
 {
-    this->type = type;
-    this->cType = MULTI_PART_NAMES[this->type];
-    this->cEncoding = _8Bit;
+    Q_D(MimePart);
+    static_cast<MimeMultiPartPrivate*>(d)->type = type;
+    d->contentType = MULTI_PART_NAMES[type];
+    d->contentEncoding = _8Bit;
 
-    QCryptographicHash md5(QCryptographicHash::Md5);
-    md5.addData(QByteArray().append(qrand()));
-    cBoundary = md5.result().toHex();
+    d->contentBoundary = QUuid::createUuid().toRfc4122().toHex();
 }
 
-MimeMultiPart::~MimeMultiPart() {
+MimeMultiPart::~MimeMultiPart()
+{
 
 }
 
-void MimeMultiPart::addPart(MimePart *part) {
-    parts.append(part);
+void MimeMultiPart::addPart(MimePart *part)
+{
+    Q_D(MimePart);
+    static_cast<MimeMultiPartPrivate*>(d)->parts.append(part);
 }
 
-const QList<MimePart*> & MimeMultiPart::getParts() const {
-    return parts;
+QList<MimePart*> MimeMultiPart::parts() const
+{
+    Q_D(const MimePart);
+    return static_cast<const MimeMultiPartPrivate*>(d)->parts;
 }
 
-void MimeMultiPart::prepare() {
-    QList<MimePart*>::iterator it;
+bool MimeMultiPart::writeData(QIODevice *device)
+{
+    Q_D(MimePart);
 
-    content = "";
-    for (it = parts.begin(); it != parts.end(); it++) {
-        content += "--" + cBoundary + "\r\n";
-        (*it)->prepare();
-        content += (*it)->toString();
-    };
+    const auto parts = static_cast<MimeMultiPartPrivate*>(d)->parts;
+    for (MimePart *part : parts) {
+        device->write("--" + d->contentBoundary + "\r\n");
+        if (!part->write(device)) {
+            return false;
+        }
+    }
+    device->write("--" + d->contentBoundary + "--\r\n");
 
-    content += "--" + cBoundary + "--\r\n";
-
-    MimePart::prepare();
+    return true;
 }
 
-void MimeMultiPart::setMimeType(const MultiPartType type) {
-    this->type = type;
-    this->cType = MULTI_PART_NAMES[type];
+void MimeMultiPart::setMimeType(const MultiPartType type)
+{
+    Q_D(MimePart);
+    d->contentType = MULTI_PART_NAMES[type];
+    static_cast<MimeMultiPartPrivate*>(d)->type = type;
 }
 
-MimeMultiPart::MultiPartType MimeMultiPart::getMimeType() const {
-    return type;
+MimeMultiPart::MultiPartType MimeMultiPart::mimeType() const
+{
+    Q_D(const MimePart);
+    return static_cast<const MimeMultiPartPrivate*>(d)->type;
+}
+
+MimeMultiPartPrivate::~MimeMultiPartPrivate()
+{
 }

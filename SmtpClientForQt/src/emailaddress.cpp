@@ -1,7 +1,6 @@
 /*
   Copyright (c) 2011-2012 - Tőkés Attila
-
-  This file is part of SmtpClient for Qt.
+  Copyright (C) 2015 Daniel Nicoletti <dantti12@gmail.com>
 
   This library is free software; you can redistribute it and/or
   modify it under the terms of the GNU Lesser General Public
@@ -16,45 +15,61 @@
   See the LICENSE file for more details.
 */
 
-#include "emailaddress.h"
+#include "emailaddress_p.h"
 
-/* [1] Constructors and Destructors */
+using namespace SimpleMail;
 
-EmailAddress::EmailAddress(const QString & address, const QString & name)
+EmailAddress::EmailAddress() : d_ptr(new EmailAddressPrivate)
 {
-    this->address = address;
-    this->name = name;
+
+}
+
+EmailAddress::EmailAddress(const EmailAddress &other) : d_ptr(other.d_ptr)
+{
+
+}
+
+EmailAddress::EmailAddress(const QString &address, const QString &name) : d_ptr(new EmailAddressPrivate)
+{
+    Q_D(EmailAddress);
+    d->address = address;
+    d->name = name;
 }
 
 EmailAddress::~EmailAddress()
 {
 }
 
-/* [1] --- */
-
-
-/* [2] Getters and Setters */
-
-void EmailAddress::setName(const QString & name)
+EmailAddress &EmailAddress::operator=(const EmailAddress &other)
 {
-    this->name = name;
-
+    d_ptr = other.d_ptr;
+    return *this;
 }
 
-void EmailAddress::setAddress(const QString & address)
+void EmailAddress::setName(const QString &name)
 {
-    this->address = address;
+    Q_D(EmailAddress);
+    d->name = name;
+}
+void EmailAddress::setAddress(const QString &address)
+{
+    Q_D(EmailAddress);
+    d->address = address;
 }
 
-const QString & EmailAddress::getName() const
+EmailAddressPrivate *EmailAddress::d_func()
 {
-    return name;
+    return d_ptr.data();
 }
 
-const QString & EmailAddress::getAddress() const
+QString EmailAddress::name() const
 {
-    return address;
+    Q_D(const EmailAddress);
+    return d->name;
 }
 
-/* [2] --- */
-
+QString EmailAddress::address() const
+{
+    Q_D(const EmailAddress);
+    return d->address;
+}

@@ -1,7 +1,6 @@
 /*
   Copyright (c) 2011-2012 - Tőkés Attila
-
-  This file is part of SmtpClient for Qt.
+  Copyright (C) 2015 Daniel Nicoletti <dantti12@gmail.com>
 
   This library is free software; you can redistribute it and/or
   modify it under the terms of the GNU Lesser General Public
@@ -16,8 +15,8 @@
   See the LICENSE file for more details.
 */
 
-#ifndef SMTPCLIENT_H
-#define SMTPCLIENT_H
+#ifndef SIMPLEMAIL_SENDER_H
+#define SIMPLEMAIL_SENDER_H
 
 #include <QObject>
 #include <QtNetwork/QSslSocket>
@@ -25,18 +24,21 @@
 #include "mimemessage.h"
 #include "smtpexports.h"
 
-class SMTP_EXPORT SmtpClient : public QObject
+namespace SimpleMail {
+
+class SenderPrivate;
+class SMTP_EXPORT Sender : public QObject
 {
     Q_OBJECT
+    Q_DECLARE_PRIVATE(Sender)
 public:
-
-    /* [0] Enumerations */
-
     enum AuthMethod
     {
+        AuthNone,
         AuthPlain,
         AuthLogin
     };
+    Q_ENUM(AuthMethod)
 
     enum SmtpError
     {
@@ -47,6 +49,7 @@ public:
         ServerError,    // 4xx smtp error
         ClientError     // 5xx smtp error
     };
+    Q_ENUM(SmtpError)
 
     enum ConnectionType
     {
@@ -54,131 +57,175 @@ public:
         SslConnection,
         TlsConnection       // STARTTLS
     };
+    Q_ENUM(ConnectionType)
 
-    /* [0] --- */
+    enum PeerVerificationType
+    {
+        VerifyNone,
+        VerifyPeer
+    };
+    Q_ENUM(PeerVerificationType)
 
+    explicit Sender(QObject *parent = 0);
+    Sender(const QString &host, int port, ConnectionType ct, QObject *parent = 0);
+    virtual ~Sender();
 
-    /* [1] Constructors and Destructors */
+    /**
+     * Returns the hostname of the SMTP server
+     */
+    QString host() const;
 
-    SmtpClient(const QString & host = "localhost", int port = 25, ConnectionType ct = TcpConnection);
-
-    ~SmtpClient();
-
-    /* [1] --- */
-
-
-    /* [2] Getters and Setters */
-
-    const QString& getHost() const;
+    /**
+     * Defines the hostname of the SMTP server
+     */
     void setHost(const QString &host);
 
-    int getPort() const;
+    /**
+     * Returns the port of the SMTP server
+     */
+    int port() const;
+
+    /**
+     * Defines the port of the SMTP server
+     */
     void setPort(int port);
 
-    const QString& getName() const;
+    /**
+     * Defines the client's name. This name is sent by the EHLO command.
+     * Defaults to the local host name
+     */
+    QString name() const;
+
+    /**
+     * Defines the client's name. This name is sent by the EHLO command.
+     * Defaults to the local host name
+     */
     void setName(const QString &name);
 
-    ConnectionType getConnectionType() const;
+    /**
+     * Returns the connection type of the SMTP server
+     */
+    ConnectionType connectionType() const;
+
+    /**
+     * Defines the connection type of the SMTP server
+     */
     void setConnectionType(ConnectionType ct);
 
-    const QString & getUser() const;
+    /**
+     * Returns the username that will authenticate on the SMTP server
+     */
+    QString user() const;
+
+    /**
+     * Defines the username that will authenticate on the SMTP server
+     */
     void setUser(const QString &user);
 
-    const QString & getPassword() const;
+    /**
+     * Returns the password that will authenticate on the SMTP server
+     */
+    QString password() const;
+
+    /**
+     * Defines the password that will authenticate on the SMTP server
+     */
     void setPassword(const QString &password);
 
-    SmtpClient::AuthMethod getAuthMethod() const;
+    /**
+     * Returns the authenticaion method of the SMTP server
+     */
+    AuthMethod authMethod() const;
+
+    /**
+     * Defines the authenticaion method of the SMTP server
+     */
     void setAuthMethod(AuthMethod method);
 
-    const QString & getResponseText() const;
-    int getResponseCode() const;
+    /**
+     * Returns the response text the SMTP server last returned
+     */
+    QByteArray responseText() const;
 
-    int getConnectionTimeout() const;
+    /**
+     * Returns the response code the SMTP server last returned
+     */
+    int responseCode() const;
+
+    /**
+     * Returns the connection timeout when connecting to the SMTP server
+     */
+    int connectionTimeout() const;
+
+    /**
+     * Defines the connection timeout when connecting to the SMTP server
+     */
     void setConnectionTimeout(int msec);
 
-    int getResponseTimeout() const;
+    /**
+     * Returns the response timeout when waiting for a message to be processed by the SMTP server
+     */
+    int responseTimeout() const;
+
+    /**
+     * Defines the response timeout when waiting for a message to be processed by the SMTP server
+     */
     void setResponseTimeout(int msec);
     
-    int getSendMessageTimeout() const;
+    /**
+     * Returns the timeout when waiting for a message data to be sent to the SMTP server
+     */
+    int sendMessageTimeout() const;
+
+    /**
+     * Defines the timeout when waiting for a message data to be sent to the SMTP server
+     */
     void setSendMessageTimeout(int msec);
 
-    QTcpSocket* getSocket();
+    /**
+     * @brief ignoreSslErrors tells the socket to ignore all pending ssl errors if SSL encryption is active.
+     *      Must be called in a direct connected slot/functor
+     */
+    void ignoreSslErrors();
 
+    /**
+     * @brief ignoreSslErrors tells the socket to ignore the given ssl errors if SSL encryption is active.
+     *      Must be called in a direct connected slot/functor
+     * @param errors defines the errors to ignore
+     */
+    void ignoreSslErrors(const QList<QSslError> &errors);
 
-    /* [2] --- */
+    /**
+     * @brief setPeerVerificationType Defines how the mail-server's SSL certificate should be examined
+     * @param type  VerifyNone does not try to verify the identity, VerifyPeer does check on server identity
+     */
+    void setPeerVerificationType(PeerVerificationType type);
 
+    /**
+     * @brief peerVerificationType Returns the type of verification done for the mail-server's SSL certificate
+     * @return PeerVerificationType as VerifyNone or VerifyPeer
+     */
+    PeerVerificationType peerVerificationType();
 
-    /* [3] Public methods */
+    bool sendMail(MimeMessage &email);
 
-    bool connectToHost();
-
-    bool login();
-    bool login(const QString &user, const QString &password, AuthMethod method = AuthLogin);
-
-    bool sendMail(MimeMessage& email);
+    QString lastError() const;
 
     void quit();
 
-
-    /* [3] --- */
-
-protected:
-
-    /* [4] Protected members */
-
-    QTcpSocket *socket;
-
-    QString host;
-    int port;
-    ConnectionType connectionType;
-    QString name;
-
-    QString user;
-    QString password;
-    AuthMethod authMethod;
-
-    int connectionTimeout;
-    int responseTimeout;
-    int sendMessageTimeout;
-    
-    
-    QString responseText;
-    int responseCode;
-
-
-    class ResponseTimeoutException {};
-    class SendMessageTimeoutException {};
-
-    /* [4] --- */
-
-
-    /* [5] Protected methods */
-
-    void waitForResponse();
-
-    void sendMessage(const QString &text);
-
-    /* [5] --- */
-
-protected slots:
-
-    /* [6] Protected slots */
-
+protected Q_SLOTS:
     void socketStateChanged(QAbstractSocket::SocketState state);
     void socketError(QAbstractSocket::SocketError error);
     void socketReadyRead();
 
-    /* [6] --- */
+Q_SIGNALS:
+    void smtpError(SmtpError e);
+    void sslErrors(const QList<QSslError> &sslErrorList);
 
-
-signals:
-
-    /* [7] Signals */
-
-    void smtpError(SmtpClient::SmtpError e);
-
-    /* [7] --- */
-
+protected:
+    SenderPrivate *d_ptr;
 };
 
-#endif // SMTPCLIENT_H
+}
+
+#endif // SIMPLEMAIL_SENDER_H

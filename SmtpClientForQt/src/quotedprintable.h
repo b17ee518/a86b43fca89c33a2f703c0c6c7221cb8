@@ -1,7 +1,6 @@
 /*
   Copyright (c) 2011-2012 - Tőkés Attila
-
-  This file is part of SmtpClient for Qt.
+  Copyright (C) 2015 Daniel Nicoletti <dantti12@gmail.com>
 
   This library is free software; you can redistribute it and/or
   modify it under the terms of the GNU Lesser General Public
@@ -19,21 +18,19 @@
 #ifndef QUOTEDPRINTABLE_H
 #define QUOTEDPRINTABLE_H
 
-#include <QObject>
 #include <QByteArray>
 
 #include "smtpexports.h"
 
-class SMTP_EXPORT QuotedPrintable : public QObject
+namespace SimpleMail {
+
+class SMTP_EXPORT QuotedPrintable
 {
-    Q_OBJECT
 public:
-
-    static QString encode(const QByteArray &input);
-    static QByteArray decode(const QString &input);
-
-private:
-    QuotedPrintable();
+    static QByteArray encode(const QByteArray &input, bool rfc2047, int *printable = 0, int *encoded = 0);
+    static QByteArray decode(const QByteArray &input);
 };
+
+}
 
 #endif // QUOTEDPRINTABLE_H

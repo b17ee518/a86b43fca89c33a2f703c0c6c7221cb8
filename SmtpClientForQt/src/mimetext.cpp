@@ -16,47 +16,30 @@
   See the LICENSE file for more details.
 */
 
-#include "mimetext.h"
+#include "mimetext_p.h"
 
-/* [1] Constructors and Destructors */
+using namespace SimpleMail;
 
 MimeText::MimeText(const QString &txt)
 {
-    this->text = txt;
-    this->cType = "text/plain";
-    this->cCharset = "utf-8";
-    this->cEncoding = _8Bit;
+    Q_D(MimePart);
+    d->contentType = QByteArrayLiteral("text/plain");
+    d->contentCharset = QByteArrayLiteral("UTF-8");
+    d->contentEncoding = QuotedPrintable;
+    setData(txt);
 }
 
-MimeText::~MimeText() { }
-
-/* [1] --- */
-
-
-/* [2] Getters and Setters */
-
-void MimeText::setText(const QString & text)
+MimeText::~MimeText()
 {
-    this->text = text;
+
 }
 
-const QString & MimeText::getText() const
+void MimeText::setText(const QString &text)
 {
-    return text;
+    setData(text);
 }
 
-/* [2] --- */
-
-
-/* [3] Protected Methods */
-
-void MimeText::prepare()
+QString MimeText::text() const
 {
-    this->content.clear();
-    this->content.append(text);
-
-    /* !!! IMPORTANT !!! */
-    MimePart::prepare();
+    return data();
 }
-
-/* [3] --- */

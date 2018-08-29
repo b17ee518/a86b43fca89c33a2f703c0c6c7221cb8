@@ -791,6 +791,12 @@ bool ControlManager::BuildNext_Morning(bool isFromRepeating)
 			if (isCompleted)
 			{
 				_morningSetting.morningStage = MorningStage::Done;
+				LoadAnyTemplateSettings();
+				AnySetting setting = getAnyTemplateSetting(1, 5);
+				setAnySetting(setting);
+
+				KanSaveData::getInstance().totalAnyCount = 0;
+				KanDataConnector::getInstance().callUpdateOverviewTable();
 				setToTerminate("Morning:Done", true, RemoteNotifyHandler::Level::Low);
 				return false;
 			}
@@ -811,6 +817,12 @@ bool ControlManager::BuildNext_Morning(bool isFromRepeating)
 		if (pksd->totalSouthEastWin >= 5)
 		{
 			_morningSetting.morningStage = MorningStage::None;
+			LoadAnyTemplateSettings();
+			AnySetting setting = getAnyTemplateSetting(1, 5);
+			setAnySetting(setting);
+
+			KanSaveData::getInstance().totalAnyCount = 0;
+			KanDataConnector::getInstance().callUpdateOverviewTable();
 			setToTerminate("Morning:Done", true, RemoteNotifyHandler::Level::Low);
 			return false;
 		}
@@ -997,7 +1009,8 @@ bool ControlManager::BuildNext_Morning(bool isFromRepeating)
 		}
 		else
 		{
-			AnySetting setting;
+			LoadAnyTemplateSettings();
+			AnySetting setting = getAnyTemplateSetting(1, 5);
 			setAnySetting(setting);
 			
 			KanSaveData::getInstance().totalAnyCount = 0;

@@ -20,7 +20,7 @@
 
 int main(int argc, char *argv[])
 {
-	QCoreApplication::setAttribute(Qt::AA_UseOpenGLES);
+	QCoreApplication::setAttribute(Qt::AA_UseDesktopOpenGL);
 	QApplication a(argc, argv);
 	qsrand(QTime::currentTime().msec());
 

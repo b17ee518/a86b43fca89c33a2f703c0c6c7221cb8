@@ -257,7 +257,7 @@ public:
 	void logAllExport();
 
 	void resetTotals();
-	void adjustSouthEast(int addval);
+	void adjustAnyAndSouthEast(int addval);
 
 	void clearQuestByType(int type, int beginIndex, int endIndex, int page = -1);
 

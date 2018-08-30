@@ -2072,18 +2072,14 @@ bool DevelopAction::action()
 			QTimer::singleShot(DELAY_TIME, Qt::PreciseTimer, this, [this, &cm]()
 			{
 				// ok to develop
-				if (cm.checkColors(
-					220, 360, 204, 113, 48
-					, 700, 441, 76, 231, 223))
+				if (ActionCheckAndClickDefine::CheckColor(ActionCheckAndClickDefine::CheckColorNameDefine::DevelopReadyPanel))
 				{
 					// skip to ok
 					_waiting = false;
 					setState(State::SelectOKDone, "Develop:SelectOKDone");
 				}
-				// destroy
-				else if (cm.checkColors(
-					300, 257, 131, 58, 44
-					, 240, 241, 253, 245, 220))
+				// develop
+				else if (ActionCheckAndClickDefine::CheckColor(ActionCheckAndClickDefine::CheckColorNameDefine::KousyouPanel))
 				{
 					_waiting = false;
 					setState(State::SelectDevelopDone, "Develop:SelectDevelopDone");
@@ -2101,7 +2097,7 @@ bool DevelopAction::action()
 			_waiting = true;
 			QTimer::singleShot(DELAY_TIME_CLICK, Qt::PreciseTimer, this, [this, &cm]()
 			{
-				cm.moveMouseToAndClick(204, 338, 66, 22); // destroy
+				ActionCheckAndClickDefine::MoveAndClick(ActionCheckAndClickDefine::MoveMouseNameDefine::ToDevelopButton); // develop
 				setState(State::SelectOKChecking, "Develop:SelectOKChecking");
 				resetRetryAndWainting();
 			});
@@ -2114,9 +2110,7 @@ bool DevelopAction::action()
 			QTimer::singleShot(DELAY_TIME, Qt::PreciseTimer, this, [this, &cm]()
 			{
 				// ok to develop
-				if (cm.checkColors(
-					220, 360, 204, 113, 48
-					, 700, 441, 76, 231, 223))
+				if (ActionCheckAndClickDefine::CheckColor(ActionCheckAndClickDefine::CheckColorNameDefine::DevelopReadyPanel))
 				{
 					_waiting = false;
 					setState(State::SelectOKDone, "Develop:SelectOKDone");
@@ -2134,7 +2128,7 @@ bool DevelopAction::action()
 			_waiting = true;
 			QTimer::singleShot(DELAY_TIME_CLICK, Qt::PreciseTimer, this, [this, &cm]()
 			{
-				cm.moveMouseToAndClick(697, 443, 55, 12); // ok button
+				ActionCheckAndClickDefine::MoveAndClick(ActionCheckAndClickDefine::MoveMouseNameDefine::DoDevelopButton); // ok button
 				setState(State::Skipping, "Develop:Skipping");
 				resetRetryAndWainting();
 			});
@@ -2147,10 +2141,8 @@ bool DevelopAction::action()
 			_waiting = true;
 			QTimer::singleShot(DELAY_TIME, Qt::PreciseTimer, this, [this, &cm]()
 			{
-				// destroy
-				if (cm.checkColors(
-					300, 257, 131, 58, 44
-					, 240, 241, 253, 245, 220))
+				// panel
+				if (ActionCheckAndClickDefine::CheckColor(ActionCheckAndClickDefine::CheckColorNameDefine::KousyouPanel))
 				{
 					_waiting = false;
 
@@ -2176,7 +2168,7 @@ bool DevelopAction::action()
 				}
 				else
 				{
-					cm.moveMouseToAndClick(738, 401);
+					ActionCheckAndClickDefine::MoveAndClick(ActionCheckAndClickDefine::MoveMouseNameDefine::DevelopSkip);
 					resetRetryAndWainting();
 				}
 			});
@@ -2188,9 +2180,7 @@ bool DevelopAction::action()
 			_waiting = true;
 			QTimer::singleShot(DELAY_TIME, Qt::PreciseTimer, this, [this, &cm]()
 			{
-				if (cm.checkColors(
-					31, 358, 206, 205, 52
-					, 502, 448, 140, 56, 19))
+				if (ActionCheckAndClickDefine::CheckColor(ActionCheckAndClickDefine::CheckColorNameDefine::KousyouPanel))
 				{
 					_waiting = false;
 					setState(State::ReturnToPortDone, "Develop:ReturnToPortDone");

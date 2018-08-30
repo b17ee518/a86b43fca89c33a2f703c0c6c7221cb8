@@ -618,13 +618,13 @@ void MainWindow::setJobTerminated()
 
 void MainWindow::onIncreaseSouthEast()
 {
-	KanSaveData::getInstance().adjustSouthEast(1);
+	KanSaveData::getInstance().adjustAnyAndSouthEast(1);
 	KanDataConnector::getInstance().callUpdateOverviewTable();
 }
 
 void MainWindow::onDecreaseSouthEast()
 {
-	KanSaveData::getInstance().adjustSouthEast(-1);
+	KanSaveData::getInstance().adjustAnyAndSouthEast(-1);
 	KanDataConnector::getInstance().callUpdateOverviewTable();
 }
 

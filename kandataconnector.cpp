@@ -576,12 +576,12 @@ QString KanDataConnector::logBattleResult(bool bWrite/*=true*/)
 				pksd->totalBossSRank++;
 			}
 			pksd->totalBossWin++;
-			if (maparea_id == 2 && mapinfo_no > 1)
+			if (maparea_id == 2)
 			{
 				ControlManager& cm = ControlManager::getInstance();
+				
 				if (!cm.isRunning()
-					|| !cm.isSouthEastMode() && !cm.isFuelMode()
-					|| cm.getSouthEastSetting().stopWhen != ControlManager::StopWhen::Yusou3)
+					|| (cm.isMorningMode() && cm.getMorningSetting().morningStage != ControlManager::MorningStage::YuSou3))
 				{
 					pksd->totalSouthEastWin++;
 				}

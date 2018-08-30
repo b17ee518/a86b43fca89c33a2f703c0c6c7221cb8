@@ -1005,6 +1005,9 @@ bool ControlManager::BuildNext_Morning(bool isFromRepeating)
 
 			_target = ActionTarget::Any;
 
+			KanSaveData::getInstance().totalAnyCount = 0;
+			KanDataConnector::getInstance().callUpdateOverviewTable();
+
 			_actionList.append(new RepeatAction());
 		}
 		else
@@ -1012,9 +1015,6 @@ bool ControlManager::BuildNext_Morning(bool isFromRepeating)
 			LoadAnyTemplateSettings();
 			AnySetting setting = getAnyTemplateSetting(1, 5);
 			setAnySetting(setting);
-			
-			KanSaveData::getInstance().totalAnyCount = 0;
-			KanDataConnector::getInstance().callUpdateOverviewTable();
 
 			_morningSetting.morningStage = MorningStage::Done;
 			setToTerminate("Morning:Done", true, RemoteNotifyHandler::Level::Low);

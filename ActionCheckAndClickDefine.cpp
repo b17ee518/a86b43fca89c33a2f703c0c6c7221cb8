@@ -305,181 +305,188 @@ QMap < ActionCheckAndClickDefine::CheckColorNameDefine, QList<int>> ActionCheckA
 		// untested
 		182, 415, 226, 43, 42,
 			219, 411, 255, 255, 255
-	}
-},
-{
+		}
+	},
+	{
 	CheckColorNameDefine::SortieBlackBoard,
 	QList<int>{
-	// todo
-}
-},
-{
-	CheckColorNameDefine::SortieBlackBoardDone1,
-	QList<int>{
-	// todo
-}
-},
-{
-	CheckColorNameDefine::SortieBlackBoardDone2,
-	QList<int>{
-	// todo
-}
-},
-{
-	CheckColorNameDefine::SortieOKButton,
-	QList<int>{
-		1101, 656, 61, 140, 136,
-			943, 121, 29, 187, 190
+		// todo
 	}
-},
-{
-	CheckColorNameDefine::SortieGOButton,
-	QList<int>{
-		1016, 188, 255, 249, 240,
-			947, 680, 153, 43, 41
+	},
+	{
+		CheckColorNameDefine::SortieBlackBoardDone1,
+		QList<int>{
+		// todo
 	}
-},
-{
-	CheckColorNameDefine::SortieGOActiveButton,
-	QList<int>{
-		1016, 188, 255, 249, 240,
-			861, 657, 246, 208, 61
+	},
+	{
+		CheckColorNameDefine::SortieBlackBoardDone2,
+		QList<int>{
+		// todo
 	}
-},
-{
-	CheckColorNameDefine::SortieGOWithAirebaseButton,
-	QList<int>{
-		1018, 689, 69, 108, 74,
-			822, 691, 81, 189, 84,
-}
-},
-{
-	CheckColorNameDefine::SortieTeam1,
-	QList<int>{
-		551, 169, 35, 160, 161
+	},
+	{
+		CheckColorNameDefine::SortieOKButton,
+		QList<int>{
+			1101, 656, 61, 140, 136,
+				943, 121, 29, 187, 190
+		}
+	},
+	{
+		CheckColorNameDefine::SortieGOButton,
+		QList<int>{
+			1016, 188, 255, 249, 240,
+				947, 680, 153, 43, 41
+		}
+	},
+	{
+		CheckColorNameDefine::SortieGOActiveButton,
+		QList<int>{
+			1016, 188, 255, 249, 240,
+				861, 657, 246, 208, 61
+		}
+	},
+	{
+		CheckColorNameDefine::SortieGOWithAirebaseButton,
+		QList<int>{
+			1018, 689, 69, 108, 74,
+				822, 691, 81, 189, 84,
 	}
-},
-{
-	CheckColorNameDefine::SortieTeam2,
-	QList<int>{
-		599, 169, 33, 151, 151
+	},
+	{
+		CheckColorNameDefine::SortieTeam1,
+		QList<int>{
+			551, 169, 35, 160, 161
+		}
+	},
+	{
+		CheckColorNameDefine::SortieTeam2,
+		QList<int>{
+			599, 169, 33, 151, 151
+		}
+	},
+	{
+		CheckColorNameDefine::SortieTeam3,
+		QList<int>{
+			642, 168, 35, 158, 159
+		}
+	},
+	{
+		CheckColorNameDefine::SortieTeam4,
+		QList<int>{
+			688, 166, 35, 158, 159
+		}
+	},
+	{
+		CheckColorNameDefine::SortieCommonFormationWithKeikai6A,
+		QList<int>{
+		// TODO
 	}
-},
-{
-	CheckColorNameDefine::SortieTeam3,
-	QList<int>{
-		642, 168, 35, 158, 159
+	},
+	{
+		CheckColorNameDefine::SortieCommonFormationWithKeikai6B,
+		QList<int>{
+		// TODO
 	}
-},
-{
-	CheckColorNameDefine::SortieTeam4,
-	QList<int>{
-		688, 166, 35, 158, 159
+	},
+	{
+		CheckColorNameDefine::SortieCommonFormationWithKeikai5,
+		QList<int>{
+		// TODO
 	}
-},
-{
-	CheckColorNameDefine::SortieCommonFormationWithKeikai6A,
-	QList<int>{
-	// TODO
-}
-},
-{
-	CheckColorNameDefine::SortieCommonFormationWithKeikai6B,
-	QList<int>{
-	// TODO
-}
-},
-{
-	CheckColorNameDefine::SortieCommonFormationWithKeikai5,
-	QList<int>{
-	// TODO
-}
-},
-{
-	CheckColorNameDefine::SortieCommonFormation5,
-	QList<int>{
-		613, 267, 0, 123, 125,
-			644, 277, 34, 113, 120,
-			597, 266, 202, 191, 67
+	},
+	{
+		CheckColorNameDefine::SortieCommonFormation5,
+		QList<int>{
+			613, 267, 0, 123, 125,
+				644, 277, 34, 113, 120,
+				597, 266, 202, 191, 67
+		}
+	},
+	{
+		CheckColorNameDefine::SortieCommonFormationCombined,
+		QList<int>{
+		// TODO
 	}
-},
-{
-	CheckColorNameDefine::SortieCommonFormationCombined,
-	QList<int>{
-	// TODO
-}
-},
-{
-	CheckColorNameDefine::SortieCommonNightOrNot,
-	QList<int>{
-		740, 291, 254, 255, 255,
-			744, 292, 17, 56, 74,
-			787, 426, 121, 254, 251
-	}
-},
-{
-	CheckColorNameDefine::SortieCommonLeaveOrNot,
-	QList<int>{
-		710, 419, 180, 198, 205,
-			706, 416, 41, 94, 110,
-			484, 408, 127, 251, 250
-	}
-},
-{
-	CheckColorNameDefine::ExpeditionPanel,
-	QList<int>{
-		763, 174, 242, 127, 23,
-			223, 209, 129, 91, 0
-	}
-},
-{
-	CheckColorNameDefine::ExpeditionSelectItemDone,
-	QList<int>{
-		1103, 654, 84, 154, 151
-	}
-},
-{
-	CheckColorNameDefine::ExpeditionTeamSelect,
-	QList<int>{
-		1020, 656, 79, 146, 186,
-			1014, 185, 255, 255, 251
-	}
-},
-{
-	CheckColorNameDefine::ExpeditionTeamSelectActive,
-	QList<int>{
-		1021, 656, 241, 186, 40,
-			1014, 185, 255, 255, 251
-	}
-},
-{
-	CheckColorNameDefine::ExpeditionTeamSelectActive,
-	QList<int>{
-		1015, 647, 94, 94, 94,
-			1014, 185, 255, 255, 251
-	}
-},
-{
-	CheckColorNameDefine::MissionSkipCompleteDone,
-	QList<int>{
-		632, 596, 35, 158, 158,
-			626, 598, 255, 252, 246
-	}
-},
-{
-	CheckColorNameDefine::MissionNonConnecting,
-	QList<int>{
-		1045, 707, 242, 232, 221
-	}
-},
-{
-	CheckColorNameDefine::MissionPanel,
-	QList<int>{
-		323, 118, 184, 160, 85,
-			39, 197, 211, 232, 238,
-			72, 714, 182, 182, 181
-	}
-},
+	},
+	{
+		CheckColorNameDefine::SortieCommonNightOrNot,
+		QList<int>{
+			740, 291, 254, 255, 255,
+				744, 292, 17, 56, 74,
+				787, 426, 121, 254, 251
+		}
+	},
+	{
+		CheckColorNameDefine::SortieCommonLeaveOrNot,
+		QList<int>{
+			710, 419, 180, 198, 205,
+				706, 416, 41, 94, 110,
+				484, 408, 127, 251, 250
+		}
+	},
+	{
+		CheckColorNameDefine::ExpeditionPanel,
+		QList<int>{
+			763, 174, 242, 127, 23,
+				223, 209, 129, 91, 0
+		}
+	},
+	{
+		CheckColorNameDefine::ExpeditionSelectItemDone,
+		QList<int>{
+			1103, 654, 84, 154, 151
+		}
+	},
+	{
+		CheckColorNameDefine::ExpeditionTeamSelect,
+		QList<int>{
+			1020, 656, 79, 146, 186,
+				1014, 185, 255, 255, 251
+		}
+	},
+	{
+		CheckColorNameDefine::ExpeditionTeamSelectActive,
+		QList<int>{
+			1021, 656, 241, 186, 40,
+				1014, 185, 255, 255, 251
+		}
+	},
+	{
+		CheckColorNameDefine::ExpeditionTeamSelectActive,
+		QList<int>{
+			1015, 647, 94, 94, 94,
+				1014, 185, 255, 255, 251
+		}
+	},
+	{
+		CheckColorNameDefine::MissionSkipCompleteDone,
+		QList<int>{
+			632, 596, 35, 158, 158,
+				626, 598, 255, 252, 246
+		}
+	},
+	{
+		CheckColorNameDefine::MissionNonConnecting,
+		QList<int>{
+			1045, 707, 242, 232, 221
+		}
+	},
+	{
+		CheckColorNameDefine::MissionPanel,
+		QList<int>{
+			323, 118, 184, 160, 85,
+				39, 197, 211, 232, 238,
+				72, 714, 182, 182, 181
+		}
+	},
+	{
+		CheckColorNameDefine::DevelopReadyPanel,
+		QList<int>{
+			1002, 637, 72, 193, 194,
+				395, 509, 178, 122, 51
+		}
+	},
 };
 
 QMap < ActionCheckAndClickDefine::MoveMouseNameDefine, QList<int>> ActionCheckAndClickDefine::mouseClickMap = {
@@ -914,6 +921,24 @@ QMap < ActionCheckAndClickDefine::MoveMouseNameDefine, QList<int>> ActionCheckAn
 		MoveMouseNameDefine::MissionReturnButton,
 		QList<int> {
 			92, 687, 45, 15
+		}
+	},
+	{
+		MoveMouseNameDefine::ToDevelopButton,
+		QList<int> {
+			336, 510, 45, 15
+		}
+	},
+	{
+		MoveMouseNameDefine::DoDevelopButton,
+		QList<int> {
+			1078, 661, 45, 15
+		}
+	},
+	{
+		MoveMouseNameDefine::DevelopSkip,
+		QList<int> {
+			1107, 601
 		}
 	},
 };

@@ -96,6 +96,8 @@ public:
 		MissionSkipCompleteDone,
 		MissionNonConnecting,
 		MissionPanel,
+
+		DevelopReadyPanel,
 	};
 
 	enum class MoveMouseNameDefine
@@ -201,6 +203,10 @@ public:
 		MissionVertical,
 		MissionCloseButton,
 		MissionReturnButton,
+
+		ToDevelopButton,
+		DoDevelopButton,
+		DevelopSkip,
 	};
 
 	static bool CheckColor(CheckColorNameDefine name);

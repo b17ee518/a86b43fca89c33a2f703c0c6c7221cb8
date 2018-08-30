@@ -164,12 +164,18 @@ KanSaveData::KanSaveData()
 	createshipdata.clearValue();
 }
 
-void KanSaveData::adjustSouthEast(int addval)
+void KanSaveData::adjustAnyAndSouthEast(int addval)
 {
 	totalSouthEastWin += addval;
 	if (totalSouthEastWin < 0)
 	{
 		totalSouthEastWin = 0;
+	}
+
+	totalAnyCount += addval;
+	if (totalAnyCount < 0)
+	{
+		totalAnyCount = 0;
 	}
 }
 

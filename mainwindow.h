@@ -215,6 +215,9 @@ private:
 
 	void installWebEngineMouseEventFilter();
 
+public:
+	static bool isVM;
+
 private:
 	Ui::MainWindow *ui;
 

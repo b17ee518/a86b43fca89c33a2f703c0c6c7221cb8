@@ -6,6 +6,10 @@
 #include <QSettings>
 #include <QtConcurrent/QtConcurrent>
 
+#if defined Q_OS_WIN
+#include <windows.h>
+#endif
+
 RemoteNotifyHandler::RemoteNotifyHandler()
 {
 }
@@ -104,6 +108,38 @@ void RemoteNotifyHandler::RunInstanceNotify()
 
 	if (level >= notifyLevel)
 	{
+#if defined Q_OS_WIN
+
+		SimpleMail::MimeMessage message;
+
+		SimpleMail::EmailAddress senderEmail(senderEmailAddress, "KN: " + text);
+		SimpleMail::EmailAddress recipentEmail(receiverEmailAddress);
+		SimpleMail::EmailAddress anotherRecipentEmail(anotherReceiverEmailAddress);
+
+		message.setSender(senderEmail);
+		message.addTo(recipentEmail);
+		if (anotherReceiverEmailAddress != "None")
+		{
+			message.addTo(anotherRecipentEmail);
+		}
+		message.setSubject(text);
+
+		QString filename = QApplication::applicationDirPath();
+		filename += "/emailContents.txt";
+		QFile file(filename);
+		if (file.open(QIODevice::WriteOnly)) {
+			message.write(&file);
+		}
+		file.close();
+
+		QString command = "curl smtp://smtp.gmail.com:587 -v --mail-from \""
+			+ senderEmailAddress +
+			"\" --mail-rcpt \""
+			+ receiverEmailAddress +
+			"\" --ssl -u " + senderEmailAddress +
+			":" + senderPassword + " -k --anyauth -T \"" + filename + "\"";
+		WinExec(command.toLocal8Bit(), SW_HIDE);
+#else
 		try
 		{
 			SimpleMail::Sender smtp("smtp.gmail.com", 465, SimpleMail::Sender::SslConnection);
@@ -133,6 +169,7 @@ void RemoteNotifyHandler::RunInstanceNotify()
 		catch (...)
 		{
 		}
+#endif
 	}
 }
 

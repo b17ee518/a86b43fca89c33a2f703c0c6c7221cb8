@@ -18,9 +18,29 @@
 #pragma comment(lib, "Qt5WebKitd.lib")
 #endif
 
+#include <QSettings>
+
 int main(int argc, char *argv[])
 {
-	QCoreApplication::setAttribute(Qt::AA_UseDesktopOpenGL);
+	QString filename = QApplication::applicationDirPath();
+	filename += "/settings.ini";
+	QSettings* setting = new QSettings(filename, QSettings::IniFormat);
+	setting->setIniCodec("UTF-8");
+
+	setting->beginGroup("PreSettings");
+	const QString itemIsVM = "VM";
+
+	MainWindow::isVM = setting->value(itemIsVM).toBool();
+
+	if (MainWindow::isVM)
+	{
+		QCoreApplication::setAttribute(Qt::AA_UseSoftwareOpenGL);
+	}
+	else
+	{
+		QCoreApplication::setAttribute(Qt::AA_UseDesktopOpenGL);
+	}
+
 	QApplication a(argc, argv);
 	qsrand(QTime::currentTime().msec());
 

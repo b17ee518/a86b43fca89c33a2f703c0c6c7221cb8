@@ -38,3 +38,4 @@ project.pbxproj
 *.mak
 *.db
 .vs/
+EmailContent.txt

@@ -156,7 +156,18 @@ void MainWindow::onDoJobAny()
 
 	cm.LoadAnyTemplateSettings();
 	AnyActionSelectDialog* dialog = new AnyActionSelectDialog();
-	dialog->setPositionTo(this->geometry().center().x(), this->geometry().center().y());
+
+	float x;
+	if (isVM)
+	{
+		x = dialog->geometry().width() / 2 + this->geometry().right();
+	}
+	else
+	{
+		x = this->geometry().center().x();
+	}
+
+	dialog->setPositionTo(x, this->geometry().center().y());
 
 	ControlManager::AnySetting setting = cm.getAnySetting();
 	int area = setting.area;
@@ -394,7 +405,17 @@ void MainWindow::onDoJobDevelop()
 	cm.clearLastTarget();
 
 	DevelopActionSelectDialog* dialog = new DevelopActionSelectDialog();
-	dialog->setPositionTo(this->geometry().center().x(), this->geometry().center().y());
+
+	float x;
+	if (isVM)
+	{
+		x = dialog->geometry().width() / 2 + this->geometry().right();
+	}
+	else
+	{
+		x = this->geometry().center().x();
+	}
+	dialog->setPositionTo(x, this->geometry().center().y());
 
 	ControlManager::DevelopSetting setting = cm.getDevelopSetting();
 	int id = 0;

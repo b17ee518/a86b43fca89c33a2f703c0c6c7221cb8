@@ -30,6 +30,8 @@
 
 #define SAFE_RELEASE(x) if(x) { x->Release(); x = NULL; } 
 
+bool MainWindow::isVM = false;
+
 void MainWindow::postInit(InfoMainWindow *pInfo, TimerMainWindow *pTimer, WeaponMainWindow* pWeapon, ShipMainWindow* pShip)
 {
 	_pInfoWindow = pInfo;

@@ -200,7 +200,8 @@ QMap < ActionCheckAndClickDefine::CheckColorNameDefine, QList<int>> ActionCheckA
 		CheckColorNameDefine::NyukyoPanel,
 		QList<int>{
 			81, 525, 214, 158, 80,
-				38, 451, 226, 126, 34
+				38, 451, 226, 126, 34,
+				1113, 681, 205, 188, 174
 		}
 	},
 	{

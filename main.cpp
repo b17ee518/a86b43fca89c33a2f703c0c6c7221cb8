@@ -19,10 +19,13 @@
 #endif
 
 #include <QSettings>
+#include <QFileInfo>
+#include <QDir>
 
 int main(int argc, char *argv[])
 {
-	QString filename = QApplication::applicationDirPath();
+	QFileInfo fi(argv[0]);
+	QString filename = fi.absoluteDir().absolutePath();
 	filename += "/settings.ini";
 	QSettings* setting = new QSettings(filename, QSettings::IniFormat);
 	setting->setIniCodec("UTF-8");

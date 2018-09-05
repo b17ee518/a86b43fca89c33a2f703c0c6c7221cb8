@@ -154,6 +154,21 @@ void AnyActionSelectDialog::slotOnReset()
 	KanSaveData* pksd = &KanSaveData::getInstance();
 	pksd->totalAnyCount = 0;
 	KanDataConnector::getInstance().callUpdateOverviewTable();
+
+	if ((QApplication::queryKeyboardModifiers()&Qt::ShiftModifier))
+	{
+		ui->leArea->setText("");
+		ui->leMap->setText("");
+		ui->pbArea01->setChecked(true);
+		ui->pbMap05->setChecked(true);
+
+		ui->cbAirBaseCond->setChecked(false);
+		ui->cbCond->setChecked(true);
+		ui->cbMiddleDamage->setChecked(false);
+		ui->cbAutoFastRepair->setChecked(false);
+		ui->leSSOnlyCount->setText("0");
+		ui->cbPauseStartMap->setChecked(false);
+	}
 }
 
 void AnyActionSelectDialog::slotOnRestoreToDefault()

@@ -289,7 +289,7 @@ QMap < ActionCheckAndClickDefine::CheckColorNameDefine, QList<int>> ActionCheckA
 	{
 		CheckColorNameDefine::SortieMapArea6,
 		QList<int>{
-			731, 678, 231, 97, 16,
+			929, 221, 37, 93, 163,
 				387, 241, 18, 69, 31
 		}
 	},

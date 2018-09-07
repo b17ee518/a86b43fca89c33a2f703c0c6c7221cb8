@@ -168,6 +168,7 @@ void AnyActionSelectDialog::slotOnReset()
 		ui->cbAutoFastRepair->setChecked(false);
 		ui->leSSOnlyCount->setText("0");
 		ui->cbPauseStartMap->setChecked(false);
+		ui->leCount->setText("1");
 	}
 }
 

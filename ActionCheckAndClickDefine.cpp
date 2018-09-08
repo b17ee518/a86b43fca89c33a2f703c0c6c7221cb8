@@ -311,19 +311,23 @@ QMap < ActionCheckAndClickDefine::CheckColorNameDefine, QList<int>> ActionCheckA
 	{
 	CheckColorNameDefine::SortieBlackBoard,
 	QList<int>{
-		// todo
-	}
+		676, 124, 173, 149, 109,
+			513, 570, 42, 68, 23
+		}
 	},
 	{
 		CheckColorNameDefine::SortieBlackBoardDone1,
 		QList<int>{
-		// todo
-	}
+			873, 87, 44, 158, 158,
+				513, 570, 47, 68, 81
+		}
 	},
 	{
 		CheckColorNameDefine::SortieBlackBoardDone2,
 		QList<int>{
-		// todo
+		// untested?
+			528, 126, 172, 148, 110,
+				534, 574, 60, 79, 89
 	}
 	},
 	{

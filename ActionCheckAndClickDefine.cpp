@@ -255,8 +255,8 @@ QMap < ActionCheckAndClickDefine::CheckColorNameDefine, QList<int>> ActionCheckA
 	{
 		CheckColorNameDefine::SortieMapArea1,
 		QList<int>{
-			245, 670, 231, 97, 16,
-				397, 315, 45, 77, 53
+			828, 285, 6, 55, 70,
+				830, 298, 43, 98, 163
 		}
 	},
 	{
@@ -381,20 +381,27 @@ QMap < ActionCheckAndClickDefine::CheckColorNameDefine, QList<int>> ActionCheckA
 	{
 		CheckColorNameDefine::SortieCommonFormationWithKeikai6A,
 		QList<int>{
-		// TODO
-	}
+			613, 267, 0, 123, 125,
+				1065, 383, 90, 255, 131,
+				1059, 507, 0, 100, 103
+		}
 	},
 	{
 		CheckColorNameDefine::SortieCommonFormationWithKeikai6B,
 		QList<int>{
 		// TODO
-	}
+				// keikai
+				// 1065, 383, 90, 255, 131,
+				// 1059, 507, 0, 100, 103
+		}
 	},
 	{
 		CheckColorNameDefine::SortieCommonFormationWithKeikai5,
 		QList<int>{
-		// TODO
-	}
+			770, 143, 94, 255, 134,
+				1065, 383, 90, 255, 131,
+				1059, 507, 0, 100, 103
+		}
 	},
 	{
 		CheckColorNameDefine::SortieCommonFormation5,

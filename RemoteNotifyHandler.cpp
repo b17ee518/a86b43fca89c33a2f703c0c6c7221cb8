@@ -6,6 +6,8 @@
 #include <QSettings>
 #include <QtConcurrent/QtConcurrent>
 
+#include "mainwindow.h"
+
 #if defined Q_OS_WIN
 #include <windows.h>
 #endif
@@ -21,7 +23,7 @@ RemoteNotifyHandler::~RemoteNotifyHandler()
 
 void RemoteNotifyHandler::LoadSettings()
 {
-	QString filename = QApplication::applicationDirPath();
+    QString filename = MainWindow::getAbsoluteResourcePath();
 	filename += "/notifysettings.ini";
 	QSettings* setting = new QSettings(filename, QSettings::IniFormat);
 	setting->setIniCodec("UTF-8");
@@ -124,7 +126,7 @@ void RemoteNotifyHandler::RunInstanceNotify()
 		}
 		message.setSubject(text);
 
-		QString filename = QApplication::applicationDirPath();
+        QString filename = MainWindow::getAbsoluteResourcePath();
 		filename += "/emailContents.txt";
 		QFile file(filename);
 		if (file.open(QIODevice::WriteOnly)) {
@@ -140,35 +142,6 @@ void RemoteNotifyHandler::RunInstanceNotify()
 			":" + senderPassword + " -k --anyauth -T \"" + filename + "\"";
 		WinExec(command.toLocal8Bit(), SW_HIDE);
 #else
-		try
-		{
-			SimpleMail::Sender smtp("smtp.gmail.com", 465, SimpleMail::Sender::SslConnection);
-
-			smtp.setUser(senderEmailAddress);
-			smtp.setPassword(senderPassword);
-
-			SimpleMail::MimeMessage message;
-
-			SimpleMail::EmailAddress senderEmail(senderEmailAddress, "KN: " + text);
-			SimpleMail::EmailAddress recipentEmail(receiverEmailAddress);
-			SimpleMail::EmailAddress anotherRecipentEmail(anotherReceiverEmailAddress);
-
-			message.setSender(senderEmail);
-			message.addTo(recipentEmail);
-			if (anotherReceiverEmailAddress != "None")
-			{
-				message.addTo(anotherRecipentEmail);
-			}
-			message.setSubject(text);
-
-			if (smtp.sendMail(message))
-			{
-				smtp.quit();
-			}
-		}
-		catch (...)
-		{
-		}
 #endif
 	}
 }

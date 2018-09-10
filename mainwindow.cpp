@@ -12,6 +12,7 @@
 #include <QPoint>
 
 #include <QClipboard>
+#include <QDir>
 
 #if (QT_VERSION >= QT_VERSION_CHECK(5, 6, 0))
 #include <QWebEngineSettings>
@@ -25,6 +26,8 @@
 #include "RemoteNotifyHandler.h"
 
 MainWindow * MainWindow::s_pMainWindow = NULL;
+
+QString MainWindow::s_absoluteResourcePath;
 
 MainWindow::MainWindow(QWidget *parent)
 	: MainWindowBase(parent)
@@ -690,6 +693,24 @@ void MainWindow::installWebEngineMouseEventFilter()
 		child->installEventFilter(_webEngineMouseEventFilter);
 	}
 #endif
+}
+
+QString MainWindow::getAbsoluteResourcePath()
+{
+    if (!s_absoluteResourcePath.isEmpty())
+    {
+        return s_absoluteResourcePath;
+    }
+
+    QDir dir = QDir::current();
+#if defined Q_OS_WIN
+    s_absoluteResourcePath = dir.absolutePath();
+#elif defined Q_OS_MAC
+    dir.cd("../../../../KanPlayResources");
+    s_absoluteResourcePath = dir.path();
+#endif
+
+    return s_absoluteResourcePath;
 }
 
 #if defined Q_OS_WIN && !defined NO_WIN_EXTRA

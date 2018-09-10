@@ -542,7 +542,7 @@ void MainWindow::shootScreen()
 	*/
 	QPixmap pixmap = QPixmap::grabWidget(getBrowserWidget());
 
-	QString filename = QApplication::applicationDirPath();
+    QString filename = MainWindow::getAbsoluteResourcePath();
 	filename += "/screenshot/";
 
 	filename += QDateTime::currentDateTime().toString("yyyy_MM_dd_HH_mm_ss_zzz.png");

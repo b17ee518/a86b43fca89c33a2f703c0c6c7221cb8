@@ -24,8 +24,10 @@
 
 int main(int argc, char *argv[])
 {
+    qDebug()<<MainWindow::getAbsoluteResourcePath();
+
 	QFileInfo fi(argv[0]);
-	QString filename = fi.absoluteDir().absolutePath();
+    QString filename = MainWindow::getAbsoluteResourcePath();
 	filename += "/settings.ini";
 	QSettings* setting = new QSettings(filename, QSettings::IniFormat);
 	setting->setIniCodec("UTF-8");
@@ -48,7 +50,7 @@ int main(int argc, char *argv[])
 	qsrand(QTime::currentTime().msec());
 
 	a.setApplicationName("KanPlay");
-	a.setWindowIcon(QIcon(QApplication::applicationDirPath() + "/icon.ico"));
+    a.setWindowIcon(QIcon(MainWindow::getAbsoluteResourcePath() + "/icon.ico"));
 
 #ifdef Q_OS_WIN
 	QFont newFont("Meiryo UI", 9.5f, QFont::Bold);
@@ -92,7 +94,7 @@ int main(int argc, char *argv[])
 	w->postInit(wInfo, wTimer, wWeapon, wShip);
 	MainWindow::setMainWindow(w);
 	/*
-	QFile inputfile(QApplication::applicationDirPath()+"/input.txt");
+    QFile inputfile(MainWindow::getAbsoluteResourcePath()+"/input.txt");
 	inputfile.open(QIODevice::ReadOnly);
 	QTextStream in(&inputfile);
 	QList<QString> lstargs;

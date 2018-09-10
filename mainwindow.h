@@ -124,6 +124,8 @@ public:
 	WebWidgetType getWebWidgetType() { return _webWidgetType; }
 	PlatformType getPlatformType() { return _platformType; }
 
+    static QString getAbsoluteResourcePath();
+
 signals:
 	void sigParse(const QString &PathAndQuery, const QString &requestBody, const QString &responseBody);
 	void sigTogglePanicTimer(int timeVal);
@@ -294,6 +296,8 @@ private:
 
 	QString _certStr;
 	QString _keyStr;
+
+    static QString s_absoluteResourcePath;
 
 	// need to be set
 	WebWidgetType _webWidgetType = WebWidgetType::Webkit;

@@ -139,7 +139,7 @@ void MainWindow::setWebSettings()
 #if defined Q_OS_WIN && !defined NO_WIN_EXTRA
 		_pTitanium = new Titanium_Web_Proxy::ProxyServer(this);
 		exceptionSender = _pTitanium;
-		_pTitanium->SetMakecertPath(QApplication::applicationDirPath() + "/makecert.exe");
+        _pTitanium->SetMakecertPath(MainWindow::getAbsoluteResourcePath() + "/makecert.exe");
 
 		_pTitanium->SetAfterSessionComplete((int)&MainWindow::AfterSessionCompleteFunc);
 		_pTitanium->Startup(_useport);
@@ -478,7 +478,7 @@ void MainWindow::loadSettings()
 	_platformType = PlatformType::Mac;
 #endif
 
-	QString filename = QApplication::applicationDirPath();
+    QString filename = MainWindow::getAbsoluteResourcePath();
 	filename += "/settings.ini";
 	QSettings* setting = new QSettings(filename, QSettings::IniFormat);
 	setting->setIniCodec("UTF-8");

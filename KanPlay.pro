@@ -19,6 +19,7 @@ greaterThan(QT_MAJOR_VERSION, 4) {
 windows: QT += axcontainer winextras
 
 msvc: LIBS += -luser32 -lole32
+LIBS += -lm
 
 DEFINES += NOMINMAX
 
@@ -65,7 +66,10 @@ SOURCES += main.cpp\
     qwindowseventfilter.cpp \
     shipmainwindow.cpp \
     anyactionselectdialog.cpp \
-    developactionselectdialog.cpp
+    developactionselectdialog.cpp \
+    RemoteNotifyHandler.cpp \
+    ActionCheckAndClickDefine.cpp \
+    KQFrame.cpp
 
 windows: SOURCES += \
     shdocvw.cpp \
@@ -104,7 +108,10 @@ HEADERS  += mainwindow.h \
     qwindowseventfilter.h \
     shipmainwindow.h \
     anyactionselectdialog.h \
-    developactionselectdialog.h
+    developactionselectdialog.h \
+    RemoteNotifyHandler.h \
+    ActionCheckAndClickDefine.h \
+    KQFrame.h
 
 windowes: HEADERS += \
     shdocvw.h \

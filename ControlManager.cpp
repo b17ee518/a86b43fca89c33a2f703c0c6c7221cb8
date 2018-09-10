@@ -1071,7 +1071,7 @@ void ControlManager::LoadAnyTemplateSettings()
 {
 	_anyTemplateSettings.clear();
 
-	QString filename = QApplication::applicationDirPath();
+    QString filename = MainWindow::getAbsoluteResourcePath();
 	filename += "/action/anysettings.ini";
 	QSettings* setting = new QSettings(filename, QSettings::IniFormat);
 	setting->setIniCodec("UTF-8");
@@ -1277,7 +1277,7 @@ bool ControlManager::BuildNext_RestoreHensei()
 	// load ini to restoreShips
 	if (!_restoreHenseiSetting.restoreSettingText.isEmpty())
 	{
-		QString filename = QApplication::applicationDirPath();
+        QString filename = MainWindow::getAbsoluteResourcePath();
 		filename += "/action/restorehenseisettings.ini";
 		QSettings* setting = new QSettings(filename, QSettings::IniFormat);
 		setting->setIniCodec("UTF-8");
@@ -1396,7 +1396,7 @@ bool ControlManager::BuildNext_Any(bool advanceOnly)
 		{
 			if (pksd->portdata.api_deck_port.size())
 			{
-				for each (const auto& deck in pksd->portdata.api_deck_port)
+                Q_FOREACH (const auto& deck, pksd->portdata.api_deck_port)
 				{
 					if (deck.api_id == _anySetting.team)
 					{
@@ -1782,13 +1782,13 @@ bool ControlManager::LoadToDoShipList_Kira()
 	_todoKiraShipids.clear();
 	QFile * file = NULL;
 
-	if (QFile::exists(QApplication::applicationDirPath() + "/action/" + "import_kira.table"))
+    if (QFile::exists(MainWindow::getAbsoluteResourcePath() + "/action/" + "import_kira.table"))
 	{
-		file = new QFile(QApplication::applicationDirPath() + "/action/" + "import_kira.table");
+        file = new QFile(MainWindow::getAbsoluteResourcePath() + "/action/" + "import_kira.table");
 	}
 	else
 	{
-		file = new QFile(QApplication::applicationDirPath() + "/action/" + "import.table");
+        file = new QFile(MainWindow::getAbsoluteResourcePath() + "/action/" + "import.table");
 	}
 
 	if (file)
@@ -1835,7 +1835,7 @@ bool ControlManager::LoadToDoShipList_Kira()
 QList<int> ControlManager::LoadRawKiraListForExpedition()
 {
 	QList<int> kiraList;
-	QFile * file = new QFile(QApplication::applicationDirPath() + "/action/" + "import.table");
+    QFile * file = new QFile(MainWindow::getAbsoluteResourcePath() + "/action/" + "import.table");
 	if (file)
 	{
 		if (file->open(QIODevice::ReadOnly | QIODevice::Text))
@@ -1871,7 +1871,7 @@ QList<int> ControlManager::LoadRawKiraListForExpedition()
 bool ControlManager::LoadDestroyableList()
 {
 	_destroyableMstIds.clear();
-	QFile * file = new QFile(QApplication::applicationDirPath() + "/action/" + "destroyable.table");
+    QFile * file = new QFile(MainWindow::getAbsoluteResourcePath() + "/action/" + "destroyable.table");
 	if (file)
 	{
 		if (file->open(QIODevice::ReadOnly | QIODevice::Text))

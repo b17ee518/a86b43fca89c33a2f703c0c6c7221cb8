@@ -7,6 +7,7 @@
 #include <QtConcurrent/QtConcurrent>
 
 #include "mainwindow.h"
+#include <QProcess>
 
 #if defined Q_OS_WIN
 #include <windows.h>
@@ -19,6 +20,11 @@ RemoteNotifyHandler::RemoteNotifyHandler()
 
 RemoteNotifyHandler::~RemoteNotifyHandler()
 {
+    if (process != NULL)
+    {
+        process->terminate();
+        delete process;
+    }
 }
 
 void RemoteNotifyHandler::LoadSettings()
@@ -109,8 +115,20 @@ void RemoteNotifyHandler::RunInstanceNotify()
 	}
 
 	if (level >= notifyLevel)
-	{
-#if defined Q_OS_WIN
+    {
+#if defined Q_OS_MAC
+        if (process == NULL)
+        {
+            process = new QProcess();
+            QObject::connect(process, &QProcess::readyReadStandardOutput, [this](){
+                qDebug()<<process->readAllStandardOutput();
+            });
+            process->setProgram(qgetenv("SHELL"));
+            process->setArguments(QStringList() << "-i");
+            process->start();
+            process->waitForStarted();
+        }
+#endif
 
 		SimpleMail::MimeMessage message;
 
@@ -139,10 +157,23 @@ void RemoteNotifyHandler::RunInstanceNotify()
 			"\" --mail-rcpt \""
 			+ receiverEmailAddress +
 			"\" --ssl -u " + senderEmailAddress +
-			":" + senderPassword + " -k --anyauth -T \"" + filename + "\"";
-		WinExec(command.toLocal8Bit(), SW_HIDE);
-#else
+            ":" + senderPassword + " -k --anyauth -T "
+        #if Q_OS_WIN
+                + "\""
+        #endif
+                + filename
+        #if Q_OS_WIN
+                + "\""
+        #endif
+                ;
+
+#if defined Q_OS_WIN
+        WinExec(command.toLocal8Bit(), SW_HIDE);
+#elif defined Q_OS_MAC
+        qDebug() << command;
+        process->write(command.toLocal8Bit() + "\n");
 #endif
+
 	}
 }
 

@@ -21,6 +21,8 @@ windows: QT += axcontainer winextras
 msvc: LIBS += -luser32 -lole32
 LIBS += -lm
 
+macx: LIBS += -L$$PWD/./ -lSMTPEmail
+
 DEFINES += NOMINMAX
 
 TARGET = KanPlay

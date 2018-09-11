@@ -1,6 +1,7 @@
 #pragma once
 #include <QString>
 
+class QProcess;
 
 class RemoteNotifyHandler
 {
@@ -48,6 +49,10 @@ private:
 	QString senderPassword;
 	QString receiverEmailAddress;
 	QString anotherReceiverEmailAddress;
+
+#if defined Q_OS_MAC
+    QProcess* process;
+#endif
 
 	QString text;
 	Level level;

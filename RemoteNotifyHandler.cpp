@@ -15,6 +15,21 @@
 
 RemoteNotifyHandler::RemoteNotifyHandler()
 {
+
+    process = new QProcess();
+
+    QObject::connect(process, &QProcess::readyReadStandardOutput, [this](){
+        qDebug()<<process->readAllStandardOutput();
+    });
+    QObject::connect(process, &QProcess::readyReadStandardError, [this](){
+        qDebug()<<process->readAllStandardError();
+    });
+
+    QString sh = qgetenv("SHELL");
+    process->setProgram(sh);
+    process->setArguments(QStringList() << "-i");
+    process->start();
+    process->write("pwd\n");
 }
 
 
@@ -97,7 +112,11 @@ void RemoteNotifyHandler::Notify(QString text, Level level)
 	this->text = text;
 	this->level = level;
 
-	QtConcurrent::run(RemoteNotifyHandler::RunNotify);
+#if defined Q_OS_WIN
+    QtConcurrent::run(RemoteNotifyHandler::RunNotify);
+#elif defined Q_OS_MAC
+    RemoteNotifyHandler::RunNotify();
+#endif
 }
 
 void RemoteNotifyHandler::RunNotify()
@@ -116,20 +135,6 @@ void RemoteNotifyHandler::RunInstanceNotify()
 
 	if (level >= notifyLevel)
     {
-#if defined Q_OS_MAC
-        if (process == NULL)
-        {
-            process = new QProcess();
-            QObject::connect(process, &QProcess::readyReadStandardOutput, [this](){
-                qDebug()<<process->readAllStandardOutput();
-            });
-            process->setProgram(qgetenv("SHELL"));
-            process->setArguments(QStringList() << "-i");
-            process->start();
-            process->waitForStarted();
-        }
-#endif
-
 		SimpleMail::MimeMessage message;
 
 		SimpleMail::EmailAddress senderEmail(senderEmailAddress, "KN: " + text);
@@ -164,14 +169,15 @@ void RemoteNotifyHandler::RunInstanceNotify()
                 + filename
         #if Q_OS_WIN
                 + "\""
+        #elif defined Q_OS_MAC
+                + "\n"
         #endif
                 ;
 
 #if defined Q_OS_WIN
         WinExec(command.toLocal8Bit(), SW_HIDE);
 #elif defined Q_OS_MAC
-        qDebug() << command;
-        process->write(command.toLocal8Bit() + "\n");
+        process->write(command.toLocal8Bit());
 #endif
 
 	}

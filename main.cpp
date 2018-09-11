@@ -24,8 +24,6 @@
 
 int main(int argc, char *argv[])
 {
-    qDebug()<<MainWindow::getAbsoluteResourcePath();
-
 	QFileInfo fi(argv[0]);
     QString filename = MainWindow::getAbsoluteResourcePath();
 	filename += "/settings.ini";

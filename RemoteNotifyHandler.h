@@ -51,7 +51,7 @@ private:
 	QString anotherReceiverEmailAddress;
 
 #if defined Q_OS_MAC
-    QProcess* process;
+    QProcess* process = NULL;
 #endif
 
 	QString text;

@@ -24,6 +24,7 @@
 #endif
 
 #include "RemoteNotifyHandler.h"
+#include <QStandardPaths>
 
 MainWindow * MainWindow::s_pMainWindow = NULL;
 
@@ -745,7 +746,11 @@ QString MainWindow::getAbsoluteResourcePath()
 #if defined Q_OS_WIN
     s_absoluteResourcePath = dir.absolutePath();
 #elif defined Q_OS_MAC
-    dir.cd("../../../../KanPlayResources");
+    if (!dir.cd("../../../../KanPlayResources"))
+    {
+        QString homeLocation = QStandardPaths::locate(QStandardPaths::HomeLocation, QString(), QStandardPaths::LocateDirectory);
+        dir = QDir(homeLocation + "/QtProject_Git/KanPlayResources");
+    }
     s_absoluteResourcePath = dir.path();
 #endif
 

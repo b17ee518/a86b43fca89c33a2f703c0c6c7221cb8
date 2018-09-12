@@ -219,6 +219,37 @@ void MainWindow::slotSharkProcessReadyReadError()
 	qDebug() << byteArray;
 }
 
+void MainWindow::slotMITMProcessReadyRead()
+{
+    while(_mitmProcess->canReadLine())
+    {
+        QString line = _mitmProcess->readLine();
+        if (line.startsWith("[[[QU:"))
+        {
+            qDebug()<<line;
+
+            QStringList splitted = line.split("]]][[[");
+            if (splitted.count() != 3)
+            {
+                onFatalSharkResponseError(true);
+                break;
+            }
+
+            QString qu = splitted[0].replace("[[[QU:", "");
+            QString qc = splitted[1].replace("QC:", "");
+            QString sc = splitted[2].replace("]]]", "");
+            emit sigParse(qu, qc, sc);
+        }
+    }
+}
+
+void MainWindow::slotMITMProcessReadyReadError()
+{
+    while(_mitmProcess->canReadLine())
+    {
+        qDebug() << _mitmProcess->readLine();
+    }
+}
 
 void MainWindow::slotSharkProcessReadyRead()
 {
@@ -324,11 +355,20 @@ void MainWindow::slotSharkProcessReadyRead()
 
 void MainWindow::onFatalSharkResponseError(bool fatalOnProxy)
 {
-	if (_sharkShouldRaiseFatalOnMismatchResponse || fatalOnProxy)
-	{
-		ControlManager::getInstance().setToTerminate("FatalSharkResponse", true);
-		close();
-	}
+    if (_sharkShouldRaiseFatalOnMismatchResponse || fatalOnProxy)
+    {
+        ControlManager::getInstance().setToTerminate("FatalSharkResponse", true);
+        close();
+    }
+}
+
+void MainWindow::onFatalMITMResponseError(bool fatalOnProxy)
+{
+    if (fatalOnProxy)
+    {
+        ControlManager::getInstance().setToTerminate("FatalMITMResponse", true);
+        close();
+    }
 }
 
 void MainWindow::slotWebViewException(int code, const QString &source, const QString &desc, const QString &help)

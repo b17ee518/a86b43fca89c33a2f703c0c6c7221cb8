@@ -15,7 +15,7 @@
 
 RemoteNotifyHandler::RemoteNotifyHandler()
 {
-
+#if defined Q_OS_MAC
     process = new QProcess();
 
     QObject::connect(process, &QProcess::readyReadStandardOutput, [this](){
@@ -30,6 +30,7 @@ RemoteNotifyHandler::RemoteNotifyHandler()
     process->setArguments(QStringList() << "-i");
     process->start();
     process->write("pwd\n");
+#endif
 }
 
 

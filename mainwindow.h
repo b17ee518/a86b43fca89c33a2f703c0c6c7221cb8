@@ -39,7 +39,6 @@ using namespace SHDocVw;
 #include "qwindowseventfilter.h"
 #include "qwebenginemouseeventfilter.h"
 
-
 enum class ProgressBarState
 {
 	Normal,
@@ -65,6 +64,7 @@ enum class ProxyMode
 	Nekoxy,
 	Titanium,
 	Shark,
+    MITM,
 };
 
 enum class WebWidgetType
@@ -138,10 +138,14 @@ public slots:
 	void slotSoundEnded();
 	void slotTogglePanicTimer(int timeVal);
 
+    void slotMITMProcessReadyRead();
+    void slotMITMProcessReadyReadError();
+
 	void slotSharkProcessReadyRead();
 	void slotSharkProcessReadyReadError();
 
 	void onFatalSharkResponseError(bool fatalOnProxy);
+    void onFatalMITMResponseError(bool fatalOnProxy);
 
 protected:
 	virtual void changeEvent(QEvent * e);
@@ -243,6 +247,7 @@ private:
 	};
 
 	QProcess * _pSharkProcess = NULL;
+    QProcess * _mitmProcess = NULL;
 	QString _sharkWorkingPath;
 	QString _sharkCommand;
 	QList<SharkRequestResponseRecord> _sharkRequestStack;
@@ -305,7 +310,7 @@ private:
 
 	bool _applyCssToGameFlag = true;
 
-	QWebEngineMouseEventFilter * _webEngineMouseEventFilter = NULL;
+	QWebEngineMouseEventFilter * _webEngineMouseEventFilter = NULL;    
 };
 
 

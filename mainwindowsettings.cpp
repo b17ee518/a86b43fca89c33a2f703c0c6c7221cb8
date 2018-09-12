@@ -166,6 +166,21 @@ void MainWindow::setWebSettings()
 		_pSharkProcess->write("\n");
 		_pSharkProcess->closeWriteChannel();
 	}
+    else if (_proxyMode == ProxyMode::MITM)
+    {
+        _mitmProcess = new QProcess();
+        QObject::connect(_mitmProcess, SIGNAL(readyReadStandardOutput()), this, SLOT(slotMITMProcessReadyRead()));
+        QObject::connect(_mitmProcess, SIGNAL(readyReadStandardError()), this, SLOT(slotMITMProcessReadyReadError()));
+        QString sh = qgetenv("SHELL");
+        _mitmProcess->setProgram(sh);
+        _mitmProcess->start();
+        if (!_mitmProcess->waitForStarted())
+        {
+            return;
+        }
+        _mitmProcess->write(QString("mitmdump -p " + QString(_useport) + " -s " + getAbsoluteResourcePath()+"/mitm.py\n").toLocal8Bit());
+        _mitmProcess->closeWriteChannel();
+    }
 
 	if (_proxyMode != ProxyMode::NoProxy && _proxyMode != ProxyMode::QtProxy && _proxyMode != ProxyMode::Shark)
 	{
@@ -641,6 +656,10 @@ void MainWindow::loadSettings()
 	{
 		_proxyMode = ProxyMode::Shark;
 	}
+    else if (!proxymode.compare("MITM", Qt::CaseInsensitive))
+    {
+        _proxyMode = ProxyMode::MITM;
+    }
 
 	_sharkWorkingPath = setting->value(itemSharkWorkingPath).toString();
 	_sharkCommand = setting->value(itemSharkCommand).toString();

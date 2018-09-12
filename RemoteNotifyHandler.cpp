@@ -16,36 +16,38 @@
 RemoteNotifyHandler::RemoteNotifyHandler()
 {
 #if defined Q_OS_MAC
-    process = new QProcess();
+	process = new QProcess();
 
-    QObject::connect(process, &QProcess::readyReadStandardOutput, [this](){
-        qDebug()<<process->readAllStandardOutput();
-    });
-    QObject::connect(process, &QProcess::readyReadStandardError, [this](){
-        qDebug()<<process->readAllStandardError();
-    });
+	QObject::connect(process, &QProcess::readyReadStandardOutput, [this]() {
+		qDebug() << process->readAllStandardOutput();
+	});
+	QObject::connect(process, &QProcess::readyReadStandardError, [this]() {
+		qDebug() << process->readAllStandardError();
+	});
 
-    QString sh = qgetenv("SHELL");
-    process->setProgram(sh);
-    process->setArguments(QStringList() << "-i");
-    process->start();
-    process->write("pwd\n");
+	QString sh = qgetenv("SHELL");
+	process->setProgram(sh);
+	process->setArguments(QStringList() << "-i");
+	process->start();
+	process->write("pwd\n");
 #endif
 }
 
 
 RemoteNotifyHandler::~RemoteNotifyHandler()
 {
-    if (process != NULL)
-    {
-        process->terminate();
-        delete process;
-    }
+#if defined Q_OS_MAC
+	if (process != NULL)
+	{
+		process->terminate();
+		delete process;
+	}
+#endif
 }
 
 void RemoteNotifyHandler::LoadSettings()
 {
-    QString filename = MainWindow::getAbsoluteResourcePath();
+	QString filename = MainWindow::getAbsoluteResourcePath();
 	filename += "/notifysettings.ini";
 	QSettings* setting = new QSettings(filename, QSettings::IniFormat);
 	setting->setIniCodec("UTF-8");
@@ -114,9 +116,9 @@ void RemoteNotifyHandler::Notify(QString text, Level level)
 	this->level = level;
 
 #if defined Q_OS_WIN
-    QtConcurrent::run(RemoteNotifyHandler::RunNotify);
+	QtConcurrent::run(RemoteNotifyHandler::RunNotify);
 #elif defined Q_OS_MAC
-    RemoteNotifyHandler::RunNotify();
+	RemoteNotifyHandler::RunNotify();
 #endif
 }
 
@@ -135,7 +137,7 @@ void RemoteNotifyHandler::RunInstanceNotify()
 	}
 
 	if (level >= notifyLevel)
-    {
+	{
 		SimpleMail::MimeMessage message;
 
 		SimpleMail::EmailAddress senderEmail(senderEmailAddress, "KN: " + text);
@@ -150,7 +152,7 @@ void RemoteNotifyHandler::RunInstanceNotify()
 		}
 		message.setSubject(text);
 
-        QString filename = MainWindow::getAbsoluteResourcePath();
+		QString filename = MainWindow::getAbsoluteResourcePath();
 		filename += "/emailContents.txt";
 		QFile file(filename);
 		if (file.open(QIODevice::WriteOnly)) {
@@ -163,22 +165,22 @@ void RemoteNotifyHandler::RunInstanceNotify()
 			"\" --mail-rcpt \""
 			+ receiverEmailAddress +
 			"\" --ssl -u " + senderEmailAddress +
-            ":" + senderPassword + " -k --anyauth -T "
-        #if Q_OS_WIN
-                + "\""
-        #endif
-                + filename
-        #if Q_OS_WIN
-                + "\""
-        #elif defined Q_OS_MAC
-                + "\n"
-        #endif
-                ;
+			":" + senderPassword + " -k --anyauth -T "
+#if defined Q_OS_WIN
+			+ "\""
+#endif
+			+ filename
+#if defined Q_OS_WIN
+			+ "\""
+#elif defined Q_OS_MAC
+			+ "\n"
+#endif
+			;
 
 #if defined Q_OS_WIN
-        WinExec(command.toLocal8Bit(), SW_HIDE);
+		WinExec(command.toLocal8Bit(), SW_HIDE);
 #elif defined Q_OS_MAC
-        process->write(command.toLocal8Bit());
+		process->write(command.toLocal8Bit());
 #endif
 
 	}

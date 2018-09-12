@@ -53,9 +53,9 @@ int main(int argc, char *argv[])
     a.setWindowIcon(QIcon(MainWindow::getAbsoluteResourcePath() + "/icon.ico"));
 
 #ifdef Q_OS_WIN
-	QFont newFont("Meiryo UI", 9.5f, QFont::Bold);
+    QFont newFont("Meiryo UI", 9.5f, QFont::Bold);
 #else
-	QFont newFont("", 12.5f);
+    QFont newFont("Meiryo UI", 12.5f, QFont::Bold);
 #endif
 	a.setFont(newFont);
 

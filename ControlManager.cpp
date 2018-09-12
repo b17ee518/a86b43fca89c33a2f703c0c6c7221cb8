@@ -3398,7 +3398,7 @@ QRgb ControlManager::getColorAtPosition(const QPoint& pt)
 {
 	auto w = MainWindow::mainWindow()->getBrowserWidget();
 	auto image = w->grab().toImage();
-	auto col = image.pixel(pt);
+    auto col = image.pixel(pt*_dpiScale);
 	return col;
 }
 

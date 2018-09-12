@@ -201,7 +201,6 @@ MainWindow::~MainWindow()
     {
         _mitmProcess->terminate();
         _mitmProcess->waitForFinished();
-        _mitmProcess->kill();
         _mitmProcess->close();
         delete _mitmProcess;
     }

@@ -162,7 +162,7 @@ MainWindow::MainWindow(QWidget *parent)
 
 #ifdef Q_OS_MAC
     // high dpi
-    ControlManager::getInstance().setDPIScale(2.0f);
+    //ControlManager::getInstance().setDPIScale(2.0f);
 #endif
 
 	navigateTo(_gameUrl);

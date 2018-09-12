@@ -149,8 +149,7 @@ void MainWindow::setWebSettings()
 	{
 		_pSharkProcess = new QProcess();
 		_pSharkProcess->setWorkingDirectory(_sharkWorkingPath);
-		QObject::connect(_pSharkProcess, SIGNAL(readyReadStandardOutput()), this, SLOT(slotSharkProcessReadyRead()));
-		QObject::connect(_pSharkProcess, SIGNAL(readyReadStandardError()), this, SLOT(slotSharkProcessReadyReadError()));
+        QObject::connect(_pSharkProcess, SIGNAL(readyReadStandardOutput()), this, SLOT(slotSharkProcessReadyRead()));
 
 #ifdef Q_OS_WIN
 		_pSharkProcess->start("cmd");
@@ -170,16 +169,25 @@ void MainWindow::setWebSettings()
     {
         _mitmProcess = new QProcess();
         QObject::connect(_mitmProcess, SIGNAL(readyReadStandardOutput()), this, SLOT(slotMITMProcessReadyRead()));
-        QObject::connect(_mitmProcess, SIGNAL(readyReadStandardError()), this, SLOT(slotMITMProcessReadyReadError()));
-        QString sh = qgetenv("SHELL");
-        _mitmProcess->setProgram(sh);
+        QObject::connect(_mitmProcess, SIGNAL(readyReadStandardError()), this, SLOT(slotMITMProcessReadyRead()));
+
+        _mitmProcess->setProgram(getAbsoluteResourcePath() + "/mitmdump");
+        _mitmProcess->setArguments(QStringList() << "-p" << QString::number(_useport) << "-s" << getAbsoluteResourcePath()+"/mitm.py");
         _mitmProcess->start();
         if (!_mitmProcess->waitForStarted())
         {
             return;
         }
-        _mitmProcess->write(QString("mitmdump -p " + QString(_useport) + " -s " + getAbsoluteResourcePath()+"/mitm.py\n").toLocal8Bit());
         _mitmProcess->closeWriteChannel();
+
+        QEventLoop loop;
+        QTimer timer;
+
+        timer.setSingleShot(true);
+        connect(&timer, SIGNAL(timeout()), &loop, SLOT(quit()));
+
+        timer.start(1000);
+        loop.exec();
     }
 
 	if (_proxyMode != ProxyMode::NoProxy && _proxyMode != ProxyMode::QtProxy && _proxyMode != ProxyMode::Shark)

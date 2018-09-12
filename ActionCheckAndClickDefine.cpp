@@ -16,7 +16,7 @@ bool ActionCheckAndClickDefine::CheckColor(CheckColorNameDefine name)
 	{
 		const auto& v = checkColorMap[name];
 		int c = v.count();
-		auto& cm = ControlManager::getInstance();
+        auto& cm = ControlManager::getInstance();
 
 		cm.moveMouseTo(0, 0);
 
@@ -26,18 +26,18 @@ bool ActionCheckAndClickDefine::CheckColor(CheckColorNameDefine name)
 		}
 		else if (c < 10)
 		{
-			return cm.checkColors(v[0], v[1], v[2], v[3], v[4]);
+            return cm.checkColors(v[0], v[1], v[2], v[3], v[4]);
 		}
 		else if (c < 15)
 		{
-			return cm.checkColors(v[0], v[1], v[2], v[3], v[4],
-				v[5], v[6], v[7], v[8], v[9]);
+            return cm.checkColors(v[0], v[1], v[2], v[3], v[4],
+                v[5], v[6], v[7], v[8], v[9]);
 		}
 		else
 		{
-			return cm.checkColors(v[0], v[1], v[2], v[3], v[4],
-				v[5], v[6], v[7], v[8], v[9],
-				v[10], v[11], v[12], v[13], v[14]);
+            return cm.checkColors(v[0], v[1], v[2], v[3], v[4],
+                v[5], v[6], v[7], v[8], v[9],
+                v[10], v[11], v[12], v[13], v[14]);
 		}
 
 		return false;
@@ -80,7 +80,7 @@ void ActionCheckAndClickDefine::MoveAndClick(MoveMouseNameDefine name, int xMul/
 			addY = yMul * v[5];
 		}
 
-		ControlManager::getInstance().moveMouseToAndClick(x + addX, y + addY, offsetX, offsetY);
+        ControlManager::getInstance().moveMouseToAndClick(x + addX, y + addY, offsetX, offsetY);
 	}
 }
 

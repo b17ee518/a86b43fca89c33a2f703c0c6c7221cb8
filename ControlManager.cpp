@@ -3375,7 +3375,7 @@ bool ControlManager::checkColors(const QList<CheckColor>& checklist)
 	auto image = w->grab().toImage();
 	for (auto& item : checklist)
 	{
-		auto col = image.pixel(item._pt);
+        auto col = image.pixel(item._pt*_dpiScale);
 		int r = qRed(col);
 		int g = qGreen(col);
 		int b = qBlue(col);

@@ -139,10 +139,8 @@ public slots:
 	void slotTogglePanicTimer(int timeVal);
 
     void slotMITMProcessReadyRead();
-    void slotMITMProcessReadyReadError();
 
-	void slotSharkProcessReadyRead();
-	void slotSharkProcessReadyReadError();
+    void slotSharkProcessReadyRead();
 
 	void onFatalSharkResponseError(bool fatalOnProxy);
     void onFatalMITMResponseError(bool fatalOnProxy);

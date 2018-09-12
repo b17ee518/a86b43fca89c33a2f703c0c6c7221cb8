@@ -160,6 +160,11 @@ MainWindow::MainWindow(QWidget *parent)
 	setWebSettings();
 	setupCss();
 
+#ifdef Q_OS_MAC
+    // high dpi
+    ControlManager::getInstance().setDPIScale(2.0f);
+#endif
+
 	navigateTo(_gameUrl);
 
 	//	navigateTo("http://www.google.com");
@@ -186,18 +191,26 @@ MainWindow::~MainWindow()
 		delete _pTitanium;
 	}
 #endif
-	if (_pSharkProcess)
-	{
-		_pSharkProcess->kill();
-		_pSharkProcess->close();
-		delete _pSharkProcess;
-	}
+    if (_pSharkProcess)
+    {
+        _pSharkProcess->kill();
+        _pSharkProcess->close();
+        delete _pSharkProcess;
+    }
+    if (_mitmProcess)
+    {
+        _mitmProcess->kill();
+        _mitmProcess->terminate();
+        _mitmProcess->waitForFinished();
+        _mitmProcess->close();
+        delete _mitmProcess;
+    }
 	delete ui;
 }
 
 void MainWindow::slotParse(const QString &PathAndQuery, const QString &requestBody, const QString &responseBody)
 {
-	if (_proxyMode == ProxyMode::Shark)
+    if (_proxyMode == ProxyMode::Shark || _proxyMode == ProxyMode::MITM)
 	{
 		if (s_pMainWindow->_applyCssToGameFlag && s_pMainWindow->_webWidgetType == WebWidgetType::WebEngine)
 		{
@@ -213,12 +226,6 @@ void MainWindow::slotParse(const QString &PathAndQuery, const QString &requestBo
 	KanDataConnector::getInstance().Parse(PathAndQuery, requestBody, responseBody);
 }
 
-void MainWindow::slotSharkProcessReadyReadError()
-{
-	auto byteArray = _pSharkProcess->readAllStandardError();
-	qDebug() << byteArray;
-}
-
 void MainWindow::slotMITMProcessReadyRead()
 {
     while(_mitmProcess->canReadLine())
@@ -229,25 +236,18 @@ void MainWindow::slotMITMProcessReadyRead()
             qDebug()<<line;
 
             QStringList splitted = line.split("]]][[[");
-            if (splitted.count() != 3)
+            if (splitted.size() != 3)
             {
-                onFatalSharkResponseError(true);
+                onFatalMITMResponseError(true);
                 break;
             }
 
             QString qu = splitted[0].replace("[[[QU:", "");
+            qu = qu.mid(qu.indexOf("/kcsapi/"), qu.length()-1);
             QString qc = splitted[1].replace("QC:", "");
-            QString sc = splitted[2].replace("]]]", "");
+            QString sc = splitted[2].replace("]]]", "").replace("SC:", "");
             emit sigParse(qu, qc, sc);
         }
-    }
-}
-
-void MainWindow::slotMITMProcessReadyReadError()
-{
-    while(_mitmProcess->canReadLine())
-    {
-        qDebug() << _mitmProcess->readLine();
     }
 }
 

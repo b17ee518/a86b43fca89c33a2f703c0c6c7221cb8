@@ -72,6 +72,8 @@ public:
 
 	static qint64 currentMSUtc();
 
+    void setVolume(int vol);
+
 	private slots:
 	void on_pbClose_clicked();
 	void on_pbMinimize_clicked();

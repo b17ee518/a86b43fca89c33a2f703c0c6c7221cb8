@@ -32,8 +32,6 @@ TimerMainWindow::TimerMainWindow(QWidget *parent)
 	_pPlaylist->setPlaybackMode(QMediaPlaylist::CurrentItemOnce);
 	_pPlayer->setPlaylist(_pPlaylist);
 
-	_pPlayer->setVolume(100);
-
 	_progressExpUs[0] = ui->progressExp1u;
 	_progressExpUs[1] = ui->progressExp2u;
 	_progressExpUs[2] = ui->progressExp3u;
@@ -374,7 +372,15 @@ qint64 TimerMainWindow::currentMSUtc()
 	ct *= 1000;
 	int ms = dt.time().msec();
 	ct += ms;
-	return ct;
+    return ct;
+}
+
+void TimerMainWindow::setVolume(int vol)
+{
+    if (_pPlayer)
+    {
+        _pPlayer->setVolume(vol);
+    }
 }
 
 QString TimerMainWindow::getRemainTimeStr(qint64 ct, qint64 dt)
@@ -561,7 +567,7 @@ void TimerMainWindow::playSound(SoundIndex i, bool bSilent/*=false*/)
 {
 	if (!((ControlManager::getInstance().isExpeditionMode() || ControlManager::getInstance().isInactiveWaiting()) && i == SoundIndex::Expedition) && !bSilent)
 	{
-		MainWindow::mainWindow()->AdjustVolume(75);
+        MainWindow::mainWindow()->AdjustVolume(75);
 	}
 	_pPlaylist->setCurrentIndex((int)i);
 	_pPlayer->play();

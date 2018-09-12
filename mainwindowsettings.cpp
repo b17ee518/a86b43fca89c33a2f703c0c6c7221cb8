@@ -296,6 +296,17 @@ void MainWindow::setWebSettings()
 
 void MainWindow::AdjustVolume(int vol)
 {
+    if (vol < 0)
+    {
+        if (_bLowVol)
+        {
+            vol = 12;
+        }
+        else
+        {
+            vol = 100;
+        }
+    }
 
 #ifdef Q_OS_WIN
 	HRESULT hr = S_OK;
@@ -324,20 +335,8 @@ void MainWindow::AdjustVolume(int vol)
 	IAudioSessionControl *pControl;
 	pSessionManager->GetAudioSessionControl(NULL, 0, &pControl);
 	ISimpleAudioVolume *pSimpleVolume;
-	pSessionManager->GetSimpleAudioVolume(NULL, 0, &pSimpleVolume);
-	GUID nid = GUID_NULL;
-
-	if (vol < 0)
-	{
-		if (_bLowVol)
-		{
-			vol = 12;
-		}
-		else
-		{
-			vol = 100;
-		}
-	}
+    pSessionManager->GetSimpleAudioVolume(NULL, 0, &pSimpleVolume);
+    GUID nid = GUID_NULL;
 
 	pSimpleVolume->SetMasterVolume(vol / 100.0f, &nid);
 
@@ -345,6 +344,8 @@ void MainWindow::AdjustVolume(int vol)
 	SAFE_RELEASE(pSessionManager);
 	SAFE_RELEASE(pEnumerator);
 	SAFE_RELEASE(pDevice);
+#elif defined Q_OS_MAC
+    timerWindow()->setVolume(vol);
 #endif
 }
 

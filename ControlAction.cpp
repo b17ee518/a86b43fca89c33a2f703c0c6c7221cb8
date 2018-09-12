@@ -546,7 +546,8 @@ bool ChangeHenseiAction::action()
 			QTimer::singleShot(DELAY_TIME, Qt::PreciseTimer, this, [this, &cm]()
 			{
 				// home port
-				if (ActionCheckAndClickDefine::CheckColor(ActionCheckAndClickDefine::CheckColorNameDefine::HenseiChangeMemberSelectionLeftMost))
+                if (ActionCheckAndClickDefine::CheckColor(ActionCheckAndClickDefine::CheckColorNameDefine::HenseiChangeMemberSelectionLeftMost)
+                        || ActionCheckAndClickDefine::CheckColor(ActionCheckAndClickDefine::CheckColorNameDefine::HenseiChangeMemberSelectionLeftMostMac))
 				{
 					_waiting = false;
 					setState(State::FindShipFirstPageDone, "Hensei:FindShipFirstPageDone");

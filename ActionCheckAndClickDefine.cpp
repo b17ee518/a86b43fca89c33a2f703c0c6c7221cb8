@@ -114,14 +114,21 @@ QMap < ActionCheckAndClickDefine::CheckColorNameDefine, QList<int>> ActionCheckA
 			49, 208, 236, 205, 36,
 				1134, 163, 193, 193, 193,
 		}
-	},
-	{
-		CheckColorNameDefine::HenseiChangeMemberSelectionLeftMost,
-		QList<int>{
-			49, 208, 236, 205, 36,
-				762, 674, 62, 196, 197
-		}
-	},
+    },
+    {
+        CheckColorNameDefine::HenseiChangeMemberSelectionLeftMost,
+        QList<int>{
+            49, 208, 236, 205, 36,
+                762, 674, 62, 196, 197
+        }
+    },
+    {
+        CheckColorNameDefine::HenseiChangeMemberSelectionLeftMostMac,
+        QList<int>{
+            49, 208, 236, 205, 36,
+                762, 675, 30, 189, 192
+        }
+    },
 	{
 		CheckColorNameDefine::HenseiChangeMemberChangeButton,
 		QList<int>{

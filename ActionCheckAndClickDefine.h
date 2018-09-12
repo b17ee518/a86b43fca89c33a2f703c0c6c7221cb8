@@ -20,7 +20,8 @@ public:
 		HenseiChangeMemberSelectionSortOK,
 		HenseiChangeMemberSelectionFilterOK,
 
-		HenseiChangeMemberSelectionLeftMost,
+        HenseiChangeMemberSelectionLeftMost,
+        HenseiChangeMemberSelectionLeftMostMac,
 
 		HenseiChangeMemberChangeButton,
 

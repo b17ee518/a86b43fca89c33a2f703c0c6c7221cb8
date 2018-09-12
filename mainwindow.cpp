@@ -162,8 +162,8 @@ MainWindow::MainWindow(QWidget *parent)
 	setupCss();
 
 #ifdef Q_OS_MAC
-    // high dpi
-    //ControlManager::getInstance().setDPIScale(2.0f);
+	// high dpi
+	//ControlManager::getInstance().setDPIScale(2.0f);
 #endif
 
 	navigateTo(_gameUrl);
@@ -192,25 +192,25 @@ MainWindow::~MainWindow()
 		delete _pTitanium;
 	}
 #endif
-    if (_pSharkProcess)
-    {
-        _pSharkProcess->kill();
-        _pSharkProcess->close();
-        delete _pSharkProcess;
-    }
-    if (_mitmProcess)
-    {
-        _mitmProcess->terminate();
-        _mitmProcess->waitForFinished();
-        _mitmProcess->close();
-        delete _mitmProcess;
-    }
+	if (_pSharkProcess)
+	{
+		_pSharkProcess->kill();
+		_pSharkProcess->close();
+		delete _pSharkProcess;
+	}
+	if (_mitmProcess)
+	{
+		_mitmProcess->terminate();
+		_mitmProcess->waitForFinished();
+		_mitmProcess->close();
+		delete _mitmProcess;
+	}
 	delete ui;
 }
 
 void MainWindow::slotParse(const QString &PathAndQuery, const QString &requestBody, const QString &responseBody)
 {
-    if (_proxyMode == ProxyMode::Shark || _proxyMode == ProxyMode::MITM)
+	if (_proxyMode == ProxyMode::Shark || _proxyMode == ProxyMode::MITM)
 	{
 		if (s_pMainWindow->_applyCssToGameFlag && s_pMainWindow->_webWidgetType == WebWidgetType::WebEngine)
 		{
@@ -228,27 +228,27 @@ void MainWindow::slotParse(const QString &PathAndQuery, const QString &requestBo
 
 void MainWindow::slotMITMProcessReadyRead()
 {
-    while(_mitmProcess->canReadLine())
-    {
-        QString line = _mitmProcess->readLine();
-        if (line.startsWith("[[[QU:"))
-        {
-            qDebug()<<line;
+	while (_mitmProcess->canReadLine())
+	{
+		QString line = _mitmProcess->readLine();
+		if (line.startsWith("[[[QU:"))
+		{
+			qDebug() << line;
 
-            QStringList splitted = line.split("]]][[[");
-            if (splitted.size() != 3)
-            {
-                onFatalMITMResponseError(true);
-                break;
-            }
+			QStringList splitted = line.split("]]][[[");
+			if (splitted.size() != 3)
+			{
+				onFatalMITMResponseError(true);
+				break;
+			}
 
-            QString qu = splitted[0].replace("[[[QU:", "");
-            qu = qu.mid(qu.indexOf("/kcsapi/"), qu.length()-1);
-            QString qc = splitted[1].replace("QC:", "");
-            QString sc = splitted[2].replace("]]]", "").replace("SC:", "");
-            emit sigParse(qu, qc, sc);
-        }
-    }
+			QString qu = splitted[0].replace("[[[QU:", "");
+			qu = qu.mid(qu.indexOf("/kcsapi/"), qu.length() - 1);
+			QString qc = splitted[1].replace("QC:", "");
+			QString sc = splitted[2].replace("]]]", "").replace("SC:", "");
+			emit sigParse(qu, qc, sc);
+		}
+	}
 }
 
 void MainWindow::slotSharkProcessReadyRead()
@@ -355,20 +355,20 @@ void MainWindow::slotSharkProcessReadyRead()
 
 void MainWindow::onFatalSharkResponseError(bool fatalOnProxy)
 {
-    if (_sharkShouldRaiseFatalOnMismatchResponse || fatalOnProxy)
-    {
-        ControlManager::getInstance().setToTerminate("FatalSharkResponse", true);
-        close();
-    }
+	if (_sharkShouldRaiseFatalOnMismatchResponse || fatalOnProxy)
+	{
+		ControlManager::getInstance().setToTerminate("FatalSharkResponse", true);
+		close();
+	}
 }
 
 void MainWindow::onFatalMITMResponseError(bool fatalOnProxy)
 {
-    if (fatalOnProxy)
-    {
-        ControlManager::getInstance().setToTerminate("FatalMITMResponse", true);
-        close();
-    }
+	if (fatalOnProxy)
+	{
+		ControlManager::getInstance().setToTerminate("FatalMITMResponse", true);
+		close();
+	}
 }
 
 void MainWindow::slotWebViewException(int code, const QString &source, const QString &desc, const QString &help)
@@ -670,7 +670,7 @@ void MainWindow::rebuildIE(bool bNavigate)
 	if (_axWidget)
 	{
 		WebBrowser* toDelete = _axWidget;
-		QTimer::singleShot(1, Qt::PreciseTimer, [toDelete, this](){
+		QTimer::singleShot(1, Qt::PreciseTimer, [toDelete, this]() {
 			QObject::disconnect(toDelete,
 				SIGNAL(NavigateComplete2(IDispatch*, QVariant&)),
 				this,
@@ -737,24 +737,29 @@ void MainWindow::installWebEngineMouseEventFilter()
 
 QString MainWindow::getAbsoluteResourcePath()
 {
-    if (!s_absoluteResourcePath.isEmpty())
-    {
-        return s_absoluteResourcePath;
-    }
+	if (!s_absoluteResourcePath.isEmpty())
+	{
+		return s_absoluteResourcePath;
+	}
 
-    QDir dir = QDir::current();
+	QDir dir = QDir::current();
 #if defined Q_OS_WIN
-    s_absoluteResourcePath = dir.absolutePath();
+	s_absoluteResourcePath = dir.absolutePath();
 #elif defined Q_OS_MAC
-    if (!dir.cd("../../../../KanPlayResources"))
-    {
-        QString homeLocation = QStandardPaths::locate(QStandardPaths::HomeLocation, QString(), QStandardPaths::LocateDirectory);
-        dir = QDir(homeLocation + "/QtProject_Git/KanPlayResources");
-    }
-    s_absoluteResourcePath = dir.path();
+	if (!dir.cd("../../../../KanPlayResources"))
+	{
+		QString homeLocation = QStandardPaths::locate(QStandardPaths::HomeLocation, QString(), QStandardPaths::LocateDirectory);
+		dir = QDir(homeLocation + "/QtProject_Git/KanPlayResources");
+	}
+	s_absoluteResourcePath = dir.path();
 #endif
 
-    return s_absoluteResourcePath;
+	return s_absoluteResourcePath;
+}
+
+void MainWindow::setAbsoluteResourcePath(const QString & path)
+{
+	s_absoluteResourcePath = path;
 }
 
 #if defined Q_OS_WIN && !defined NO_WIN_EXTRA

@@ -24,8 +24,13 @@
 
 int main(int argc, char *argv[])
 {
+#if defined Q_OS_WIN
 	QFileInfo fi(argv[0]);
-    QString filename = MainWindow::getAbsoluteResourcePath();
+	MainWindow::setAbsoluteResourcePath(fi.absoluteDir().path());
+#endif
+
+
+	QString filename = MainWindow::getAbsoluteResourcePath();
 	filename += "/settings.ini";
 	QSettings* setting = new QSettings(filename, QSettings::IniFormat);
 	setting->setIniCodec("UTF-8");
@@ -44,18 +49,18 @@ int main(int argc, char *argv[])
 		QCoreApplication::setAttribute(Qt::AA_UseDesktopOpenGL);
 	}
 
-    QCoreApplication::setAttribute(Qt::AA_DisableHighDpiScaling);
+	QCoreApplication::setAttribute(Qt::AA_DisableHighDpiScaling);
 
 	QApplication a(argc, argv);
 	qsrand(QTime::currentTime().msec());
 
 	a.setApplicationName("KanPlay");
-    a.setWindowIcon(QIcon(MainWindow::getAbsoluteResourcePath() + "/icon.ico"));
+	a.setWindowIcon(QIcon(MainWindow::getAbsoluteResourcePath() + "/icon.ico"));
 
 #ifdef Q_OS_WIN
-    QFont newFont("Meiryo UI", 9.5f, QFont::Bold);
+	QFont newFont("Meiryo UI", 9.5f, QFont::Bold);
 #else
-    QFont newFont("Meiryo UI", 12.5f, QFont::Bold);
+	QFont newFont("Meiryo UI", 12.5f, QFont::Bold);
 #endif
 	a.setFont(newFont);
 
@@ -94,7 +99,7 @@ int main(int argc, char *argv[])
 	w->postInit(wInfo, wTimer, wWeapon, wShip);
 	MainWindow::setMainWindow(w);
 	/*
-    QFile inputfile(MainWindow::getAbsoluteResourcePath()+"/input.txt");
+	QFile inputfile(MainWindow::getAbsoluteResourcePath()+"/input.txt");
 	inputfile.open(QIODevice::ReadOnly);
 	QTextStream in(&inputfile);
 	QList<QString> lstargs;

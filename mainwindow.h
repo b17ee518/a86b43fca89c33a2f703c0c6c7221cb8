@@ -64,7 +64,7 @@ enum class ProxyMode
 	Nekoxy,
 	Titanium,
 	Shark,
-    MITM,
+	MITM,
 };
 
 enum class WebWidgetType
@@ -124,7 +124,8 @@ public:
 	WebWidgetType getWebWidgetType() { return _webWidgetType; }
 	PlatformType getPlatformType() { return _platformType; }
 
-    static QString getAbsoluteResourcePath();
+	static QString getAbsoluteResourcePath();
+	static void setAbsoluteResourcePath(const QString& path);
 
 signals:
 	void sigParse(const QString &PathAndQuery, const QString &requestBody, const QString &responseBody);
@@ -138,12 +139,12 @@ public slots:
 	void slotSoundEnded();
 	void slotTogglePanicTimer(int timeVal);
 
-    void slotMITMProcessReadyRead();
+	void slotMITMProcessReadyRead();
 
-    void slotSharkProcessReadyRead();
+	void slotSharkProcessReadyRead();
 
 	void onFatalSharkResponseError(bool fatalOnProxy);
-    void onFatalMITMResponseError(bool fatalOnProxy);
+	void onFatalMITMResponseError(bool fatalOnProxy);
 
 protected:
 	virtual void changeEvent(QEvent * e);
@@ -245,7 +246,7 @@ private:
 	};
 
 	QProcess * _pSharkProcess = NULL;
-    QProcess * _mitmProcess = NULL;
+	QProcess * _mitmProcess = NULL;
 	QString _sharkWorkingPath;
 	QString _sharkCommand;
 	QList<SharkRequestResponseRecord> _sharkRequestStack;
@@ -300,7 +301,7 @@ private:
 	QString _certStr;
 	QString _keyStr;
 
-    static QString s_absoluteResourcePath;
+	static QString s_absoluteResourcePath;
 
 	// need to be set
 	WebWidgetType _webWidgetType = WebWidgetType::Webkit;
@@ -308,7 +309,7 @@ private:
 
 	bool _applyCssToGameFlag = true;
 
-	QWebEngineMouseEventFilter * _webEngineMouseEventFilter = NULL;    
+	QWebEngineMouseEventFilter * _webEngineMouseEventFilter = NULL;
 };
 
 

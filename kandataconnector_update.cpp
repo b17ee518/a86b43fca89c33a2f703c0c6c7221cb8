@@ -996,7 +996,7 @@ void KanDataConnector::updateInfoTitleCond()
 	int lvmin = 20;
 
 	bool hasKiraFile = false;
-	if (QFile::exists(QApplication::applicationDirPath() + "/action/" + "import_kira.table"))
+    if (QFile::exists(MainWindow::getAbsoluteResourcePath() + "/action/" + "import_kira.table"))
 	{
 		hasKiraFile = true;
 	}

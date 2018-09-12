@@ -23,7 +23,7 @@
 
 ExpeditionManager::ExpeditionManager()
 {
-	_expeditionDefineFileName = QApplication::applicationDirPath() + "/action/" + "expedition.txt";
+    _expeditionDefineFileName = MainWindow::getAbsoluteResourcePath() + "/action/" + "expedition.txt";
 }
 
 void ExpeditionManager::BuildByPreset(ExpeditionPreset preset)

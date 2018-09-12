@@ -330,6 +330,8 @@ public:
 	bool checkColors(const QList<CheckColor>& checklist);
 	QRgb getColorAtPosition(const QPoint& pt);
 
+    void setDPIScale(float scale) {_dpiScale = scale;}
+
 	bool checkColors(int x, int y, int r, int g, int b)
 	{
 		QList<CheckColor> lst;
@@ -475,6 +477,8 @@ private:
 	MorningSetting _morningSetting;
 	MissionSetting _missionSetting;
 	RestoreHenseiSetting _restoreHenseiSetting;
+
+    float _dpiScale = 1.0f;
 
 	QMap<QPair<int, int>, AnySetting> _anyTemplateSettings;
 };

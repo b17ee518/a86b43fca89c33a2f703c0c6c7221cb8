@@ -547,7 +547,7 @@ void MainWindow::onExportAllList()
 		});
 
 
-		QFile * file = new QFile(QApplication::applicationDirPath() + "/action/" + "exported.table");
+        QFile * file = new QFile(MainWindow::getAbsoluteResourcePath() + "/action/" + "exported.table");
 		if (file)
 		{
 			if (file->open(QIODevice::WriteOnly | QIODevice::Text))

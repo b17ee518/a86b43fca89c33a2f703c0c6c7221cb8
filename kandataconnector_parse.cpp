@@ -500,6 +500,7 @@ bool KanDataConnector::req_hensei_preset_select_parse()
 		}
 		updateFleetTable();
 
+        lstship = &(pksd->portdata.api_deck_port[team - 1].api_ship);
 		// assume only fleet 1
 		if (team == 1)
 		{

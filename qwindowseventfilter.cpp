@@ -12,7 +12,7 @@
 QWindowsEventFilter::QWindowsEventFilter()
 {
 	/*
-	_logFile = new QFile(QApplication::applicationDirPath() + "/WindowsEvent.log");
+    _logFile = new QFile(MainWindow::getAbsoluteResourcePath() + "/WindowsEvent.log");
 	_logFile->open(QIODevice::WriteOnly | QIODevice::Text);
 	_logStream = new QTextStream(_logFile);
 	_logStream->setCodec("UTF-16");

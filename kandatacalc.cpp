@@ -1,4 +1,5 @@
 ﻿#include "kandatacalc.h"
+#include <math.h>
 
 int AdmiralExperienceTable[][3] =
 {

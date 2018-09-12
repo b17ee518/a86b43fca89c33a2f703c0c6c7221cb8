@@ -139,7 +139,7 @@ void MainWindow::setWebSettings()
 #if defined Q_OS_WIN && !defined NO_WIN_EXTRA
 		_pTitanium = new Titanium_Web_Proxy::ProxyServer(this);
 		exceptionSender = _pTitanium;
-		_pTitanium->SetMakecertPath(QApplication::applicationDirPath() + "/makecert.exe");
+        _pTitanium->SetMakecertPath(MainWindow::getAbsoluteResourcePath() + "/makecert.exe");
 
 		_pTitanium->SetAfterSessionComplete((int)&MainWindow::AfterSessionCompleteFunc);
 		_pTitanium->Startup(_useport);
@@ -149,8 +149,7 @@ void MainWindow::setWebSettings()
 	{
 		_pSharkProcess = new QProcess();
 		_pSharkProcess->setWorkingDirectory(_sharkWorkingPath);
-		QObject::connect(_pSharkProcess, SIGNAL(readyReadStandardOutput()), this, SLOT(slotSharkProcessReadyRead()));
-		QObject::connect(_pSharkProcess, SIGNAL(readyReadStandardError()), this, SLOT(slotSharkProcessReadyReadError()));
+        QObject::connect(_pSharkProcess, SIGNAL(readyReadStandardOutput()), this, SLOT(slotSharkProcessReadyRead()));
 
 #ifdef Q_OS_WIN
 		_pSharkProcess->start("cmd");
@@ -166,6 +165,30 @@ void MainWindow::setWebSettings()
 		_pSharkProcess->write("\n");
 		_pSharkProcess->closeWriteChannel();
 	}
+    else if (_proxyMode == ProxyMode::MITM)
+    {
+        _mitmProcess = new QProcess();
+        QObject::connect(_mitmProcess, SIGNAL(readyReadStandardOutput()), this, SLOT(slotMITMProcessReadyRead()));
+        QObject::connect(_mitmProcess, SIGNAL(readyReadStandardError()), this, SLOT(slotMITMProcessReadyRead()));
+
+        _mitmProcess->setProgram(getAbsoluteResourcePath() + "/mitmdump");
+        _mitmProcess->setArguments(QStringList() << "-p" << QString::number(_useport) << "-s" << getAbsoluteResourcePath()+"/mitm.py");
+        _mitmProcess->start();
+        if (!_mitmProcess->waitForStarted())
+        {
+            return;
+        }
+        _mitmProcess->closeWriteChannel();
+
+        QEventLoop loop;
+        QTimer timer;
+
+        timer.setSingleShot(true);
+        connect(&timer, SIGNAL(timeout()), &loop, SLOT(quit()));
+
+        timer.start(1000);
+        loop.exec();
+    }
 
 	if (_proxyMode != ProxyMode::NoProxy && _proxyMode != ProxyMode::QtProxy && _proxyMode != ProxyMode::Shark)
 	{
@@ -478,7 +501,7 @@ void MainWindow::loadSettings()
 	_platformType = PlatformType::Mac;
 #endif
 
-	QString filename = QApplication::applicationDirPath();
+    QString filename = MainWindow::getAbsoluteResourcePath();
 	filename += "/settings.ini";
 	QSettings* setting = new QSettings(filename, QSettings::IniFormat);
 	setting->setIniCodec("UTF-8");
@@ -641,6 +664,10 @@ void MainWindow::loadSettings()
 	{
 		_proxyMode = ProxyMode::Shark;
 	}
+    else if (!proxymode.compare("MITM", Qt::CaseInsensitive))
+    {
+        _proxyMode = ProxyMode::MITM;
+    }
 
 	_sharkWorkingPath = setting->value(itemSharkWorkingPath).toString();
 	_sharkCommand = setting->value(itemSharkCommand).toString();

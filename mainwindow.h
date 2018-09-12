@@ -39,7 +39,6 @@ using namespace SHDocVw;
 #include "qwindowseventfilter.h"
 #include "qwebenginemouseeventfilter.h"
 
-
 enum class ProgressBarState
 {
 	Normal,
@@ -65,6 +64,7 @@ enum class ProxyMode
 	Nekoxy,
 	Titanium,
 	Shark,
+    MITM,
 };
 
 enum class WebWidgetType
@@ -124,6 +124,8 @@ public:
 	WebWidgetType getWebWidgetType() { return _webWidgetType; }
 	PlatformType getPlatformType() { return _platformType; }
 
+    static QString getAbsoluteResourcePath();
+
 signals:
 	void sigParse(const QString &PathAndQuery, const QString &requestBody, const QString &responseBody);
 	void sigTogglePanicTimer(int timeVal);
@@ -136,10 +138,12 @@ public slots:
 	void slotSoundEnded();
 	void slotTogglePanicTimer(int timeVal);
 
-	void slotSharkProcessReadyRead();
-	void slotSharkProcessReadyReadError();
+    void slotMITMProcessReadyRead();
+
+    void slotSharkProcessReadyRead();
 
 	void onFatalSharkResponseError(bool fatalOnProxy);
+    void onFatalMITMResponseError(bool fatalOnProxy);
 
 protected:
 	virtual void changeEvent(QEvent * e);
@@ -241,6 +245,7 @@ private:
 	};
 
 	QProcess * _pSharkProcess = NULL;
+    QProcess * _mitmProcess = NULL;
 	QString _sharkWorkingPath;
 	QString _sharkCommand;
 	QList<SharkRequestResponseRecord> _sharkRequestStack;
@@ -295,13 +300,15 @@ private:
 	QString _certStr;
 	QString _keyStr;
 
+    static QString s_absoluteResourcePath;
+
 	// need to be set
 	WebWidgetType _webWidgetType = WebWidgetType::Webkit;
 	PlatformType _platformType = PlatformType::Windows7;
 
 	bool _applyCssToGameFlag = true;
 
-	QWebEngineMouseEventFilter * _webEngineMouseEventFilter = NULL;
+	QWebEngineMouseEventFilter * _webEngineMouseEventFilter = NULL;    
 };
 
 

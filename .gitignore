@@ -13,6 +13,8 @@ GeneratedFiles/
 *.cache
 moc_*.cpp
 ui_*.h
+build-SMTPEmail*
+*.dylib
 
 ## Build generated
 build/

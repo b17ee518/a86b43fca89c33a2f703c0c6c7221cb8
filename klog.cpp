@@ -2,6 +2,7 @@
 #include <QApplication>
 #include <QTextStream>
 #include <QDateTime>
+#include "mainwindow.h"
 
 KLog::KLog()
 {
@@ -41,13 +42,13 @@ void KLog::LogAPI(const QString& path, const QString& request, const QString& re
 
 void KLog::DeleteLog(const QString& filename)
 {
-	auto fullname = QApplication::applicationDirPath() + "/log/" + filename + ".table";
+    auto fullname = MainWindow::getAbsoluteResourcePath() + "/log/" + filename + ".table";
 	QFile::remove(fullname);
 }
 
 void KLog::RecordLog(const QString& filename, const QString& log, bool bWithTimeStamp/*=true*/)
 {
-	QFile * file = new QFile(QApplication::applicationDirPath() + "/log/" + filename + ".table");
+    QFile * file = new QFile(MainWindow::getAbsoluteResourcePath() + "/log/" + filename + ".table");
 	if (file)
 	{
 		file->open(QIODevice::ReadWrite | QIODevice::Append | QIODevice::Text);

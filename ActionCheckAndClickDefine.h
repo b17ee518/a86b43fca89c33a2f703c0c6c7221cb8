@@ -22,6 +22,7 @@ public:
 
         HenseiChangeMemberSelectionLeftMost,
         HenseiChangeMemberSelectionLeftMostMac,
+        HenseiChangeMemberSelectionLeftMostMac2,
 
 		HenseiChangeMemberChangeButton,
 

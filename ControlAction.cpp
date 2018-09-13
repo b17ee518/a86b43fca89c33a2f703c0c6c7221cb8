@@ -547,7 +547,8 @@ bool ChangeHenseiAction::action()
 			{
 				// home port
                 if (ActionCheckAndClickDefine::CheckColor(ActionCheckAndClickDefine::CheckColorNameDefine::HenseiChangeMemberSelectionLeftMost)
-                        || ActionCheckAndClickDefine::CheckColor(ActionCheckAndClickDefine::CheckColorNameDefine::HenseiChangeMemberSelectionLeftMostMac))
+                        || ActionCheckAndClickDefine::CheckColor(ActionCheckAndClickDefine::CheckColorNameDefine::HenseiChangeMemberSelectionLeftMostMac)
+                        || ActionCheckAndClickDefine::CheckColor(ActionCheckAndClickDefine::CheckColorNameDefine::HenseiChangeMemberSelectionLeftMostMac2))
 				{
 					_waiting = false;
 					setState(State::FindShipFirstPageDone, "Hensei:FindShipFirstPageDone");

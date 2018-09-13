@@ -38,7 +38,7 @@ RemoteNotifyHandler::~RemoteNotifyHandler()
 {
 #if defined Q_OS_MAC
 	if (process != NULL)
-	{
+    {
 		process->terminate();
 		delete process;
 	}
@@ -107,7 +107,29 @@ void RemoteNotifyHandler::LoadSettings()
 	senderEmailAddress = setting->value(itemSenderEmailAddress).toString();
 	receiverEmailAddress = setting->value(itemReceiverEmailAddress).toString();
 	anotherReceiverEmailAddress = setting->value(itemAnotherReceiverEmailAddress).toString();
-	senderPassword = setting->value(itemSenderPassword).toString();
+    senderPassword = setting->value(itemSenderPassword).toString();
+}
+
+void RemoteNotifyHandler::RunKillMITMNetStat()
+{
+#if defined Q_OS_MAC
+    if (process)
+    {
+        if (MainWindow::mainWindow() == NULL)
+        {
+            return;
+        }
+        process->write((QString("netstat -vanp tcp | grep ") + QString::number(MainWindow::mainWindow()->getUsePort()) + " | grep tcp46 | awk '{print \"kill -9\", $9}' | sh\n").toLocal8Bit());
+        process->closeWriteChannel();
+
+        QEventLoop loop;
+        QTimer timer;
+        timer.setSingleShot(true);
+        QObject::connect(&timer, SIGNAL(timeout()), &loop, SLOT(quit()));
+        timer.start(100);
+        loop.exec();
+    }
+#endif
 }
 
 void RemoteNotifyHandler::Notify(QString text, Level level)

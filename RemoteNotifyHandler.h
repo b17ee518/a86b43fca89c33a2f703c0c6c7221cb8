@@ -41,6 +41,8 @@ public:
 
 	void LoadSettings();
 
+    void RunKillMITMNetStat();
+
 private:
 
 	void RunInstanceNotify();

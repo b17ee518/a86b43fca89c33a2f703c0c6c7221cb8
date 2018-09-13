@@ -124,6 +124,8 @@ public:
 	WebWidgetType getWebWidgetType() { return _webWidgetType; }
 	PlatformType getPlatformType() { return _platformType; }
 
+    int getUsePort(){return _useport;}
+
 	static QString getAbsoluteResourcePath();
 	static void setAbsoluteResourcePath(const QString& path);
 

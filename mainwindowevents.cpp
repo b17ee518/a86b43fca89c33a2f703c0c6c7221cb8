@@ -137,6 +137,8 @@ void MainWindow::closeEvent(QCloseEvent *e)
 #endif
 	ControlManager::getInstance().Terminate();
 
+    RemoteNotifyHandler::getInstance().RunKillMITMNetStat();
+
 	MainWindowBase::closeEvent(e);
 
 	_pInfoWindow->close();

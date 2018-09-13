@@ -200,6 +200,7 @@ MainWindow::~MainWindow()
 	}
 	if (_mitmProcess)
 	{
+        RemoteNotifyHandler::getInstance().RunKillMITMNetStat();
 		_mitmProcess->terminate();
 		_mitmProcess->waitForFinished();
 		_mitmProcess->close();

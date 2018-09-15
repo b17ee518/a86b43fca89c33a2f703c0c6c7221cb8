@@ -513,6 +513,8 @@ public:
 		SelectCombinedFormation,
 		ClickLeft,
 		ClickRight,
+        ClickAirBaseOK,
+        ClickAirBaseROK,
 
 		Done,
 	};

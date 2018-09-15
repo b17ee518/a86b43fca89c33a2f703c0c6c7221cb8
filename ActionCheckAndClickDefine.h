@@ -85,6 +85,11 @@ public:
 		SortieCommonFormation5,
 		SortieCommonFormationCombined,
 
+        SortieCommonAirBaseSelection,
+        SortieCommonAirBaseSelectDone,
+        SortieCommonAirBaseSelectionR,
+        SortieCommonAirBaseSelectDoneR,
+
 		SortieCommonNightOrNot,
 		SortieCommonLeaveOrNot,
 
@@ -186,6 +191,9 @@ public:
 
 		SortieCommonLeftButton,
 		SortieCommonRightButton,
+
+        SortieCommonAirBaseOKButton,
+        SortieCommonAirBaseROKButton,
 
 		SortieCommonElseButton,
 

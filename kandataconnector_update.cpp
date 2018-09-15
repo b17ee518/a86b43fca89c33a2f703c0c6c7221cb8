@@ -1429,6 +1429,8 @@ void KanDataConnector::updateBattle(const kcsapi_battle &api_battle, KanBattleTy
 				}
 			}
 
+            TRYLOG(processHougekiDamages(api_battle.api_friendly_battle.api_hougeki, false, bEnemyDamageCombined, true), "FriendlyHougeki");
+
 			TRYLOG(processHougekiDamages(api_battle.api_hougeki
 				, bCombinedSelf		/* always second team*/
 				, bEnemyDamageCombined), "NightHougeki");
@@ -1512,7 +1514,8 @@ void KanDataConnector::updateBattle(const kcsapi_battle &api_battle, KanBattleTy
 
 void KanDataConnector::processHougekiDamages(const kcsapi_battle_hougeki& api_hougeki
 	, bool bOnlyCombinedSelf
-	, bool bOnlyCombinedEnemy)
+    , bool bOnlyCombinedEnemy
+    , bool bIsFriendly/*=false*/)
 {
 	// must skip 0!!!
 	QList<float>* fdamage = &totalFDamage;
@@ -1580,7 +1583,7 @@ void KanDataConnector::processHougekiDamages(const kcsapi_battle_hougeki& api_ho
 
 				if (defendpos >= 0)
 				{
-					if (api_hougeki.api_at_eflag[j] > 0)
+                    if (api_hougeki.api_at_eflag[j] > 0 && !bIsFriendly)
 					{
 						// from enemy
 						// TODO MaxTeamMemberCount

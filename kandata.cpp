@@ -1390,6 +1390,13 @@ bool kcsapi_mission_start::ReadFromJObj(const QJsonObject &jobj)
 	return _bParseRet;
 }
 
+bool kcsapi_friendly_battle::ReadFromJObj(const QJsonObject &jobj)
+{
+    _AIREAD(api_flare_pos);
+    _CREAD(api_hougeki, kcsapi_battle_hougeki);
+    return _bParseRet;
+}
+
 bool kcsapi_battle_kouku_stage1::ReadFromJObj(const QJsonObject &jobj)
 {
 	_IREAD(api_f_count);
@@ -1568,6 +1575,8 @@ bool kcsapi_battle::ReadFromJObj(const QJsonObject &jobj)
 	// midnight
 	_AIREAD(api_touch_plane);
 	_AIREAD(api_flare_pos);
+
+    _CREAD(api_friendly_battle, kcsapi_friendly_battle);
 
 	_CREAD(api_injection_kouku, kcsapi_battle_kouku);
 
@@ -1775,5 +1784,5 @@ bool kcsapi_remodel_slot::ReadFromJObj(const QJsonObject &jobj)
 	_IREAD(api_voice_id);
 	_CREAD(api_after_slot, kcsapi_slotitem);
 
-	return _bParseRet;
+    return _bParseRet;
 }

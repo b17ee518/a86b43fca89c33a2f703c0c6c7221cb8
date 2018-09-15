@@ -428,15 +428,47 @@ QMap < ActionCheckAndClickDefine::CheckColorNameDefine, QList<int>> ActionCheckA
 				644, 277, 34, 113, 120,
 				597, 266, 202, 191, 67
 		}
-	},
-	{
-		CheckColorNameDefine::SortieCommonFormationCombined,
-		QList<int>{
-			690, 258, 0, 91, 95,
-				768, 215, 95, 157, 84,
-				904, 241, 117, 90, 13
-		}
-	},
+    },
+    {
+        CheckColorNameDefine::SortieCommonFormationCombined,
+        QList<int>{
+            690, 258, 0, 91, 95,
+                768, 215, 95, 157, 84,
+                904, 241, 117, 90, 13
+        }
+    },
+    {
+        CheckColorNameDefine::SortieCommonAirBaseSelection,
+        QList<int>{
+            209, 86, 40, 126, 41,
+                335, 159, 208, 138, 132,
+                348, 473, 182, 175, 165
+        }
+    },
+    {
+        CheckColorNameDefine::SortieCommonAirBaseSelectionR,
+        QList<int>{
+            232, 86, 172, 245, 167,
+            335, 159, 208, 138, 132,
+            348, 473, 182, 175, 165
+        }
+    },
+    {
+        CheckColorNameDefine::SortieCommonAirBaseSelectDone,
+        QList<int>{
+            1040, 87, 36, 124, 39,
+                1167, 159, 205, 143, 137,
+                1183, 381, 190, 182, 173
+        }
+    },
+    {
+        CheckColorNameDefine::SortieCommonAirBaseSelectDoneR,
+        QList<int>{
+            1068, 88, 172, 245, 167,
+            1167, 159, 205, 143, 137,
+            1183, 381, 190, 182, 173
+        }
+    },
 	{
 		CheckColorNameDefine::SortieCommonNightOrNot,
 		QList<int>{
@@ -856,13 +888,25 @@ QMap < ActionCheckAndClickDefine::MoveMouseNameDefine, QList<int>> ActionCheckAn
 		QList<int> {
 			444, 360, 37, 30
 		}
-	},
-	{
-		MoveMouseNameDefine::SortieCommonRightButton,
-		QList<int> {
-			768, 360, 37, 30
-		}
-	},
+    },
+    {
+        MoveMouseNameDefine::SortieCommonRightButton,
+        QList<int> {
+            768, 360, 37, 30
+        }
+    },
+    {
+        MoveMouseNameDefine::SortieCommonAirBaseOKButton,
+        QList<int> {
+            158, 90, 50, 10
+        }
+    },
+    {
+        MoveMouseNameDefine::SortieCommonAirBaseROKButton,
+        QList<int> {
+            998, 90, 50, 10
+        }
+    },
 	{
 		MoveMouseNameDefine::SortieCommonElseButton,
 		QList<int> {

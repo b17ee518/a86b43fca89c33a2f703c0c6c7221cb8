@@ -71,7 +71,8 @@ private:
 
 	void processHougekiDamages(const kcsapi_battle_hougeki& api_hougeki
 		, bool bOnlyCombinedSelf
-		, bool bOnlyCombinedEnemy);
+        , bool bOnlyCombinedEnemy
+        , bool bIsFriendly=false);
 	void processAirBaseAttackDamages(const kcsapi_battle_base_attack& api_air_base_attack);
 	void processKoukuDamages(const kcsapi_battle_kouku& api_kouku);
 	void processSupportDamages(int api_support_flag, const kcsapi_battle_support_info& api_support);

@@ -171,6 +171,7 @@ public:
 	int api_e_lostcount;
 };
 
+
 class kcsapi_battle_kouku_stage3 : public KAPIBaseData
 {
 public:
@@ -373,6 +374,17 @@ public:
 	QList<int> api_fcl;
 	QList<int> api_ecl;
 };
+
+class kcsapi_friendly_battle : public KAPIBaseData
+{
+public:
+    kcsapi_friendly_battle(){}
+    virtual bool ReadFromJObj(const QJsonObject &jobj);
+
+    QList<int> api_flare_pos;
+    kcsapi_battle_hougeki api_hougeki;
+};
+
 /************************************************************************/
 /* battle and midnight_battle                                           */
 /************************************************************************/
@@ -436,6 +448,10 @@ public:
 	// midnight
 	QList<int> api_touch_plane;
 	QList<int> api_flare_pos;
+
+    // friendly
+    // omit friendly info
+    kcsapi_friendly_battle api_friendly_battle;
 
 	// funshiki
 	kcsapi_battle_kouku api_injection_kouku;

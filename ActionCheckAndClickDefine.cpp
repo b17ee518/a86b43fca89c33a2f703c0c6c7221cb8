@@ -441,32 +441,32 @@ QMap < ActionCheckAndClickDefine::CheckColorNameDefine, QList<int>> ActionCheckA
         CheckColorNameDefine::SortieCommonAirBaseSelection,
         QList<int>{
             209, 86, 40, 126, 41,
-                335, 159, 208, 138, 132,
+                331, 173, 123, 93, 72,
                 348, 473, 182, 175, 165
         }
     },
     {
         CheckColorNameDefine::SortieCommonAirBaseSelectionR,
         QList<int>{
-            232, 86, 172, 245, 167,
-            335, 159, 208, 138, 132,
-            348, 473, 182, 175, 165
+            1040, 87, 36, 124, 39,
+                1162, 173, 123, 93, 72,
+                1183, 381, 190, 182, 173
         }
     },
     {
         CheckColorNameDefine::SortieCommonAirBaseSelectDone,
         QList<int>{
-            1040, 87, 36, 124, 39,
-                1167, 159, 205, 143, 137,
-                1183, 381, 190, 182, 173
+            232, 86, 172, 245, 167,
+                331, 173, 123, 93, 72,
+                348, 473, 182, 175, 165
         }
     },
     {
         CheckColorNameDefine::SortieCommonAirBaseSelectDoneR,
         QList<int>{
             1068, 88, 172, 245, 167,
-            1167, 159, 205, 143, 137,
-            1183, 381, 190, 182, 173
+                1162, 173, 123, 93, 72,
+                1183, 381, 190, 182, 173
         }
     },
 	{

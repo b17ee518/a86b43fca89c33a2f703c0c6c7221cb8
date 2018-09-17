@@ -849,7 +849,7 @@ QMap < ActionCheckAndClickDefine::MoveMouseNameDefine, QList<int>> ActionCheckAn
 	{
 		MoveMouseNameDefine::SortieAreaEventButton,
 		QList<int> {
-			1150, 670, 21, 13,
+            1112, 672, 11, 10,
 		}
 	},
 	{

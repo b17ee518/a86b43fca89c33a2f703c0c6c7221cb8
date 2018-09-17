@@ -180,8 +180,8 @@ public:
 		SortieSortieButton,
 		SortieAreaHorizontalButton,
 
-		SortieAreaEventButton,	// untested
-		SortieBlackBoardButton, // untested
+        SortieAreaEventButton,
+        SortieBlackBoardButton,
 
 		SortieOKButton,
 		SortieTeamHorizontalButton,

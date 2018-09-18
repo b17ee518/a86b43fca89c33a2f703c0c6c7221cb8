@@ -165,8 +165,9 @@ private slots:
 	void on_pbScreenshot_clicked();
 	void on_pbSwitchScreenshot_toggled(bool checked);
 	void slotScreenshotTimeout();
-	void slotJobtTimeout();
-	void on_pbCheckLowVol_toggled(bool checked);
+    void slotJobtTimeout();
+    void on_pbCheckLowVol_toggled(bool checked);
+    void on_pbCheckReport_toggled(bool checked);
 
 #if defined Q_OS_WIN && !defined NO_WIN_EXTRA
 	void slotNavigateComplete2(IDispatch*, QVariant&);

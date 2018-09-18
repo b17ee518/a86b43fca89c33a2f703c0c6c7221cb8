@@ -1,6 +1,7 @@
 #pragma once
 #include <QString>
 
+class QTimer;
 class QProcess;
 
 class RemoteNotifyHandler
@@ -43,6 +44,8 @@ public:
 
     void RunKillMITMNetStat();
 
+    void ToggleReport(bool report);
+
 private:
 
 	void RunInstanceNotify();
@@ -58,5 +61,6 @@ private:
 
 	QString text;
 	Level level;
+    QTimer* reportTimer = NULL;
 };
 

@@ -8,6 +8,7 @@
 
 #include "mainwindow.h"
 #include <QProcess>
+#include "ControlManager.h"
 
 #if defined Q_OS_WIN
 #include <windows.h>
@@ -43,6 +44,11 @@ RemoteNotifyHandler::~RemoteNotifyHandler()
 		delete process;
 	}
 #endif
+    if (reportTimer != NULL)
+    {
+        reportTimer->stop();
+        delete reportTimer;
+    }
 }
 
 void RemoteNotifyHandler::LoadSettings()
@@ -212,3 +218,49 @@ void RemoteNotifyHandler::NotifyNeko()
 {
 	Notify(QString::fromLocal8Bit("猫ったぞ！"), Level::Fatal);
 }
+
+void RemoteNotifyHandler::ToggleReport(bool report)
+{
+    std::function<void(void)> hourlyReport = [this](){
+        if (ControlManager::getInstance().isRunning())
+        {
+            Notify(QString::fromLocal8Bit("Running!"), Level::High);
+        }
+        else
+        {
+            Notify(QString::fromLocal8Bit("Stopped!"), Level::High);
+        }
+        reportTimer->setInterval(60*60*1000);
+        reportTimer->setSingleShot(true);
+        reportTimer->start();
+    };
+
+    if (report)
+    {
+        if (reportTimer == NULL)
+        {
+            auto dt = QDateTime::currentDateTime();
+            auto nextHourDT = dt;
+            QTime newTime(dt.time().hour(), 0, 0, 0);
+            nextHourDT.setTime(newTime);
+            nextHourDT = dt.addSecs(60*60);
+            int diffTime = dt.msecsTo(nextHourDT);
+
+            reportTimer = new QTimer();
+            reportTimer->setInterval(diffTime);
+            reportTimer->setSingleShot(true);
+            QObject::connect(reportTimer, &QTimer::timeout, hourlyReport);
+            reportTimer->start();
+        }
+    }
+    else
+    {
+        if (reportTimer != NULL)
+        {
+            reportTimer->stop();
+            delete reportTimer;
+            reportTimer = NULL;
+        }
+    }
+}
+

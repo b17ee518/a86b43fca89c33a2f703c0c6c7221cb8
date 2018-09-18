@@ -565,6 +565,11 @@ void MainWindow::slotScreenshotTimeout()
 
 void MainWindow::on_pbCheckLowVol_toggled(bool checked)
 {
-	_bLowVol = checked;
-	AdjustVolume(-1);
+    _bLowVol = checked;
+    AdjustVolume(-1);
+}
+
+void MainWindow::on_pbCheckReport_toggled(bool checked)
+{
+    RemoteNotifyHandler::getInstance().ToggleReport(checked);
 }

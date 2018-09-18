@@ -39,16 +39,16 @@ RemoteNotifyHandler::~RemoteNotifyHandler()
 {
 #if defined Q_OS_MAC
 	if (process != NULL)
-    {
+	{
 		process->terminate();
 		delete process;
 	}
 #endif
-    if (reportTimer != NULL)
-    {
-        reportTimer->stop();
-        delete reportTimer;
-    }
+	if (reportTimer != NULL)
+	{
+		reportTimer->stop();
+		delete reportTimer;
+	}
 }
 
 void RemoteNotifyHandler::LoadSettings()
@@ -113,28 +113,28 @@ void RemoteNotifyHandler::LoadSettings()
 	senderEmailAddress = setting->value(itemSenderEmailAddress).toString();
 	receiverEmailAddress = setting->value(itemReceiverEmailAddress).toString();
 	anotherReceiverEmailAddress = setting->value(itemAnotherReceiverEmailAddress).toString();
-    senderPassword = setting->value(itemSenderPassword).toString();
+	senderPassword = setting->value(itemSenderPassword).toString();
 }
 
 void RemoteNotifyHandler::RunKillMITMNetStat()
 {
 #if defined Q_OS_MAC
-    if (process)
-    {
-        if (MainWindow::mainWindow() == NULL)
-        {
-            return;
-        }
-        process->write((QString("netstat -vanp tcp | grep ") + QString::number(MainWindow::mainWindow()->getUsePort()) + " | grep tcp46 | awk '{print \"kill -9\", $9}' | sh\n").toLocal8Bit());
-        process->closeWriteChannel();
+	if (process)
+	{
+		if (MainWindow::mainWindow() == NULL)
+		{
+			return;
+		}
+		process->write((QString("netstat -vanp tcp | grep ") + QString::number(MainWindow::mainWindow()->getUsePort()) + " | grep tcp46 | awk '{print \"kill -9\", $9}' | sh\n").toLocal8Bit());
+		process->closeWriteChannel();
 
-        QEventLoop loop;
-        QTimer timer;
-        timer.setSingleShot(true);
-        QObject::connect(&timer, SIGNAL(timeout()), &loop, SLOT(quit()));
-        timer.start(100);
-        loop.exec();
-    }
+		QEventLoop loop;
+		QTimer timer;
+		timer.setSingleShot(true);
+		QObject::connect(&timer, SIGNAL(timeout()), &loop, SLOT(quit()));
+		timer.start(100);
+		loop.exec();
+	}
 #endif
 }
 
@@ -221,46 +221,46 @@ void RemoteNotifyHandler::NotifyNeko()
 
 void RemoteNotifyHandler::ToggleReport(bool report)
 {
-    std::function<void(void)> hourlyReport = [this](){
-        if (ControlManager::getInstance().isRunning())
-        {
-            Notify(QString::fromLocal8Bit("Running!"), Level::High);
-        }
-        else
-        {
-            Notify(QString::fromLocal8Bit("Stopped!"), Level::High);
-        }
-        reportTimer->setInterval(60*60*1000);
-        reportTimer->setSingleShot(true);
-        reportTimer->start();
-    };
+	std::function<void(void)> hourlyReport = [this]() {
+		if (ControlManager::getInstance().isRunning())
+		{
+			Notify(QString::fromLocal8Bit("Running!"), Level::High);
+		}
+		else
+		{
+			Notify(QString::fromLocal8Bit("Stopped!"), Level::High);
+		}
+		reportTimer->setInterval(60 * 60 * 1000);
+		reportTimer->setSingleShot(true);
+		reportTimer->start();
+	};
 
-    if (report)
-    {
-        if (reportTimer == NULL)
-        {
-            auto dt = QDateTime::currentDateTime();
-            auto nextHourDT = dt;
-            QTime newTime(dt.time().hour(), 0, 0, 0);
-            nextHourDT.setTime(newTime);
-            nextHourDT = dt.addSecs(60*60);
-            int diffTime = dt.msecsTo(nextHourDT);
+	if (report)
+	{
+		if (reportTimer == NULL)
+		{
+			QDateTime dt = QDateTime::currentDateTime();
+			QDateTime nextHourDT(dt);
+			QTime newTime(dt.time().hour(), 0, 0, 0);
+			nextHourDT.setTime(newTime);
+			nextHourDT = nextHourDT.addSecs(60 * 60);
+			int diffTime = dt.msecsTo(nextHourDT);
 
-            reportTimer = new QTimer();
-            reportTimer->setInterval(diffTime);
-            reportTimer->setSingleShot(true);
-            QObject::connect(reportTimer, &QTimer::timeout, hourlyReport);
-            reportTimer->start();
-        }
-    }
-    else
-    {
-        if (reportTimer != NULL)
-        {
-            reportTimer->stop();
-            delete reportTimer;
-            reportTimer = NULL;
-        }
-    }
+			reportTimer = new QTimer();
+			reportTimer->setInterval(diffTime);
+			reportTimer->setSingleShot(true);
+			QObject::connect(reportTimer, &QTimer::timeout, hourlyReport);
+			reportTimer->start();
+		}
+	}
+	else
+	{
+		if (reportTimer != NULL)
+		{
+			reportTimer->stop();
+			delete reportTimer;
+			reportTimer = NULL;
+		}
+	}
 }
 

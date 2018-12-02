@@ -10,10 +10,10 @@
 
 //#include <QDebug>
 
-#define SPSHIP_AKIGUMO	4767
-#define SPSHIP_YUGUMO	5012
-#define SPSHIP_MAKIGUMO	1703
-#define SPSHIP_NAGANAMI	4774
+#define SPSHIP_ISONAMI	62500
+#define SPSHIP_URANAMI	62484
+#define SPSHIP_AMAGIRI	92729
+#define SPSHIP_SAGIRI	92316
 #define SPSHIP_FUMITSUKI	34
 #define SPSHIP_NAGATSUKI	157
 #define SPSHIP_KIKUZUKI	3142
@@ -408,10 +408,10 @@ void ExpeditionManager::BuildSingle20(ExpeditionSchedule* pschedule, int toHour,
 	exp.addShip((int)ShipType::KuChiKu, false, 0, 3);
 	exp.addShip((int)ShipType::KuChiKu, false, 0, 0);
 	exp.addShip((int)ShipType::KuChiKu, false, 0, 0);
-	exp.addSpecialExcludes(SPSHIP_AKIGUMO);
-	exp.addSpecialExcludes(SPSHIP_YUGUMO);
-	exp.addSpecialExcludes(SPSHIP_MAKIGUMO);
-	exp.addSpecialExcludes(SPSHIP_NAGANAMI);
+    exp.addSpecialExcludes(SPSHIP_ISONAMI);
+    exp.addSpecialExcludes(SPSHIP_URANAMI);
+    exp.addSpecialExcludes(SPSHIP_AMAGIRI);
+    exp.addSpecialExcludes(SPSHIP_SAGIRI);
 	exp.addSpecialExcludes(SPSHIP_FUMITSUKI);
 	exp.addSpecialExcludes(SPSHIP_NAGATSUKI);
 	exp.addSpecialExcludes(SPSHIP_KIKUZUKI);
@@ -457,10 +457,10 @@ void ExpeditionManager::BuildSingle40(ExpeditionSchedule* pschedule, int toHour,
 	exp.addShip((int)ShipType::KuChiKu, false, 0, 0);
 	exp.addShip((int)ShipType::KuChiKu, false, 0, 0);
 	exp.addShip((int)ShipType::KuChiKu, false, 0, 0);
-	exp.addSpecialExcludes(SPSHIP_AKIGUMO);
-	exp.addSpecialExcludes(SPSHIP_YUGUMO);
-	exp.addSpecialExcludes(SPSHIP_MAKIGUMO);
-	exp.addSpecialExcludes(SPSHIP_NAGANAMI);
+    exp.addSpecialExcludes(SPSHIP_ISONAMI);
+    exp.addSpecialExcludes(SPSHIP_URANAMI);
+    exp.addSpecialExcludes(SPSHIP_AMAGIRI);
+    exp.addSpecialExcludes(SPSHIP_SAGIRI);
 	exp.addSpecialExcludes(SPSHIP_FUMITSUKI);
 	exp.addSpecialExcludes(SPSHIP_NAGATSUKI);
 	exp.addSpecialExcludes(SPSHIP_KIKUZUKI);
@@ -488,10 +488,10 @@ void ExpeditionManager::BuildSingle90(ExpeditionSchedule* pschedule, int toHour,
 	exp.addShip((int)ShipType::KuChiKu, true, 1, 0);
 	exp.addShip((int)ShipType::KuChiKu, true, 1, 0);
 	exp.addShip((int)ShipType::SuiBou, true, 0, 0);
-	exp.addSpecialExcludes(SPSHIP_AKIGUMO);
-	exp.addSpecialExcludes(SPSHIP_YUGUMO);
-	exp.addSpecialExcludes(SPSHIP_MAKIGUMO);
-	exp.addSpecialExcludes(SPSHIP_NAGANAMI);
+    exp.addSpecialExcludes(SPSHIP_ISONAMI);
+    exp.addSpecialExcludes(SPSHIP_URANAMI);
+    exp.addSpecialExcludes(SPSHIP_AMAGIRI);
+    exp.addSpecialExcludes(SPSHIP_SAGIRI);
 	exp.addSpecialExcludes(SPSHIP_FUMITSUKI);
 	exp.addSpecialExcludes(SPSHIP_NAGATSUKI);
 	exp.addSpecialExcludes(SPSHIP_KIKUZUKI);
@@ -516,13 +516,13 @@ void ExpeditionManager::BuildSingleTokyu1(ExpeditionSchedule* pschedule, int toH
 	SingleExpedition exp;
 	exp.Clear();
 	exp.addShip((int)ShipType::KeiJun, true, 0, 50);
-	exp.addShip(-SPSHIP_AKIGUMO, false, 2, 30);
-	exp.addShip(-SPSHIP_YUGUMO, false, 2, 30);
+    exp.addShip(-SPSHIP_ISONAMI, false, 2, 30);
+    exp.addShip(-SPSHIP_URANAMI, false, 2, 30);
 	exp.addShip((int)ShipType::KuChiKu, true, 1, 30);
 	exp.addShip((int)ShipType::KuChiKu, true, 1, 30);
 	exp.addShip((int)ShipType::KuChiKu, true, 1, 30);
-	exp.addSpecialExcludes(SPSHIP_MAKIGUMO);
-	exp.addSpecialExcludes(SPSHIP_NAGANAMI);
+    exp.addSpecialExcludes(SPSHIP_AMAGIRI);
+    exp.addSpecialExcludes(SPSHIP_SAGIRI);
 	exp.addSpecialExcludes(SPSHIP_FUMITSUKI);
 	exp.addSpecialExcludes(SPSHIP_NAGATSUKI);
 	exp.addSpecialExcludes(SPSHIP_KIKUZUKI);
@@ -544,14 +544,14 @@ void ExpeditionManager::BuildSingleTokyu2(ExpeditionSchedule* pschedule, int toH
 	SingleExpedition exp;
 
 	exp.Clear();
-	exp.addShip(-SPSHIP_MAKIGUMO, false, 3, 65);
-	exp.addShip(-SPSHIP_NAGANAMI, false, 3, 35);
+    exp.addShip(-SPSHIP_AMAGIRI, false, 3, 65);
+    exp.addShip(-SPSHIP_SAGIRI, false, 3, 35);
 	exp.addShip((int)ShipType::KuChiKu, true, 1, 35);
 	exp.addShip((int)ShipType::KuChiKu, true, 1, 35);
 	exp.addShip((int)ShipType::KuChiKu, true, 1, 35);
 	exp.addShip((int)ShipType::KuChiKu, true, 1, 35);
-	exp.addSpecialExcludes(SPSHIP_AKIGUMO);
-	exp.addSpecialExcludes(SPSHIP_YUGUMO);
+    exp.addSpecialExcludes(SPSHIP_ISONAMI);
+    exp.addSpecialExcludes(SPSHIP_URANAMI);
 	exp.addSpecialExcludes(SPSHIP_FUMITSUKI);
 	exp.addSpecialExcludes(SPSHIP_NAGATSUKI);
 	exp.addSpecialExcludes(SPSHIP_KIKUZUKI);
@@ -579,10 +579,10 @@ void ExpeditionManager::BuildSingle2last(ExpeditionSchedule* pschedule, int toHo
 	exp.addShip((int)ShipType::KuChiKu, true, 1, 0);
 	exp.addShip((int)ShipType::KuChiKu, true, 1, 0);
 	exp.addShip((int)ShipType::SuiBou, true, 0, 0);
-	exp.addSpecialExcludes(SPSHIP_AKIGUMO);
-	exp.addSpecialExcludes(SPSHIP_YUGUMO);
-	exp.addSpecialExcludes(SPSHIP_MAKIGUMO);
-	exp.addSpecialExcludes(SPSHIP_NAGANAMI);
+    exp.addSpecialExcludes(SPSHIP_ISONAMI);
+    exp.addSpecialExcludes(SPSHIP_URANAMI);
+    exp.addSpecialExcludes(SPSHIP_AMAGIRI);
+    exp.addSpecialExcludes(SPSHIP_SAGIRI);
 	exp.addSpecialExcludes(SPSHIP_FUMITSUKI);
 	exp.addSpecialExcludes(SPSHIP_NAGATSUKI);
 	exp.addSpecialExcludes(SPSHIP_KIKUZUKI);
@@ -607,15 +607,15 @@ void ExpeditionManager::BuildSingle3last(ExpeditionSchedule* pschedule, int toHo
 	SingleExpedition exp;
 	exp.Clear();
 	exp.addShip((int)ShipType::KeiJun, true, 0, 50);
-	exp.addShip(-SPSHIP_AKIGUMO, false, 2, 30);
-	exp.addShip(-SPSHIP_YUGUMO, false, 2, 30);
+    exp.addShip(-SPSHIP_ISONAMI, false, 2, 30);
+    exp.addShip(-SPSHIP_URANAMI, false, 2, 30);
 	exp.addShip((int)ShipType::KuChiKu, true, 1, 30);
 	exp.addShip((int)ShipType::KuChiKu, true, 1, 30);
 	exp.addShip((int)ShipType::SuiBou, true, 0, 30);
-	exp.addSpecialExcludes(SPSHIP_AKIGUMO);
-	exp.addSpecialExcludes(SPSHIP_YUGUMO);
-	exp.addSpecialExcludes(SPSHIP_MAKIGUMO);
-	exp.addSpecialExcludes(SPSHIP_NAGANAMI);
+    exp.addSpecialExcludes(SPSHIP_ISONAMI);
+    exp.addSpecialExcludes(SPSHIP_URANAMI);
+    exp.addSpecialExcludes(SPSHIP_AMAGIRI);
+    exp.addSpecialExcludes(SPSHIP_SAGIRI);
 	exp.addSpecialExcludes(SPSHIP_FUMITSUKI);
 	exp.addSpecialExcludes(SPSHIP_NAGATSUKI);
 	exp.addSpecialExcludes(SPSHIP_KIKUZUKI);
@@ -641,15 +641,15 @@ void ExpeditionManager::BuildSingle5last(ExpeditionSchedule* pschedule, int toHo
 
 	exp.Clear();
 	exp.addShip((int)ShipType::KeiJun, true, 0, 25);
-	exp.addShip(-SPSHIP_MAKIGUMO, false, 3, 25);
-	exp.addShip(-SPSHIP_NAGANAMI, false, 3, 25);
+    exp.addShip(-SPSHIP_AMAGIRI, false, 3, 25);
+    exp.addShip(-SPSHIP_SAGIRI, false, 3, 25);
 	exp.addShip((int)ShipType::KuChiKu, true, 1, 25);
 	exp.addShip(-SPSHIP_CHITOSEKOU, true, 0, 25);
 	exp.addShip(-SPSHIP_CHIYODAKOU, true, 0, 25);
-	exp.addSpecialExcludes(SPSHIP_AKIGUMO);
-	exp.addSpecialExcludes(SPSHIP_YUGUMO);
-	exp.addSpecialExcludes(SPSHIP_MAKIGUMO);
-	exp.addSpecialExcludes(SPSHIP_NAGANAMI);
+    exp.addSpecialExcludes(SPSHIP_ISONAMI);
+    exp.addSpecialExcludes(SPSHIP_URANAMI);
+    exp.addSpecialExcludes(SPSHIP_AMAGIRI);
+    exp.addSpecialExcludes(SPSHIP_SAGIRI);
 	exp.addSpecialExcludes(SPSHIP_FUMITSUKI);
 	exp.addSpecialExcludes(SPSHIP_NAGATSUKI);
 	exp.addSpecialExcludes(SPSHIP_KIKUZUKI);
@@ -677,10 +677,10 @@ void ExpeditionManager::BuildSingleNezumiYusou(ExpeditionSchedule* pschedule, in
 	exp.addShip((int)ShipType::KuChiKu, true, 1, 3);
 	exp.addShip((int)ShipType::KuChiKu, true, 1, 3);
 	exp.addShip((int)ShipType::SuiBou, true, 0, 3);
-	exp.addSpecialExcludes(SPSHIP_AKIGUMO);
-	exp.addSpecialExcludes(SPSHIP_YUGUMO);
-	exp.addSpecialExcludes(SPSHIP_MAKIGUMO);
-	exp.addSpecialExcludes(SPSHIP_NAGANAMI);
+    exp.addSpecialExcludes(SPSHIP_ISONAMI);
+    exp.addSpecialExcludes(SPSHIP_URANAMI);
+    exp.addSpecialExcludes(SPSHIP_AMAGIRI);
+    exp.addSpecialExcludes(SPSHIP_SAGIRI);
 	exp.addSpecialExcludes(SPSHIP_FUMITSUKI);
 	exp.addSpecialExcludes(SPSHIP_NAGATSUKI);
 	exp.addSpecialExcludes(SPSHIP_KIKUZUKI);
@@ -709,10 +709,10 @@ void ExpeditionManager::BuildSingleBauxiteYusou(ExpeditionSchedule* pschedule, i
 	exp.addShip((int)ShipType::KuChiKu, true, 1, 0);
 	exp.addShip((int)ShipType::KuChiKu, true, 1, 0);
 	exp.addShip((int)ShipType::SuiBou, true, 0, 0);
-	exp.addSpecialExcludes(SPSHIP_AKIGUMO);
-	exp.addSpecialExcludes(SPSHIP_YUGUMO);
-	exp.addSpecialExcludes(SPSHIP_MAKIGUMO);
-	exp.addSpecialExcludes(SPSHIP_NAGANAMI);
+    exp.addSpecialExcludes(SPSHIP_ISONAMI);
+    exp.addSpecialExcludes(SPSHIP_URANAMI);
+    exp.addSpecialExcludes(SPSHIP_AMAGIRI);
+    exp.addSpecialExcludes(SPSHIP_SAGIRI);
 	exp.addSpecialExcludes(SPSHIP_FUMITSUKI);
 	exp.addSpecialExcludes(SPSHIP_NAGATSUKI);
 	exp.addSpecialExcludes(SPSHIP_KIKUZUKI);

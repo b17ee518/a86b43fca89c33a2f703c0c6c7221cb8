@@ -1018,11 +1018,21 @@ bool KanDataConnector::req_sortie_airbattle_parse()
 
 bool KanDataConnector::req_sortie_ld_airbattle_parse()
 {
-	pksd->battledata.ReadFromJObj(_jobj);
+    pksd->battledata.ReadFromJObj(_jobj);
 
-	updateBattle(pksd->battledata, KanBattleType::Air);
-	// TODO check air???
-	return true;
+    updateBattle(pksd->battledata, KanBattleType::Air);
+    // TODO check air???
+    return true;
+
+}
+
+bool KanDataConnector::req_sortie_ld_shooting_parse()
+{
+    pksd->battledata.ReadFromJObj(_jobj);
+
+    // untested
+    updateBattle(pksd->battledata, KanBattleType::LDShooting);
+    return true;
 
 }
 
@@ -1036,10 +1046,19 @@ bool KanDataConnector::req_combined_battle_airbattle_parse()
 
 bool KanDataConnector::req_combined_battle_ld_airbattle_parse()
 {
-	pksd->battledata.ReadFromJObj(_jobj);
+    pksd->battledata.ReadFromJObj(_jobj);
 
-	updateBattle(pksd->battledata, KanBattleType::Combined_KouKu);
-	return true;
+    updateBattle(pksd->battledata, KanBattleType::Combined_KouKu);
+    return true;
+}
+
+bool KanDataConnector::req_combined_battle_ld_shooting_parse()
+{
+    pksd->battledata.ReadFromJObj(_jobj);
+
+    // completely untested
+    updateBattle(pksd->battledata, KanBattleType::Combined_LDShooting);
+    return true;
 }
 
 bool KanDataConnector::req_combined_battle_battlewater_parse()
@@ -1497,7 +1516,12 @@ bool KanDataConnector::get_member_book2_parse()
 
 bool KanDataConnector::req_member_get_incentive_parse()
 {
-	return true;
+    return true;
+}
+
+bool KanDataConnector::req_member_set_oss_condition_parse()
+{
+    return true;
 }
 
 bool KanDataConnector::get_member_payitem_parse()

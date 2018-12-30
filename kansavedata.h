@@ -11,6 +11,8 @@ enum class KanBattleType
 	DayToNight,
 	NightToDay,
 
+    LDShooting,    // no flag hougeki only
+
 	Air,
 
 	Combined_Begin,
@@ -26,6 +28,8 @@ enum class KanBattleType
 	Combined_Each,	// 12 vs 12
 	Combined_EachWater,	// 12 vs 12
 	Combined_ECNightToDay,
+
+    Combined_LDShooting
 };
 
 enum class MaterialDataIndex

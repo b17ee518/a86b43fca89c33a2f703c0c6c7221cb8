@@ -1129,7 +1129,10 @@ void KanDataConnector::updateBattle(const kcsapi_battle &api_battle, KanBattleTy
 	{
 		dockid = api_battle.api_dock_id - 1;
 		// midnight
-		if (type == KanBattleType::Night || type == KanBattleType::DayToNight || dockid < 0)
+        if (type == KanBattleType::Night
+                || type == KanBattleType::DayToNight
+                || type == KanBattleType::LDShooting
+                || dockid < 0)
 		{
 			dockid = api_battle.api_deck_id - 1;
 		}
@@ -1141,12 +1144,15 @@ void KanDataConnector::updateBattle(const kcsapi_battle &api_battle, KanBattleTy
 		{
 			dockid = api_battle.api_deck_id - 1;
 		}
-		if (type == KanBattleType::Combined_Each || type == KanBattleType::Combined_EachWater)
+        if (type == KanBattleType::Combined_Each
+                || type == KanBattleType::Combined_EachWater)
 		{
 			bCombinedEnemy = true;
 			bCombinedSelf = true;
 		}
-		else if (type == KanBattleType::Combined_EC || type == KanBattleType::Combined_ECNight || type == KanBattleType::Combined_ECNightToDay)
+        else if (type == KanBattleType::Combined_EC
+                 || type == KanBattleType::Combined_ECNight
+                 || type == KanBattleType::Combined_ECNightToDay)
 		{
 			// enemy combined
 			bCombinedEnemy = true;
@@ -1352,7 +1358,9 @@ void KanDataConnector::updateBattle(const kcsapi_battle &api_battle, KanBattleTy
 
 		// hourai
 		int houraiflagcount = api_battle.api_hourai_flag.count();
-		if (houraiflagcount > 0)
+        if (houraiflagcount > 0
+                || type == KanBattleType::LDShooting
+                || type == KanBattleType::Combined_LDShooting)
 		{
 			int hougeki1flag = 0;
 			int hougeki2flag = 0;
@@ -1366,7 +1374,7 @@ void KanDataConnector::updateBattle(const kcsapi_battle &api_battle, KanBattleTy
 			if (houraiflagcount > 2)
 			{
 				hougeki3flag = api_battle.api_hourai_flag[2];
-			}
+			}            
 
 			if (bCombinedSelf &&
 				(type == KanBattleType::Combined_KouKu || type == KanBattleType::Combined_Day))
@@ -1375,6 +1383,15 @@ void KanDataConnector::updateBattle(const kcsapi_battle &api_battle, KanBattleTy
 				hougeki2flag = api_battle.api_hourai_flag[2];
 				hougeki3flag = api_battle.api_hourai_flag[3];
 			}
+
+            if (type == KanBattleType::LDShooting
+                    || type == KanBattleType::Combined_LDShooting)
+            {
+                // untested
+                hougeki1flag = 1;
+                hougeki2flag = 1;
+            }
+
 			if (hougeki1flag)
 			{
 				bool bCombineDamageSelf = false;

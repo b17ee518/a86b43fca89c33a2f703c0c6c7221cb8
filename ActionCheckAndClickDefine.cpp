@@ -341,9 +341,9 @@ QMap < ActionCheckAndClickDefine::CheckColorNameDefine, QList<int>> ActionCheckA
 	{
 		CheckColorNameDefine::SortieBlackBoardDone2,
 		QList<int>{
-		// untested?
-			528, 126, 172, 148, 110,
-				534, 574, 60, 79, 89
+        // untested?
+            643, 121, 197, 170, 125,
+                528, 575, 57, 77, 90
 	}
 	},
 	{

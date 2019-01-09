@@ -57,7 +57,7 @@ bool ControlManager::BuildNext_Kira()
 
 	pushPreSupplyCheck();
 	QList<int> willBeInDockList;
-	pushPreRepairCheck(willBeInDockList, false, false, false, true);
+    pushPreRepairCheck(willBeInDockList, false, false, false, true, false);
 	if (_kiraSetting.forceCurrent)
 	{
 		_todoKiraShipids.clear();
@@ -183,7 +183,7 @@ bool ControlManager::BuildNext_Fuel()
 		useUpToDockSize = 4;
 	}
 
-	pushPreRepairCheck(willBeInDockList, false, false, true, true, useUpToDockSize);
+    pushPreRepairCheck(willBeInDockList, false, false, true, true, false, useUpToDockSize);
 
 	if (stopWhenHit)
 	{
@@ -485,7 +485,7 @@ bool ControlManager::BuildNext_Level()
 	_target = ActionTarget::Level;
 	pushPreSupplyCheck();
 	QList<int> willBeInDockList;
-	pushPreRepairCheck(willBeInDockList, false, false, true, true);
+    pushPreRepairCheck(willBeInDockList, false, false, true, true, false);
 
 	KanSaveData* pksd = &KanSaveData::getInstance();
 	KanDataConnector* pkdc = &KanDataConnector::getInstance();
@@ -647,7 +647,7 @@ bool ControlManager::BuildNext_Rank()
 	pushPreSupplyCheck();
 
 	QList<int> willBeInDockList;
-	auto fastRepairShips = pushPreRepairCheck(willBeInDockList, true, true, false, false);
+    auto fastRepairShips = pushPreRepairCheck(willBeInDockList, true, true, false, false, false);
 
 	KanSaveData* pksd = &KanSaveData::getInstance();
 	KanDataConnector* pkdc = &KanDataConnector::getInstance();
@@ -753,7 +753,7 @@ bool ControlManager::BuildNext_Morning(bool isFromRepeating)
 	pushPreSupplyCheck();
 
 	QList<int> willBeInDockList;
-	pushPreRepairCheck(willBeInDockList, false, false, true, true);
+    pushPreRepairCheck(willBeInDockList, false, false, true, true, false);
 
 	pushPreShipFullCheck();
 
@@ -1038,7 +1038,7 @@ bool ControlManager::BuildNext_Mission()
 	pushPreSupplyCheck();
 
 	QList<int> willBeInDockList;
-	pushPreRepairCheck(willBeInDockList, false, false, true, true);
+    pushPreRepairCheck(willBeInDockList, false, false, true, true, false);
 
 	pushPreShipFullCheck();
 
@@ -1338,11 +1338,11 @@ bool ControlManager::BuildNext_Any(bool advanceOnly)
 		QList<int> fastRepairShips;
 		if (_anySetting.autoFastRepair)
 		{
-			fastRepairShips = pushPreRepairCheck(willBeInDockList, true, true, false, false);
+            fastRepairShips = pushPreRepairCheck(willBeInDockList, true, true, false, false, _anySetting.allowMiddleDamageSortie);
 		}
 		else if (_anySetting.onlySSTeamSize > 0)
 		{
-			pushPreRepairCheck(willBeInDockList, false, false, true, true);
+            pushPreRepairCheck(willBeInDockList, false, false, true, true, _anySetting.allowMiddleDamageSortie);
 		}
 
 		KanSaveData* pksd = &KanSaveData::getInstance();
@@ -1672,7 +1672,7 @@ bool ControlManager::BuildNext_Repair()
 	_target = ActionTarget::Repair;
 
 	QList<int> willBeInDockList;
-	pushPreRepairCheck(willBeInDockList, false, false, false, false);
+    pushPreRepairCheck(willBeInDockList, false, false, false, false, false);
 	_actionList.append(new RepeatAction());	//should be nothing
 	setState(State::Ready, "Ready");
 	return true;
@@ -1977,7 +1977,13 @@ void ControlManager::pushPreSupplyCheck()
 }
 
 
-QList<int> ControlManager::pushPreRepairCheck(QList<int>& willBeInDockList, bool bCanUseFastRepair, bool onlyInTeam, bool onlyShortSevere, bool onlySmallShip, int useUpToNDockSize/*=3*/)
+QList<int> ControlManager::pushPreRepairCheck(QList<int>& willBeInDockList,
+                                              bool bCanUseFastRepair,
+                                              bool onlyInTeam,
+                                              bool onlyShortSevere,
+                                              bool onlySmallShip,
+                                              bool onlySevere,
+                                              int useUpToNDockSize/*=3*/)
 {
 	if (!_shouldAutoPushRepair)
 	{
@@ -2079,6 +2085,14 @@ QList<int> ControlManager::pushPreRepairCheck(QList<int>& willBeInDockList, bool
 					}
 				}
 
+                if (shouldAdd && onlySevere)
+                {
+                    if (ws <= WoundState::Middle)
+                    {
+                        shouldAdd = false;
+                    }
+                }
+
 				if (onlyInTeam && isInAnyTeam && !bCanUseFastRepair || !isInAnyTeam)
 				{
 					if (shouldAdd)
@@ -2090,15 +2104,18 @@ QList<int> ControlManager::pushPreRepairCheck(QList<int>& willBeInDockList, bool
 			else if (bCanUseFastRepair)
 			{
 				if (ws >= WoundState::Middle)
-				{
-					if (onlyInTeam && isInAnyTeam)
-					{
-						toFastRepairShipList.append(ship);
-					}
-					else if (doNotOvernight)
-					{
-						toRepairShipList.append(ship);
-					}
+                {
+                    if (ws > WoundState::Middle || !onlySevere)
+                    {
+                        if (onlyInTeam && isInAnyTeam)
+                        {
+                            toFastRepairShipList.append(ship);
+                        }
+                        else if (doNotOvernight)
+                        {
+                            toRepairShipList.append(ship);
+                        }
+                    }
 				}
 			}
 		}

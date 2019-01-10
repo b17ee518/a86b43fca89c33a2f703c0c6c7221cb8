@@ -2063,6 +2063,7 @@ QList<int> ControlManager::pushPreRepairCheck(QList<int>& willBeInDockList,
 			bool doNotOvernight = ship.api_ndock_time + ctUtc < blockShiftedRepairTime.toMSecsSinceEpoch();
 			bool canBeRepairedSoon = (ship.api_ndock_time < repairLessThanTime || isSenSui)
 				&& doNotOvernight;
+            bool isFlagShip = isShipAnyFlagShip(ship.api_id);
 
 			if (canBeRepairedSoon && (!isInAnyTeam || !bCanUseFastRepair))
 			{
@@ -2087,7 +2088,7 @@ QList<int> ControlManager::pushPreRepairCheck(QList<int>& willBeInDockList,
 
                 if (shouldAdd && onlySevere)
                 {
-                    if (ws <= WoundState::Middle)
+                    if (ws <= WoundState::Middle && !isFlagShip)
                     {
                         shouldAdd = false;
                     }
@@ -2105,7 +2106,7 @@ QList<int> ControlManager::pushPreRepairCheck(QList<int>& willBeInDockList,
 			{
 				if (ws >= WoundState::Middle)
                 {
-                    if (ws > WoundState::Middle || !onlySevere)
+                    if (ws > WoundState::Middle || !onlySevere || isFlagShip)
                     {
                         if (onlyInTeam && isInAnyTeam)
                         {
@@ -2823,6 +2824,21 @@ bool ControlManager::isShipInTeam(int shipno, int team)
 		}
 	}
 	return false;
+}
+
+bool ControlManager::isShipAnyFlagShip(int shipno)
+{
+    KanSaveData* pksd = &KanSaveData::getInstance();
+
+    for (auto& deck : pksd->portdata.api_deck_port)
+    {
+        if (shipno == deck.api_ship.first())
+        {
+            return true;
+        }
+    }
+    return false;
+
 }
 
 bool ControlManager::isShipInDock(int shipno, qint64* completeTime/* = NULL*/)

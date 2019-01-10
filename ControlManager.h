@@ -288,6 +288,7 @@ public:
 	bool isLowCond(int shipno);
 	bool isShipInOtherTeam(int shipno, int team, bool excludeOnBoardingExpedition = false);
 	bool isShipInTeam(int shipno, int team);
+    bool isShipAnyFlagShip(int shipno);
 	bool isShipInDock(int shipno, qint64* completeTime = nullptr);
 	bool isShipDamaged(int shipno);
 	bool isShipCharged(int shipno);

@@ -159,8 +159,8 @@ QMap < ActionCheckAndClickDefine::CheckColorNameDefine, QList<int>> ActionCheckA
 	{
 		CheckColorNameDefine::ChargeNeedChargeButton,
 		QList<int>{
-			1053, 644, 97, 201, 201,
-				1041, 657, 255, 249, 223
+            1037, 649, 89, 197, 197,
+                1076, 662, 212, 214, 203
 		}
 	},
 	{

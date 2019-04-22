@@ -139,7 +139,7 @@ void MainWindow::setWebSettings()
 #if defined Q_OS_WIN && !defined NO_WIN_EXTRA
 		_pTitanium = new Titanium_Web_Proxy::ProxyServer(this);
 		exceptionSender = _pTitanium;
-        _pTitanium->SetMakecertPath(MainWindow::getAbsoluteResourcePath() + "/makecert.exe");
+		_pTitanium->SetMakecertPath(MainWindow::getAbsoluteResourcePath() + "/makecert.exe");
 
 		_pTitanium->SetAfterSessionComplete((int)&MainWindow::AfterSessionCompleteFunc);
 		_pTitanium->Startup(_useport);
@@ -149,7 +149,7 @@ void MainWindow::setWebSettings()
 	{
 		_pSharkProcess = new QProcess();
 		_pSharkProcess->setWorkingDirectory(_sharkWorkingPath);
-        QObject::connect(_pSharkProcess, SIGNAL(readyReadStandardOutput()), this, SLOT(slotSharkProcessReadyRead()));
+		QObject::connect(_pSharkProcess, SIGNAL(readyReadStandardOutput()), this, SLOT(slotSharkProcessReadyRead()));
 
 #ifdef Q_OS_WIN
 		_pSharkProcess->start("cmd");
@@ -165,30 +165,30 @@ void MainWindow::setWebSettings()
 		_pSharkProcess->write("\n");
 		_pSharkProcess->closeWriteChannel();
 	}
-    else if (_proxyMode == ProxyMode::MITM)
-    {
-        _mitmProcess = new QProcess();
-        QObject::connect(_mitmProcess, SIGNAL(readyReadStandardOutput()), this, SLOT(slotMITMProcessReadyRead()));
-        QObject::connect(_mitmProcess, SIGNAL(readyReadStandardError()), this, SLOT(slotMITMProcessReadyRead()));
+	else if (_proxyMode == ProxyMode::MITM)
+	{
+		_mitmProcess = new QProcess();
+		QObject::connect(_mitmProcess, SIGNAL(readyReadStandardOutput()), this, SLOT(slotMITMProcessReadyRead()));
+		QObject::connect(_mitmProcess, SIGNAL(readyReadStandardError()), this, SLOT(slotMITMProcessReadyRead()));
 
-        _mitmProcess->setProgram(getAbsoluteResourcePath() + "/mitmdump");
-        _mitmProcess->setArguments(QStringList() << "-p" << QString::number(_useport) << "-s" << getAbsoluteResourcePath()+"/mitm.py");
-        _mitmProcess->start();
-        if (!_mitmProcess->waitForStarted())
-        {
-            return;
-        }
-        _mitmProcess->closeWriteChannel();
+		_mitmProcess->setProgram(getAbsoluteResourcePath() + "/mitmdump");
+		_mitmProcess->setArguments(QStringList() << "-p" << QString::number(_useport) << "-s" << getAbsoluteResourcePath() + "/mitm.py");
+		_mitmProcess->start();
+		if (!_mitmProcess->waitForStarted())
+		{
+			return;
+		}
+		_mitmProcess->closeWriteChannel();
 
-        QEventLoop loop;
-        QTimer timer;
+		QEventLoop loop;
+		QTimer timer;
 
-        timer.setSingleShot(true);
-        connect(&timer, SIGNAL(timeout()), &loop, SLOT(quit()));
+		timer.setSingleShot(true);
+		connect(&timer, SIGNAL(timeout()), &loop, SLOT(quit()));
 
-        timer.start(1000);
-        loop.exec();
-    }
+		timer.start(1000);
+		loop.exec();
+	}
 
 	if (_proxyMode != ProxyMode::NoProxy && _proxyMode != ProxyMode::QtProxy && _proxyMode != ProxyMode::Shark)
 	{
@@ -296,17 +296,17 @@ void MainWindow::setWebSettings()
 
 void MainWindow::AdjustVolume(int vol)
 {
-    if (vol < 0)
-    {
-        if (_bLowVol)
-        {
-            vol = 12;
-        }
-        else
-        {
-            vol = 100;
-        }
-    }
+	if (vol < 0)
+	{
+		if (_bLowVol)
+		{
+			vol = 12;
+		}
+		else
+		{
+			vol = 100;
+		}
+	}
 
 #ifdef Q_OS_WIN
 	HRESULT hr = S_OK;
@@ -335,8 +335,8 @@ void MainWindow::AdjustVolume(int vol)
 	IAudioSessionControl *pControl;
 	pSessionManager->GetAudioSessionControl(NULL, 0, &pControl);
 	ISimpleAudioVolume *pSimpleVolume;
-    pSessionManager->GetSimpleAudioVolume(NULL, 0, &pSimpleVolume);
-    GUID nid = GUID_NULL;
+	pSessionManager->GetSimpleAudioVolume(NULL, 0, &pSimpleVolume);
+	GUID nid = GUID_NULL;
 
 	pSimpleVolume->SetMasterVolume(vol / 100.0f, &nid);
 
@@ -345,7 +345,7 @@ void MainWindow::AdjustVolume(int vol)
 	SAFE_RELEASE(pEnumerator);
 	SAFE_RELEASE(pDevice);
 #elif defined Q_OS_MAC
-    timerWindow()->setVolume(vol);
+	timerWindow()->setVolume(vol);
 #endif
 }
 
@@ -408,7 +408,7 @@ void MainWindow::setupCss()
 	 z-index:1
 	 }
 	 */
-	_ieCsses[(int)QWebViewCSSIndex::Normal] = "body {margin:0;overflow:hidden;} #game_frame{position:fixed;top:-17px;left:0px;z-index:1}";
+	_ieCsses[(int)QWebViewCSSIndex::Normal] = "body {margin:0;overflow:hidden;} #game_frame{position:fixed;top:-17px;left:0px;z-index:9999} #html_contents,#serial,#ntg-recommend,.area-naviapp,#faq_banner,#foot {display:none !important;}";
 	_webViewCsses[(int)QWebViewCSSIndex::Normal] = QUrl(QString("data:text/css;charset=utf-8;base64,")
 		+ _ieCsses[(int)QWebViewCSSIndex::Normal].toUtf8().toBase64());
 	//		(QUrl("data:text/css;charset=utf-8;base64,Ym9keSB7DQoJbWFyZ2luOjA7DQoJb3ZlcmZsb3c6aGlkZGVuDQp9DQoNCiNnYW1lX2ZyYW1lIHsNCglwb3NpdGlvbjpmaXhlZDsNCgl0b3A6LTE2cHg7DQoJbGVmdDotNTBweDsNCgl6LWluZGV4OjENCn0="));
@@ -430,7 +430,7 @@ void MainWindow::setupCss()
 	}
 	*/
 
-	_ieCsses[(int)QWebViewCSSIndex::Compact] = "body {margin:0;overflow:hidden;} #game_frame{position:fixed;top:-16px;left:-50px;z-index:1}";
+	_ieCsses[(int)QWebViewCSSIndex::Compact] = "body {margin:0;overflow:hidden;} #game_frame{position:fixed;top:-16px;left:-50px;z-index:9999} #html_contents,#serial,#ntg-recommend,.area-naviapp,#faq_banner,#foot {display:none !important;}";
 	_webViewCsses[(int)QWebViewCSSIndex::Compact] = QUrl(QString("data:text/css;charset=utf-8;base64,")
 		+ _ieCsses[(int)QWebViewCSSIndex::Compact].toUtf8().toBase64());
 	/*
@@ -502,7 +502,7 @@ void MainWindow::loadSettings()
 	_platformType = PlatformType::Mac;
 #endif
 
-    QString filename = MainWindow::getAbsoluteResourcePath();
+	QString filename = MainWindow::getAbsoluteResourcePath();
 	filename += "/settings.ini";
 	QSettings* setting = new QSettings(filename, QSettings::IniFormat);
 	setting->setIniCodec("UTF-8");
@@ -665,10 +665,10 @@ void MainWindow::loadSettings()
 	{
 		_proxyMode = ProxyMode::Shark;
 	}
-    else if (!proxymode.compare("MITM", Qt::CaseInsensitive))
-    {
-        _proxyMode = ProxyMode::MITM;
-    }
+	else if (!proxymode.compare("MITM", Qt::CaseInsensitive))
+	{
+		_proxyMode = ProxyMode::MITM;
+	}
 
 	_sharkWorkingPath = setting->value(itemSharkWorkingPath).toString();
 	_sharkCommand = setting->value(itemSharkCommand).toString();

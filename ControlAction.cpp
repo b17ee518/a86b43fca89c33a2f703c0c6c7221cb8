@@ -546,9 +546,9 @@ bool ChangeHenseiAction::action()
 			QTimer::singleShot(DELAY_TIME, Qt::PreciseTimer, this, [this, &cm]()
 			{
 				// home port
-                if (ActionCheckAndClickDefine::CheckColor(ActionCheckAndClickDefine::CheckColorNameDefine::HenseiChangeMemberSelectionLeftMost)
-                        || ActionCheckAndClickDefine::CheckColor(ActionCheckAndClickDefine::CheckColorNameDefine::HenseiChangeMemberSelectionLeftMostMac)
-                        || ActionCheckAndClickDefine::CheckColor(ActionCheckAndClickDefine::CheckColorNameDefine::HenseiChangeMemberSelectionLeftMostMac2))
+				if (ActionCheckAndClickDefine::CheckColor(ActionCheckAndClickDefine::CheckColorNameDefine::HenseiChangeMemberSelectionLeftMost)
+					|| ActionCheckAndClickDefine::CheckColor(ActionCheckAndClickDefine::CheckColorNameDefine::HenseiChangeMemberSelectionLeftMostMac)
+					|| ActionCheckAndClickDefine::CheckColor(ActionCheckAndClickDefine::CheckColorNameDefine::HenseiChangeMemberSelectionLeftMostMac2))
 				{
 					_waiting = false;
 					setState(State::FindShipFirstPageDone, "Hensei:FindShipFirstPageDone");
@@ -2368,7 +2368,7 @@ bool SortieAction::action()
 			if (!_waiting)
 			{
 				_waiting = true;
-                QTimer::singleShot(DELAY_TIME_LONG, Qt::PreciseTimer, this, [this, &cm]()
+				QTimer::singleShot(DELAY_TIME_LONG, Qt::PreciseTimer, this, [this, &cm]()
 				{
 					if (_isEvent)
 					{
@@ -2853,8 +2853,8 @@ bool SortieAdvanceAction::action()
 				else
 				{
 					ActionCheckAndClickDefine::MoveAndClick(ActionCheckAndClickDefine::MoveMouseNameDefine::SortieSimpleAdvance); // advance
+					resetRetryAndWainting();
 				}
-				resetRetryAndWainting();
 			});
 		}
 		break;
@@ -3018,19 +3018,19 @@ bool SortieCommonAdvanceAction::action()
 				{
 					_waiting = false;
 					setState(State::SelectCombinedFormation, "SortieAdv:SelectCombinedFormation");
-                }
-                // airbase
-                else if (ActionCheckAndClickDefine::CheckColor(ActionCheckAndClickDefine::CheckColorNameDefine::SortieCommonAirBaseSelectDone))
-                {
-                    _waiting = false;
-                    setState(State::ClickAirBaseOK, "SortieAdv:ClickAirBaseOK");
-                }
-                // airbase
-                else if (ActionCheckAndClickDefine::CheckColor(ActionCheckAndClickDefine::CheckColorNameDefine::SortieCommonAirBaseSelectDoneR))
-                {
-                    _waiting = false;
-                    setState(State::ClickAirBaseROK, "SortieAdv:ClickAirBaseROK");
-                }
+				}
+				// airbase
+				else if (ActionCheckAndClickDefine::CheckColor(ActionCheckAndClickDefine::CheckColorNameDefine::SortieCommonAirBaseSelectDone))
+				{
+					_waiting = false;
+					setState(State::ClickAirBaseOK, "SortieAdv:ClickAirBaseOK");
+				}
+				// airbase
+				else if (ActionCheckAndClickDefine::CheckColor(ActionCheckAndClickDefine::CheckColorNameDefine::SortieCommonAirBaseSelectDoneR))
+				{
+					_waiting = false;
+					setState(State::ClickAirBaseROK, "SortieAdv:ClickAirBaseROK");
+				}
 				// else
 				else
 				{
@@ -3215,46 +3215,46 @@ bool SortieCommonAdvanceAction::action()
 				resetRetryAndWainting();
 			});
 		}
-        break;
-    case SortieCommonAdvanceAction::State::ClickRight:
+		break;
+	case SortieCommonAdvanceAction::State::ClickRight:
 
-        if (!_waiting)
-        {
-            _waiting = true;
-            QTimer::singleShot(DELAY_TIME_CLICK, Qt::PreciseTimer, this, [this, &cm]()
-            {
-                ActionCheckAndClickDefine::MoveAndClick(ActionCheckAndClickDefine::MoveMouseNameDefine::SortieCommonRightButton); // right button
-                setStateToChecking();
-                resetRetryAndWainting();
-            });
-        }
-        break;
-    case SortieCommonAdvanceAction::State::ClickAirBaseOK:
+		if (!_waiting)
+		{
+			_waiting = true;
+			QTimer::singleShot(DELAY_TIME_CLICK, Qt::PreciseTimer, this, [this, &cm]()
+			{
+				ActionCheckAndClickDefine::MoveAndClick(ActionCheckAndClickDefine::MoveMouseNameDefine::SortieCommonRightButton); // right button
+				setStateToChecking();
+				resetRetryAndWainting();
+			});
+		}
+		break;
+	case SortieCommonAdvanceAction::State::ClickAirBaseOK:
 
-        if (!_waiting)
-        {
-            _waiting = true;
-            QTimer::singleShot(DELAY_TIME_CLICK, Qt::PreciseTimer, this, [this, &cm]()
-            {
-                ActionCheckAndClickDefine::MoveAndClick(ActionCheckAndClickDefine::MoveMouseNameDefine::SortieCommonAirBaseOKButton); // right button
-                setStateToChecking();
-                resetRetryAndWainting();
-            });
-        }
-        break;
-    case SortieCommonAdvanceAction::State::ClickAirBaseROK:
+		if (!_waiting)
+		{
+			_waiting = true;
+			QTimer::singleShot(DELAY_TIME_CLICK, Qt::PreciseTimer, this, [this, &cm]()
+			{
+				ActionCheckAndClickDefine::MoveAndClick(ActionCheckAndClickDefine::MoveMouseNameDefine::SortieCommonAirBaseOKButton); // right button
+				setStateToChecking();
+				resetRetryAndWainting();
+			});
+		}
+		break;
+	case SortieCommonAdvanceAction::State::ClickAirBaseROK:
 
-        if (!_waiting)
-        {
-            _waiting = true;
-            QTimer::singleShot(DELAY_TIME_CLICK, Qt::PreciseTimer, this, [this, &cm]()
-            {
-                ActionCheckAndClickDefine::MoveAndClick(ActionCheckAndClickDefine::MoveMouseNameDefine::SortieCommonAirBaseROKButton); // right button
-                setStateToChecking();
-                resetRetryAndWainting();
-            });
-        }
-        break;
+		if (!_waiting)
+		{
+			_waiting = true;
+			QTimer::singleShot(DELAY_TIME_CLICK, Qt::PreciseTimer, this, [this, &cm]()
+			{
+				ActionCheckAndClickDefine::MoveAndClick(ActionCheckAndClickDefine::MoveMouseNameDefine::SortieCommonAirBaseROKButton); // right button
+				setStateToChecking();
+				resetRetryAndWainting();
+			});
+		}
+		break;
 	case SortieCommonAdvanceAction::State::Done:
 		return true;
 		break;

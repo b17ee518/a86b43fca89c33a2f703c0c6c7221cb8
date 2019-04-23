@@ -168,7 +168,7 @@ void RemoteNotifyHandler::RunInstanceNotify()
 	{
 		SimpleMail::MimeMessage message;
 
-		SimpleMail::EmailAddress senderEmail(senderEmailAddress, "KN: " + text);
+        SimpleMail::EmailAddress senderEmail(senderEmailAddress, "KanplayNotify");
 		SimpleMail::EmailAddress recipentEmail(receiverEmailAddress);
 		SimpleMail::EmailAddress anotherRecipentEmail(anotherReceiverEmailAddress);
 

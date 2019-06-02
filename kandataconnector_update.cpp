@@ -728,6 +728,8 @@ void KanDataConnector::updateInfoTitleBattle(bool bBattle, bool bSelfDamaged)
 		}
 	}
 
+    ControlManager::getInstance().isInBattle = bBattle;
+
 	if (bBattle)
 	{
 		pksd->lastWonAssumption = false;
@@ -983,6 +985,8 @@ void KanDataConnector::updateInfoTitleCond()
 	{
 		return;
 	}
+
+    ControlManager::getInstance().isInBattle = false;
 
 	int suibocount = 0;
 	int suibokiras = 0;

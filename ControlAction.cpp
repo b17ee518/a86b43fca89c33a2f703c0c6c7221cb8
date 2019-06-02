@@ -3189,7 +3189,7 @@ bool SortieCommonAdvanceAction::action()
 			{
 				const auto& setting = cm.getAnySetting();
 				int cell = KanSaveData::getInstance().nextdata.api_no;
-				if (setting.cells.contains(cell) && setting.cells[cell].clickX >= 0 && setting.cells[cell].clickY >= 0)
+                if (!cm.isInBattle && setting.cells.contains(cell) && setting.cells[cell].clickX >= 0 && setting.cells[cell].clickY >= 0)
 				{
 					cm.moveMouseToAndClick(setting.cells[cell].clickX, setting.cells[cell].clickY);
 				}

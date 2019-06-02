@@ -430,6 +430,8 @@ public:
 	bool toggleShouldAutoPushRepair(){ _shouldAutoPushRepair = !_shouldAutoPushRepair; return _shouldAutoPushRepair; }
 	bool shouldAutoPushRepair(){ return _shouldAutoPushRepair; }
 
+    bool isInBattle = false;
+
 public:
 	static QMap<int, int> areaIndexMap;
 

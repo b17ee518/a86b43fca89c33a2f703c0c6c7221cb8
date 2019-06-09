@@ -165,6 +165,7 @@ void AnyActionSelectDialog::slotOnReset()
 
 		ui->cbAirBaseCond->setChecked(false);
 		ui->cbCond->setChecked(true);
+        ui->cbSwapLowCond->setChecked(false);
 		ui->cbMiddleDamage->setChecked(false);
 		ui->cbAutoFastRepair->setChecked(false);
 		ui->leSSOnlyCount->setText("0");

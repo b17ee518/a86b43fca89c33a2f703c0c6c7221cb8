@@ -848,6 +848,16 @@ QString KanDataConnector::logBattleResult(bool bWrite/*=true*/)
 		+ mvpstr + "\t"
 		+ mvp_combinedstr + "\t";
 
+    if (pksd->portdata.api_material[(int)MaterialDataIndex::Fuel].api_value != pksd->lastBattleFuel)
+    {
+        pksd->lastBattleFuel = pksd->portdata.api_material[(int)MaterialDataIndex::Fuel].api_value;
+        writestr += QString::number(pksd->portdata.api_material[(int)MaterialDataIndex::Fuel].api_value) + "\t"
+                + QString::number(pksd->portdata.api_material[(int)MaterialDataIndex::Bullet].api_value) + "\t"
+                + QString::number(pksd->portdata.api_material[(int)MaterialDataIndex::Steel].api_value) + "\t"
+                + QString::number(pksd->portdata.api_material[(int)MaterialDataIndex::Bauxite].api_value) + "\t"
+                + QString::number(pksd->portdata.api_material[(int)MaterialDataIndex::InstantRepair].api_value) + "\t";
+    }
+
 	if (bWrite)
 	{
 		QString filename = QString("Result_%1_%2").arg(maparea_id).arg(mapinfo_no);

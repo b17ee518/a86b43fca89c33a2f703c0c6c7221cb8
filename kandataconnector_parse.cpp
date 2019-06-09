@@ -637,7 +637,7 @@ bool KanDataConnector::req_kousyou_createship_parse()
 	pksd->portdata.api_material[(int)MaterialDataIndex::Development].api_value -= usedev;
 	if (highspeed)
 	{
-		pksd->portdata.api_material[(int)MaterialDataIndex::InstandBuild].api_value -= 1;
+        pksd->portdata.api_material[(int)MaterialDataIndex::InstantBuild].api_value -= 1;
 		updateOverviewTable();
 	}
 
@@ -653,7 +653,7 @@ bool KanDataConnector::req_kousyou_createship_speedchange_parse()
 	{
 		pksd->kdockdata[dockid].api_complete_time = 0;
 		updateBuildDockTable();
-		pksd->portdata.api_material[(int)MaterialDataIndex::InstandBuild].api_value -= 1;
+        pksd->portdata.api_material[(int)MaterialDataIndex::InstantBuild].api_value -= 1;
 		updateOverviewTable();
 	}
 	return true;

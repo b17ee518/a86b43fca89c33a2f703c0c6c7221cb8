@@ -38,7 +38,7 @@ enum class MaterialDataIndex
 	Bullet,
 	Steel,
 	Bauxite,
-	InstandBuild,
+    InstantBuild,
 	InstantRepair,
 	Development,
 	PowerUp,
@@ -224,6 +224,7 @@ public:
 	int lastSFormation = -1;
 	int lastEFormation = -1;
 	int lastIntercept = -1;
+    int lastBattleFuel = -1;
 
 	bool lastWonAssumption = false;
 	bool lastFlagshipKilled = false;

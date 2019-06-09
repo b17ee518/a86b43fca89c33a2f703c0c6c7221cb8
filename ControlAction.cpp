@@ -3595,7 +3595,7 @@ bool RepeatAction::action()
 		}
 		else if (cm.isAnyMode())
 		{
-			if (cm.BuildNext_Any(false))
+            if (cm.BuildNext_Any(false, cm.getAnySetting().shouldStopAfterCharge))
 			{
 				setState(State::Done, "Repeat:Done");
 				cm.StartJob();

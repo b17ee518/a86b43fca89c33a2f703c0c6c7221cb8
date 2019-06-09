@@ -159,6 +159,8 @@ public:
 
         bool swapLowCond = false;
 
+        bool shouldStopAfterCharge = false;
+
         int ld1ClickX = -1;
         int ld1ClickY = -1;
         int ld2ClickX = -1;
@@ -246,7 +248,7 @@ public:
 	bool switchToGreedyMission();
 
 	void LoadAnyTemplateSettings();
-	bool BuildNext_Any(bool onlyAdvance);
+    bool BuildNext_Any(bool onlyAdvance, bool stopAfterCharge);
 
 	bool LoadExpeditionPossibleList(); // TODO
 	bool BuildNext_Expedition();
@@ -441,7 +443,7 @@ public:
 	void clearPortDataDirtyFlag();
 
 	bool toggleShouldAutoPushRepair(){ _shouldAutoPushRepair = !_shouldAutoPushRepair; return _shouldAutoPushRepair; }
-	bool shouldAutoPushRepair(){ return _shouldAutoPushRepair; }
+    bool shouldAutoPushRepair(){ return _shouldAutoPushRepair; }
 
     bool isInBattle = false;
 
@@ -450,7 +452,7 @@ public:
 
 private:
 
-	bool _shouldAutoPushRepair = true;
+    bool _shouldAutoPushRepair = true;
 
 	bool _isPortDataDirty = true;
 

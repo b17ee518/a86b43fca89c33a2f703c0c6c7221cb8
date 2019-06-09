@@ -1221,6 +1221,10 @@ void ControlManager::LoadAnyTemplateSettings()
                 {
                     _anyTemplateSettings[pair].tillDropShip = splited[0].toInt(&bOk);
                 }
+                else if (!key.compare("Stop", Qt::CaseInsensitive))
+                {
+                    _anyTemplateSettings[pair].shouldStopAfterCharge = splited[0].toInt(&bOk);
+                }
 				continue;
 			}
 
@@ -1360,7 +1364,7 @@ bool ControlManager::BuildNext_RestoreHensei()
 	return true;
 }
 
-bool ControlManager::BuildNext_Any(bool advanceOnly)
+bool ControlManager::BuildNext_Any(bool advanceOnly, bool stopAfterCharge)
 {
 	_target = ActionTarget::Any;
 
@@ -1489,14 +1493,6 @@ bool ControlManager::BuildNext_Any(bool advanceOnly)
 
 		}
 
-        if (minCond <= _sortieMinCond && _anySetting.checkCond)
-        {
-            // wait
-            qint64 waitMS = qCeil((_sortieWaitCond - minCond) / 3.0) * 3 * 60 * 1000;
-            auto waitAction = new WaitCondAction();
-            waitAction->setWaitMS(waitMS, false);
-            _actionList.append(waitAction);
-        }
         if (_anySetting.swapLowCond && minCondShipId > 0 && ships[0] != minCondShipId)
         {
             int index = ships.indexOf(minCondShipId);
@@ -1507,26 +1503,40 @@ bool ControlManager::BuildNext_Any(bool advanceOnly)
             chAction->setShips(ships);
             _actionList.append(chAction);
         }
+        if (!stopAfterCharge)
+        {
+            if (minCond <= _sortieMinCond && _anySetting.checkCond)
+            {
+                // wait
+                qint64 waitMS = qCeil((_sortieWaitCond - minCond) / 3.0) * 3 * 60 * 1000;
+                auto waitAction = new WaitCondAction();
+                waitAction->setWaitMS(waitMS, false);
+                _actionList.append(waitAction);
+            }
 
-		SortieAction* sortieAction = new SortieAction();
-		sortieAction->setAreaAndMap(_anySetting.area, _anySetting.map
-			, _anySetting.areaCheckList, _anySetting.mapClickPoint
-			, _anySetting.mapExCheckList, _anySetting.mapExClickPoint
-			, _anySetting.mapEx2CheckList, _anySetting.mapEx2ClickPoint);
-		sortieAction->setTeam(_anySetting.team);
-		sortieAction->setShouldPauseNext(_anySetting.pauseAtStartMap);
-		_actionList.append(sortieAction);
+            SortieAction* sortieAction = new SortieAction();
+            sortieAction->setAreaAndMap(_anySetting.area, _anySetting.map
+                , _anySetting.areaCheckList, _anySetting.mapClickPoint
+                , _anySetting.mapExCheckList, _anySetting.mapExClickPoint
+                , _anySetting.mapEx2CheckList, _anySetting.mapEx2ClickPoint);
+            sortieAction->setTeam(_anySetting.team);
+            sortieAction->setShouldPauseNext(_anySetting.pauseAtStartMap);
+            _actionList.append(sortieAction);
+        }
 	}
 
-	_actionList.append(new SortieCommonAdvanceAction());
-	_actionList.append(new ChargeAction());
-	if (!advanceOnly)
-	{
-		_actionList.append(new RepeatAction());
-	}
+    if (!stopAfterCharge)
+    {
+        _actionList.append(new SortieCommonAdvanceAction());
+        _actionList.append(new ChargeAction());
+        if (!advanceOnly)
+        {
+            _actionList.append(new RepeatAction());
+        }
+    }
 	_morningSetting.lastBuiltState = MorningStage::AssumeJobDone;
 	setState(State::Ready, "Ready");
-	return true;
+    return !_actionList.empty();
 }
 
 
@@ -2271,7 +2281,7 @@ void ControlManager::Run()
 
 	if (_actionList.empty())
 	{
-		setToTerminate("Terminated:NoAction", true);
+        setToTerminate("Terminated:NoAction", false);
 		return;
 	}
 	if (_actionList[0]->action())

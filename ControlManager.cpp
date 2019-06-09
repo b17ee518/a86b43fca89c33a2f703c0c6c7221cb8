@@ -1217,6 +1217,10 @@ void ControlManager::LoadAnyTemplateSettings()
                     _anyTemplateSettings[pair].ld3ClickX = splited[0].toInt(&bOk);
                     _anyTemplateSettings[pair].ld3ClickY = splited[1].toInt(&bOk);
                 }
+                else if (!key.compare("TillDrop", Qt::CaseInsensitive))
+                {
+                    _anyTemplateSettings[pair].tillDropShip = splited[0].toInt(&bOk);
+                }
 				continue;
 			}
 
@@ -1391,6 +1395,12 @@ bool ControlManager::BuildNext_Any(bool advanceOnly)
 			setToTerminate("Terminated:CountReached", false, RemoteNotifyHandler::Level::Low);
 			return false;
 		}
+
+        if (_anySetting.tillDropShip > 0 && pksd->battleresultdata.api_get_ship.api_ship_id == _anySetting.tillDropShip)
+        {
+            setToTerminate("Terminated:Dropped", false, RemoteNotifyHandler::Level::High);
+            return false;
+        }
 
 		QList<int> ships;
 		int minCond = std::numeric_limits<int>::max();
@@ -2933,6 +2943,16 @@ bool ControlManager::needChargeCondAirBase(bool checkCond)
 		return true;
 	}
 	return false;
+}
+
+int ControlManager::getNeedSupplyLDTeam()
+{
+    KanSaveData* pksd = &KanSaveData::getInstance();
+    if (pksd->airBaseNeedSupplyList.isEmpty())
+    {
+        return -1;
+    }
+    return pksd->airBaseNeedSupplyList[0]-1;
 }
 
 bool ControlManager::isShipExist(int shipno)

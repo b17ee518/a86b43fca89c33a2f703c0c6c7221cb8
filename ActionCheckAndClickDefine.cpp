@@ -531,6 +531,41 @@ QMap < ActionCheckAndClickDefine::CheckColorNameDefine, QList<int>> ActionCheckA
                 903, 78, 74, 123, 68
         }
     },
+    {
+        CheckColorNameDefine::LDCharge,
+        QList<int>{
+            430, 589, 232, 247, 250,
+                392, 581, 212, 209, 204
+        }
+    },
+    {
+        CheckColorNameDefine::LDChargeTeam1,
+        QList<int>{
+            911, 180, 183, 176, 167,
+                871, 281, 183, 176, 167
+        }
+    },
+    {
+        CheckColorNameDefine::LDChargeTeam2,
+        QList<int>{
+            1012, 184, 174, 167, 157,
+                871, 281, 183, 176, 167
+        }
+    },
+    {
+        CheckColorNameDefine::LDChargeTeam3,
+        QList<int>{
+            1111, 175, 184, 177, 167,
+                871, 281, 183, 176, 167
+        }
+    },
+    {
+        CheckColorNameDefine::LDDoCharge,
+        QList<int>{
+            1164, 341, 108, 176, 55,
+                871, 281, 183, 176, 167
+        }
+    },
 	{
 		CheckColorNameDefine::ExpeditionPanel,
 		QList<int>{
@@ -952,13 +987,49 @@ QMap < ActionCheckAndClickDefine::MoveMouseNameDefine, QList<int>> ActionCheckAn
 		QList<int> {
 			998, 90, 50, 10
 		}
-	},
-	{
-		MoveMouseNameDefine::SortieCommonElseButton,
-		QList<int> {
-			1093, 624, 22, 22
-		}
-	},
+    },
+    {
+        MoveMouseNameDefine::SortieCommonElseButton,
+        QList<int> {
+            1093, 624, 22, 22
+        }
+    },
+    {
+        MoveMouseNameDefine::LDCharge,
+        QList<int> {
+            350, 592, 100, 20
+        }
+    },
+    {
+        MoveMouseNameDefine::LDChargeTeam1,
+        QList<int> {
+            930, 185, 20, 10
+        }
+    },
+    {
+        MoveMouseNameDefine::LDChargeTeam2,
+        QList<int> {
+            1027, 182, 20, 10
+        }
+    },
+    {
+        MoveMouseNameDefine::LDChargeTeam3,
+        QList<int> {
+            1131, 189, 20, 10
+        }
+    },
+    {
+        MoveMouseNameDefine::LDDoCharge,
+        QList<int> {
+            1162, 327, 10, 10
+        }
+    },
+    {
+        MoveMouseNameDefine::LDAllChargeDone,
+        QList<int> {
+            368, 431, 100, 100
+        }
+    },
 	{
 		MoveMouseNameDefine::ExpeditionButton,
 		QList<int> {

@@ -164,6 +164,8 @@ public:
         int ld3ClickX = -1;
         int ld3ClickY = -1;
 
+        int tillDropShip = -1;
+
 		QList<float> areaCheckList;
 		QList<float> mapClickPoint;	// click E1~E3 or Ex button
 		QList<float> mapExCheckList;	// for Ex only
@@ -300,6 +302,7 @@ public:
 	bool isShipDamaged(int shipno);
 	bool isShipCharged(int shipno);
 	bool needChargeCondAirBase(bool checkCond);
+    int getNeedSupplyLDTeam();
 	bool isShipExist(int shipno);
 
 	int getShipLevel(int shipno);

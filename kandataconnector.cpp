@@ -512,8 +512,10 @@ void KanDataConnector::checkAirBase()
 {
 	pksd->airBaseNeedSupply = false;
 	pksd->airBaseBadCond = false;
-	for (const auto& corps : pksd->airbasedata)
-	{
+    pksd->airBaseNeedSupplyList.clear();
+
+    for (const auto& corps : pksd->airbasedata)
+    {
 		for (const auto& corp : corps)
 		{
 			if (corp.api_rid < 0)
@@ -527,7 +529,11 @@ void KanDataConnector::checkAirBase()
 					continue;
 				}
 				if (plane.api_count < plane.api_max_count)
-				{
+                {
+                    if (!pksd->airBaseNeedSupplyList.contains(corp.api_rid))
+                    {
+                        pksd->airBaseNeedSupplyList.append(corp.api_rid);
+                    }
 					pksd->airBaseNeedSupply = true;
 				}
 				if (plane.api_cond > 1)

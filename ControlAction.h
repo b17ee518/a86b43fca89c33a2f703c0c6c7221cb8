@@ -423,6 +423,14 @@ public:
 		SelectEx2MapChecking,
 		SelectEx2MapDone, // click ex map
 
+        LDChargeChecking,
+        LDChargeDone,   // click charge button
+        LDSelectTeamChecking,
+        LDSelectTeamDone,   // click team
+        LDDoChargeChecking,
+        LDDoChargeDone,
+        LDAllChargeDone,    // click somewhere
+
 		SkipBoardChecking,
 		SkipBoardDone,	// skip mission (ev only)
 

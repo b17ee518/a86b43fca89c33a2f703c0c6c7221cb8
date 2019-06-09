@@ -111,6 +111,12 @@ public:
         LDAssign2R,
         LDAssign3R,
 
+        LDCharge,
+        LDChargeTeam1,
+        LDChargeTeam2,
+        LDChargeTeam3,
+        LDDoCharge,
+
 		DevelopReadyPanel,
 	};
 
@@ -203,6 +209,13 @@ public:
         SortieCommonAirBaseROKButton,
 
 		SortieCommonElseButton,
+
+        LDCharge,
+        LDChargeTeam1,
+        LDChargeTeam2,
+        LDChargeTeam3,
+        LDDoCharge,
+        LDAllChargeDone,
 
 		ExpeditionButton,
 

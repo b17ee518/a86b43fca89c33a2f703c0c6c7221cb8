@@ -157,6 +157,13 @@ public:
 		bool autoFastRepair = false;
 		QMap<int, CellAnySetting> cells;
 
+        int ld1ClickX = -1;
+        int ld1ClickY = -1;
+        int ld2ClickX = -1;
+        int ld2ClickY = -1;
+        int ld3ClickX = -1;
+        int ld3ClickY = -1;
+
 		QList<float> areaCheckList;
 		QList<float> mapClickPoint;	// click E1~E3 or Ex button
 		QList<float> mapExCheckList;	// for Ex only
@@ -317,6 +324,7 @@ public:
 	bool shouldRetrieveForAny();
 	bool shouldAskForProceedForAny();
 	bool shouldTerminateForAny();
+    bool shouldAssignLD();
 	WoundState hugestDamageInTeam(int team);
 
 	void setSouthEastSetting(const SouthEastSetting& southEastSetting);

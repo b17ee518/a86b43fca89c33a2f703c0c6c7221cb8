@@ -508,6 +508,9 @@ public:
 		None,
 		Checking,
 
+        LDChecking,
+        LDDone,
+
 		ClickElse,
 		SelectFormation,
 		SelectCombinedFormation,
@@ -533,6 +536,8 @@ private:
 	bool _shouldRetrieve = false;
 
 	int _totalFormationCount = 0;
+
+    int _ldCheckingIndex = -1;
 
 	bool _withKeiKaiJin = false;
 };

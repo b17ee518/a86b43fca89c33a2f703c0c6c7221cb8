@@ -1174,19 +1174,49 @@ void ControlManager::LoadAnyTemplateSettings()
 					{
 						_anyTemplateSettings[pair].mapEx2CheckList.append(str.toInt(&bOk));
 					}
-				}
-				else if (!key.compare("MapEx2Click", Qt::CaseInsensitive))
-				{
-					if (splited.size() != 4)
-					{
-						// error
-						continue;
-					}
-					for (const auto& str : splited)
-					{
-						_anyTemplateSettings[pair].mapEx2ClickPoint.append(str.toInt(&bOk));
-					}
-				}
+                }
+                else if (!key.compare("MapEx2Click", Qt::CaseInsensitive))
+                {
+                    if (splited.size() != 4)
+                    {
+                        // error
+                        continue;
+                    }
+                    for (const auto& str : splited)
+                    {
+                        _anyTemplateSettings[pair].mapEx2ClickPoint.append(str.toInt(&bOk));
+                    }
+                }
+                else if (!key.compare("LD1", Qt::CaseInsensitive))
+                {
+                    if (splited.size() != 2)
+                    {
+                        // error
+                        continue;
+                    }
+                    _anyTemplateSettings[pair].ld1ClickX = splited[0].toInt(&bOk);
+                    _anyTemplateSettings[pair].ld1ClickY = splited[1].toInt(&bOk);
+                }
+                else if (!key.compare("LD2", Qt::CaseInsensitive))
+                {
+                    if (splited.size() != 2)
+                    {
+                        // error
+                        continue;
+                    }
+                    _anyTemplateSettings[pair].ld2ClickX = splited[0].toInt(&bOk);
+                    _anyTemplateSettings[pair].ld2ClickY = splited[1].toInt(&bOk);
+                }
+                else if (!key.compare("LD3", Qt::CaseInsensitive))
+                {
+                    if (splited.size() != 2)
+                    {
+                        // error
+                        continue;
+                    }
+                    _anyTemplateSettings[pair].ld3ClickX = splited[0].toInt(&bOk);
+                    _anyTemplateSettings[pair].ld3ClickY = splited[1].toInt(&bOk);
+                }
 				continue;
 			}
 
@@ -3302,6 +3332,21 @@ bool ControlManager::shouldTerminateForAny()
 		}
 	}
 	return false;
+}
+
+bool ControlManager::shouldAssignLD()
+{
+    if (_target != ActionTarget::Any)
+    {
+        return false;
+    }
+    if (_anySetting.ld1ClickX > 0 && _anySetting.ld1ClickY > 0
+            || _anySetting.ld2ClickX > 0 && _anySetting.ld2ClickY > 0
+            || _anySetting.ld3ClickX > 0 && _anySetting.ld3ClickY > 0)
+    {
+        return true;
+    }
+    return false;
 }
 
 WoundState ControlManager::hugestDamageInTeam(int team)

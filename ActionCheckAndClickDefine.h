@@ -104,6 +104,13 @@ public:
 		MissionNonConnecting,
 		MissionPanel,
 
+        LDAssign1,
+        LDAssign2,
+        LDAssign3,
+        LDAssign1R,
+        LDAssign2R,
+        LDAssign3R,
+
 		DevelopReadyPanel,
 	};
 

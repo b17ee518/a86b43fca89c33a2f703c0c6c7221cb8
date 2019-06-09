@@ -480,15 +480,57 @@ QMap < ActionCheckAndClickDefine::CheckColorNameDefine, QList<int>> ActionCheckA
 				744, 292, 17, 56, 74,
 				787, 426, 121, 254, 251
 		}
-	},
-	{
-		CheckColorNameDefine::SortieCommonLeaveOrNot,
-		QList<int>{
-			710, 419, 180, 198, 205,
-				706, 416, 41, 94, 110,
-				484, 408, 127, 251, 250
-		}
-	},
+    },
+    {
+        CheckColorNameDefine::SortieCommonLeaveOrNot,
+        QList<int>{
+            710, 419, 180, 198, 205,
+                706, 416, 41, 94, 110,
+                484, 408, 127, 251, 250
+        }
+    },
+    {
+        CheckColorNameDefine::LDAssign1,
+        QList<int>{
+            78, 129, 190, 183, 173,
+                73, 86, 74, 154, 79
+        }
+    },
+    {
+        CheckColorNameDefine::LDAssign1R,
+        QList<int>{
+            908, 132, 192, 183, 175,
+                904, 86, 74, 154, 79
+        }
+    },
+    {
+        CheckColorNameDefine::LDAssign2,
+        QList<int>{
+            169, 143, 193, 186, 176,
+                74, 93, 87, 148, 83
+        }
+    },
+    {
+        CheckColorNameDefine::LDAssign2R,
+        QList<int>{
+            1001, 142, 191, 184, 175,
+                905, 93, 87, 148, 83
+        }
+    },
+    {
+        CheckColorNameDefine::LDAssign3,
+        QList<int>{
+            270, 140, 194, 187, 177,
+                72, 79, 72, 135, 69
+        }
+    },
+    {
+        CheckColorNameDefine::LDAssign3R,
+        QList<int>{
+            1101, 140, 194, 187, 177,
+                903, 78, 74, 123, 68
+        }
+    },
 	{
 		CheckColorNameDefine::ExpeditionPanel,
 		QList<int>{

@@ -2880,11 +2880,101 @@ bool SortieCommonAdvanceAction::action()
 	{
 	case SortieCommonAdvanceAction::State::None:
 
-		setState(State::Checking, "SortieAdv:Checking");
-		resetRetryAndWainting();
-		_expectingRequest = "/kcsapi/api_port/port";
+        if (cm.shouldAssignLD())
+        {
+            setState(State::LDChecking, "SortieAdv:LDChecking");
+            resetRetryAndWainting();
+            _expectingRequest = "/kcsapi/api_req_map/start_air_base";
+        }
+        else
+        {
+            setState(State::Checking, "SortieAdv:Checking");
+            resetRetryAndWainting();
+            _expectingRequest = "/kcsapi/api_port/port";
+        }
 
 		break;
+
+    case SortieCommonAdvanceAction::State::LDChecking:
+        if (!_waiting)
+        {
+            _waiting = true;
+            if (_expectingRequest == "")
+            {
+                setState(State::Checking, "Advance:Checking");
+                resetRetryAndWainting();
+                _ldCheckingIndex = -1;
+                _expectingRequest = "/kcsapi/api_port/port";
+                break;
+            }
+            QTimer::singleShot(DELAY_TIME_LONG, Qt::PreciseTimer, this, [this, &cm]()
+            {
+                _waiting = false;
+                if (ActionCheckAndClickDefine::CheckColor(ActionCheckAndClickDefine::CheckColorNameDefine::LDAssign1)
+                        || ActionCheckAndClickDefine::CheckColor(ActionCheckAndClickDefine::CheckColorNameDefine::LDAssign1R))
+                {
+                    _ldCheckingIndex = 0;
+                    setState(State::LDDone, "SortieAdv:ClickLD");
+                }
+                else if (ActionCheckAndClickDefine::CheckColor(ActionCheckAndClickDefine::CheckColorNameDefine::LDAssign2)
+                         || ActionCheckAndClickDefine::CheckColor(ActionCheckAndClickDefine::CheckColorNameDefine::LDAssign2R))
+                {
+                    _ldCheckingIndex = 1;
+                    setState(State::LDDone, "SortieAdv:ClickLD");
+                }
+                else if (ActionCheckAndClickDefine::CheckColor(ActionCheckAndClickDefine::CheckColorNameDefine::LDAssign3)
+                         || ActionCheckAndClickDefine::CheckColor(ActionCheckAndClickDefine::CheckColorNameDefine::LDAssign3R))
+                {
+                    _ldCheckingIndex = 2;
+                    setState(State::LDDone, "SortieAdv:ClickLD");
+                }
+                // airbase
+                else if (ActionCheckAndClickDefine::CheckColor(ActionCheckAndClickDefine::CheckColorNameDefine::SortieCommonAirBaseSelectDone))
+                {
+                    setState(State::ClickAirBaseOK, "SortieAdv:ClickAirBaseOK");
+                }
+                // airbase
+                else if (ActionCheckAndClickDefine::CheckColor(ActionCheckAndClickDefine::CheckColorNameDefine::SortieCommonAirBaseSelectDoneR))
+                {
+                    setState(State::ClickAirBaseROK, "SortieAdv:ClickAirBaseROK");
+                }
+            });
+        }
+
+        break;
+    case SortieCommonAdvanceAction::State::LDDone:
+        if (!_waiting)
+        {
+            _waiting = true;
+            QTimer::singleShot(DELAY_TIME_CLICK, Qt::PreciseTimer, this, [this, &cm]()
+            {
+
+                const auto& setting = cm.getAnySetting();
+                QList<float> ldXs;
+                QList<float> ldYs;
+                ldXs.append(setting.ld1ClickX);
+                ldXs.append(setting.ld2ClickX);
+                ldXs.append(setting.ld3ClickX);
+                ldYs.append(setting.ld1ClickY);
+                ldYs.append(setting.ld2ClickY);
+                ldYs.append(setting.ld3ClickY);
+
+
+                if (_ldCheckingIndex >= 0 && !cm.isInBattle && ldXs[_ldCheckingIndex] > 0 && ldYs[_ldCheckingIndex] > 0)
+                {
+                    cm.moveMouseToAndClick(ldXs[_ldCheckingIndex], ldYs[_ldCheckingIndex]);
+                }
+                else
+                {
+                    ActionCheckAndClickDefine::MoveAndClick(ActionCheckAndClickDefine::MoveMouseNameDefine::SortieCommonElseButton);
+                }
+
+                setState(State::LDChecking, "SortieAdv:LDChecking");
+                resetRetryAndWainting();
+            });
+        }
+        break;
+
 	case SortieCommonAdvanceAction::State::Checking:
 		if (!_waiting)
 		{
@@ -3236,8 +3326,15 @@ bool SortieCommonAdvanceAction::action()
 			_waiting = true;
 			QTimer::singleShot(DELAY_TIME_CLICK, Qt::PreciseTimer, this, [this, &cm]()
 			{
-				ActionCheckAndClickDefine::MoveAndClick(ActionCheckAndClickDefine::MoveMouseNameDefine::SortieCommonAirBaseOKButton); // right button
-				setStateToChecking();
+                ActionCheckAndClickDefine::MoveAndClick(ActionCheckAndClickDefine::MoveMouseNameDefine::SortieCommonAirBaseOKButton); // right button
+                if (_ldCheckingIndex >= 0)
+                {
+                    setState(State::LDChecking, "SortieAdv:LDChecking");
+                }
+                else
+                {
+                    setStateToChecking();
+                }
 				resetRetryAndWainting();
 			});
 		}
@@ -3249,8 +3346,15 @@ bool SortieCommonAdvanceAction::action()
 			_waiting = true;
 			QTimer::singleShot(DELAY_TIME_CLICK, Qt::PreciseTimer, this, [this, &cm]()
 			{
-				ActionCheckAndClickDefine::MoveAndClick(ActionCheckAndClickDefine::MoveMouseNameDefine::SortieCommonAirBaseROKButton); // right button
-				setStateToChecking();
+                ActionCheckAndClickDefine::MoveAndClick(ActionCheckAndClickDefine::MoveMouseNameDefine::SortieCommonAirBaseROKButton); // right button
+                if (_ldCheckingIndex >= 0)
+                {
+                    setState(State::LDChecking, "SortieAdv:LDChecking");
+                }
+                else
+                {
+                    setStateToChecking();
+                }
 				resetRetryAndWainting();
 			});
 		}

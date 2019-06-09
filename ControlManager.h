@@ -157,6 +157,8 @@ public:
 		bool autoFastRepair = false;
 		QMap<int, CellAnySetting> cells;
 
+        bool swapLowCond = false;
+
         int ld1ClickX = -1;
         int ld1ClickY = -1;
         int ld2ClickX = -1;

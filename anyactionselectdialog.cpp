@@ -36,8 +36,9 @@ AnyActionSelectDialog::AnyActionSelectDialog(QWidget *parent)
 	connect(restoreToDefaultButton, SIGNAL(clicked()), this, SLOT(slotOnRestoreToDefault()));
 
 	ui->leCount->setText(QString::number(ControlManager::getInstance().getAnySetting().count));
-	ui->leSSOnlyCount->setText(QString::number(ControlManager::getInstance().getAnySetting().onlySSTeamSize));
-	ui->cbAutoFastRepair->setChecked(ControlManager::getInstance().getAnySetting().autoFastRepair);
+    ui->leSSOnlyCount->setText(QString::number(ControlManager::getInstance().getAnySetting().onlySSTeamSize));
+    ui->cbAutoFastRepair->setChecked(ControlManager::getInstance().getAnySetting().autoFastRepair);
+    ui->cbSwapLowCond->setChecked(ControlManager::getInstance().getAnySetting().swapLowCond);
 	ui->cbAirBaseCond->setChecked(ControlManager::getInstance().getAnySetting().checkAirBaseCond);
 	ui->cbCond->setChecked(ControlManager::getInstance().getAnySetting().checkCond);
 	ui->cbMiddleDamage->setChecked(ControlManager::getInstance().getAnySetting().allowMiddleDamageSortie);
@@ -180,7 +181,12 @@ void AnyActionSelectDialog::slotOnRestoreToDefault()
 
 bool AnyActionSelectDialog::isAutoFastRepair()
 {
-	return ui->cbAutoFastRepair->isChecked();
+    return ui->cbAutoFastRepair->isChecked();
+}
+
+bool AnyActionSelectDialog::isSwapLowCond()
+{
+    return ui->cbSwapLowCond->isChecked();
 }
 
 bool AnyActionSelectDialog::isCheckAirBaseCond()

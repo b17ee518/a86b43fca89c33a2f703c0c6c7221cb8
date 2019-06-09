@@ -191,9 +191,10 @@ void MainWindow::onDoJobAny()
 				{
 					setting = cm.getAnyTemplateSetting(area, map);
 					setting.count = dialog->getCountSet();
-					//setting.onlySSTeamSize = dialog->getOnlySSTeamSize();
-					setting.autoFastRepair = dialog->isAutoFastRepair();
-					setting.checkAirBaseCond = dialog->isCheckAirBaseCond();
+                    //setting.onlySSTeamSize = dialog->getOnlySSTeamSize();
+                    setting.autoFastRepair = dialog->isAutoFastRepair();
+                    setting.swapLowCond = dialog->isSwapLowCond();
+					setting.checkAirBaseCond = dialog->isCheckAirBaseCond();                    
 					setting.checkCond = dialog->isCheckCond();
 					setting.allowMiddleDamageSortie = dialog->isAllowMiddle();
 					setting.pauseAtStartMap = dialog->isPauseStartMap();
@@ -233,6 +234,7 @@ void MainWindow::onDoJobAny()
 	setting.count = dialog->getCountSet();
 	setting.onlySSTeamSize = dialog->getOnlySSTeamSize();
 	setting.autoFastRepair = dialog->isAutoFastRepair();
+    setting.swapLowCond = dialog->isSwapLowCond();
 	setting.checkAirBaseCond = dialog->isCheckAirBaseCond();
 	setting.checkCond = dialog->isCheckCond();
 	setting.allowMiddleDamageSortie = dialog->isAllowMiddle();

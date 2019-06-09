@@ -1404,6 +1404,7 @@ bool ControlManager::BuildNext_Any(bool advanceOnly)
 
 		QList<int> ships;
 		int minCond = std::numeric_limits<int>::max();
+        int minCondShipId = -1;
 		int shipCount = 0;
 
 		if (_anySetting.onlySSTeamSize > 0)
@@ -1431,7 +1432,7 @@ bool ControlManager::BuildNext_Any(bool advanceOnly)
 			chAction->setShips(ships);
 			_actionList.append(chAction);
 
-		}
+        }
 		else
 		{
 			if (pksd->portdata.api_deck_port.size())
@@ -1450,7 +1451,7 @@ bool ControlManager::BuildNext_Any(bool advanceOnly)
 					}
 				}
 			}
-		}
+        }
 
 		if (ships.count() == 0)
 		{
@@ -1470,6 +1471,7 @@ bool ControlManager::BuildNext_Any(bool advanceOnly)
 					if (!fastRepairShips.contains(pship->api_id))
 					{
 						minCond = pship->api_cond;
+                        minCondShipId = id;
 					}
 				}
 
@@ -1485,15 +1487,27 @@ bool ControlManager::BuildNext_Any(bool advanceOnly)
 				}
 			}
 
-			if (minCond <= _sortieMinCond && _anySetting.checkCond)
-			{
-				// wait
-				qint64 waitMS = qCeil((_sortieWaitCond - minCond) / 3.0) * 3 * 60 * 1000;
-				auto waitAction = new WaitCondAction();
-				waitAction->setWaitMS(waitMS, false);
-				_actionList.append(waitAction);
-			}
 		}
+
+        if (minCond <= _sortieMinCond && _anySetting.checkCond)
+        {
+            // wait
+            qint64 waitMS = qCeil((_sortieWaitCond - minCond) / 3.0) * 3 * 60 * 1000;
+            auto waitAction = new WaitCondAction();
+            waitAction->setWaitMS(waitMS, false);
+            _actionList.append(waitAction);
+        }
+        if (_anySetting.swapLowCond && minCondShipId > 0 && ships[0] != minCondShipId)
+        {
+            int index = ships.indexOf(minCondShipId);
+            int flagship = ships[0];
+            ships[0] = minCondShipId;
+            ships[index] = flagship;
+            auto chAction = new ChangeHenseiAction();
+            chAction->setShips(ships);
+            _actionList.append(chAction);
+        }
+
 		SortieAction* sortieAction = new SortieAction();
 		sortieAction->setAreaAndMap(_anySetting.area, _anySetting.map
 			, _anySetting.areaCheckList, _anySetting.mapClickPoint

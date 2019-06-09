@@ -24,7 +24,8 @@ public:
 
 	QString getRestoreSetting();
 
-	bool isAutoFastRepair();
+    bool isAutoFastRepair();
+    bool isSwapLowCond();
 	bool isCheckAirBaseCond();
 	bool isCheckCond();
 	bool isAllowMiddle();

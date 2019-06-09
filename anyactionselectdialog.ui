@@ -354,7 +354,7 @@
         <property name="maximumSize">
          <size>
           <width>16777215</width>
-          <height>85</height>
+          <height>100</height>
          </size>
         </property>
         <property name="title">
@@ -384,6 +384,13 @@
           </widget>
          </item>
          <item>
+          <widget class="QCheckBox" name="cbSwapLowCond">
+           <property name="text">
+            <string>SwapLowCond</string>
+           </property>
+          </widget>
+         </item>
+         <item>
           <widget class="QCheckBox" name="cbMiddleDamage">
            <property name="text">
             <string>Middle</string>
@@ -405,7 +412,7 @@
         <property name="maximumSize">
          <size>
           <width>16777215</width>
-          <height>55</height>
+          <height>65</height>
          </size>
         </property>
         <property name="title">

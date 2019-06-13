@@ -157,18 +157,19 @@ public:
 		bool autoFastRepair = false;
 		QMap<int, CellAnySetting> cells;
 
-        bool swapLowCond = false;
+		bool swapLowCond = false;
 
-        bool shouldStopAfterCharge = false;
+		bool shouldStopAfterCharge = false;
+		bool waitForFullCond = false;
 
-        int ld1ClickX = -1;
-        int ld1ClickY = -1;
-        int ld2ClickX = -1;
-        int ld2ClickY = -1;
-        int ld3ClickX = -1;
-        int ld3ClickY = -1;
+		int ld1ClickX = -1;
+		int ld1ClickY = -1;
+		int ld2ClickX = -1;
+		int ld2ClickY = -1;
+		int ld3ClickX = -1;
+		int ld3ClickY = -1;
 
-        int tillDropShip = -1;
+		int tillDropShip = -1;
 
 		QList<float> areaCheckList;
 		QList<float> mapClickPoint;	// click E1~E3 or Ex button
@@ -228,7 +229,7 @@ public:
 
 	void pushPreSupplyCheck();
 
-    QList<int> pushPreRepairCheck(QList<int>& willBeInDockList, bool bForceUseFastRepair, bool onlyInTeam, bool onlyShortSevere, bool onlySmallShip, bool onlySevere, int useSlotUpTo = 3);
+	QList<int> pushPreRepairCheck(QList<int>& willBeInDockList, bool bForceUseFastRepair, bool onlyInTeam, bool onlyShortSevere, bool onlySmallShip, bool onlySevere, int useSlotUpTo = 3, bool fastRepairSmallDamage = false);
 
 	QList<int> pushPreShipFullCheck();
 
@@ -248,7 +249,7 @@ public:
 	bool switchToGreedyMission();
 
 	void LoadAnyTemplateSettings();
-    bool BuildNext_Any(bool onlyAdvance, bool stopAfterCharge);
+	bool BuildNext_Any(bool onlyAdvance, bool stopAfterCharge);
 
 	bool LoadExpeditionPossibleList(); // TODO
 	bool BuildNext_Expedition();
@@ -277,7 +278,7 @@ public:
 	bool checkShouldAutoWait();
 	void setupAutoExpedition();
 
-	bool isTerminated(){ return _state == State::Terminated; }
+	bool isTerminated() { return _state == State::Terminated; }
 
 	void setToTerminate(const char* title, bool forceSound = false, RemoteNotifyHandler::Level overrideLevel = RemoteNotifyHandler::Level::Invalid);
 
@@ -301,12 +302,12 @@ public:
 	bool isLowCond(int shipno);
 	bool isShipInOtherTeam(int shipno, int team, bool excludeOnBoardingExpedition = false);
 	bool isShipInTeam(int shipno, int team);
-    bool isShipAnyFlagShip(int shipno);
+	bool isShipAnyFlagShip(int shipno);
 	bool isShipInDock(int shipno, qint64* completeTime = nullptr);
 	bool isShipDamaged(int shipno);
 	bool isShipCharged(int shipno);
 	bool needChargeCondAirBase(bool checkCond);
-    int getNeedSupplyLDTeam();
+	int getNeedSupplyLDTeam();
 	bool isShipExist(int shipno);
 
 	int getShipLevel(int shipno);
@@ -331,7 +332,7 @@ public:
 	bool shouldRetrieveForAny();
 	bool shouldAskForProceedForAny();
 	bool shouldTerminateForAny();
-    bool shouldAssignLD();
+	bool shouldAssignLD();
 	WoundState hugestDamageInTeam(int team);
 
 	void setSouthEastSetting(const SouthEastSetting& southEastSetting);
@@ -339,14 +340,14 @@ public:
 	void setAnySetting(const AnySetting& anySetting);
 	void setDevelopSetting(const DevelopSetting& developSetting);
 
-	bool isRunning(){ return _state == State::Started; }
+	bool isRunning() { return _state == State::Started; }
 	bool isActiveRunning();
 	bool isInactiveWaiting() { return _inactiveWaiting; }
 
 	bool checkColors(const QList<CheckColor>& checklist);
 	QRgb getColorAtPosition(const QPoint& pt);
 
-    void setDPIScale(float scale) {_dpiScale = scale;}
+	void setDPIScale(float scale) { _dpiScale = scale; }
 
 	bool checkColors(int x, int y, int r, int g, int b)
 	{
@@ -373,27 +374,27 @@ public:
 		return checkColors(lst);
 	}
 
-	inline bool isKiraMode(){ return _target == ActionTarget::Kira; }
-	inline bool isFuelMode(){ return _target == ActionTarget::Fuel; }
-	inline bool isSouthEastMode(){ return _target == ActionTarget::SouthEast; }
-	inline bool isLevelMode(){ return _target == ActionTarget::Level; }
-	inline bool isExpeditionMode(){ return _target == ActionTarget::Expedition; }
-	inline bool isRankMode(){ return _target == ActionTarget::Rank; }
-	inline bool isAnyMode(){ return _target == ActionTarget::Any; }
-	inline bool isDestroyMode(){ return _target == ActionTarget::Destroy; }
-	inline bool isRepairMode(){ return _target == ActionTarget::Repair; }
-	inline bool isDevelopMode(){ return _target == ActionTarget::Develop; }
-	inline bool isMorningMode(){ return _parentTarget == ActionTarget::Morning; }
-	inline bool isMissionMode(){ return _target == ActionTarget::Mission; }
-	inline bool isRestoreHenseiMode(){ return _target == ActionTarget::RestoreHensei; }
+	inline bool isKiraMode() { return _target == ActionTarget::Kira; }
+	inline bool isFuelMode() { return _target == ActionTarget::Fuel; }
+	inline bool isSouthEastMode() { return _target == ActionTarget::SouthEast; }
+	inline bool isLevelMode() { return _target == ActionTarget::Level; }
+	inline bool isExpeditionMode() { return _target == ActionTarget::Expedition; }
+	inline bool isRankMode() { return _target == ActionTarget::Rank; }
+	inline bool isAnyMode() { return _target == ActionTarget::Any; }
+	inline bool isDestroyMode() { return _target == ActionTarget::Destroy; }
+	inline bool isRepairMode() { return _target == ActionTarget::Repair; }
+	inline bool isDevelopMode() { return _target == ActionTarget::Develop; }
+	inline bool isMorningMode() { return _parentTarget == ActionTarget::Morning; }
+	inline bool isMissionMode() { return _target == ActionTarget::Mission; }
+	inline bool isRestoreHenseiMode() { return _target == ActionTarget::RestoreHensei; }
 
 	void setState(State state, const char* str, bool bSilent = false, bool forceSound = false);
-	void setInactiveWaiting(bool waiting){ _inactiveWaiting = waiting; }
+	void setInactiveWaiting(bool waiting) { _inactiveWaiting = waiting; }
 
 	void setStateStr(const QString& str);
-	inline const QString& getStateStr(){ return _stateStr; }
+	inline const QString& getStateStr() { return _stateStr; }
 
-	double getIntervalMul(){ return _intervalMul; }
+	double getIntervalMul() { return _intervalMul; }
 	void setIntervalMul(double val)
 	{
 		_intervalMul = val;
@@ -403,22 +404,22 @@ public:
 		}
 	}
 
-	inline void setLevelNoWait(bool bNoWait){ _levelNoWait = bNoWait; }
-	inline bool getLevelNoWait(){ return _levelNoWait; }
+	inline void setLevelNoWait(bool bNoWait) { _levelNoWait = bNoWait; }
+	inline bool getLevelNoWait() { return _levelNoWait; }
 
-	inline void setShouldAutoExpedition(bool bAuto){ _shouldAutoSwitchToExpeditionFlag = bAuto; }
-	inline bool shouldAutoExpedition(){ return _shouldAutoSwitchToExpeditionFlag; }
+	inline void setShouldAutoExpedition(bool bAuto) { _shouldAutoSwitchToExpeditionFlag = bAuto; }
+	inline bool shouldAutoExpedition() { return _shouldAutoSwitchToExpeditionFlag; }
 
-	inline bool isAutoExpeditioning(){ return _autoExpeditioningFlag; }
+	inline bool isAutoExpeditioning() { return _autoExpeditioningFlag; }
 
 	bool switchBackToLastAction();
 	void clearLastTarget();
 	void clearParentTarget();
 
-	const KiraSetting& getKiraSetting(){ return _kiraSetting; }
-	const SouthEastSetting& getSouthEastSetting(){ return _southEastSetting; }
-	const LevelSetting& getLevelSetting(){ return _levelSetting; }
-	const ExpeditionSetting& getExpeditionSetting(){ return _expeditionSetting; }
+	const KiraSetting& getKiraSetting() { return _kiraSetting; }
+	const SouthEastSetting& getSouthEastSetting() { return _southEastSetting; }
+	const LevelSetting& getLevelSetting() { return _levelSetting; }
+	const ExpeditionSetting& getExpeditionSetting() { return _expeditionSetting; }
 	const RankSetting& getRankSetting() { return _rankSetting; }
 	const AnySetting& getAnySetting() { return _anySetting; }
 	const DevelopSetting& getDevelopSetting() { return _developSetting; }
@@ -432,27 +433,27 @@ public:
 	void moveMouseTo(float x, float y, float offsetX = 5, float offsetY = 3);
 
 	void setPauseNextVal(bool bVal);
-	inline bool getPauseNextVal(){ return _pauseNext; }
+	inline bool getPauseNextVal() { return _pauseNext; }
 
 	void waitForResponse(const QString& api);
 
 	qreal randVal(qreal min, qreal max);
 
-	bool isPortDataDirty(){ return _isPortDataDirty; }
+	bool isPortDataDirty() { return _isPortDataDirty; }
 	void setPortDataDirty();
 	void clearPortDataDirtyFlag();
 
-	bool toggleShouldAutoPushRepair(){ _shouldAutoPushRepair = !_shouldAutoPushRepair; return _shouldAutoPushRepair; }
-    bool shouldAutoPushRepair(){ return _shouldAutoPushRepair; }
+	bool toggleShouldAutoPushRepair() { _shouldAutoPushRepair = !_shouldAutoPushRepair; return _shouldAutoPushRepair; }
+	bool shouldAutoPushRepair() { return _shouldAutoPushRepair; }
 
-    bool isInBattle = false;
+	bool isInBattle = false;
 
 public:
 	static QMap<int, int> areaIndexMap;
 
 private:
 
-    bool _shouldAutoPushRepair = true;
+	bool _shouldAutoPushRepair = true;
 
 	bool _isPortDataDirty = true;
 
@@ -479,6 +480,7 @@ private:
 
 	int _sortieMinCond = 30;
 	int _sortieWaitCond = 40;
+	int _sortieFullCond = 49;
 
 	bool _levelNoWait = false;
 
@@ -496,7 +498,7 @@ private:
 	MissionSetting _missionSetting;
 	RestoreHenseiSetting _restoreHenseiSetting;
 
-    float _dpiScale = 1.0f;
+	float _dpiScale = 1.0f;
 
 	QMap<QPair<int, int>, AnySetting> _anyTemplateSettings;
 };

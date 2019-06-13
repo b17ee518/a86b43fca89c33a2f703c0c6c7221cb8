@@ -57,7 +57,7 @@ bool ControlManager::BuildNext_Kira()
 
 	pushPreSupplyCheck();
 	QList<int> willBeInDockList;
-    pushPreRepairCheck(willBeInDockList, false, false, false, true, false);
+	pushPreRepairCheck(willBeInDockList, false, false, false, true, false);
 	if (_kiraSetting.forceCurrent)
 	{
 		_todoKiraShipids.clear();
@@ -183,7 +183,7 @@ bool ControlManager::BuildNext_Fuel()
 		useUpToDockSize = 4;
 	}
 
-    pushPreRepairCheck(willBeInDockList, false, false, true, true, false, useUpToDockSize);
+	pushPreRepairCheck(willBeInDockList, false, false, true, true, false, useUpToDockSize);
 
 	if (stopWhenHit)
 	{
@@ -485,7 +485,7 @@ bool ControlManager::BuildNext_Level()
 	_target = ActionTarget::Level;
 	pushPreSupplyCheck();
 	QList<int> willBeInDockList;
-    pushPreRepairCheck(willBeInDockList, false, false, true, true, false);
+	pushPreRepairCheck(willBeInDockList, false, false, true, true, false);
 
 	KanSaveData* pksd = &KanSaveData::getInstance();
 	KanDataConnector* pkdc = &KanDataConnector::getInstance();
@@ -647,7 +647,7 @@ bool ControlManager::BuildNext_Rank()
 	pushPreSupplyCheck();
 
 	QList<int> willBeInDockList;
-    auto fastRepairShips = pushPreRepairCheck(willBeInDockList, true, true, false, false, false);
+	auto fastRepairShips = pushPreRepairCheck(willBeInDockList, true, true, false, false, false);
 
 	KanSaveData* pksd = &KanSaveData::getInstance();
 	KanDataConnector* pkdc = &KanDataConnector::getInstance();
@@ -753,7 +753,7 @@ bool ControlManager::BuildNext_Morning(bool isFromRepeating)
 	pushPreSupplyCheck();
 
 	QList<int> willBeInDockList;
-    pushPreRepairCheck(willBeInDockList, false, false, true, true, false);
+	pushPreRepairCheck(willBeInDockList, false, false, true, true, false);
 
 	pushPreShipFullCheck();
 
@@ -954,7 +954,7 @@ bool ControlManager::BuildNext_Morning(bool isFromRepeating)
 			LoadAnyTemplateSettings();
 			AnySetting setting = getAnyTemplateSetting(2, 2);
 			setting.onlySSTeamSize = 3;
-			
+
 			setting.count = 2;
 			if (_missionSetting.acceptedMissionList.count((int)MissionDefines::YuSou5))
 			{
@@ -1038,7 +1038,7 @@ bool ControlManager::BuildNext_Mission()
 	pushPreSupplyCheck();
 
 	QList<int> willBeInDockList;
-    pushPreRepairCheck(willBeInDockList, false, false, true, true, false);
+	pushPreRepairCheck(willBeInDockList, false, false, true, true, false);
 
 	pushPreShipFullCheck();
 
@@ -1071,7 +1071,7 @@ void ControlManager::LoadAnyTemplateSettings()
 {
 	_anyTemplateSettings.clear();
 
-    QString filename = MainWindow::getAbsoluteResourcePath();
+	QString filename = MainWindow::getAbsoluteResourcePath();
 	filename += "/action/anysettings.ini";
 	QSettings* setting = new QSettings(filename, QSettings::IniFormat);
 	setting->setIniCodec("UTF-8");
@@ -1174,57 +1174,61 @@ void ControlManager::LoadAnyTemplateSettings()
 					{
 						_anyTemplateSettings[pair].mapEx2CheckList.append(str.toInt(&bOk));
 					}
-                }
-                else if (!key.compare("MapEx2Click", Qt::CaseInsensitive))
-                {
-                    if (splited.size() != 4)
-                    {
-                        // error
-                        continue;
-                    }
-                    for (const auto& str : splited)
-                    {
-                        _anyTemplateSettings[pair].mapEx2ClickPoint.append(str.toInt(&bOk));
-                    }
-                }
-                else if (!key.compare("LD1", Qt::CaseInsensitive))
-                {
-                    if (splited.size() != 2)
-                    {
-                        // error
-                        continue;
-                    }
-                    _anyTemplateSettings[pair].ld1ClickX = splited[0].toInt(&bOk);
-                    _anyTemplateSettings[pair].ld1ClickY = splited[1].toInt(&bOk);
-                }
-                else if (!key.compare("LD2", Qt::CaseInsensitive))
-                {
-                    if (splited.size() != 2)
-                    {
-                        // error
-                        continue;
-                    }
-                    _anyTemplateSettings[pair].ld2ClickX = splited[0].toInt(&bOk);
-                    _anyTemplateSettings[pair].ld2ClickY = splited[1].toInt(&bOk);
-                }
-                else if (!key.compare("LD3", Qt::CaseInsensitive))
-                {
-                    if (splited.size() != 2)
-                    {
-                        // error
-                        continue;
-                    }
-                    _anyTemplateSettings[pair].ld3ClickX = splited[0].toInt(&bOk);
-                    _anyTemplateSettings[pair].ld3ClickY = splited[1].toInt(&bOk);
-                }
-                else if (!key.compare("TillDrop", Qt::CaseInsensitive))
-                {
-                    _anyTemplateSettings[pair].tillDropShip = splited[0].toInt(&bOk);
-                }
-                else if (!key.compare("Stop", Qt::CaseInsensitive))
-                {
-                    _anyTemplateSettings[pair].shouldStopAfterCharge = splited[0].toInt(&bOk);
-                }
+				}
+				else if (!key.compare("MapEx2Click", Qt::CaseInsensitive))
+				{
+					if (splited.size() != 4)
+					{
+						// error
+						continue;
+					}
+					for (const auto& str : splited)
+					{
+						_anyTemplateSettings[pair].mapEx2ClickPoint.append(str.toInt(&bOk));
+					}
+				}
+				else if (!key.compare("LD1", Qt::CaseInsensitive))
+				{
+					if (splited.size() != 2)
+					{
+						// error
+						continue;
+					}
+					_anyTemplateSettings[pair].ld1ClickX = splited[0].toInt(&bOk);
+					_anyTemplateSettings[pair].ld1ClickY = splited[1].toInt(&bOk);
+				}
+				else if (!key.compare("LD2", Qt::CaseInsensitive))
+				{
+					if (splited.size() != 2)
+					{
+						// error
+						continue;
+					}
+					_anyTemplateSettings[pair].ld2ClickX = splited[0].toInt(&bOk);
+					_anyTemplateSettings[pair].ld2ClickY = splited[1].toInt(&bOk);
+				}
+				else if (!key.compare("LD3", Qt::CaseInsensitive))
+				{
+					if (splited.size() != 2)
+					{
+						// error
+						continue;
+					}
+					_anyTemplateSettings[pair].ld3ClickX = splited[0].toInt(&bOk);
+					_anyTemplateSettings[pair].ld3ClickY = splited[1].toInt(&bOk);
+				}
+				else if (!key.compare("TillDrop", Qt::CaseInsensitive))
+				{
+					_anyTemplateSettings[pair].tillDropShip = splited[0].toInt(&bOk);
+				}
+				else if (!key.compare("Stop", Qt::CaseInsensitive))
+				{
+					_anyTemplateSettings[pair].shouldStopAfterCharge = splited[0].toInt(&bOk);
+				}
+				else if (!key.compare("FullCond", Qt::CaseInsensitive))
+				{
+					_anyTemplateSettings[pair].waitForFullCond = splited[0].toInt(&bOk);
+				}
 				continue;
 			}
 
@@ -1315,7 +1319,7 @@ bool ControlManager::BuildNext_RestoreHensei()
 	// load ini to restoreShips
 	if (!_restoreHenseiSetting.restoreSettingText.isEmpty())
 	{
-        QString filename = MainWindow::getAbsoluteResourcePath();
+		QString filename = MainWindow::getAbsoluteResourcePath();
 		filename += "/action/restorehenseisettings.ini";
 		QSettings* setting = new QSettings(filename, QSettings::IniFormat);
 		setting->setIniCodec("UTF-8");
@@ -1376,11 +1380,11 @@ bool ControlManager::BuildNext_Any(bool advanceOnly, bool stopAfterCharge)
 		QList<int> fastRepairShips;
 		if (_anySetting.autoFastRepair)
 		{
-            fastRepairShips = pushPreRepairCheck(willBeInDockList, true, true, false, false, _anySetting.allowMiddleDamageSortie);
+			fastRepairShips = pushPreRepairCheck(willBeInDockList, true, true, false, false, _anySetting.allowMiddleDamageSortie, 3, _anySetting.waitForFullCond);
 		}
 		else if (_anySetting.onlySSTeamSize > 0)
 		{
-            pushPreRepairCheck(willBeInDockList, false, false, true, true, _anySetting.allowMiddleDamageSortie);
+			pushPreRepairCheck(willBeInDockList, false, false, true, true, _anySetting.allowMiddleDamageSortie, 3, _anySetting.waitForFullCond);
 		}
 
 		KanSaveData* pksd = &KanSaveData::getInstance();
@@ -1400,15 +1404,15 @@ bool ControlManager::BuildNext_Any(bool advanceOnly, bool stopAfterCharge)
 			return false;
 		}
 
-        if (_anySetting.tillDropShip > 0 && pksd->battleresultdata.api_get_ship.api_ship_id == _anySetting.tillDropShip)
-        {
-            setToTerminate("Terminated:Dropped", false, RemoteNotifyHandler::Level::High);
-            return false;
-        }
+		if (_anySetting.tillDropShip > 0 && pksd->battleresultdata.api_get_ship.api_ship_id == _anySetting.tillDropShip)
+		{
+			setToTerminate("Terminated:Dropped", false, RemoteNotifyHandler::Level::High);
+			return false;
+		}
 
 		QList<int> ships;
 		int minCond = std::numeric_limits<int>::max();
-        int minCondShipId = -1;
+		int minCondShipId = -1;
 		int shipCount = 0;
 
 		if (_anySetting.onlySSTeamSize > 0)
@@ -1436,12 +1440,12 @@ bool ControlManager::BuildNext_Any(bool advanceOnly, bool stopAfterCharge)
 			chAction->setShips(ships);
 			_actionList.append(chAction);
 
-        }
+		}
 		else
 		{
 			if (pksd->portdata.api_deck_port.size())
 			{
-                Q_FOREACH (const auto& deck, pksd->portdata.api_deck_port)
+				Q_FOREACH(const auto& deck, pksd->portdata.api_deck_port)
 				{
 					if (deck.api_id == _anySetting.team)
 					{
@@ -1455,7 +1459,7 @@ bool ControlManager::BuildNext_Any(bool advanceOnly, bool stopAfterCharge)
 					}
 				}
 			}
-        }
+		}
 
 		if (ships.count() == 0)
 		{
@@ -1475,7 +1479,7 @@ bool ControlManager::BuildNext_Any(bool advanceOnly, bool stopAfterCharge)
 					if (!fastRepairShips.contains(pship->api_id))
 					{
 						minCond = pship->api_cond;
-                        minCondShipId = id;
+						minCondShipId = id;
 					}
 				}
 
@@ -1493,50 +1497,62 @@ bool ControlManager::BuildNext_Any(bool advanceOnly, bool stopAfterCharge)
 
 		}
 
-        if (_anySetting.swapLowCond && minCondShipId > 0 && ships[0] != minCondShipId)
-        {
-            int index = ships.indexOf(minCondShipId);
-            int flagship = ships[0];
-            ships[0] = minCondShipId;
-            ships[index] = flagship;
-            auto chAction = new ChangeHenseiAction();
-            chAction->setShips(ships);
-            _actionList.append(chAction);
-        }
-        if (!stopAfterCharge)
-        {
-            if (minCond <= _sortieMinCond && _anySetting.checkCond)
-            {
-                // wait
-                qint64 waitMS = qCeil((_sortieWaitCond - minCond) / 3.0) * 3 * 60 * 1000;
-                auto waitAction = new WaitCondAction();
-                waitAction->setWaitMS(waitMS, false);
-                _actionList.append(waitAction);
-            }
+		if (_anySetting.swapLowCond && minCondShipId > 0 && ships[0] != minCondShipId)
+		{
+			int index = ships.indexOf(minCondShipId);
+			int flagship = ships[0];
+			ships[0] = minCondShipId;
+			ships[index] = flagship;
+			auto chAction = new ChangeHenseiAction();
+			chAction->setShips(ships);
+			_actionList.append(chAction);
+		}
+		if (!stopAfterCharge)
+		{
+			if (_anySetting.checkCond)
+			{
+				if (_anySetting.waitForFullCond && minCond < _sortieFullCond)
+				{
+					// wait
+					qint64 waitMS = qCeil((_sortieFullCond - minCond) / 3.0) * 3 * 60 * 1000;
+					auto waitAction = new WaitCondAction();
+					waitAction->setWaitMS(waitMS, false);
+					_actionList.append(waitAction);
+				}
+				else if (minCond <= _sortieMinCond)
+				{
+					// wait
+					qint64 waitMS = qCeil((_sortieWaitCond - minCond) / 3.0) * 3 * 60 * 1000;
+					auto waitAction = new WaitCondAction();
+					waitAction->setWaitMS(waitMS, false);
+					_actionList.append(waitAction);
+				}
+			}
 
-            SortieAction* sortieAction = new SortieAction();
-            sortieAction->setAreaAndMap(_anySetting.area, _anySetting.map
-                , _anySetting.areaCheckList, _anySetting.mapClickPoint
-                , _anySetting.mapExCheckList, _anySetting.mapExClickPoint
-                , _anySetting.mapEx2CheckList, _anySetting.mapEx2ClickPoint);
-            sortieAction->setTeam(_anySetting.team);
-            sortieAction->setShouldPauseNext(_anySetting.pauseAtStartMap);
-            _actionList.append(sortieAction);
-        }
+
+			SortieAction* sortieAction = new SortieAction();
+			sortieAction->setAreaAndMap(_anySetting.area, _anySetting.map
+				, _anySetting.areaCheckList, _anySetting.mapClickPoint
+				, _anySetting.mapExCheckList, _anySetting.mapExClickPoint
+				, _anySetting.mapEx2CheckList, _anySetting.mapEx2ClickPoint);
+			sortieAction->setTeam(_anySetting.team);
+			sortieAction->setShouldPauseNext(_anySetting.pauseAtStartMap);
+			_actionList.append(sortieAction);
+		}
 	}
 
-    if (!stopAfterCharge)
-    {
-        _actionList.append(new SortieCommonAdvanceAction());
-        _actionList.append(new ChargeAction());
-        if (!advanceOnly)
-        {
-            _actionList.append(new RepeatAction());
-        }
-    }
+	if (!stopAfterCharge)
+	{
+		_actionList.append(new SortieCommonAdvanceAction());
+		_actionList.append(new ChargeAction());
+		if (!advanceOnly)
+		{
+			_actionList.append(new RepeatAction());
+		}
+	}
 	_morningSetting.lastBuiltState = MorningStage::AssumeJobDone;
 	setState(State::Ready, "Ready");
-    return !_actionList.empty();
+	return !_actionList.empty();
 }
 
 
@@ -1736,7 +1752,7 @@ bool ControlManager::BuildNext_Repair()
 	_target = ActionTarget::Repair;
 
 	QList<int> willBeInDockList;
-    pushPreRepairCheck(willBeInDockList, false, false, false, false, false);
+	pushPreRepairCheck(willBeInDockList, false, false, false, false, false);
 	_actionList.append(new RepeatAction());	//should be nothing
 	setState(State::Ready, "Ready");
 	return true;
@@ -1846,13 +1862,13 @@ bool ControlManager::LoadToDoShipList_Kira()
 	_todoKiraShipids.clear();
 	QFile * file = NULL;
 
-    if (QFile::exists(MainWindow::getAbsoluteResourcePath() + "/action/" + "import_kira.table"))
+	if (QFile::exists(MainWindow::getAbsoluteResourcePath() + "/action/" + "import_kira.table"))
 	{
-        file = new QFile(MainWindow::getAbsoluteResourcePath() + "/action/" + "import_kira.table");
+		file = new QFile(MainWindow::getAbsoluteResourcePath() + "/action/" + "import_kira.table");
 	}
 	else
 	{
-        file = new QFile(MainWindow::getAbsoluteResourcePath() + "/action/" + "import.table");
+		file = new QFile(MainWindow::getAbsoluteResourcePath() + "/action/" + "import.table");
 	}
 
 	if (file)
@@ -1899,7 +1915,7 @@ bool ControlManager::LoadToDoShipList_Kira()
 QList<int> ControlManager::LoadRawKiraListForExpedition()
 {
 	QList<int> kiraList;
-    QFile * file = new QFile(MainWindow::getAbsoluteResourcePath() + "/action/" + "import.table");
+	QFile * file = new QFile(MainWindow::getAbsoluteResourcePath() + "/action/" + "import.table");
 	if (file)
 	{
 		if (file->open(QIODevice::ReadOnly | QIODevice::Text))
@@ -1935,7 +1951,7 @@ QList<int> ControlManager::LoadRawKiraListForExpedition()
 bool ControlManager::LoadDestroyableList()
 {
 	_destroyableMstIds.clear();
-    QFile * file = new QFile(MainWindow::getAbsoluteResourcePath() + "/action/" + "destroyable.table");
+	QFile * file = new QFile(MainWindow::getAbsoluteResourcePath() + "/action/" + "destroyable.table");
 	if (file)
 	{
 		if (file->open(QIODevice::ReadOnly | QIODevice::Text))
@@ -1984,7 +2000,7 @@ QList<int> ControlManager::GenerateToDestroyList(QList<int>& wasteShipList)
 			toTempDestroyList.append(ship);
 		}
 	}
-	std::sort(toTempDestroyList.begin(), toTempDestroyList.end(), [](const kcsapi_ship2& left, const kcsapi_ship2& right){
+	std::sort(toTempDestroyList.begin(), toTempDestroyList.end(), [](const kcsapi_ship2& left, const kcsapi_ship2& right) {
 		return left.api_id > right.api_id;
 	});
 
@@ -2042,12 +2058,13 @@ void ControlManager::pushPreSupplyCheck()
 
 
 QList<int> ControlManager::pushPreRepairCheck(QList<int>& willBeInDockList,
-                                              bool bCanUseFastRepair,
-                                              bool onlyInTeam,
-                                              bool onlyShortSevere,
-                                              bool onlySmallShip,
-                                              bool onlySevere,
-                                              int useUpToNDockSize/*=3*/)
+	bool bCanUseFastRepair,
+	bool onlyInTeam,
+	bool onlyShortSevere,
+	bool onlySmallShip,
+	bool onlySevere,
+	int useUpToNDockSize/*=3*/,
+	bool fastRepaireSmallDamate/*=false*/)
 {
 	if (!_shouldAutoPushRepair)
 	{
@@ -2127,7 +2144,7 @@ QList<int> ControlManager::pushPreRepairCheck(QList<int>& willBeInDockList,
 			bool doNotOvernight = ship.api_ndock_time + ctUtc < blockShiftedRepairTime.toMSecsSinceEpoch();
 			bool canBeRepairedSoon = (ship.api_ndock_time < repairLessThanTime || isSenSui)
 				&& doNotOvernight;
-            bool isFlagShip = isShipAnyFlagShip(ship.api_id);
+			bool isFlagShip = isShipAnyFlagShip(ship.api_id);
 
 			if (canBeRepairedSoon && (!isInAnyTeam || !bCanUseFastRepair))
 			{
@@ -2150,13 +2167,13 @@ QList<int> ControlManager::pushPreRepairCheck(QList<int>& willBeInDockList,
 					}
 				}
 
-                if (shouldAdd && onlySevere)
-                {
-                    if (ws <= WoundState::Middle && !isFlagShip)
-                    {
-                        shouldAdd = false;
-                    }
-                }
+				if (shouldAdd && onlySevere)
+				{
+					if (ws <= WoundState::Middle && !isFlagShip)
+					{
+						shouldAdd = false;
+					}
+				}
 
 				if (onlyInTeam && isInAnyTeam && !bCanUseFastRepair || !isInAnyTeam)
 				{
@@ -2168,25 +2185,25 @@ QList<int> ControlManager::pushPreRepairCheck(QList<int>& willBeInDockList,
 			}
 			else if (bCanUseFastRepair)
 			{
-				if (ws >= WoundState::Middle)
-                {
-                    if (ws > WoundState::Middle || !onlySevere || isFlagShip)
-                    {
-                        if (onlyInTeam && isInAnyTeam)
-                        {
-                            toFastRepairShipList.append(ship);
-                        }
-                        else if (doNotOvernight)
-                        {
-                            toRepairShipList.append(ship);
-                        }
-                    }
+				if (ws >= WoundState::Middle || ws == WoundState::Small && fastRepaireSmallDamate)
+				{
+					if (ws > WoundState::Middle || !onlySevere || isFlagShip || fastRepaireSmallDamate)
+					{
+						if (onlyInTeam && isInAnyTeam)
+						{
+							toFastRepairShipList.append(ship);
+						}
+						else if (doNotOvernight)
+						{
+							toRepairShipList.append(ship);
+						}
+					}
 				}
 			}
 		}
 	}
 
-	std::sort(toRepairShipList.begin(), toRepairShipList.end(), [](const kcsapi_ship2& left, const kcsapi_ship2& right){
+	std::sort(toRepairShipList.begin(), toRepairShipList.end(), [](const kcsapi_ship2& left, const kcsapi_ship2& right) {
 		return left.api_ndock_time < right.api_ndock_time;
 	});
 
@@ -2281,7 +2298,7 @@ void ControlManager::Run()
 
 	if (_actionList.empty())
 	{
-        setToTerminate("Terminated:NoAction", false);
+		setToTerminate("Terminated:NoAction", false);
 		return;
 	}
 	if (_actionList[0]->action())
@@ -2892,16 +2909,16 @@ bool ControlManager::isShipInTeam(int shipno, int team)
 
 bool ControlManager::isShipAnyFlagShip(int shipno)
 {
-    KanSaveData* pksd = &KanSaveData::getInstance();
+	KanSaveData* pksd = &KanSaveData::getInstance();
 
-    for (auto& deck : pksd->portdata.api_deck_port)
-    {
-        if (shipno == deck.api_ship.first())
-        {
-            return true;
-        }
-    }
-    return false;
+	for (auto& deck : pksd->portdata.api_deck_port)
+	{
+		if (shipno == deck.api_ship.first())
+		{
+			return true;
+		}
+	}
+	return false;
 
 }
 
@@ -2971,12 +2988,12 @@ bool ControlManager::needChargeCondAirBase(bool checkCond)
 
 int ControlManager::getNeedSupplyLDTeam()
 {
-    KanSaveData* pksd = &KanSaveData::getInstance();
-    if (pksd->airBaseNeedSupplyList.isEmpty())
-    {
-        return -1;
-    }
-    return pksd->airBaseNeedSupplyList[0]-1;
+	KanSaveData* pksd = &KanSaveData::getInstance();
+	if (pksd->airBaseNeedSupplyList.isEmpty())
+	{
+		return -1;
+	}
+	return pksd->airBaseNeedSupplyList[0] - 1;
 }
 
 bool ControlManager::isShipExist(int shipno)
@@ -3380,17 +3397,17 @@ bool ControlManager::shouldTerminateForAny()
 
 bool ControlManager::shouldAssignLD()
 {
-    if (_target != ActionTarget::Any)
-    {
-        return false;
-    }
-    if (_anySetting.ld1ClickX > 0 && _anySetting.ld1ClickY > 0
-            || _anySetting.ld2ClickX > 0 && _anySetting.ld2ClickY > 0
-            || _anySetting.ld3ClickX > 0 && _anySetting.ld3ClickY > 0)
-    {
-        return true;
-    }
-    return false;
+	if (_target != ActionTarget::Any)
+	{
+		return false;
+	}
+	if (_anySetting.ld1ClickX > 0 && _anySetting.ld1ClickY > 0
+		|| _anySetting.ld2ClickX > 0 && _anySetting.ld2ClickY > 0
+		|| _anySetting.ld3ClickX > 0 && _anySetting.ld3ClickY > 0)
+	{
+		return true;
+	}
+	return false;
 }
 
 WoundState ControlManager::hugestDamageInTeam(int team)
@@ -3497,7 +3514,7 @@ bool ControlManager::checkColors(const QList<CheckColor>& checklist)
 	auto image = w->grab().toImage();
 	for (auto& item : checklist)
 	{
-        auto col = image.pixel(item._pt*_dpiScale);
+		auto col = image.pixel(item._pt*_dpiScale);
 		int r = qRed(col);
 		int g = qGreen(col);
 		int b = qBlue(col);
@@ -3520,7 +3537,7 @@ QRgb ControlManager::getColorAtPosition(const QPoint& pt)
 {
 	auto w = MainWindow::mainWindow()->getBrowserWidget();
 	auto image = w->grab().toImage();
-    auto col = image.pixel(pt*_dpiScale);
+	auto col = image.pixel(pt*_dpiScale);
 	return col;
 }
 
@@ -3853,7 +3870,7 @@ void ControlManager::moveMouseToAndClick(float x, float y, float offsetX /*= 5*/
 	}
 	else
 	{
-		auto sendMouseEvents = [this, ptAdjusted, moveOnly](QObject* w){
+		auto sendMouseEvents = [this, ptAdjusted, moveOnly](QObject* w) {
 			if (!w)
 			{
 				return;

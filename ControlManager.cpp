@@ -2854,6 +2854,11 @@ bool ControlManager::isShipInOtherTeam(int shipno, int team, bool excludeOnBoard
 		}
 	}
 
+    if (pksd->portdata.api_combined_Flag > 0)
+    {
+        onBoarding[0] = false;
+    }
+
 	for (auto& deck : pksd->portdata.api_deck_port)
 	{
 		if (deck.api_id == team + 1)

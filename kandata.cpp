@@ -724,6 +724,7 @@ bool kcsapi_port::ReadFromJObj(const QJsonObject &jobj)
 	_ACREAD(api_ndock, kcsapi_ndock);
 	_ACREAD(api_ship, kcsapi_ship2);
 	_CREAD(api_basic, kcsapi_basic);
+    _IREAD(api_combined_Flag);
 
 	return _bParseRet;
 

@@ -1767,6 +1767,7 @@ public:
 	QList<kcsapi_deck> api_deck_port;
 	QList<kcsapi_ndock> api_ndock;
 	QList<kcsapi_ship2> api_ship;
+    int api_combined_Flag;
 	kcsapi_basic api_basic;
 	//public Api_Log[] api_log;
 };

@@ -2428,56 +2428,56 @@ bool SortieAction::action()
 			_waiting = true;
 
 			QTimer::singleShot(DELAY_TIME_CLICK, Qt::PreciseTimer, this, [this, &cm]()
-            {
-                // use in every mode
-                if (cm.needChargeCondAirBase(cm.getAnySetting().checkAirBaseCond))
-                {
-                    setState(State::LDChargeChecking, "Sortie:LDChargeChecking");
-                }
-                else
-                {
-                    QList<float> pPoint;
-                    if (_isEvent)
-                    {
-                        pPoint = _mapClickPoint;
-                        cm.moveMouseToAndClick(pPoint[0], pPoint[1], pPoint[2], pPoint[3]); // map 1
-                    }
-                    else
-                    {
-                        QMap<int, QList<float>> mapPoints;
-                        mapPoints[1] = { 281, 207, 100, 41 };
-                        mapPoints[2] = { 600, 199, 60, 36 };
-                        mapPoints[3] = { 288.5f, 350, 102.5f, 36 };
-                        mapPoints[4] = { 600, 350, 60, 36 };
-                        if (_area >= 6)
-                        {
-                            mapPoints[4] = { 694, 378, 50, 20 };
-                        }
-                        mapPoints[5] = mapPoints[6] = { 720, 275, 30, 50 };
-                        pPoint = mapPoints[_map];
+			{
+				// use in every mode
+				if (cm.needChargeCondAirBase(cm.getAnySetting().checkAirBaseCond))
+				{
+					setState(State::LDChargeChecking, "Sortie:LDChargeChecking");
+				}
+				else
+				{
+					QList<float> pPoint;
+					if (_isEvent)
+					{
+						pPoint = _mapClickPoint;
+						cm.moveMouseToAndClick(pPoint[0], pPoint[1], pPoint[2], pPoint[3]); // map 1
+					}
+					else
+					{
+						QMap<int, QList<float>> mapPoints;
+						mapPoints[1] = { 281, 207, 100, 41 };
+						mapPoints[2] = { 600, 199, 60, 36 };
+						mapPoints[3] = { 288.5f, 350, 102.5f, 36 };
+						mapPoints[4] = { 600, 350, 60, 36 };
+						if (_area >= 6)
+						{
+							mapPoints[4] = { 694, 378, 50, 20 };
+						}
+						mapPoints[5] = mapPoints[6] = { 720, 275, 30, 50 };
+						pPoint = mapPoints[_map];
 
-                        float scale = 1.5f;
-                        cm.moveMouseToAndClick(pPoint[0] * scale, pPoint[1] * scale, pPoint[2] * scale, pPoint[3] * scale); // map 1
-                    }
+						float scale = 1.5f;
+						cm.moveMouseToAndClick(pPoint[0] * scale, pPoint[1] * scale, pPoint[2] * scale, pPoint[3] * scale); // map 1
+					}
 
 
-                    if (_map > 4)	// when ex map is over 10
-                    {
-                        setState(State::SelectExMapChecking, "Sortie:SelectExMapChecking");
-                    }
-                    else
-                    {
-                        if (_isEvent)
-                        {
-                            setState(State::SkipBoardChecking, "Sortie:SkipBoardChecking");
-                        }
-                        else
-                        {
-                            setState(State::SortieCheckChecking, "Sortie:SortieCheckChecking");
-                        }
-                    }
+					if (_map > 4)	// when ex map is over 10
+					{
+						setState(State::SelectExMapChecking, "Sortie:SelectExMapChecking");
+					}
+					else
+					{
+						if (_isEvent)
+						{
+							setState(State::SkipBoardChecking, "Sortie:SkipBoardChecking");
+						}
+						else
+						{
+							setState(State::SortieCheckChecking, "Sortie:SortieCheckChecking");
+						}
+					}
 
-                }
+				}
 
 				resetRetryAndWainting();
 			});
@@ -2655,148 +2655,146 @@ bool SortieAction::action()
 				}
 			});
 		}
-        break;
-    case SortieAction::State::LDChargeChecking:
-        if (!_waiting)
-        {
-            _waiting = true;
-            QTimer::singleShot(DELAY_TIME, Qt::PreciseTimer, this, [this, &cm]()
-            {
+		break;
+	case SortieAction::State::LDChargeChecking:
+		if (!_waiting)
+		{
+			_waiting = true;
+			QTimer::singleShot(DELAY_TIME, Qt::PreciseTimer, this, [this, &cm]()
+			{
 
-                if (ActionCheckAndClickDefine::CheckColor(ActionCheckAndClickDefine::CheckColorNameDefine::LDCharge))
-                {
-                    _waiting = false;
+				if (ActionCheckAndClickDefine::CheckColor(ActionCheckAndClickDefine::CheckColorNameDefine::LDCharge))
+				{
+					_waiting = false;
 
-                    if (!cm.needChargeCondAirBase(cm.getAnySetting().checkAirBaseCond))
-                    {
-                        setState(State::SelectMapDone, "Sortie:SelectMapDone");
-                    }
-                    else
-                    {
-                        setState(State::LDChargeDone, "Sortie:LDChargeDone");
-                    }
-                }
-                else
-                {
-                    tryRetry();
-                }
+					if (!cm.needChargeCondAirBase(cm.getAnySetting().checkAirBaseCond))
+					{
+						setState(State::SelectMapDone, "Sortie:SelectMapDone");
+					}
+					else
+					{
+						setState(State::LDChargeDone, "Sortie:LDChargeDone");
+					}
+				}
+				else
+				{
+					tryRetry();
+				}
 
-            });
-        }
-        break;
-    case SortieAction::State::LDChargeDone:
+			});
+		}
+		break;
+	case SortieAction::State::LDChargeDone:
 
-        if (!_waiting)
-        {
-            _waiting = true;
-            QTimer::singleShot(DELAY_TIME_CLICK, Qt::PreciseTimer, this, [this, &cm]()
-            {
-                ActionCheckAndClickDefine::MoveAndClick(ActionCheckAndClickDefine::MoveMouseNameDefine::LDCharge);
-                setState(State::LDSelectTeamChecking, "Sortie:LDSelectTeamChecking");
-                cm.moveMouseTo(0, 0);
-                resetRetryAndWainting();
-            });
-        }
-        break;
-    case SortieAction::State::LDSelectTeamChecking:
-        if (!_waiting)
-        {
-            _waiting = true;
-            QTimer::singleShot(DELAY_TIME_SUPERLONG, Qt::PreciseTimer, this, [this, &cm]()
-            {
-                if (ActionCheckAndClickDefine::CheckColor(ActionCheckAndClickDefine::CheckColorNameDefine::LDChargeTeam1)
-                         || ActionCheckAndClickDefine::CheckColor(ActionCheckAndClickDefine::CheckColorNameDefine::LDChargeTeam2)
-                         || ActionCheckAndClickDefine::CheckColor(ActionCheckAndClickDefine::CheckColorNameDefine::LDChargeTeam3))
-                {
-                    _waiting = false;
-                    int team = cm.getNeedSupplyLDTeam();
-                    if (team < 0)
-                    {
-                        setState(State::LDAllChargeDone, "Sortie:LDAllChargeDone");
-                    }
-                    else if (team == 0)
-                    {
-                        setState(State::LDDoChargeDone, "Sortie:LDDoChargeDone");
-                    }
-                    else
-                    {
-                        setState(State::LDSelectTeamDone, "Sortie:LDSelectTeamDone");
-                    }
-                }
-                else
-                {
-                    tryRetry();
-                }
+		if (!_waiting)
+		{
+			_waiting = true;
+			QTimer::singleShot(DELAY_TIME_CLICK, Qt::PreciseTimer, this, [this, &cm]()
+			{
+				ActionCheckAndClickDefine::MoveAndClick(ActionCheckAndClickDefine::MoveMouseNameDefine::LDCharge);
+				setState(State::LDSelectTeamChecking, "Sortie:LDSelectTeamChecking");
+				cm.moveMouseTo(0, 0);
+				resetRetryAndWainting();
+			});
+		}
+		break;
+	case SortieAction::State::LDSelectTeamChecking:
+		if (!_waiting)
+		{
+			_waiting = true;
+			QTimer::singleShot(DELAY_TIME_SUPERLONG, Qt::PreciseTimer, this, [this, &cm]()
+			{
+				if (ActionCheckAndClickDefine::CheckColor(ActionCheckAndClickDefine::CheckColorNameDefine::LDChargeTeam1)
+					|| ActionCheckAndClickDefine::CheckColor(ActionCheckAndClickDefine::CheckColorNameDefine::LDChargeTeam2)
+					|| ActionCheckAndClickDefine::CheckColor(ActionCheckAndClickDefine::CheckColorNameDefine::LDChargeTeam3))
+				{
+					_waiting = false;
+					int team = cm.getNeedSupplyLDTeam();
+					if (team < 0)
+					{
+						setState(State::LDAllChargeDone, "Sortie:LDAllChargeDone");
+					}
+					else if (team == 0)
+					{
+						setState(State::LDDoChargeDone, "Sortie:LDDoChargeDone");
+					}
+					else
+					{
+						setState(State::LDSelectTeamDone, "Sortie:LDSelectTeamDone");
+					}
+				}
+				else
+				{
+					tryRetry();
+				}
 
-            });
-        }
-        break;
-    case SortieAction::State::LDSelectTeamDone:
+			});
+		}
+		break;
+	case SortieAction::State::LDSelectTeamDone:
 
-        if (!_waiting)
-        {
-            _waiting = true;
-            QTimer::singleShot(DELAY_TIME_CLICK, Qt::PreciseTimer, this, [this, &cm]()
-            {
-                int team = cm.getNeedSupplyLDTeam();
-                ActionCheckAndClickDefine::MoveAndClick((ActionCheckAndClickDefine::MoveMouseNameDefine)
-                                                        ((int)ActionCheckAndClickDefine::MoveMouseNameDefine::LDChargeTeam1+team));
-                setState(State::LDDoChargeChecking, "Sortie:LDDoChargeChecking");
-                cm.moveMouseTo(0, 0);
-                resetRetryAndWainting();
-            });
-        }
+		if (!_waiting)
+		{
+			_waiting = true;
+			QTimer::singleShot(DELAY_TIME_CLICK, Qt::PreciseTimer, this, [this, &cm]()
+			{
+				int team = cm.getNeedSupplyLDTeam();
+				ActionCheckAndClickDefine::MoveAndClick((ActionCheckAndClickDefine::MoveMouseNameDefine)
+					((int)ActionCheckAndClickDefine::MoveMouseNameDefine::LDChargeTeam1 + team));
+				setState(State::LDDoChargeChecking, "Sortie:LDDoChargeChecking");
+				cm.moveMouseTo(0, 0);
+				resetRetryAndWainting();
+			});
+		}
 
-        break;
-    case SortieAction::State::LDDoChargeChecking:
-        if (!_waiting)
-        {
-            _waiting = true;
-            QTimer::singleShot(DELAY_TIME, Qt::PreciseTimer, this, [this, &cm]()
-            {
-                if (ActionCheckAndClickDefine::CheckColor(ActionCheckAndClickDefine::CheckColorNameDefine::LDDoCharge))
-                {
-                    _waiting = false;
-                    setState(State::LDDoChargeDone, "Sortie:LDDoChargeDone");
-                }
-                else
-                {
-                    tryRetry();
-                }
+		break;
+	case SortieAction::State::LDDoChargeChecking:
+		if (!_waiting)
+		{
+			_waiting = true;
+			QTimer::singleShot(DELAY_TIME, Qt::PreciseTimer, this, [this, &cm]()
+			{
+				if (ActionCheckAndClickDefine::CheckColor(ActionCheckAndClickDefine::CheckColorNameDefine::LDDoCharge))
+				{
+					_waiting = false;
+					setState(State::LDDoChargeDone, "Sortie:LDDoChargeDone");
+				}
+				else
+				{
+					tryRetry();
+				}
 
-            });
-        }
-        break;
-    case SortieAction::State::LDDoChargeDone:
+			});
+		}
+		break;
+	case SortieAction::State::LDDoChargeDone:
 
-        if (!_waiting)
-        {
-            _waiting = true;
-            QTimer::singleShot(DELAY_TIME_CLICK, Qt::PreciseTimer, this, [this, &cm]()
-            {
-                ActionCheckAndClickDefine::MoveAndClick(ActionCheckAndClickDefine::MoveMouseNameDefine::LDDoCharge);
-                int team = cm.getNeedSupplyLDTeam();
-                setState(State::LDSelectTeamChecking, "Sortie:LDSelectTeamChecking");
-                cm.moveMouseTo(0, 0);
-                resetRetryAndWainting();
-            });
-        }
-        break;
-    case SortieAction::State::LDAllChargeDone:
+		if (!_waiting)
+		{
+			_waiting = true;
+			QTimer::singleShot(DELAY_TIME_CLICK, Qt::PreciseTimer, this, [this, &cm]()
+			{
+				ActionCheckAndClickDefine::MoveAndClick(ActionCheckAndClickDefine::MoveMouseNameDefine::LDDoCharge);
+				setState(State::LDSelectTeamChecking, "Sortie:LDSelectTeamChecking");
+				cm.moveMouseTo(0, 0);
+				resetRetryAndWainting();
+			});
+		}
+		break;
+	case SortieAction::State::LDAllChargeDone:
 
-        if (!_waiting)
-        {
-            _waiting = true;
-            QTimer::singleShot(DELAY_TIME_CLICK, Qt::PreciseTimer, this, [this, &cm]()
-            {
-                ActionCheckAndClickDefine::MoveAndClick(ActionCheckAndClickDefine::MoveMouseNameDefine::LDAllChargeDone);
-                int team = cm.getNeedSupplyLDTeam();
-                setState(State::LDChargeChecking, "Sortie:LDChargeChecking");
-                cm.moveMouseTo(0, 0);
-                resetRetryAndWainting();
-            });
-        }
-        break;
+		if (!_waiting)
+		{
+			_waiting = true;
+			QTimer::singleShot(DELAY_TIME_CLICK, Qt::PreciseTimer, this, [this, &cm]()
+			{
+				ActionCheckAndClickDefine::MoveAndClick(ActionCheckAndClickDefine::MoveMouseNameDefine::LDAllChargeDone);
+				setState(State::LDChargeChecking, "Sortie:LDChargeChecking");
+				cm.moveMouseTo(0, 0);
+				resetRetryAndWainting();
+			});
+		}
+		break;
 	case SortieAction::State::SkipBoardDone:
 
 		if (!_waiting)
@@ -3022,100 +3020,100 @@ bool SortieCommonAdvanceAction::action()
 	{
 	case SortieCommonAdvanceAction::State::None:
 
-        if (cm.shouldAssignLD())
-        {
-            setState(State::LDChecking, "SortieAdv:LDChecking");
-            resetRetryAndWainting();
-            _expectingRequest = "/kcsapi/api_req_map/start_air_base";
-        }
-        else
-        {
-            setState(State::Checking, "SortieAdv:Checking");
-            resetRetryAndWainting();
-            _expectingRequest = "/kcsapi/api_port/port";
-        }
+		if (cm.shouldAssignLD())
+		{
+			setState(State::LDChecking, "SortieAdv:LDChecking");
+			resetRetryAndWainting();
+			_expectingRequest = "/kcsapi/api_req_map/start_air_base";
+		}
+		else
+		{
+			setState(State::Checking, "SortieAdv:Checking");
+			resetRetryAndWainting();
+			_expectingRequest = "/kcsapi/api_port/port";
+		}
 
 		break;
 
-    case SortieCommonAdvanceAction::State::LDChecking:
-        if (!_waiting)
-        {
-            _waiting = true;
-            if (_expectingRequest == "")
-            {
-                setState(State::Checking, "Advance:Checking");
-                resetRetryAndWainting();
-                _ldCheckingIndex = -1;
-                _expectingRequest = "/kcsapi/api_port/port";
-                break;
-            }
-            QTimer::singleShot(DELAY_TIME_LONG, Qt::PreciseTimer, this, [this, &cm]()
-            {
-                _waiting = false;
-                if (ActionCheckAndClickDefine::CheckColor(ActionCheckAndClickDefine::CheckColorNameDefine::LDAssign1)
-                        || ActionCheckAndClickDefine::CheckColor(ActionCheckAndClickDefine::CheckColorNameDefine::LDAssign1R))
-                {
-                    _ldCheckingIndex = 0;
-                    setState(State::LDDone, "SortieAdv:ClickLD");
-                }
-                else if (ActionCheckAndClickDefine::CheckColor(ActionCheckAndClickDefine::CheckColorNameDefine::LDAssign2)
-                         || ActionCheckAndClickDefine::CheckColor(ActionCheckAndClickDefine::CheckColorNameDefine::LDAssign2R))
-                {
-                    _ldCheckingIndex = 1;
-                    setState(State::LDDone, "SortieAdv:ClickLD");
-                }
-                else if (ActionCheckAndClickDefine::CheckColor(ActionCheckAndClickDefine::CheckColorNameDefine::LDAssign3)
-                         || ActionCheckAndClickDefine::CheckColor(ActionCheckAndClickDefine::CheckColorNameDefine::LDAssign3R))
-                {
-                    _ldCheckingIndex = 2;
-                    setState(State::LDDone, "SortieAdv:ClickLD");
-                }
-                // airbase
-                else if (ActionCheckAndClickDefine::CheckColor(ActionCheckAndClickDefine::CheckColorNameDefine::SortieCommonAirBaseSelectDone))
-                {
-                    setState(State::ClickAirBaseOK, "SortieAdv:ClickAirBaseOK");
-                }
-                // airbase
-                else if (ActionCheckAndClickDefine::CheckColor(ActionCheckAndClickDefine::CheckColorNameDefine::SortieCommonAirBaseSelectDoneR))
-                {
-                    setState(State::ClickAirBaseROK, "SortieAdv:ClickAirBaseROK");
-                }
-            });
-        }
+	case SortieCommonAdvanceAction::State::LDChecking:
+		if (!_waiting)
+		{
+			_waiting = true;
+			if (_expectingRequest == "")
+			{
+				setState(State::Checking, "Advance:Checking");
+				resetRetryAndWainting();
+				_ldCheckingIndex = -1;
+				_expectingRequest = "/kcsapi/api_port/port";
+				break;
+			}
+			QTimer::singleShot(DELAY_TIME_LONG, Qt::PreciseTimer, this, [this, &cm]()
+			{
+				_waiting = false;
+				if (ActionCheckAndClickDefine::CheckColor(ActionCheckAndClickDefine::CheckColorNameDefine::LDAssign1)
+					|| ActionCheckAndClickDefine::CheckColor(ActionCheckAndClickDefine::CheckColorNameDefine::LDAssign1R))
+				{
+					_ldCheckingIndex = 0;
+					setState(State::LDDone, "SortieAdv:ClickLD");
+				}
+				else if (ActionCheckAndClickDefine::CheckColor(ActionCheckAndClickDefine::CheckColorNameDefine::LDAssign2)
+					|| ActionCheckAndClickDefine::CheckColor(ActionCheckAndClickDefine::CheckColorNameDefine::LDAssign2R))
+				{
+					_ldCheckingIndex = 1;
+					setState(State::LDDone, "SortieAdv:ClickLD");
+				}
+				else if (ActionCheckAndClickDefine::CheckColor(ActionCheckAndClickDefine::CheckColorNameDefine::LDAssign3)
+					|| ActionCheckAndClickDefine::CheckColor(ActionCheckAndClickDefine::CheckColorNameDefine::LDAssign3R))
+				{
+					_ldCheckingIndex = 2;
+					setState(State::LDDone, "SortieAdv:ClickLD");
+				}
+				// airbase
+				else if (ActionCheckAndClickDefine::CheckColor(ActionCheckAndClickDefine::CheckColorNameDefine::SortieCommonAirBaseSelectDone))
+				{
+					setState(State::ClickAirBaseOK, "SortieAdv:ClickAirBaseOK");
+				}
+				// airbase
+				else if (ActionCheckAndClickDefine::CheckColor(ActionCheckAndClickDefine::CheckColorNameDefine::SortieCommonAirBaseSelectDoneR))
+				{
+					setState(State::ClickAirBaseROK, "SortieAdv:ClickAirBaseROK");
+				}
+			});
+		}
 
-        break;
-    case SortieCommonAdvanceAction::State::LDDone:
-        if (!_waiting)
-        {
-            _waiting = true;
-            QTimer::singleShot(DELAY_TIME_CLICK, Qt::PreciseTimer, this, [this, &cm]()
-            {
+		break;
+	case SortieCommonAdvanceAction::State::LDDone:
+		if (!_waiting)
+		{
+			_waiting = true;
+			QTimer::singleShot(DELAY_TIME_CLICK, Qt::PreciseTimer, this, [this, &cm]()
+			{
 
-                const auto& setting = cm.getAnySetting();
-                QList<float> ldXs;
-                QList<float> ldYs;
-                ldXs.append(setting.ld1ClickX);
-                ldXs.append(setting.ld2ClickX);
-                ldXs.append(setting.ld3ClickX);
-                ldYs.append(setting.ld1ClickY);
-                ldYs.append(setting.ld2ClickY);
-                ldYs.append(setting.ld3ClickY);
+				const auto& setting = cm.getAnySetting();
+				QList<float> ldXs;
+				QList<float> ldYs;
+				ldXs.append(setting.ld1ClickX);
+				ldXs.append(setting.ld2ClickX);
+				ldXs.append(setting.ld3ClickX);
+				ldYs.append(setting.ld1ClickY);
+				ldYs.append(setting.ld2ClickY);
+				ldYs.append(setting.ld3ClickY);
 
 
-                if (_ldCheckingIndex >= 0 && !cm.isInBattle && ldXs[_ldCheckingIndex] > 0 && ldYs[_ldCheckingIndex] > 0)
-                {
-                    cm.moveMouseToAndClick(ldXs[_ldCheckingIndex], ldYs[_ldCheckingIndex]);
-                }
-                else
-                {
-                    ActionCheckAndClickDefine::MoveAndClick(ActionCheckAndClickDefine::MoveMouseNameDefine::SortieCommonElseButton);
-                }
+				if (_ldCheckingIndex >= 0 && !cm.isInBattle && ldXs[_ldCheckingIndex] > 0 && ldYs[_ldCheckingIndex] > 0)
+				{
+					cm.moveMouseToAndClick(ldXs[_ldCheckingIndex], ldYs[_ldCheckingIndex]);
+				}
+				else
+				{
+					ActionCheckAndClickDefine::MoveAndClick(ActionCheckAndClickDefine::MoveMouseNameDefine::SortieCommonElseButton);
+				}
 
-                setState(State::LDChecking, "SortieAdv:LDChecking");
-                resetRetryAndWainting();
-            });
-        }
-        break;
+				setState(State::LDChecking, "SortieAdv:LDChecking");
+				resetRetryAndWainting();
+			});
+		}
+		break;
 
 	case SortieCommonAdvanceAction::State::Checking:
 		if (!_waiting)
@@ -3421,7 +3419,7 @@ bool SortieCommonAdvanceAction::action()
 			{
 				const auto& setting = cm.getAnySetting();
 				int cell = KanSaveData::getInstance().nextdata.api_no;
-                if (!cm.isInBattle && setting.cells.contains(cell) && setting.cells[cell].clickX >= 0 && setting.cells[cell].clickY >= 0)
+				if (!cm.isInBattle && setting.cells.contains(cell) && setting.cells[cell].clickX >= 0 && setting.cells[cell].clickY >= 0)
 				{
 					cm.moveMouseToAndClick(setting.cells[cell].clickX, setting.cells[cell].clickY);
 				}
@@ -3468,15 +3466,15 @@ bool SortieCommonAdvanceAction::action()
 			_waiting = true;
 			QTimer::singleShot(DELAY_TIME_CLICK, Qt::PreciseTimer, this, [this, &cm]()
 			{
-                ActionCheckAndClickDefine::MoveAndClick(ActionCheckAndClickDefine::MoveMouseNameDefine::SortieCommonAirBaseOKButton); // right button
-                if (_ldCheckingIndex >= 0)
-                {
-                    setState(State::LDChecking, "SortieAdv:LDChecking");
-                }
-                else
-                {
-                    setStateToChecking();
-                }
+				ActionCheckAndClickDefine::MoveAndClick(ActionCheckAndClickDefine::MoveMouseNameDefine::SortieCommonAirBaseOKButton); // right button
+				if (_ldCheckingIndex >= 0)
+				{
+					setState(State::LDChecking, "SortieAdv:LDChecking");
+				}
+				else
+				{
+					setStateToChecking();
+				}
 				resetRetryAndWainting();
 			});
 		}
@@ -3488,15 +3486,15 @@ bool SortieCommonAdvanceAction::action()
 			_waiting = true;
 			QTimer::singleShot(DELAY_TIME_CLICK, Qt::PreciseTimer, this, [this, &cm]()
 			{
-                ActionCheckAndClickDefine::MoveAndClick(ActionCheckAndClickDefine::MoveMouseNameDefine::SortieCommonAirBaseROKButton); // right button
-                if (_ldCheckingIndex >= 0)
-                {
-                    setState(State::LDChecking, "SortieAdv:LDChecking");
-                }
-                else
-                {
-                    setStateToChecking();
-                }
+				ActionCheckAndClickDefine::MoveAndClick(ActionCheckAndClickDefine::MoveMouseNameDefine::SortieCommonAirBaseROKButton); // right button
+				if (_ldCheckingIndex >= 0)
+				{
+					setState(State::LDChecking, "SortieAdv:LDChecking");
+				}
+				else
+				{
+					setStateToChecking();
+				}
 				resetRetryAndWainting();
 			});
 		}
@@ -3595,7 +3593,7 @@ bool RepeatAction::action()
 		}
 		else if (cm.isAnyMode())
 		{
-            if (cm.BuildNext_Any(false, cm.getAnySetting().shouldStopAfterCharge))
+			if (cm.BuildNext_Any(false, cm.getAnySetting().shouldStopAfterCharge))
 			{
 				setState(State::Done, "Repeat:Done");
 				cm.StartJob();

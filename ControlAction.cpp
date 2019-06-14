@@ -2663,7 +2663,8 @@ bool SortieAction::action()
 			QTimer::singleShot(DELAY_TIME, Qt::PreciseTimer, this, [this, &cm]()
 			{
 
-				if (ActionCheckAndClickDefine::CheckColor(ActionCheckAndClickDefine::CheckColorNameDefine::LDCharge))
+                if (ActionCheckAndClickDefine::CheckColor(ActionCheckAndClickDefine::CheckColorNameDefine::LDCharge)
+                        || ActionCheckAndClickDefine::CheckColor(ActionCheckAndClickDefine::CheckColorNameDefine::LDChargeNormal))
 				{
 					_waiting = false;
 
@@ -2691,7 +2692,14 @@ bool SortieAction::action()
 			_waiting = true;
 			QTimer::singleShot(DELAY_TIME_CLICK, Qt::PreciseTimer, this, [this, &cm]()
 			{
-				ActionCheckAndClickDefine::MoveAndClick(ActionCheckAndClickDefine::MoveMouseNameDefine::LDCharge);
+                if (_isEvent)
+                {
+                    ActionCheckAndClickDefine::MoveAndClick(ActionCheckAndClickDefine::MoveMouseNameDefine::LDCharge);
+                }
+                else
+                {
+                    ActionCheckAndClickDefine::MoveAndClick(ActionCheckAndClickDefine::MoveMouseNameDefine::LDChargeNormal);
+                }
 				setState(State::LDSelectTeamChecking, "Sortie:LDSelectTeamChecking");
 				cm.moveMouseTo(0, 0);
 				resetRetryAndWainting();

@@ -112,6 +112,7 @@ public:
         LDAssign3R,
 
         LDCharge,
+        LDChargeNormal,
         LDChargeTeam1,
         LDChargeTeam2,
         LDChargeTeam3,
@@ -211,6 +212,7 @@ public:
 		SortieCommonElseButton,
 
         LDCharge,
+        LDChargeNormal,
         LDChargeTeam1,
         LDChargeTeam2,
         LDChargeTeam3,

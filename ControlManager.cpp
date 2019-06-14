@@ -1224,11 +1224,15 @@ void ControlManager::LoadAnyTemplateSettings()
 				else if (!key.compare("Stop", Qt::CaseInsensitive))
 				{
 					_anyTemplateSettings[pair].shouldStopAfterCharge = splited[0].toInt(&bOk);
-				}
-				else if (!key.compare("FullCond", Qt::CaseInsensitive))
-				{
-					_anyTemplateSettings[pair].waitForFullCond = splited[0].toInt(&bOk);
-				}
+                }
+                else if (!key.compare("FullCond", Qt::CaseInsensitive))
+                {
+                    _anyTemplateSettings[pair].waitForFullCond = splited[0].toInt(&bOk);
+                }
+                else if (!key.compare("FullRepaire", Qt::CaseInsensitive))
+                {
+                    _anyTemplateSettings[pair].waitForFullRepair = splited[0].toInt(&bOk);
+                }
 				continue;
 			}
 
@@ -1380,11 +1384,11 @@ bool ControlManager::BuildNext_Any(bool advanceOnly, bool stopAfterCharge)
 		QList<int> fastRepairShips;
 		if (_anySetting.autoFastRepair)
 		{
-			fastRepairShips = pushPreRepairCheck(willBeInDockList, true, true, false, false, _anySetting.allowMiddleDamageSortie, 3, _anySetting.waitForFullCond);
+            fastRepairShips = pushPreRepairCheck(willBeInDockList, true, true, false, false, _anySetting.allowMiddleDamageSortie, 3, _anySetting.waitForFullRepair || _anySetting.waitForFullCond);
 		}
 		else if (_anySetting.onlySSTeamSize > 0)
 		{
-			pushPreRepairCheck(willBeInDockList, false, false, true, true, _anySetting.allowMiddleDamageSortie, 3, _anySetting.waitForFullCond);
+            pushPreRepairCheck(willBeInDockList, false, false, true, true, _anySetting.allowMiddleDamageSortie, 3, _anySetting.waitForFullCond || _anySetting.waitForFullRepair);
 		}
 
 		KanSaveData* pksd = &KanSaveData::getInstance();

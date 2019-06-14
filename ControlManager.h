@@ -159,8 +159,9 @@ public:
 
 		bool swapLowCond = false;
 
-		bool shouldStopAfterCharge = false;
-		bool waitForFullCond = false;
+        bool shouldStopAfterCharge = false;
+        bool waitForFullCond = false;
+        bool waitForFullRepair = false;
 
 		int ld1ClickX = -1;
 		int ld1ClickY = -1;

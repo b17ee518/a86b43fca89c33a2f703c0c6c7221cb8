@@ -528,14 +528,21 @@ QMap < ActionCheckAndClickDefine::CheckColorNameDefine, QList<int>> ActionCheckA
 			1101, 140, 194, 187, 177,
 				903, 78, 74, 123, 68
 		}
-	},
-	{
-		CheckColorNameDefine::LDCharge,
-		QList<int>{
-			430, 589, 232, 247, 250,
-				392, 581, 212, 209, 204
-		}
-	},
+    },
+    {
+        CheckColorNameDefine::LDCharge,
+        QList<int>{
+            430, 589, 232, 247, 250,
+                392, 581, 212, 209, 204
+        }
+    },
+    {
+        CheckColorNameDefine::LDChargeNormal,
+        QList<int>{
+            732, 172, 74, 91, 80,
+                659, 183, 195, 62, 33
+        }
+    },
 	{
 		CheckColorNameDefine::LDChargeTeam1,
 		QList<int>{
@@ -991,19 +998,25 @@ QMap < ActionCheckAndClickDefine::MoveMouseNameDefine, QList<int>> ActionCheckAn
 		QList<int> {
 			1093, 624, 22, 22
 		}
-	},
-	{
-		MoveMouseNameDefine::LDCharge,
-		QList<int> {
-			350, 592, 100, 20
-		}
-	},
-	{
-		MoveMouseNameDefine::LDChargeTeam1,
-		QList<int> {
-			930, 185, 20, 10
-		}
-	},
+    },
+    {
+        MoveMouseNameDefine::LDCharge,
+        QList<int> {
+            350, 592, 100, 20
+        }
+    },
+    {
+        MoveMouseNameDefine::LDChargeNormal,
+        QList<int> {
+            727, 180, 30, 8
+        }
+    },
+    {
+        MoveMouseNameDefine::LDChargeTeam1,
+        QList<int> {
+            930, 185, 20, 10
+        }
+    },
 	{
 		MoveMouseNameDefine::LDChargeTeam2,
 		QList<int> {

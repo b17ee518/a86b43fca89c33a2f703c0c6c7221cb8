@@ -3050,26 +3050,8 @@ bool SortieCommonAdvanceAction::action()
 			QTimer::singleShot(DELAY_TIME_LONG, Qt::PreciseTimer, this, [this, &cm]()
 			{
 				_waiting = false;
-				if (ActionCheckAndClickDefine::CheckColor(ActionCheckAndClickDefine::CheckColorNameDefine::LDAssign1)
-					|| ActionCheckAndClickDefine::CheckColor(ActionCheckAndClickDefine::CheckColorNameDefine::LDAssign1R))
-				{
-					_ldCheckingIndex = 0;
-					setState(State::LDDone, "SortieAdv:ClickLD");
-				}
-				else if (ActionCheckAndClickDefine::CheckColor(ActionCheckAndClickDefine::CheckColorNameDefine::LDAssign2)
-					|| ActionCheckAndClickDefine::CheckColor(ActionCheckAndClickDefine::CheckColorNameDefine::LDAssign2R))
-				{
-					_ldCheckingIndex = 1;
-					setState(State::LDDone, "SortieAdv:ClickLD");
-				}
-				else if (ActionCheckAndClickDefine::CheckColor(ActionCheckAndClickDefine::CheckColorNameDefine::LDAssign3)
-					|| ActionCheckAndClickDefine::CheckColor(ActionCheckAndClickDefine::CheckColorNameDefine::LDAssign3R))
-				{
-					_ldCheckingIndex = 2;
-					setState(State::LDDone, "SortieAdv:ClickLD");
-				}
 				// airbase
-				else if (ActionCheckAndClickDefine::CheckColor(ActionCheckAndClickDefine::CheckColorNameDefine::SortieCommonAirBaseSelectDone))
+				if (ActionCheckAndClickDefine::CheckColor(ActionCheckAndClickDefine::CheckColorNameDefine::SortieCommonAirBaseSelectDone))
 				{
 					setState(State::ClickAirBaseOK, "SortieAdv:ClickAirBaseOK");
 				}
@@ -3077,6 +3059,24 @@ bool SortieCommonAdvanceAction::action()
 				else if (ActionCheckAndClickDefine::CheckColor(ActionCheckAndClickDefine::CheckColorNameDefine::SortieCommonAirBaseSelectDoneR))
 				{
 					setState(State::ClickAirBaseROK, "SortieAdv:ClickAirBaseROK");
+				}
+				else if (ActionCheckAndClickDefine::CheckColor(ActionCheckAndClickDefine::CheckColorNameDefine::LDAssign1)
+					|| ActionCheckAndClickDefine::CheckColor(ActionCheckAndClickDefine::CheckColorNameDefine::LDAssign1R))
+				{
+					_ldCheckingIndex = 0;
+					setState(State::LDDone, "SortieAdv:LDDone");
+				}
+				else if (ActionCheckAndClickDefine::CheckColor(ActionCheckAndClickDefine::CheckColorNameDefine::LDAssign2)
+					|| ActionCheckAndClickDefine::CheckColor(ActionCheckAndClickDefine::CheckColorNameDefine::LDAssign2R))
+				{
+					_ldCheckingIndex = 1;
+					setState(State::LDDone, "SortieAdv:LDDone");
+				}
+				else if (ActionCheckAndClickDefine::CheckColor(ActionCheckAndClickDefine::CheckColorNameDefine::LDAssign3)
+					|| ActionCheckAndClickDefine::CheckColor(ActionCheckAndClickDefine::CheckColorNameDefine::LDAssign3R))
+				{
+					_ldCheckingIndex = 2;
+					setState(State::LDDone, "SortieAdv:LDDone");
 				}
 			});
 		}

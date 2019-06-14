@@ -462,7 +462,6 @@ QMap < ActionCheckAndClickDefine::CheckColorNameDefine, QList<int>> ActionCheckA
 		QList<int>{
 			232, 86, 172, 245, 167,
 				331, 173, 123, 93, 72,
-				348, 473, 182, 175, 165
 		}
 	},
 	{
@@ -470,7 +469,6 @@ QMap < ActionCheckAndClickDefine::CheckColorNameDefine, QList<int>> ActionCheckA
 		QList<int>{
 			1068, 88, 172, 245, 167,
 				1162, 173, 123, 93, 72,
-				1183, 381, 190, 182, 173
 		}
 	},
 	{
@@ -480,92 +478,92 @@ QMap < ActionCheckAndClickDefine::CheckColorNameDefine, QList<int>> ActionCheckA
 				744, 292, 17, 56, 74,
 				787, 426, 121, 254, 251
 		}
-    },
-    {
-        CheckColorNameDefine::SortieCommonLeaveOrNot,
-        QList<int>{
-            710, 419, 180, 198, 205,
-                706, 416, 41, 94, 110,
-                484, 408, 127, 251, 250
-        }
-    },
-    {
-        CheckColorNameDefine::LDAssign1,
-        QList<int>{
-            78, 129, 190, 183, 173,
-                73, 86, 74, 154, 79
-        }
-    },
-    {
-        CheckColorNameDefine::LDAssign1R,
-        QList<int>{
-            908, 132, 192, 183, 175,
-                904, 86, 74, 154, 79
-        }
-    },
-    {
-        CheckColorNameDefine::LDAssign2,
-        QList<int>{
-            169, 143, 193, 186, 176,
-                74, 93, 87, 148, 83
-        }
-    },
-    {
-        CheckColorNameDefine::LDAssign2R,
-        QList<int>{
-            1001, 142, 191, 184, 175,
-                905, 93, 87, 148, 83
-        }
-    },
-    {
-        CheckColorNameDefine::LDAssign3,
-        QList<int>{
-            270, 140, 194, 187, 177,
-                72, 79, 72, 135, 69
-        }
-    },
-    {
-        CheckColorNameDefine::LDAssign3R,
-        QList<int>{
-            1101, 140, 194, 187, 177,
-                903, 78, 74, 123, 68
-        }
-    },
-    {
-        CheckColorNameDefine::LDCharge,
-        QList<int>{
-            430, 589, 232, 247, 250,
-                392, 581, 212, 209, 204
-        }
-    },
-    {
-        CheckColorNameDefine::LDChargeTeam1,
-        QList<int>{
-            911, 180, 183, 176, 167,
-                871, 281, 183, 176, 167
-        }
-    },
-    {
-        CheckColorNameDefine::LDChargeTeam2,
-        QList<int>{
-            1012, 184, 174, 167, 157,
-                871, 281, 183, 176, 167
-        }
-    },
-    {
-        CheckColorNameDefine::LDChargeTeam3,
-        QList<int>{
-            1111, 175, 184, 177, 167,
-                871, 281, 183, 176, 167
-        }
-    },
-    {
-        CheckColorNameDefine::LDDoCharge,
-        QList<int>{
-            1164, 341, 108, 176, 55,
-                871, 281, 183, 176, 167
-        }
-    },
+	},
+	{
+		CheckColorNameDefine::SortieCommonLeaveOrNot,
+		QList<int>{
+			710, 419, 180, 198, 205,
+				706, 416, 41, 94, 110,
+				484, 408, 127, 251, 250
+		}
+	},
+	{
+		CheckColorNameDefine::LDAssign1,
+		QList<int>{
+			78, 129, 190, 183, 173,
+				73, 86, 74, 154, 79
+		}
+	},
+	{
+		CheckColorNameDefine::LDAssign1R,
+		QList<int>{
+			908, 132, 192, 183, 175,
+				904, 86, 74, 154, 79
+		}
+	},
+	{
+		CheckColorNameDefine::LDAssign2,
+		QList<int>{
+			169, 143, 193, 186, 176,
+				74, 93, 87, 148, 83
+		}
+	},
+	{
+		CheckColorNameDefine::LDAssign2R,
+		QList<int>{
+			1001, 142, 191, 184, 175,
+				905, 93, 87, 148, 83
+		}
+	},
+	{
+		CheckColorNameDefine::LDAssign3,
+		QList<int>{
+			270, 140, 194, 187, 177,
+				72, 79, 72, 135, 69
+		}
+	},
+	{
+		CheckColorNameDefine::LDAssign3R,
+		QList<int>{
+			1101, 140, 194, 187, 177,
+				903, 78, 74, 123, 68
+		}
+	},
+	{
+		CheckColorNameDefine::LDCharge,
+		QList<int>{
+			430, 589, 232, 247, 250,
+				392, 581, 212, 209, 204
+		}
+	},
+	{
+		CheckColorNameDefine::LDChargeTeam1,
+		QList<int>{
+			911, 180, 183, 176, 167,
+				871, 281, 183, 176, 167
+		}
+	},
+	{
+		CheckColorNameDefine::LDChargeTeam2,
+		QList<int>{
+			1012, 184, 174, 167, 157,
+				871, 281, 183, 176, 167
+		}
+	},
+	{
+		CheckColorNameDefine::LDChargeTeam3,
+		QList<int>{
+			1111, 175, 184, 177, 167,
+				871, 281, 183, 176, 167
+		}
+	},
+	{
+		CheckColorNameDefine::LDDoCharge,
+		QList<int>{
+			1164, 341, 108, 176, 55,
+				871, 281, 183, 176, 167
+		}
+	},
 	{
 		CheckColorNameDefine::ExpeditionPanel,
 		QList<int>{
@@ -987,49 +985,49 @@ QMap < ActionCheckAndClickDefine::MoveMouseNameDefine, QList<int>> ActionCheckAn
 		QList<int> {
 			998, 90, 50, 10
 		}
-    },
-    {
-        MoveMouseNameDefine::SortieCommonElseButton,
-        QList<int> {
-            1093, 624, 22, 22
-        }
-    },
-    {
-        MoveMouseNameDefine::LDCharge,
-        QList<int> {
-            350, 592, 100, 20
-        }
-    },
-    {
-        MoveMouseNameDefine::LDChargeTeam1,
-        QList<int> {
-            930, 185, 20, 10
-        }
-    },
-    {
-        MoveMouseNameDefine::LDChargeTeam2,
-        QList<int> {
-            1027, 182, 20, 10
-        }
-    },
-    {
-        MoveMouseNameDefine::LDChargeTeam3,
-        QList<int> {
-            1131, 189, 20, 10
-        }
-    },
-    {
-        MoveMouseNameDefine::LDDoCharge,
-        QList<int> {
-            1162, 327, 10, 10
-        }
-    },
-    {
-        MoveMouseNameDefine::LDAllChargeDone,
-        QList<int> {
-            368, 431, 100, 100
-        }
-    },
+	},
+	{
+		MoveMouseNameDefine::SortieCommonElseButton,
+		QList<int> {
+			1093, 624, 22, 22
+		}
+	},
+	{
+		MoveMouseNameDefine::LDCharge,
+		QList<int> {
+			350, 592, 100, 20
+		}
+	},
+	{
+		MoveMouseNameDefine::LDChargeTeam1,
+		QList<int> {
+			930, 185, 20, 10
+		}
+	},
+	{
+		MoveMouseNameDefine::LDChargeTeam2,
+		QList<int> {
+			1027, 182, 20, 10
+		}
+	},
+	{
+		MoveMouseNameDefine::LDChargeTeam3,
+		QList<int> {
+			1131, 189, 20, 10
+		}
+	},
+	{
+		MoveMouseNameDefine::LDDoCharge,
+		QList<int> {
+			1162, 327, 10, 10
+		}
+	},
+	{
+		MoveMouseNameDefine::LDAllChargeDone,
+		QList<int> {
+			368, 431, 100, 100
+		}
+	},
 	{
 		MoveMouseNameDefine::ExpeditionButton,
 		QList<int> {

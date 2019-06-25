@@ -261,8 +261,8 @@ QMap < ActionCheckAndClickDefine::CheckColorNameDefine, QList<int>> ActionCheckA
 	{
 		CheckColorNameDefine::SortiePanel,
 		QList<int>{
-			697, 328, 101, 170, 73,
-				1015, 201, 200, 202, 201
+            697, 328, 102, 172, 77,
+                1015, 201, 198, 210, 204
 
 		}
 	},

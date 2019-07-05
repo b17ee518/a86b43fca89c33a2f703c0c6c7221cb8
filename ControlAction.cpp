@@ -2663,8 +2663,8 @@ bool SortieAction::action()
 			QTimer::singleShot(DELAY_TIME, Qt::PreciseTimer, this, [this, &cm]()
 			{
 
-                if (ActionCheckAndClickDefine::CheckColor(ActionCheckAndClickDefine::CheckColorNameDefine::LDCharge)
-                        || ActionCheckAndClickDefine::CheckColor(ActionCheckAndClickDefine::CheckColorNameDefine::LDChargeNormal))
+				if (ActionCheckAndClickDefine::CheckColor(ActionCheckAndClickDefine::CheckColorNameDefine::LDCharge)
+					|| ActionCheckAndClickDefine::CheckColor(ActionCheckAndClickDefine::CheckColorNameDefine::LDChargeNormal))
 				{
 					_waiting = false;
 
@@ -2692,14 +2692,14 @@ bool SortieAction::action()
 			_waiting = true;
 			QTimer::singleShot(DELAY_TIME_CLICK, Qt::PreciseTimer, this, [this, &cm]()
 			{
-                if (_isEvent)
-                {
-                    ActionCheckAndClickDefine::MoveAndClick(ActionCheckAndClickDefine::MoveMouseNameDefine::LDCharge);
-                }
-                else
-                {
-                    ActionCheckAndClickDefine::MoveAndClick(ActionCheckAndClickDefine::MoveMouseNameDefine::LDChargeNormal);
-                }
+				if (_isEvent)
+				{
+					ActionCheckAndClickDefine::MoveAndClick(ActionCheckAndClickDefine::MoveMouseNameDefine::LDCharge);
+				}
+				else
+				{
+					ActionCheckAndClickDefine::MoveAndClick(ActionCheckAndClickDefine::MoveMouseNameDefine::LDChargeNormal);
+				}
 				setState(State::LDSelectTeamChecking, "Sortie:LDSelectTeamChecking");
 				cm.moveMouseTo(0, 0);
 				resetRetryAndWainting();
@@ -3000,8 +3000,16 @@ bool SortieAdvanceAction::action()
 				}
 				else
 				{
-					ActionCheckAndClickDefine::MoveAndClick(ActionCheckAndClickDefine::MoveMouseNameDefine::SortieSimpleAdvance); // advance
-					resetRetryAndWainting();
+					if (cm.isBulletMode())
+					{
+						ActionCheckAndClickDefine::MoveAndClick(ActionCheckAndClickDefine::MoveMouseNameDefine::SortieSimpleAdvanceBullet); // advance
+						resetRetryAndWainting();
+					}
+					else
+					{
+						ActionCheckAndClickDefine::MoveAndClick(ActionCheckAndClickDefine::MoveMouseNameDefine::SortieSimpleAdvance); // advance
+						resetRetryAndWainting();
+					}
 				}
 			});
 		}
@@ -3539,6 +3547,18 @@ bool RepeatAction::action()
 		if (cm.isFuelMode() || cm.isSouthEastMode())
 		{
 			if (cm.BuildNext_Fuel())
+			{
+				setState(State::Done, "Repeat:Done");
+				cm.StartJob();
+			}
+			else
+			{
+				newJobFromSwitch = mainWindow->switchToExpeditionWait();
+			}
+		}
+		else if (cm.isBulletMode())
+		{
+			if (cm.BuildNext_Bullet())
 			{
 				setState(State::Done, "Repeat:Done");
 				cm.StartJob();

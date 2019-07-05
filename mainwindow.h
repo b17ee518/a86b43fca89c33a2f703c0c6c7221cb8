@@ -124,7 +124,7 @@ public:
 	WebWidgetType getWebWidgetType() { return _webWidgetType; }
 	PlatformType getPlatformType() { return _platformType; }
 
-    int getUsePort(){return _useport;}
+	int getUsePort() { return _useport; }
 
 	static QString getAbsoluteResourcePath();
 	static void setAbsoluteResourcePath(const QString& path);
@@ -165,9 +165,9 @@ private slots:
 	void on_pbScreenshot_clicked();
 	void on_pbSwitchScreenshot_toggled(bool checked);
 	void slotScreenshotTimeout();
-    void slotJobtTimeout();
-    void on_pbCheckLowVol_toggled(bool checked);
-    void on_pbCheckReport_toggled(bool checked);
+	void slotJobtTimeout();
+	void on_pbCheckLowVol_toggled(bool checked);
+	void on_pbCheckReport_toggled(bool checked);
 
 #if defined Q_OS_WIN && !defined NO_WIN_EXTRA
 	void slotNavigateComplete2(IDispatch*, QVariant&);
@@ -179,6 +179,7 @@ private slots:
 	bool pingTest();
 
 	void onDoJobFuel();
+	void onDoJobBullet();
 	void onDoJobKira();
 	void onDoJobLevel();
 	void onDoJobRank();

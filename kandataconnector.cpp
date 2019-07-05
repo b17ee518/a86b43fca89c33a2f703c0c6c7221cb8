@@ -431,6 +431,28 @@ void KanDataConnector::checkWoundQuit()
 	// int lastdeckid = pksd->lastdeckid;
 	bool bClose = false;
 
+	auto & cm = ControlManager::getInstance();
+	if (cm.isBulletMode())
+	{
+		if (cm.getTeamSize(0) == 1)
+		{
+			auto shipno = cm.getCurrentFlagshipId();
+			const auto* pship = findShipFromShipno(shipno);
+			if (isShipHasSlotitem(pship, SlotitemType::OuKyu))
+			{
+				const auto* pmstship = findMstShipFromShipid(pship->api_ship_id);
+				if (pmstship != NULL)
+				{
+					if (pmstship->api_stype == (int)ShipType::SenSui || pmstship->api_stype == (int)ShipType::SenBou)
+					{
+						// surpass
+						return;
+					}
+				}
+			}
+		}
+	}
+
 	foreach(const auto& deck, pksd->portdata.api_deck_port)
 	{
 		foreach(int shipno, deck.api_ship)
@@ -512,10 +534,10 @@ void KanDataConnector::checkAirBase()
 {
 	pksd->airBaseNeedSupply = false;
 	pksd->airBaseBadCond = false;
-    pksd->airBaseNeedSupplyList.clear();
+	pksd->airBaseNeedSupplyList.clear();
 
-    for (const auto& corps : pksd->airbasedata)
-    {
+	for (const auto& corps : pksd->airbasedata)
+	{
 		for (const auto& corp : corps)
 		{
 			if (corp.api_rid < 0)
@@ -529,11 +551,11 @@ void KanDataConnector::checkAirBase()
 					continue;
 				}
 				if (plane.api_count < plane.api_max_count)
-                {
-                    if (!pksd->airBaseNeedSupplyList.contains(corp.api_rid))
-                    {
-                        pksd->airBaseNeedSupplyList.append(corp.api_rid);
-                    }
+				{
+					if (!pksd->airBaseNeedSupplyList.contains(corp.api_rid))
+					{
+						pksd->airBaseNeedSupplyList.append(corp.api_rid);
+					}
 					pksd->airBaseNeedSupply = true;
 				}
 				if (plane.api_cond > 1)
@@ -585,7 +607,7 @@ QString KanDataConnector::logBattleResult(bool bWrite/*=true*/)
 			if (maparea_id == 2)
 			{
 				ControlManager& cm = ControlManager::getInstance();
-				
+
 				if (!cm.isRunning()
 					|| (cm.isMorningMode() && cm.getMorningSetting().morningStage != ControlManager::MorningStage::YuSou3))
 				{
@@ -848,15 +870,15 @@ QString KanDataConnector::logBattleResult(bool bWrite/*=true*/)
 		+ mvpstr + "\t"
 		+ mvp_combinedstr + "\t";
 
-    if (pksd->portdata.api_material[(int)MaterialDataIndex::Fuel].api_value != pksd->lastBattleFuel)
-    {
-        pksd->lastBattleFuel = pksd->portdata.api_material[(int)MaterialDataIndex::Fuel].api_value;
-        writestr += QString::number(pksd->portdata.api_material[(int)MaterialDataIndex::Fuel].api_value) + "\t"
-                + QString::number(pksd->portdata.api_material[(int)MaterialDataIndex::Bullet].api_value) + "\t"
-                + QString::number(pksd->portdata.api_material[(int)MaterialDataIndex::Steel].api_value) + "\t"
-                + QString::number(pksd->portdata.api_material[(int)MaterialDataIndex::Bauxite].api_value) + "\t"
-                + QString::number(pksd->portdata.api_material[(int)MaterialDataIndex::InstantRepair].api_value) + "\t";
-    }
+	if (pksd->portdata.api_material[(int)MaterialDataIndex::Fuel].api_value != pksd->lastBattleFuel)
+	{
+		pksd->lastBattleFuel = pksd->portdata.api_material[(int)MaterialDataIndex::Fuel].api_value;
+		writestr += QString::number(pksd->portdata.api_material[(int)MaterialDataIndex::Fuel].api_value) + "\t"
+			+ QString::number(pksd->portdata.api_material[(int)MaterialDataIndex::Bullet].api_value) + "\t"
+			+ QString::number(pksd->portdata.api_material[(int)MaterialDataIndex::Steel].api_value) + "\t"
+			+ QString::number(pksd->portdata.api_material[(int)MaterialDataIndex::Bauxite].api_value) + "\t"
+			+ QString::number(pksd->portdata.api_material[(int)MaterialDataIndex::InstantRepair].api_value) + "\t";
+	}
 
 	if (bWrite)
 	{

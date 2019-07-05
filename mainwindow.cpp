@@ -104,7 +104,7 @@ MainWindow::MainWindow(QWidget *parent)
 	connect(shortcutPing, SIGNAL(activated()), this, SLOT(onPingTest()));
 
 	QShortcut *shortcutDoJob = new QShortcut(QKeySequence("Ctrl+F9"), this);
-	connect(shortcutDoJob, SIGNAL(activated()), this, SLOT(onDoJobFuel()));
+	connect(shortcutDoJob, SIGNAL(activated()), this, SLOT(onDoJobBullet()));
 
 	QShortcut *shortcutDoJobKira = new QShortcut(QKeySequence("Ctrl+F10"), this);
 	connect(shortcutDoJobKira, SIGNAL(activated()), this, SLOT(onDoJobKira()));
@@ -200,7 +200,7 @@ MainWindow::~MainWindow()
 	}
 	if (_mitmProcess)
 	{
-        RemoteNotifyHandler::getInstance().RunKillMITMNetStat();
+		RemoteNotifyHandler::getInstance().RunKillMITMNetStat();
 		_mitmProcess->terminate();
 		_mitmProcess->waitForFinished();
 		_mitmProcess->close();

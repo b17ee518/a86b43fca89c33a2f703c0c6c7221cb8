@@ -20,9 +20,9 @@ public:
 		HenseiChangeMemberSelectionSortOK,
 		HenseiChangeMemberSelectionFilterOK,
 
-        HenseiChangeMemberSelectionLeftMost,
-        HenseiChangeMemberSelectionLeftMostMac,
-        HenseiChangeMemberSelectionLeftMostMac2,
+		HenseiChangeMemberSelectionLeftMost,
+		HenseiChangeMemberSelectionLeftMostMac,
+		HenseiChangeMemberSelectionLeftMostMac2,
 
 		HenseiChangeMemberChangeButton,
 
@@ -85,10 +85,10 @@ public:
 		SortieCommonFormation5,
 		SortieCommonFormationCombined,
 
-        SortieCommonAirBaseSelection,
-        SortieCommonAirBaseSelectDone,
-        SortieCommonAirBaseSelectionR,
-        SortieCommonAirBaseSelectDoneR,
+		SortieCommonAirBaseSelection,
+		SortieCommonAirBaseSelectDone,
+		SortieCommonAirBaseSelectionR,
+		SortieCommonAirBaseSelectDoneR,
 
 		SortieCommonNightOrNot,
 		SortieCommonLeaveOrNot,
@@ -104,19 +104,19 @@ public:
 		MissionNonConnecting,
 		MissionPanel,
 
-        LDAssign1,
-        LDAssign2,
-        LDAssign3,
-        LDAssign1R,
-        LDAssign2R,
-        LDAssign3R,
+		LDAssign1,
+		LDAssign2,
+		LDAssign3,
+		LDAssign1R,
+		LDAssign2R,
+		LDAssign3R,
 
-        LDCharge,
-        LDChargeNormal,
-        LDChargeTeam1,
-        LDChargeTeam2,
-        LDChargeTeam3,
-        LDDoCharge,
+		LDCharge,
+		LDChargeNormal,
+		LDChargeTeam1,
+		LDChargeTeam2,
+		LDChargeTeam3,
+		LDDoCharge,
 
 		DevelopReadyPanel,
 	};
@@ -194,30 +194,31 @@ public:
 		SortieSortieButton,
 		SortieAreaHorizontalButton,
 
-        SortieAreaEventButton,
-        SortieBlackBoardButton,
+		SortieAreaEventButton,
+		SortieBlackBoardButton,
 
 		SortieOKButton,
 		SortieTeamHorizontalButton,
 		SortieFinalButton,
 
 		SortieSimpleAdvance,
+		SortieSimpleAdvanceBullet,
 
 		SortieCommonLeftButton,
 		SortieCommonRightButton,
 
-        SortieCommonAirBaseOKButton,
-        SortieCommonAirBaseROKButton,
+		SortieCommonAirBaseOKButton,
+		SortieCommonAirBaseROKButton,
 
 		SortieCommonElseButton,
 
-        LDCharge,
-        LDChargeNormal,
-        LDChargeTeam1,
-        LDChargeTeam2,
-        LDChargeTeam3,
-        LDDoCharge,
-        LDAllChargeDone,
+		LDCharge,
+		LDChargeNormal,
+		LDChargeTeam1,
+		LDChargeTeam2,
+		LDChargeTeam3,
+		LDDoCharge,
+		LDAllChargeDone,
 
 		ExpeditionButton,
 

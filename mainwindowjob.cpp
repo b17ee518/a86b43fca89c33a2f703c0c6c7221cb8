@@ -82,6 +82,22 @@ void MainWindow::onDoJobFuel()
 	}
 }
 
+void MainWindow::onDoJobBullet()
+{
+	auto& cm = ControlManager::getInstance();
+	cm.Terminate();
+	cm.clearLastTarget();
+
+	if (cm.BuildNext_Bullet())
+	{
+		cm.StartJob();
+	}
+	else
+	{
+		switchToExpeditionWait();
+	}
+}
+
 void MainWindow::onDoJobKira()
 {
 	auto& cm = ControlManager::getInstance();
@@ -191,10 +207,10 @@ void MainWindow::onDoJobAny()
 				{
 					setting = cm.getAnyTemplateSetting(area, map);
 					setting.count = dialog->getCountSet();
-                    //setting.onlySSTeamSize = dialog->getOnlySSTeamSize();
-                    setting.autoFastRepair = dialog->isAutoFastRepair();
-                    setting.swapLowCond = dialog->isSwapLowCond();
-					setting.checkAirBaseCond = dialog->isCheckAirBaseCond();                    
+					//setting.onlySSTeamSize = dialog->getOnlySSTeamSize();
+					setting.autoFastRepair = dialog->isAutoFastRepair();
+					setting.swapLowCond = dialog->isSwapLowCond();
+					setting.checkAirBaseCond = dialog->isCheckAirBaseCond();
 					setting.checkCond = dialog->isCheckCond();
 					setting.allowMiddleDamageSortie = dialog->isAllowMiddle();
 					setting.pauseAtStartMap = dialog->isPauseStartMap();
@@ -234,7 +250,7 @@ void MainWindow::onDoJobAny()
 	setting.count = dialog->getCountSet();
 	setting.onlySSTeamSize = dialog->getOnlySSTeamSize();
 	setting.autoFastRepair = dialog->isAutoFastRepair();
-    setting.swapLowCond = dialog->isSwapLowCond();
+	setting.swapLowCond = dialog->isSwapLowCond();
 	setting.checkAirBaseCond = dialog->isCheckAirBaseCond();
 	setting.checkCond = dialog->isCheckCond();
 	setting.allowMiddleDamageSortie = dialog->isAllowMiddle();
@@ -266,7 +282,7 @@ void MainWindow::onDoJobAny()
 
 	cm.setAnySetting(setting);
 
-    if (cm.BuildNext_Any(QApplication::queryKeyboardModifiers()&Qt::ShiftModifier, false))
+	if (cm.BuildNext_Any(QApplication::queryKeyboardModifiers()&Qt::ShiftModifier, false))
 	{
 		cm.StartJob();
 	}
@@ -549,7 +565,7 @@ void MainWindow::onExportAllList()
 		});
 
 
-        QFile * file = new QFile(MainWindow::getAbsoluteResourcePath() + "/action/" + "exported.table");
+		QFile * file = new QFile(MainWindow::getAbsoluteResourcePath() + "/action/" + "exported.table");
 		if (file)
 		{
 			if (file->open(QIODevice::WriteOnly | QIODevice::Text))

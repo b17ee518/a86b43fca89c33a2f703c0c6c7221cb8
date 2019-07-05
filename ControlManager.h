@@ -27,6 +27,7 @@ public:
 		None,
 		Kira,
 		Fuel,
+		Bullet,
 		SouthEast,
 		Expedition,
 		Level,
@@ -159,9 +160,9 @@ public:
 
 		bool swapLowCond = false;
 
-        bool shouldStopAfterCharge = false;
-        bool waitForFullCond = false;
-        bool waitForFullRepair = false;
+		bool shouldStopAfterCharge = false;
+		bool waitForFullCond = false;
+		bool waitForFullRepair = false;
 
 		int ld1ClickX = -1;
 		int ld1ClickY = -1;
@@ -230,13 +231,15 @@ public:
 
 	void pushPreSupplyCheck();
 
-	QList<int> pushPreRepairCheck(QList<int>& willBeInDockList, bool bForceUseFastRepair, bool onlyInTeam, bool onlyShortSevere, bool onlySmallShip, bool onlySevere, int useSlotUpTo = 3, bool fastRepairSmallDamage = false);
+	QList<int> pushPreRepairCheck(QList<int>& willBeInDockList, bool bForceUseFastRepair, bool onlyInTeam, bool onlyShortSevere, bool onlySmallShip, bool onlySevere, int useSlotUpTo = 3, bool fastRepairSmallDamage = false, bool includeLowLevel = false);
 
 	QList<int> pushPreShipFullCheck();
 
 	bool BuildNext_Kira();
 
 	bool BuildNext_Fuel();
+
+	bool BuildNext_Bullet();
 
 	bool BuildNext_East();
 
@@ -283,8 +286,8 @@ public:
 
 	void setToTerminate(const char* title, bool forceSound = false, RemoteNotifyHandler::Level overrideLevel = RemoteNotifyHandler::Level::Invalid);
 
-	void createSSShipList();
-	bool chooseSSShipList(int teamSize, QList<int>& ships, QList<int>&sortInTeamShips, QList<int> excludeShipList, QString& errorMessage, bool onlySensui = false);
+	void createSSShipList(bool noMinLevelHPCheck);
+	bool chooseSSShipList(int teamSize, QList<int>& ships, QList<int>&sortInTeamShips, QList<int> excludeShipList, QString& errorMessage, bool onlySensui = false, bool needDamageControl = false, int limitHighestLevel = -1);
 	bool isTreatedSameShip(int shipno, int oshipno);
 	bool isAfterShip(const kcsapi_mst_ship* pmstship, const kcsapi_mst_ship* pomstship, QList<int> checkedIdList = QList<int>()/*for convert*/);
 	// is pmstship after of pomstship
@@ -377,6 +380,7 @@ public:
 
 	inline bool isKiraMode() { return _target == ActionTarget::Kira; }
 	inline bool isFuelMode() { return _target == ActionTarget::Fuel; }
+	inline bool isBulletMode() { return _target == ActionTarget::Bullet; }
 	inline bool isSouthEastMode() { return _target == ActionTarget::SouthEast; }
 	inline bool isLevelMode() { return _target == ActionTarget::Level; }
 	inline bool isExpeditionMode() { return _target == ActionTarget::Expedition; }

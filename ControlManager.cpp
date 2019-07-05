@@ -154,6 +154,53 @@ bool ControlManager::BuildNext_Kira()
 	return true;
 }
 
+bool ControlManager::BuildNext_Bullet()
+{
+	_target = ActionTarget::Bullet;
+
+	pushPreSupplyCheck();
+	QList<int> willBeInDockList;
+
+	int useUpToDockSize = 4;
+
+	pushPreRepairCheck(willBeInDockList, false, false, true, true, true, useUpToDockSize, false, true);
+
+	pushPreShipFullCheck();
+
+	QList<int> ships;
+	QList<int> sortInTeamShips;
+	QString errorMessage;
+	if (!chooseSSShipList(1, ships, sortInTeamShips, willBeInDockList, errorMessage, false, true, 30))
+	{
+		setToTerminate(errorMessage.toLocal8Bit(), false, RemoteNotifyHandler::Level::Info);
+		return false;
+	}
+
+	/*
+	// change hensei sort
+	auto chSortAction = new ChangeHenseiAction();
+	chSortAction->setShips(sortInTeamShips);
+	_actionList.append(chSortAction);
+	*/
+
+	// change hensei
+	auto chAction = new ChangeHenseiAction();
+	chAction->setShips(ships);
+	_actionList.append(chAction);
+
+	SortieAction* sortieAction = new SortieAction();
+	sortieAction->setAreaAndMap(3, 2);
+	_actionList.append(sortieAction);
+	_actionList.append(new SortieAdvanceAction());
+	_actionList.append(new ChargeAction());
+	_actionList.append(new RepeatAction());
+
+	_morningSetting.lastBuiltState = MorningStage::AssumeJobDone;
+	setState(State::Ready, "Ready");
+	return true;
+
+}
+
 bool ControlManager::BuildNext_Fuel()
 {
 	_target = ActionTarget::Fuel;
@@ -261,14 +308,14 @@ public:
 	}
 };
 
-bool ControlManager::chooseSSShipList(int teamSize, QList<int>& ships, QList<int>& sortInTeamShips, QList<int> excludeShipList, QString& errorMessage, bool onlyHighKaihi/*=false*/)
+bool ControlManager::chooseSSShipList(int teamSize, QList<int>& ships, QList<int>& sortInTeamShips, QList<int> excludeShipList, QString& errorMessage, bool onlyHighKaihi/*=false*/, bool needDamageControl/*=false*/, int limitHighestLevel/*=-1*/)
 {
 	KanSaveData* pksd = &KanSaveData::getInstance();
 	errorMessage = "";
 
 	if (_ssShips.isEmpty())
 	{
-		createSSShipList();
+		createSSShipList(limitHighestLevel > 0);
 	}
 
 	const int kaihiBorderLine = 0;
@@ -293,6 +340,23 @@ bool ControlManager::chooseSSShipList(int teamSize, QList<int>& ships, QList<int
 					continue;
 				}
 			}
+
+			if (needDamageControl)
+			{
+				if (!pkdc->isShipHasSlotitem(pcurship, SlotitemType::OuKyu))
+				{
+					continue;
+				}
+			}
+
+			if (limitHighestLevel > 0)
+			{
+				if (pcurship->api_lv > limitHighestLevel)
+				{
+					continue;
+				}
+			}
+
 			// cond ng later
 			/*
 			if (pcurship->api_cond <= _sortieMinCond)
@@ -301,7 +365,7 @@ bool ControlManager::chooseSSShipList(int teamSize, QList<int>& ships, QList<int
 			}
 			*/
 			// damage ng
-			if (KanDataCalc::GetWoundState(pcurship->api_nowhp, pcurship->api_maxhp) >= WoundState::Middle && !isShipInDock(ssid))
+			if ((KanDataCalc::GetWoundState(pcurship->api_nowhp, pcurship->api_maxhp) >= WoundState::Big || KanDataCalc::GetWoundState(pcurship->api_nowhp, pcurship->api_maxhp) >= WoundState::Middle && !needDamageControl) && !isShipInDock(ssid))
 			{
 				continue;
 			}
@@ -1224,15 +1288,15 @@ void ControlManager::LoadAnyTemplateSettings()
 				else if (!key.compare("Stop", Qt::CaseInsensitive))
 				{
 					_anyTemplateSettings[pair].shouldStopAfterCharge = splited[0].toInt(&bOk);
-                }
-                else if (!key.compare("FullCond", Qt::CaseInsensitive))
-                {
-                    _anyTemplateSettings[pair].waitForFullCond = splited[0].toInt(&bOk);
-                }
-                else if (!key.compare("FullRepaire", Qt::CaseInsensitive))
-                {
-                    _anyTemplateSettings[pair].waitForFullRepair = splited[0].toInt(&bOk);
-                }
+				}
+				else if (!key.compare("FullCond", Qt::CaseInsensitive))
+				{
+					_anyTemplateSettings[pair].waitForFullCond = splited[0].toInt(&bOk);
+				}
+				else if (!key.compare("FullRepaire", Qt::CaseInsensitive))
+				{
+					_anyTemplateSettings[pair].waitForFullRepair = splited[0].toInt(&bOk);
+				}
 				continue;
 			}
 
@@ -1384,11 +1448,11 @@ bool ControlManager::BuildNext_Any(bool advanceOnly, bool stopAfterCharge)
 		QList<int> fastRepairShips;
 		if (_anySetting.autoFastRepair)
 		{
-            fastRepairShips = pushPreRepairCheck(willBeInDockList, true, true, false, false, _anySetting.allowMiddleDamageSortie, 3, _anySetting.waitForFullRepair || _anySetting.waitForFullCond);
+			fastRepairShips = pushPreRepairCheck(willBeInDockList, true, true, false, false, _anySetting.allowMiddleDamageSortie, 3, _anySetting.waitForFullRepair || _anySetting.waitForFullCond);
 		}
 		else if (_anySetting.onlySSTeamSize > 0)
 		{
-            pushPreRepairCheck(willBeInDockList, false, false, true, true, _anySetting.allowMiddleDamageSortie, 3, _anySetting.waitForFullCond || _anySetting.waitForFullRepair);
+			pushPreRepairCheck(willBeInDockList, false, false, true, true, _anySetting.allowMiddleDamageSortie, 3, _anySetting.waitForFullCond || _anySetting.waitForFullRepair);
 		}
 
 		KanSaveData* pksd = &KanSaveData::getInstance();
@@ -2068,7 +2132,8 @@ QList<int> ControlManager::pushPreRepairCheck(QList<int>& willBeInDockList,
 	bool onlySmallShip,
 	bool onlySevere,
 	int useUpToNDockSize/*=3*/,
-	bool fastRepaireSmallDamate/*=false*/)
+	bool fastRepaireSmallDamate/*=false*/,
+	bool includeLowLevel/*=false*/)
 {
 	if (!_shouldAutoPushRepair)
 	{
@@ -2130,7 +2195,7 @@ QList<int> ControlManager::pushPreRepairCheck(QList<int>& willBeInDockList,
 	for (auto& ship : pksd->portdata.api_ship)
 	{
 		if (ship.api_ndock_time > 0
-			&& ship.api_lv > 3
+			&& (ship.api_lv > 3 || includeLowLevel)
 			&& ship.api_locked
 			&& !isShipInDock(ship.api_id))
 		{
@@ -2515,7 +2580,7 @@ void ControlManager::setToTerminate(const char* title, bool forceSound, RemoteNo
 	setState(State::ToTerminate, title, false, forceSound);
 }
 
-void ControlManager::createSSShipList()
+void ControlManager::createSSShipList(bool noMinLevelHPCheck)
 {
 	if (!_ssShips.isEmpty())
 	{
@@ -2534,7 +2599,7 @@ void ControlManager::createSSShipList()
 		if (pmstship->api_stype == (int)ShipType::SenBou
 			|| pmstship->api_stype == (int)ShipType::SenSui)
 		{
-			if (ship.api_lv >= 50 && ship.api_maxhp >= 10)
+			if (noMinLevelHPCheck || (ship.api_lv >= 50 && ship.api_maxhp >= 10))
 			{
 				bool bAdded = false;
 				for (QList<int>& group : _ssShips)
@@ -2858,10 +2923,10 @@ bool ControlManager::isShipInOtherTeam(int shipno, int team, bool excludeOnBoard
 		}
 	}
 
-    if (pksd->portdata.api_combined_Flag > 0)
-    {
-        onBoarding[0] = false;
-    }
+	if (pksd->portdata.api_combined_Flag > 0)
+	{
+		onBoarding[0] = false;
+	}
 
 	for (auto& deck : pksd->portdata.api_deck_port)
 	{

@@ -3000,9 +3000,17 @@ bool SortieAdvanceAction::action()
 				}
 				else
 				{
+                    _clickCount++;
 					if (cm.isBulletMode())
-					{
-						ActionCheckAndClickDefine::MoveAndClick(ActionCheckAndClickDefine::MoveMouseNameDefine::SortieSimpleAdvanceBullet); // advance
+                    {
+                        if (_clickCount % 3 > 0)
+                        {
+                            ActionCheckAndClickDefine::MoveAndClick(ActionCheckAndClickDefine::MoveMouseNameDefine::SortieSimpleAdvance); // advance
+                        }
+                        else
+                        {
+                            ActionCheckAndClickDefine::MoveAndClick(ActionCheckAndClickDefine::MoveMouseNameDefine::SortieSimpleAdvanceMegami); // advance
+                        }
 						resetRetryAndWainting();
 					}
 					else

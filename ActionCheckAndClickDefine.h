@@ -202,7 +202,7 @@ public:
 		SortieFinalButton,
 
 		SortieSimpleAdvance,
-		SortieSimpleAdvanceBullet,
+        SortieSimpleAdvanceMegami,
 
 		SortieCommonLeftButton,
 		SortieCommonRightButton,

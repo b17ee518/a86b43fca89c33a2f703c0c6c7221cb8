@@ -505,6 +505,7 @@ public:
 
 private:
 	State _state = State::None;
+    int _clickCount = 0;
 	void setState(State state, const char* str);
 };
 

@@ -163,7 +163,7 @@ bool ControlManager::BuildNext_Bullet()
 
 	int useUpToDockSize = 4;
 
-	pushPreRepairCheck(willBeInDockList, false, false, true, true, true, useUpToDockSize, false, true);
+    pushPreRepairCheck(willBeInDockList, false, false, false, true, true, useUpToDockSize, false, true);
 
 	pushPreShipFullCheck();
 

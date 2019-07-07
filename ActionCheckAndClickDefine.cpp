@@ -970,9 +970,9 @@ QMap < ActionCheckAndClickDefine::MoveMouseNameDefine, QList<int>> ActionCheckAn
 		}
 	},
 	{
-		MoveMouseNameDefine::SortieSimpleAdvanceBullet,
+        MoveMouseNameDefine::SortieSimpleAdvanceMegami,
 		QList<int> {
-			434, 397, 50, 80
+            434, 579, 50, 40
 		}
 	},
 	{

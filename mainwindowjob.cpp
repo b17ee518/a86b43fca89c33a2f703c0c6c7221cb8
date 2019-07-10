@@ -72,6 +72,7 @@ void MainWindow::onDoJobFuel()
 		delete pMessageBox;
 	}
 
+	cm.clearSSShipList();
 	if (cm.BuildNext_Fuel())
 	{
 		cm.StartJob();
@@ -88,6 +89,7 @@ void MainWindow::onDoJobBullet()
 	cm.Terminate();
 	cm.clearLastTarget();
 
+	cm.clearSSShipList();
 	if (cm.BuildNext_Bullet())
 	{
 		cm.StartJob();
@@ -282,6 +284,7 @@ void MainWindow::onDoJobAny()
 
 	cm.setAnySetting(setting);
 
+	cm.clearSSShipList();
 	if (cm.BuildNext_Any(QApplication::queryKeyboardModifiers()&Qt::ShiftModifier, false))
 	{
 		cm.StartJob();

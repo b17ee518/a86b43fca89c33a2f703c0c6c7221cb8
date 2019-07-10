@@ -163,7 +163,7 @@ bool ControlManager::BuildNext_Bullet()
 
 	int useUpToDockSize = 4;
 
-    pushPreRepairCheck(willBeInDockList, false, false, false, true, true, useUpToDockSize, false, true);
+	pushPreRepairCheck(willBeInDockList, false, false, false, true, true, useUpToDockSize, false, true);
 
 	pushPreShipFullCheck();
 
@@ -307,6 +307,11 @@ public:
 		nDockCompleteTime = completeTime;
 	}
 };
+
+void ControlManager::clearSSShipList()
+{
+	_ssShips.clear();
+}
 
 bool ControlManager::chooseSSShipList(int teamSize, QList<int>& ships, QList<int>& sortInTeamShips, QList<int> excludeShipList, QString& errorMessage, bool onlyHighKaihi/*=false*/, bool needDamageControl/*=false*/, int limitHighestLevel/*=-1*/)
 {

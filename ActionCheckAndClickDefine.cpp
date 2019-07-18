@@ -573,15 +573,15 @@ QMap < ActionCheckAndClickDefine::CheckColorNameDefine, QList<int>> ActionCheckA
 	},
 	{
 		CheckColorNameDefine::ExpeditionPanel,
-		QList<int>{
-			763, 174, 242, 127, 23,
-				223, 209, 129, 91, 0
+        QList<int>{
+            763, 173, 219, 112, 27,
+                175, 218, 108, 104, 95
 		}
 	},
 	{
 		CheckColorNameDefine::ExpeditionSelectItemDone,
 		QList<int>{
-			1103, 654, 84, 154, 151
+            957, 666, 103, 169, 166
 		}
 	},
 	{
@@ -1056,15 +1056,15 @@ QMap < ActionCheckAndClickDefine::MoveMouseNameDefine, QList<int>> ActionCheckAn
 	{
 		MoveMouseNameDefine::ExpeditionAreaHorizontal,
 		QList<int> {
-			195, 660, 10, 5,
-				62, 0
+            205, 682, 10, 5,
+                60, 0
 		}
 	},
 	{
 		MoveMouseNameDefine::ExpeditionVertical,
 		QList<int> {
-			606, 258, 151, 5,
-				0, 46
+            606, 260, 151, 5,
+                0, 45
 		}
 	},
 	{

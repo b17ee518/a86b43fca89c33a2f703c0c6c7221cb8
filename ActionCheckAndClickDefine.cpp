@@ -153,7 +153,7 @@ QMap < ActionCheckAndClickDefine::CheckColorNameDefine, QList<int>> ActionCheckA
 	{
 		CheckColorNameDefine::ChargeChangedToSecondTeam,
 		QList<int>{
-			276, 176, 36, 159, 160
+            278, 177, 59, 177, 175
 		}
 	},
 	{
@@ -379,25 +379,25 @@ QMap < ActionCheckAndClickDefine::CheckColorNameDefine, QList<int>> ActionCheckA
 	{
 		CheckColorNameDefine::SortieTeam1,
 		QList<int>{
-			551, 169, 35, 160, 161
+            554, 170, 57, 175, 174
 		}
 	},
 	{
 		CheckColorNameDefine::SortieTeam2,
 		QList<int>{
-			599, 169, 33, 151, 151
+            600, 171, 96, 186, 182
 		}
 	},
 	{
 		CheckColorNameDefine::SortieTeam3,
 		QList<int>{
-			642, 168, 35, 158, 159
+            645, 171, 97, 186, 182
 		}
 	},
 	{
 		CheckColorNameDefine::SortieTeam4,
 		QList<int>{
-			688, 166, 35, 158, 159
+            689, 171, 55, 174, 173
 		}
 	},
 	{

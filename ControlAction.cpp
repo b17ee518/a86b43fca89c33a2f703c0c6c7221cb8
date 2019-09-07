@@ -2713,8 +2713,9 @@ bool SortieAction::action()
 			QTimer::singleShot(DELAY_TIME_SUPERLONG, Qt::PreciseTimer, this, [this, &cm]()
 			{
 				if (ActionCheckAndClickDefine::CheckColor(ActionCheckAndClickDefine::CheckColorNameDefine::LDChargeTeam1)
-					|| ActionCheckAndClickDefine::CheckColor(ActionCheckAndClickDefine::CheckColorNameDefine::LDChargeTeam2)
-					|| ActionCheckAndClickDefine::CheckColor(ActionCheckAndClickDefine::CheckColorNameDefine::LDChargeTeam3))
+                    || ActionCheckAndClickDefine::CheckColor(ActionCheckAndClickDefine::CheckColorNameDefine::LDChargeTeam2)
+                    || ActionCheckAndClickDefine::CheckColor(ActionCheckAndClickDefine::CheckColorNameDefine::LDChargeTeam3)
+                    || ActionCheckAndClickDefine::CheckColor(ActionCheckAndClickDefine::CheckColorNameDefine::LDChargeTeamOnly1))
 				{
 					_waiting = false;
 					int team = cm.getNeedSupplyLDTeam();
@@ -3084,8 +3085,10 @@ bool SortieCommonAdvanceAction::action()
 				{
 					setState(State::ClickAirBaseROK, "SortieAdv:ClickAirBaseROK");
 				}
-				else if (ActionCheckAndClickDefine::CheckColor(ActionCheckAndClickDefine::CheckColorNameDefine::LDAssign1)
-					|| ActionCheckAndClickDefine::CheckColor(ActionCheckAndClickDefine::CheckColorNameDefine::LDAssign1R))
+                else if (ActionCheckAndClickDefine::CheckColor(ActionCheckAndClickDefine::CheckColorNameDefine::LDAssign1)
+                     || ActionCheckAndClickDefine::CheckColor(ActionCheckAndClickDefine::CheckColorNameDefine::LDAssign1R)
+                     || ActionCheckAndClickDefine::CheckColor(ActionCheckAndClickDefine::CheckColorNameDefine::LDAssignOnly1)
+                     || ActionCheckAndClickDefine::CheckColor(ActionCheckAndClickDefine::CheckColorNameDefine::LDAssignOnly1R))
 				{
 					_ldCheckingIndex = 0;
 					setState(State::LDDone, "SortieAdv:LDDone");

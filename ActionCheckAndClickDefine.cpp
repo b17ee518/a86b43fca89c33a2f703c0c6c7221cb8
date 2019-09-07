@@ -529,6 +529,20 @@ QMap < ActionCheckAndClickDefine::CheckColorNameDefine, QList<int>> ActionCheckA
 				903, 78, 74, 123, 68
 		}
 	},
+    {
+        CheckColorNameDefine::LDAssignOnly1,
+        QList<int>{
+            78, 129, 190, 183, 173,
+                73, 86, 75, 145, 75
+        }
+    },
+    {
+        CheckColorNameDefine::LDAssignOnly1R,
+        QList<int>{
+            908, 132, 192, 183, 175,
+                904, 86, 76, 145, 75
+        }
+    },
 	{
 		CheckColorNameDefine::LDCharge,
 		QList<int>{
@@ -564,6 +578,13 @@ QMap < ActionCheckAndClickDefine::CheckColorNameDefine, QList<int>> ActionCheckA
 				871, 281, 183, 176, 167
 		}
 	},
+    {
+        CheckColorNameDefine::LDChargeTeamOnly1,
+        QList<int>{
+            911, 180, 101, 84, 64,
+                871, 281, 183, 176, 167
+        }
+    },
 	{
 		CheckColorNameDefine::LDDoCharge,
 		QList<int>{

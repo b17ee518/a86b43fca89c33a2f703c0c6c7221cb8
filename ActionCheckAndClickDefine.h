@@ -109,13 +109,16 @@ public:
 		LDAssign3,
 		LDAssign1R,
 		LDAssign2R,
-		LDAssign3R,
+        LDAssign3R,
+        LDAssignOnly1,
+        LDAssignOnly1R,
 
 		LDCharge,
 		LDChargeNormal,
 		LDChargeTeam1,
 		LDChargeTeam2,
 		LDChargeTeam3,
+        LDChargeTeamOnly1,
 		LDDoCharge,
 
 		DevelopReadyPanel,

@@ -153,7 +153,7 @@ QMap < ActionCheckAndClickDefine::CheckColorNameDefine, QList<int>> ActionCheckA
 	{
 		CheckColorNameDefine::ChargeChangedToSecondTeam,
 		QList<int>{
-            278, 177, 59, 177, 175
+			278, 177, 59, 177, 175
 		}
 	},
 	{
@@ -379,25 +379,25 @@ QMap < ActionCheckAndClickDefine::CheckColorNameDefine, QList<int>> ActionCheckA
 	{
 		CheckColorNameDefine::SortieTeam1,
 		QList<int>{
-            554, 170, 57, 175, 174
+			554, 170, 57, 175, 174
 		}
 	},
 	{
 		CheckColorNameDefine::SortieTeam2,
 		QList<int>{
-            600, 171, 96, 186, 182
+			600, 171, 96, 186, 182
 		}
 	},
 	{
 		CheckColorNameDefine::SortieTeam3,
 		QList<int>{
-            645, 171, 97, 186, 182
+			645, 171, 97, 186, 182
 		}
 	},
 	{
 		CheckColorNameDefine::SortieTeam4,
 		QList<int>{
-            689, 171, 55, 174, 173
+			689, 171, 55, 174, 173
 		}
 	},
 	{
@@ -529,20 +529,20 @@ QMap < ActionCheckAndClickDefine::CheckColorNameDefine, QList<int>> ActionCheckA
 				903, 78, 74, 123, 68
 		}
 	},
-    {
-        CheckColorNameDefine::LDAssignOnly1,
-        QList<int>{
-            78, 129, 190, 183, 173,
-                73, 86, 75, 145, 75
-        }
-    },
-    {
-        CheckColorNameDefine::LDAssignOnly1R,
-        QList<int>{
-            908, 132, 192, 183, 175,
-                904, 86, 76, 145, 75
-        }
-    },
+	{
+		CheckColorNameDefine::LDAssignOnly1,
+		QList<int>{
+			78, 129, 190, 183, 173,
+				73, 86, 75, 145, 75
+		}
+	},
+	{
+		CheckColorNameDefine::LDAssignOnly1R,
+		QList<int>{
+			908, 132, 192, 183, 175,
+				904, 86, 76, 145, 75
+		}
+	},
 	{
 		CheckColorNameDefine::LDCharge,
 		QList<int>{
@@ -578,13 +578,13 @@ QMap < ActionCheckAndClickDefine::CheckColorNameDefine, QList<int>> ActionCheckA
 				871, 281, 183, 176, 167
 		}
 	},
-    {
-        CheckColorNameDefine::LDChargeTeamOnly1,
-        QList<int>{
-            911, 180, 101, 84, 64,
-                871, 281, 183, 176, 167
-        }
-    },
+	{
+		CheckColorNameDefine::LDChargeTeamOnly1,
+		QList<int>{
+			911, 180, 101, 84, 64,
+				871, 281, 183, 176, 167
+		}
+	},
 	{
 		CheckColorNameDefine::LDDoCharge,
 		QList<int>{
@@ -594,15 +594,15 @@ QMap < ActionCheckAndClickDefine::CheckColorNameDefine, QList<int>> ActionCheckA
 	},
 	{
 		CheckColorNameDefine::ExpeditionPanel,
-        QList<int>{
-            763, 173, 219, 112, 27,
-                175, 218, 108, 104, 95
+		QList<int>{
+			763, 173, 219, 112, 27,
+				175, 218, 108, 104, 95
 		}
 	},
 	{
 		CheckColorNameDefine::ExpeditionSelectItemDone,
 		QList<int>{
-            957, 666, 103, 169, 166
+			957, 666, 103, 169, 166
 		}
 	},
 	{
@@ -991,9 +991,9 @@ QMap < ActionCheckAndClickDefine::MoveMouseNameDefine, QList<int>> ActionCheckAn
 		}
 	},
 	{
-        MoveMouseNameDefine::SortieSimpleAdvanceMegami,
+		MoveMouseNameDefine::SortieSimpleAdvanceMegami,
 		QList<int> {
-            434, 579, 50, 40
+			434, 579, 50, 40
 		}
 	},
 	{
@@ -1041,19 +1041,19 @@ QMap < ActionCheckAndClickDefine::MoveMouseNameDefine, QList<int>> ActionCheckAn
 	{
 		MoveMouseNameDefine::LDChargeTeam1,
 		QList<int> {
-			930, 185, 20, 10
+			930, 178, 20, 10
 		}
 	},
 	{
 		MoveMouseNameDefine::LDChargeTeam2,
 		QList<int> {
-			1027, 182, 20, 10
+			1027, 178, 20, 10
 		}
 	},
 	{
 		MoveMouseNameDefine::LDChargeTeam3,
 		QList<int> {
-			1131, 189, 20, 10
+			1131, 178, 20, 10
 		}
 	},
 	{
@@ -1077,15 +1077,15 @@ QMap < ActionCheckAndClickDefine::MoveMouseNameDefine, QList<int>> ActionCheckAn
 	{
 		MoveMouseNameDefine::ExpeditionAreaHorizontal,
 		QList<int> {
-            205, 682, 10, 5,
-                60, 0
+			205, 682, 10, 5,
+				60, 0
 		}
 	},
 	{
 		MoveMouseNameDefine::ExpeditionVertical,
 		QList<int> {
-            606, 260, 151, 5,
-                0, 45
+			606, 260, 151, 5,
+				0, 45
 		}
 	},
 	{

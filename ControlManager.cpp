@@ -241,7 +241,7 @@ bool ControlManager::BuildNext_Fuel()
 	int teamSize = getTeamSize(0);
 	if (_target == ActionTarget::SouthEast)
 	{
-		KanSaveData* pksd = &KanSaveData::getInstance();
+        KanSaveData* pksd = &KanSaveData::getInstance();
 		if (pksd->totalSouthEastWin >= 5)
 		{
 			setToTerminate("Terminated:DoneFuelMission", false, RemoteNotifyHandler::Level::Low);
@@ -928,6 +928,7 @@ bool ControlManager::BuildNext_Morning(bool isFromRepeating)
 	_missionSetting.todoMissionList.append((int)MissionDefines::WeeklyRo);
 
 	_missionSetting.todoGreedyMissionList.clear();
+    _missionSetting.dropMissionList.clear();
 
 	switch (_morningSetting.morningStage)
 	{
@@ -1025,7 +1026,7 @@ bool ControlManager::BuildNext_Morning(bool isFromRepeating)
 			setting.onlySSTeamSize = 3;
 
 			setting.count = 2;
-			if (_missionSetting.acceptedMissionList.count((int)MissionDefines::YuSou5))
+            if (_missionSetting.acceptedMissionList.contains((int)MissionDefines::YuSou5))
 			{
 				setting.count = 3;
 			}
@@ -1053,6 +1054,9 @@ bool ControlManager::BuildNext_Morning(bool isFromRepeating)
 
 		_target = ActionTarget::Mission;
 
+        _missionSetting.dropMissionList.append((int)MissionDefines::YuSou5);
+        _missionSetting.dropMissionList.append((int)MissionDefines::WeeklyYuSou);
+        _missionSetting.dropMissionList.append((int)MissionDefines::WeeklyRo);
 		_missionSetting.todoGreedyMissionList.append((int)MissionDefines::Defeat10);
 		_missionSetting.todoGreedyMissionList.append((int)MissionDefines::KuBou3);
 		_missionSetting.todoGreedyMissionList.append((int)MissionDefines::WeeklyI);
@@ -1298,7 +1302,7 @@ void ControlManager::LoadAnyTemplateSettings()
 				{
 					_anyTemplateSettings[pair].waitForFullCond = splited[0].toInt(&bOk);
 				}
-				else if (!key.compare("FullRepaire", Qt::CaseInsensitive))
+                else if (!key.compare("FullRepair", Qt::CaseInsensitive))
 				{
 					_anyTemplateSettings[pair].waitForFullRepair = splited[0].toInt(&bOk);
 				}

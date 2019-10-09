@@ -954,16 +954,14 @@ void KanDataConnector::updateInfoTitleBattle(bool bBattle, bool bSelfDamaged)
 
 		pksd->wasLastBossCell = (pksd->nextdata.api_no == pksd->nextdata.api_bosscell_no || pksd->nextdata.api_color_no == 5);
 
-		// special for calc 5-4
-		/*
-		if (pksd->nextdata.api_maparea_id == 5 && pksd->nextdata.api_mapinfo_no == 4)
+        // special for calc 2-1
+        if (pksd->nextdata.api_maparea_id == 2 && pksd->nextdata.api_mapinfo_no == 1)
 		{
-		if (pksd->nextdata.api_no == 19)
-		{
-		pksd->wasLastBossCell = true;
-		}
-		}
-		*/
+            if (pksd->nextdata.api_no == 8 || pksd->nextdata.api_no == 10 || pksd->nextdata.api_no == 11)
+            {
+                pksd->wasLastBossCell = true;
+            }
+        }
 
 		pksd->lastKilledYusou = transtotal - transremain;
 		pksd->lastKilledKubou = actotal - acremain;

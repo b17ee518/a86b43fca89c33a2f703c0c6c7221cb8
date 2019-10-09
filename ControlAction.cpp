@@ -4124,10 +4124,12 @@ bool MissionAction::action()
 
 							if (_isCompleting)
 							{
+                                auto& missionSetting = cm.getMissionSetting();
 								bool toComplete = false;
 								for (int i = 0; i < questList.api_list.count(); i++)
 								{
-									if (questList.api_list[i].api_state == 3)
+                                    // complete or drop mission
+                                    if (questList.api_list[i].api_state == 3 || missionSetting.dropMissionList.contains(questList.api_list[i].api_no))
 									{
 										_targetIndex = i;
 										_waiting = false;
@@ -4156,7 +4158,7 @@ bool MissionAction::action()
 								for (int i = 0; i < questList.api_list.count(); i++)
 								{
 									const auto& quest = questList.api_list[i];
-									if (missionSetting.todoMissionList.contains(quest.api_no))
+                                    if (missionSetting.todoMissionList.contains(quest.api_no) && !missionSetting.dropMissionList.contains(quest.api_no))
 									{
 										if (quest.api_state == 1)
 										{

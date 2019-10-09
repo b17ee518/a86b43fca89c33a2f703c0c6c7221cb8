@@ -197,6 +197,7 @@ public:
 	{
 		QList<int> todoMissionList;
 		QList<int> todoGreedyMissionList;
+        QList<int> dropMissionList;
 
 		QList<int> acceptedMissionList;
 	};

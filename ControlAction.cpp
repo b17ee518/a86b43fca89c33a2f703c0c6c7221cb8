@@ -4129,7 +4129,8 @@ bool MissionAction::action()
 								for (int i = 0; i < questList.api_list.count(); i++)
 								{
                                     // complete or drop mission
-                                    if (questList.api_list[i].api_state == 3 || missionSetting.dropMissionList.contains(questList.api_list[i].api_no))
+                                    if (questList.api_list[i].api_state == 3 ||
+                                            (questList.api_list[i].api_state == 2 && missionSetting.dropMissionList.contains(questList.api_list[i].api_no)))
 									{
 										_targetIndex = i;
 										_waiting = false;

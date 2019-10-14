@@ -4109,8 +4109,23 @@ bool MissionAction::action()
 						{
 							const auto& questList = pksd.lastQuestList;
 							if (_isCompleting)
-							{
-								if (questList.api_completed_kind == 0)
+                            {
+                                bool toComplete = questList.api_completed_kind != 0;
+                                if (!toComplete)
+                                {
+                                    auto& missionSetting = cm.getMissionSetting();
+                                    foreach (const int toDrop, missionSetting.dropMissionList)
+                                    {
+                                        if (missionSetting.acceptedMissionList.contains(toDrop))
+                                        {
+                                            toComplete = true;
+                                            break;
+                                        }
+                                    }
+
+                                }
+
+                                if (!toComplete)
 								{
 									_isCompleting = false;
 									if (questList.api_disp_page != 1)

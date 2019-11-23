@@ -253,6 +253,9 @@ void KanDataConnector::updateFleetTable()
 		//		int sakuteki_teisatsu = 0;
 		//		int sakuteki_dentan = 0;
 
+        int totalKaryoku = 0;
+        int totalTaisen = 0;
+
 		int keijuncount = 0;
 		int kuchikucount = 0;
 		int drumcount = 0;
@@ -350,6 +353,8 @@ void KanDataConnector::updateFleetTable()
 						const kcsapi_mst_slotitem* pmstslotitem = findMstSlotItemFromSlotitemid(v.api_slotitem_id);
 						if (pmstslotitem)
 						{
+                            //totalKaryoku += pmstslotitem->api_houg;
+                            //totalTaisen += pmstslotitem->api_tais;
 							if (pmstslotitem->api_type.count() > 2)
 							{
 								// ok to cast even if not exist
@@ -390,6 +395,8 @@ void KanDataConnector::updateFleetTable()
 				}
 			}
 			alllv += pship->api_lv;
+            totalKaryoku += pship->api_karyoku[0];
+            totalTaisen += pship->api_taisen[0];
 			if (flagshipLv <= 0)
 			{
 				flagshipLv = pship->api_lv;
@@ -553,6 +560,10 @@ void KanDataConnector::updateFleetTable()
 			.arg(minTyku)
 			.arg(totalSaku, 0, 'f', 2);
 
+        QString tip = QString::fromLocal8Bit("火力:%1 対潜%2")
+                .arg(totalKaryoku)
+                .arg(totalTaisen);
+
 		if (mapSakuBorder > 0)
 		{
 			if (mapMinSakuBorder > 0)
@@ -589,7 +600,7 @@ void KanDataConnector::updateFleetTable()
 			}
 		}
 
-		MainWindow::infoWindow()->updateFleetTable(v.api_id - 1, strtitle, colindex, bRed, rows);
+        MainWindow::infoWindow()->updateFleetTable(v.api_id - 1, strtitle, colindex, bRed, rows, tip);
 	}
 
 	MainWindow::shipWindow()->buildTable();

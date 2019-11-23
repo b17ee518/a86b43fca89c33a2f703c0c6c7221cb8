@@ -87,7 +87,7 @@ void InfoMainWindow::updateMissionTable(const QString& buttonTitle, const QList<
 	ui->missionFrame->tableWidget()->updateFullTable(rows);
 }
 
-void InfoMainWindow::updateFleetTable(int n, const QString& buttonTitle, int colindex, bool bRed, const QList<KQRowData>& rows)
+void InfoMainWindow::updateFleetTable(int n, const QString& buttonTitle, int colindex, bool bRed, const QList<KQRowData>& rows, const QString& tip)
 {
 	static QString stylesheet_a[] =
 	{
@@ -104,6 +104,7 @@ void InfoMainWindow::updateFleetTable(int n, const QString& buttonTitle, int col
 		"QPushButton:checked{ background-color: rgb(153, 0, 0); border: none; } QPushButton:flat{ background-color: rgb(153, 0, 0); border: none; } QPushButton:{ background-color: rgb(153, 0, 0); border: none; } QPushButton:hover{ background-color: rgb(128, 0, 0);; border-style: outset; }",
 	};
 	_pFleetFrames[n]->pushButton()->setText(buttonTitle);
+    _pFleetFrames[n]->pushButton()->setToolTip(tip);
 	_pFleetFrames[n]->tableWidget()->updateFullTable(rows);
 
 	_pFleetFrames[n]->pushButton()->setStyleSheet(stylesheet_a[colindex] + stylesheet_b[bRed ? 1 : 0]);

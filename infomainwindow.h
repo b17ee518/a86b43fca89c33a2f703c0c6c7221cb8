@@ -22,7 +22,7 @@ public:
 
 	void updateOverviewTable(const QList<QString>& lst, const QList<QColor>& cols, const QString& tip);
 	void updateMissionTable(const QString& buttonTitle, const QList<KQRowData>& rows);
-	void updateFleetTable(int n, const QString& buttonTitle, int colindex, bool bRed, const QList<KQRowData>& rows);
+    void updateFleetTable(int n, const QString& buttonTitle, int colindex, bool bRed, const QList<KQRowData>& rows, const QString& tip);
 	void updateRepairTable(const QString& buttonTitle, const QList<KQRowData>& rows);
 	void updateTitle(const QString& title, int colindex);
 

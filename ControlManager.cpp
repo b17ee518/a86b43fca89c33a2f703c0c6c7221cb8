@@ -80,9 +80,11 @@ bool ControlManager::BuildNext_Kira()
 	while (isShipKiraDone(togoShipId)
 		|| isShipInOtherTeam(togoShipId, 0)
 		|| isShipInDock(togoShipId)
+           /*
 		|| hasSlotitem(togoShipId, SlotitemType::Sonar)
 		|| hasSlotitem(togoShipId, SlotitemType::BaKuRai)
 		|| hasSlotitem(togoShipId, SlotitemType::Sonar_L)
+               */
 		|| hasSlotitem(togoShipId, SlotitemType::YuSou, 3)
 		|| noSlotitem(togoShipId)
 		|| noAttackItem(togoShipId)

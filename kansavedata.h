@@ -11,7 +11,7 @@ enum class KanBattleType
 	DayToNight,
 	NightToDay,
 
-    LDShooting,    // no flag hougeki only
+	LDShooting,    // no flag hougeki only
 
 	Air,
 
@@ -29,7 +29,7 @@ enum class KanBattleType
 	Combined_EachWater,	// 12 vs 12
 	Combined_ECNightToDay,
 
-    Combined_LDShooting
+	Combined_LDShooting
 };
 
 enum class MaterialDataIndex
@@ -38,7 +38,7 @@ enum class MaterialDataIndex
 	Bullet,
 	Steel,
 	Bauxite,
-    InstantBuild,
+	InstantBuild,
 	InstantRepair,
 	Development,
 	PowerUp,
@@ -143,8 +143,8 @@ class CreateShipSaveData
 public:
 	void setValue(int fuel, int bull, int steel, int bauxite, int dev, int kdock);
 	void clearValue();
-	inline bool isValueSet(){ return _flag > 0; }
-	inline bool isAll30(){
+	inline bool isValueSet() { return _flag > 0; }
+	inline bool isAll30() {
 		return _usefuel == 30
 			&& _usebull == 30
 			&& _usesteel == 30
@@ -202,9 +202,10 @@ public:
 	CreateShipSaveData createshipdata;
 
 	QMap<int, QList<kcsapi_air_base_corps> > airbasedata;
+	QMap<int, kcsapi_map_info> mapinfodata;
 	bool airBaseNeedSupply = false;
 	bool airBaseBadCond = false;
-    QList<int> airBaseNeedSupplyList;
+	QList<int> airBaseNeedSupplyList;
 
 	QList<int> enemyhpdata;
 
@@ -224,7 +225,7 @@ public:
 	int lastSFormation = -1;
 	int lastEFormation = -1;
 	int lastIntercept = -1;
-    int lastBattleFuel = -1;
+	int lastBattleFuel = -1;
 
 	bool lastWonAssumption = false;
 	bool lastFlagshipKilled = false;

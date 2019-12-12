@@ -24,8 +24,8 @@ public:
 
 	QString getRestoreSetting();
 
-    bool isAutoFastRepair();
-    bool isSwapLowCond();
+	bool isAutoFastRepair();
+	bool isSwapLowCond();
 	bool isCheckAirBaseCond();
 	bool isCheckCond();
 	bool isAllowMiddle();
@@ -38,12 +38,15 @@ private:
 
 	bool isRestore = false;
 
-	private slots:
+
+private slots:
+	void slotDisplayMapInfo();
 	void slotOnReset();
 	void slotOnRestoreToDefault();
 	void slotUncheckAllAreaButtons();
 	void slotClearLEAreaAndMap();
 	void slotResetExtraSettings();
+
 };
 
 #endif // ANYACTIONSELECTDIALOG_H

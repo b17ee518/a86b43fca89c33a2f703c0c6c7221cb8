@@ -18,7 +18,7 @@ namespace Ui {
 class TimeRecorder
 {
 public:
-	TimeRecorder(){}
+	TimeRecorder() {}
 
 	void setValue(qint64 dtime, qint64 ttime, QString cmt, bool bAlarm = false)
 	{
@@ -26,7 +26,7 @@ public:
 		totaltime = ttime;
 		comment = cmt; alarmed = bAlarm;
 	}
-	void clear(){ desttime = -1; totaltime = 0; alarmed = false; }
+	void clear() { desttime = -1; totaltime = 0; alarmed = false; }
 
 
 	qint64 desttime = -1;
@@ -61,6 +61,7 @@ public:
 	void setBuildTime(int n, qint64 destms = -1, qint64 totalms = -1,
 		const QString& comment = QString(), const QColor& col = QColor(0xff, 0xff, 0xff));
 	void setLastDrop(const QString& displayName, const QColor& col = QColor(0xff, 0xff, 0xff));
+	void setMapHp(const QString& displayMapHp, const QColor& col = QColor(0xff, 0xff, 0xff));
 
 	void setAutoRepairTime(bool bOn, bool bResetIfOver = false);
 
@@ -72,9 +73,9 @@ public:
 
 	static qint64 currentMSUtc();
 
-    void setVolume(int vol);
+	void setVolume(int vol);
 
-	private slots:
+private slots:
 	void on_pbClose_clicked();
 	void on_pbMinimize_clicked();
 	void slotUpdateTimer();

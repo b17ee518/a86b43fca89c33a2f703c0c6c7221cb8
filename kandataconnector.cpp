@@ -887,7 +887,7 @@ QString KanDataConnector::logBattleResult(bool bWrite/*=true*/)
 		// for total info
 		updateOverviewTable();
 
-		MainWindow::mainWindow()->timerWindow()->setLastDrop(pksd->battleresultdata.api_get_ship.api_ship_name);
+		MainWindow::mainWindow()->timerWindow()->setLastDrop(pksd->battleresultdata.api_get_ship.api_ship_name + " (" + pksd->battleresultdata.api_win_rank + ")");
 	}
 
 	return writestr;

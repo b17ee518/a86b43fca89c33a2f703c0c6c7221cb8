@@ -41,41 +41,41 @@
  "/kcsapi/api_req_sortie/battleresult",
  */
 
-/*
- * Full List
- kcsapi_basic
- kcsapi_battleresult
- kcsapi_battleresult_enemyinfo
- kcsapi_battleresult_getship
- kcsapi_charge
- kcsapi_charge_ship
- kcsapi_createitem
- kcsapi_createship
- kcsapi_deck
- kcsapi_destroyitem2
- kcsapi_destroyship
- kcsapi_kdock
- kcsapi_kdock_getship
- kcsapi_material
- kcsapi_mst_ship
- kcsapi_mst_slotitem
- kcsapi_mst_slotitem_equiptype
- kcsapi_mst_stype
- kcsapi_mst_useitem
- kcsapi_ndock
- kcsapi_port
- kcsapi_powerup
- kcsapi_quest
- kcsapi_questlist
- kcsapi_ship
- kcsapi_ship2
- kcsapi_ship3
- kcsapi_ship_deck
- kcsapi_slot_data
- kcsapi_slotitem
- kcsapi_start2
- kcsapi_useitem
- */
+ /*
+  * Full List
+  kcsapi_basic
+  kcsapi_battleresult
+  kcsapi_battleresult_enemyinfo
+  kcsapi_battleresult_getship
+  kcsapi_charge
+  kcsapi_charge_ship
+  kcsapi_createitem
+  kcsapi_createship
+  kcsapi_deck
+  kcsapi_destroyitem2
+  kcsapi_destroyship
+  kcsapi_kdock
+  kcsapi_kdock_getship
+  kcsapi_material
+  kcsapi_mst_ship
+  kcsapi_mst_slotitem
+  kcsapi_mst_slotitem_equiptype
+  kcsapi_mst_stype
+  kcsapi_mst_useitem
+  kcsapi_ndock
+  kcsapi_port
+  kcsapi_powerup
+  kcsapi_quest
+  kcsapi_questlist
+  kcsapi_ship
+  kcsapi_ship2
+  kcsapi_ship3
+  kcsapi_ship_deck
+  kcsapi_slot_data
+  kcsapi_slotitem
+  kcsapi_start2
+  kcsapi_useitem
+  */
 
 
 
@@ -92,8 +92,8 @@
 class KAPIBaseData
 {
 public:
-	KAPIBaseData(){}
-	virtual ~KAPIBaseData(){}
+	KAPIBaseData() {}
+	virtual ~KAPIBaseData() {}
 	virtual bool ReadFromJObj(const QJsonObject &jobj) = 0;
 
 protected:
@@ -105,7 +105,7 @@ class kcsapi_basic : public KAPIBaseData
 {
 
 public:
-	kcsapi_basic(){}
+	kcsapi_basic() {}
 
 	virtual bool ReadFromJObj(const QJsonObject &jobj);
 
@@ -148,7 +148,7 @@ public:
 class kcsapi_battle_kouku_stage1 : public KAPIBaseData
 {
 public:
-	kcsapi_battle_kouku_stage1(){}
+	kcsapi_battle_kouku_stage1() {}
 	virtual bool ReadFromJObj(const QJsonObject &jobj);
 
 	int api_f_count;
@@ -162,7 +162,7 @@ public:
 class kcsapi_battle_kouku_stage2 : public KAPIBaseData
 {
 public:
-	kcsapi_battle_kouku_stage2(){}
+	kcsapi_battle_kouku_stage2() {}
 	virtual bool ReadFromJObj(const QJsonObject &jobj);
 
 	int api_f_count;
@@ -175,7 +175,7 @@ public:
 class kcsapi_battle_kouku_stage3 : public KAPIBaseData
 {
 public:
-	kcsapi_battle_kouku_stage3(){}
+	kcsapi_battle_kouku_stage3() {}
 	virtual bool ReadFromJObj(const QJsonObject &jobj);
 	// from #1
 	QList<int> api_frai_flag;
@@ -191,7 +191,7 @@ public:
 class kcsapi_battle_kouku : public KAPIBaseData
 {
 public:
-	kcsapi_battle_kouku(){}
+	kcsapi_battle_kouku() {}
 	virtual bool ReadFromJObj(const QJsonObject &jobj);
 
 	QList< QList<int> > api_plane_from; //? f, e list
@@ -205,7 +205,7 @@ public:
 class kcsapi_battle_support_airatack_stage1 : public KAPIBaseData
 {
 public:
-	kcsapi_battle_support_airatack_stage1(){}
+	kcsapi_battle_support_airatack_stage1() {}
 	virtual bool ReadFromJObj(const QJsonObject &jobj);
 
 	int api_f_count;
@@ -216,7 +216,7 @@ public:
 class kcsapi_battle_support_airatack_stage2 : public KAPIBaseData
 {
 public:
-	kcsapi_battle_support_airatack_stage2(){}
+	kcsapi_battle_support_airatack_stage2() {}
 	virtual bool ReadFromJObj(const QJsonObject &jobj);
 
 	int api_f_count;
@@ -225,7 +225,7 @@ public:
 class kcsapi_battle_support_airatack_stage3 : public KAPIBaseData
 {
 public:
-	kcsapi_battle_support_airatack_stage3(){}
+	kcsapi_battle_support_airatack_stage3() {}
 	virtual bool ReadFromJObj(const QJsonObject &jobj);
 
 	QList<int> api_erai_flag;
@@ -237,7 +237,7 @@ public:
 class kcsapi_battle_support_airatack :public KAPIBaseData
 {
 public:
-	kcsapi_battle_support_airatack(){}
+	kcsapi_battle_support_airatack() {}
 	virtual bool ReadFromJObj(const QJsonObject &jobj);
 
 	int api_deck_id;
@@ -254,7 +254,7 @@ public:
 class kcsapi_battle_base_attack_squadron : public KAPIBaseData
 {
 public:
-	kcsapi_battle_base_attack_squadron(){}
+	kcsapi_battle_base_attack_squadron() {}
 	virtual bool ReadFromJObj(const QJsonObject &jobj);
 
 	int api_mst_id;	// master id
@@ -264,7 +264,7 @@ public:
 class kcsapi_battle_base_attack : public KAPIBaseData
 {
 public:
-	kcsapi_battle_base_attack(){}
+	kcsapi_battle_base_attack() {}
 	virtual bool ReadFromJObj(const QJsonObject &jobj);
 
 	int api_base_id;
@@ -281,7 +281,7 @@ public:
 class kcsapi_battle_support_hourai : public KAPIBaseData
 {
 public:
-	kcsapi_battle_support_hourai(){}
+	kcsapi_battle_support_hourai() {}
 	virtual bool ReadFromJObj(const QJsonObject &jobj);
 
 	int api_deck_id;
@@ -294,7 +294,7 @@ public:
 class kcsapi_battle_support_info : public KAPIBaseData
 {
 public:
-	kcsapi_battle_support_info(){}
+	kcsapi_battle_support_info() {}
 	virtual bool ReadFromJObj(const QJsonObject &jobj);
 
 	//TODO: support info
@@ -305,7 +305,7 @@ public:
 class kcsapi_battle_opening_atack : public KAPIBaseData
 {
 public:
-	kcsapi_battle_opening_atack(){}
+	kcsapi_battle_opening_atack() {}
 	virtual bool ReadFromJObj(const QJsonObject &jobj);
 
 	// from #1~13
@@ -322,7 +322,7 @@ public:
 class kcsapi_battle_hougeki :public KAPIBaseData
 {
 public:
-	kcsapi_battle_hougeki(){}
+	kcsapi_battle_hougeki() {}
 	virtual bool ReadFromJObj(const QJsonObject &jobj);
 
 	QList<int> api_at_eflag;
@@ -361,7 +361,7 @@ public:
 class kcsapi_battle_raigeki : public KAPIBaseData
 {
 public:
-	kcsapi_battle_raigeki(){}
+	kcsapi_battle_raigeki() {}
 	virtual bool ReadFromJObj(const QJsonObject &jobj);
 
 	// from #1~13
@@ -378,11 +378,11 @@ public:
 class kcsapi_friendly_battle : public KAPIBaseData
 {
 public:
-    kcsapi_friendly_battle(){}
-    virtual bool ReadFromJObj(const QJsonObject &jobj);
+	kcsapi_friendly_battle() {}
+	virtual bool ReadFromJObj(const QJsonObject &jobj);
 
-    QList<int> api_flare_pos;
-    kcsapi_battle_hougeki api_hougeki;
+	QList<int> api_flare_pos;
+	kcsapi_battle_hougeki api_hougeki;
 };
 
 /************************************************************************/
@@ -391,7 +391,7 @@ public:
 class kcsapi_battle : public KAPIBaseData
 {
 public:
-	kcsapi_battle(){}
+	kcsapi_battle() {}
 	virtual bool ReadFromJObj(const QJsonObject &jobj);
 
 	int api_dock_id;
@@ -449,9 +449,9 @@ public:
 	QList<int> api_touch_plane;
 	QList<int> api_flare_pos;
 
-    // friendly
-    // omit friendly info
-    kcsapi_friendly_battle api_friendly_battle;
+	// friendly
+	// omit friendly info
+	kcsapi_friendly_battle api_friendly_battle;
 
 	// funshiki
 	kcsapi_battle_kouku api_injection_kouku;
@@ -492,7 +492,7 @@ class kcsapi_battleresult_enemyinfo : public KAPIBaseData
 {
 
 public:
-	kcsapi_battleresult_enemyinfo(){}
+	kcsapi_battleresult_enemyinfo() {}
 
 	virtual bool ReadFromJObj(const QJsonObject &jobj);
 
@@ -505,7 +505,7 @@ class kcsapi_battleresult_getship : public KAPIBaseData
 {
 
 public:
-	kcsapi_battleresult_getship(){}
+	kcsapi_battleresult_getship() {}
 
 	virtual bool ReadFromJObj(const QJsonObject &jobj);
 
@@ -518,7 +518,7 @@ public:
 class kcsapi_battleresult_escape : public KAPIBaseData
 {
 public:
-	kcsapi_battleresult_escape(){}
+	kcsapi_battleresult_escape() {}
 
 	virtual bool ReadFromJObj(const QJsonObject &jobj);
 
@@ -533,7 +533,7 @@ class kcsapi_battleresult : public KAPIBaseData
 {
 
 public:
-	kcsapi_battleresult(){}
+	kcsapi_battleresult() {}
 
 	virtual bool ReadFromJObj(const QJsonObject &jobj);
 
@@ -572,7 +572,7 @@ public:
 class kcsapi_practice_enemyinfo_deck_ships : public KAPIBaseData
 {
 public:
-	kcsapi_practice_enemyinfo_deck_ships(){}
+	kcsapi_practice_enemyinfo_deck_ships() {}
 	virtual bool ReadFromJObj(const QJsonObject &jobj);
 
 	int api_id;
@@ -584,7 +584,7 @@ public:
 class kcsapi_practice_enemyinfo_deck : public KAPIBaseData
 {
 public:
-	kcsapi_practice_enemyinfo_deck(){}
+	kcsapi_practice_enemyinfo_deck() {}
 	virtual bool ReadFromJObj(const QJsonObject &jobj);
 
 	QList<kcsapi_practice_enemyinfo_deck_ships> api_ships;
@@ -596,7 +596,7 @@ public:
 class kcsapi_practice_enemyinfo : public KAPIBaseData
 {
 public:
-	kcsapi_practice_enemyinfo(){}
+	kcsapi_practice_enemyinfo() {}
 	virtual bool ReadFromJObj(const QJsonObject &jobj);
 
 	int api_member_id;
@@ -624,7 +624,7 @@ class kcsapi_slotitem : public KAPIBaseData
 {
 
 public:
-	kcsapi_slotitem(){}
+	kcsapi_slotitem() {}
 
 	virtual bool ReadFromJObj(const QJsonObject &jobj);
 
@@ -642,7 +642,7 @@ class kcsapi_charge_ship : public KAPIBaseData
 {
 
 public:
-	kcsapi_charge_ship(){}
+	kcsapi_charge_ship() {}
 
 	virtual bool ReadFromJObj(const QJsonObject &jobj);
 
@@ -659,7 +659,7 @@ class kcsapi_charge : public KAPIBaseData
 {
 
 public:
-	kcsapi_charge(){}
+	kcsapi_charge() {}
 
 	virtual bool ReadFromJObj(const QJsonObject &jobj);
 
@@ -675,7 +675,7 @@ class kcsapi_createitem : public KAPIBaseData
 {
 
 public:
-	kcsapi_createitem(){}
+	kcsapi_createitem() {}
 
 	virtual bool ReadFromJObj(const QJsonObject &jobj);
 
@@ -697,7 +697,7 @@ class kcsapi_deck : public KAPIBaseData
 {
 
 public:
-	kcsapi_deck(){}
+	kcsapi_deck() {}
 
 	virtual bool ReadFromJObj(const QJsonObject &jobj);
 
@@ -717,7 +717,7 @@ class kcsapi_destroyitem2 : public KAPIBaseData
 {
 
 public:
-	kcsapi_destroyitem2(){}
+	kcsapi_destroyitem2() {}
 
 	virtual bool ReadFromJObj(const QJsonObject &jobj);
 
@@ -731,7 +731,7 @@ class kcsapi_destroyship : public KAPIBaseData
 {
 
 public:
-	kcsapi_destroyship(){}
+	kcsapi_destroyship() {}
 
 	virtual bool ReadFromJObj(const QJsonObject &jobj);
 	QList<int> api_material;
@@ -744,7 +744,7 @@ class kcsapi_kdock : public KAPIBaseData
 {
 
 public:
-	kcsapi_kdock(){}
+	kcsapi_kdock() {}
 
 	virtual bool ReadFromJObj(const QJsonObject &jobj);
 	int api_member_id;
@@ -767,7 +767,7 @@ class kcsapi_ship : public KAPIBaseData
 {
 
 public:
-	kcsapi_ship(){}
+	kcsapi_ship() {}
 
 	virtual bool ReadFromJObj(const QJsonObject &jobj);
 
@@ -835,7 +835,7 @@ class kcsapi_mst_ship : public KAPIBaseData
 {
 
 public:
-	kcsapi_mst_ship(){}
+	kcsapi_mst_ship() {}
 
 	virtual bool ReadFromJObj(const QJsonObject &jobj);
 	int api_id;
@@ -900,7 +900,7 @@ class kcsapi_ship2 : public KAPIBaseData
 {
 
 public:
-	kcsapi_ship2(){}
+	kcsapi_ship2() {}
 
 	virtual bool ReadFromJObj(const QJsonObject &jobj);
 
@@ -947,7 +947,7 @@ class kcsapi_kdock_getship : public KAPIBaseData
 {
 
 public:
-	kcsapi_kdock_getship(){}
+	kcsapi_kdock_getship() {}
 
 	virtual bool ReadFromJObj(const QJsonObject &jobj);
 	int api_id;
@@ -964,7 +964,7 @@ class kcsapi_material : public KAPIBaseData
 {
 
 public:
-	kcsapi_material(){}
+	kcsapi_material() {}
 
 	virtual bool ReadFromJObj(const QJsonObject &jobj);
 	int api_member_id;
@@ -980,7 +980,7 @@ class kcsapi_mst_slotitem : public KAPIBaseData
 {
 
 public:
-	kcsapi_mst_slotitem(){}
+	kcsapi_mst_slotitem() {}
 
 	virtual bool ReadFromJObj(const QJsonObject &jobj);
 	int api_id;
@@ -1020,7 +1020,7 @@ class kcsapi_mst_slotitem_equiptype : public KAPIBaseData
 {
 
 public:
-	kcsapi_mst_slotitem_equiptype(){}
+	kcsapi_mst_slotitem_equiptype() {}
 
 	virtual bool ReadFromJObj(const QJsonObject &jobj);
 	int api_id;
@@ -1035,7 +1035,7 @@ class kcsapi_mst_stype : public KAPIBaseData
 {
 
 public:
-	kcsapi_mst_stype(){}
+	kcsapi_mst_stype() {}
 
 	virtual bool ReadFromJObj(const QJsonObject &jobj);
 	int api_id;
@@ -1053,7 +1053,7 @@ class kcsapi_mst_useitem : public KAPIBaseData
 {
 
 public:
-	kcsapi_mst_useitem(){}
+	kcsapi_mst_useitem() {}
 
 	virtual bool ReadFromJObj(const QJsonObject &jobj);
 	int api_id;
@@ -1071,7 +1071,7 @@ class kcsapi_ndock : public KAPIBaseData
 {
 
 public:
-	kcsapi_ndock(){}
+	kcsapi_ndock() {}
 
 	virtual bool ReadFromJObj(const QJsonObject &jobj);
 	int api_member_id;
@@ -1094,7 +1094,7 @@ class kcsapi_powerup : public KAPIBaseData
 {
 
 public:
-	kcsapi_powerup(){}
+	kcsapi_powerup() {}
 
 	virtual bool ReadFromJObj(const QJsonObject &jobj);
 	int api_powerup_flag;
@@ -1105,7 +1105,7 @@ public:
 class kcsapi_clearitemget_bounus_item : public KAPIBaseData
 {
 public:
-	kcsapi_clearitemget_bounus_item(){}
+	kcsapi_clearitemget_bounus_item() {}
 	virtual bool ReadFromJObj(const QJsonObject &jobj);
 
 	int api_id;
@@ -1115,7 +1115,7 @@ public:
 class kcsapi_clearitemget_bounus : public KAPIBaseData
 {
 public:
-	kcsapi_clearitemget_bounus(){}
+	kcsapi_clearitemget_bounus() {}
 	virtual bool ReadFromJObj(const QJsonObject &jobj);
 
 	int api_type;
@@ -1129,7 +1129,7 @@ public:
 class kcsapi_clearitemget : public KAPIBaseData
 {
 public:
-	kcsapi_clearitemget(){}
+	kcsapi_clearitemget() {}
 	virtual bool ReadFromJObj(const QJsonObject &jobj);
 
 	QList<int> api_material;
@@ -1144,7 +1144,7 @@ class kcsapi_practice : public KAPIBaseData
 {
 
 public:
-	kcsapi_practice(){}
+	kcsapi_practice() {}
 
 	virtual bool ReadFromJObj(const QJsonObject &jobj);
 
@@ -1168,7 +1168,7 @@ class kcsapi_practicelist : public KAPIBaseData
 {
 
 public:
-	kcsapi_practicelist(){}
+	kcsapi_practicelist() {}
 
 	virtual bool ReadFromJObj(const QJsonObject &jobj);
 
@@ -1185,7 +1185,7 @@ class kcsapi_quest : public KAPIBaseData
 {
 
 public:
-	kcsapi_quest(){}
+	kcsapi_quest() {}
 
 	virtual bool ReadFromJObj(const QJsonObject &jobj);
 
@@ -1208,7 +1208,7 @@ class kcsapi_questlist : public KAPIBaseData
 {
 
 public:
-	kcsapi_questlist(){}
+	kcsapi_questlist() {}
 
 	virtual bool ReadFromJObj(const QJsonObject &jobj);
 
@@ -1228,7 +1228,7 @@ class kcsapi_ship3 : public KAPIBaseData
 {
 
 public:
-	kcsapi_ship3(){}
+	kcsapi_ship3() {}
 
 	virtual bool ReadFromJObj(const QJsonObject &jobj);
 
@@ -1245,7 +1245,7 @@ public:
 class kcsapi_ship_deck : public KAPIBaseData
 {
 public:
-	kcsapi_ship_deck(){}
+	kcsapi_ship_deck() {}
 
 	virtual bool ReadFromJObj(const QJsonObject &jobj);
 
@@ -1256,7 +1256,7 @@ public:
 class kcsapi_air_base_corps_plane_info : public KAPIBaseData
 {
 public:
-	kcsapi_air_base_corps_plane_info(){}
+	kcsapi_air_base_corps_plane_info() {}
 	virtual bool ReadFromJObj(const QJsonObject &jobj);
 
 	int api_squadron_id = -1;	// team id
@@ -1270,7 +1270,7 @@ public:
 class kcsapi_air_base_corps : public KAPIBaseData
 {
 public:
-	kcsapi_air_base_corps(){}
+	kcsapi_air_base_corps() {}
 	virtual bool ReadFromJObj(const QJsonObject &jobj);
 
 	// for supply
@@ -1287,11 +1287,42 @@ public:
 	QList<kcsapi_air_base_corps_plane_info> api_plane_info;
 };
 
+class kcsapi_map_info_eventmap : public KAPIBaseData
+{
+public:
+	kcsapi_map_info_eventmap() {}
+	virtual bool ReadFromJObj(const QJsonObject &jobj);
+
+	int api_now_maphp = 0;
+	int api_max_maphp = 0;
+	int api_state = 0;
+	int api_selected_rank = 0;
+
+};
+
+class kcsapi_map_info : public KAPIBaseData
+{
+public:
+	kcsapi_map_info() {}
+	virtual bool ReadFromJObj(const QJsonObject &jobj);
+
+	int api_id = 0;
+	int api_cleared = 0;
+	int api_defeat_count = 0;
+	int api_required_defeat_count = 0;
+	int api_gauge_type = 0;
+	int api_gauge_num = 0;
+	int api_air_base_decks = 0;
+	kcsapi_map_info_eventmap api_eventmap;
+	// api_sally_flag
+};
+
+
 class kcsapi_slot_data : public KAPIBaseData
 {
 
 public:
-	kcsapi_slot_data(){}
+	kcsapi_slot_data() {}
 
 	virtual bool ReadFromJObj(const QJsonObject &jobj);
 	QList<int> api_slottype1;
@@ -1336,7 +1367,7 @@ class Api_Mst_Item_Shop : public KAPIBaseData
 {
 
 public:
-	Api_Mst_Item_Shop(){}
+	Api_Mst_Item_Shop() {}
 
 	virtual bool ReadFromJObj(const QJsonObject &jobj);
 	QList<int> api_cabinet_1;
@@ -1347,7 +1378,7 @@ class Api_Boko_Max_Ships : public KAPIBaseData
 {
 
 public:
-	Api_Boko_Max_Ships(){}
+	Api_Boko_Max_Ships() {}
 
 	virtual bool ReadFromJObj(const QJsonObject &jobj);
 	QString api_string_value;
@@ -1358,7 +1389,7 @@ class Api_Mst_Const : public KAPIBaseData
 {
 
 public:
-	Api_Mst_Const(){}
+	Api_Mst_Const() {}
 
 	virtual bool ReadFromJObj(const QJsonObject &jobj);
 	Api_Boko_Max_Ships api_boko_max_ships;
@@ -1369,7 +1400,7 @@ class Api_Mst_Ship : public KAPIBaseData
 {
 
 public:
-	Api_Mst_Ship(){}
+	Api_Mst_Ship() {}
 
 	virtual bool ReadFromJObj(const QJsonObject &jobj);
 	int api_id;
@@ -1431,7 +1462,7 @@ class Api_Mst_Shipgraph : public KAPIBaseData
 {
 
 public:
-	Api_Mst_Shipgraph(){}
+	Api_Mst_Shipgraph() {}
 
 	virtual bool ReadFromJObj(const QJsonObject &jobj);
 	int api_id;
@@ -1459,7 +1490,7 @@ class Api_Equip_Type : public KAPIBaseData
 {
 
 public:
-	Api_Equip_Type(){}
+	Api_Equip_Type() {}
 
 	virtual bool ReadFromJObj(const QJsonObject &jobj);
 	int _1;
@@ -1499,7 +1530,7 @@ class Api_Mst_Stype : public KAPIBaseData
 {
 
 public:
-	Api_Mst_Stype(){}
+	Api_Mst_Stype() {}
 
 	virtual bool ReadFromJObj(const QJsonObject &jobj);
 	int api_id;
@@ -1514,7 +1545,7 @@ class Api_Mst_Slotitem : public KAPIBaseData
 {
 
 public:
-	Api_Mst_Slotitem(){}
+	Api_Mst_Slotitem() {}
 
 	virtual bool ReadFromJObj(const QJsonObject &jobj);
 	int api_id;
@@ -1551,7 +1582,7 @@ class Api_Mst_Slotitemgraph : public KAPIBaseData
 {
 
 public:
-	Api_Mst_Slotitemgraph(){}
+	Api_Mst_Slotitemgraph() {}
 
 	virtual bool ReadFromJObj(const QJsonObject &jobj);
 	int api_id;
@@ -1564,7 +1595,7 @@ class Api_Mst_Furniture : public KAPIBaseData
 {
 
 public:
-	Api_Mst_Furniture(){}
+	Api_Mst_Furniture() {}
 
 	virtual bool ReadFromJObj(const QJsonObject &jobj);
 	int api_id;
@@ -1581,7 +1612,7 @@ class Api_Mst_Furnituregraph : public KAPIBaseData
 {
 
 public:
-	Api_Mst_Furnituregraph(){}
+	Api_Mst_Furnituregraph() {}
 
 	virtual bool ReadFromJObj(const QJsonObject &jobj);
 	int api_id;
@@ -1595,7 +1626,7 @@ class Api_Mst_Useitem : public KAPIBaseData
 {
 
 public:
-	Api_Mst_Useitem(){}
+	Api_Mst_Useitem() {}
 
 	virtual bool ReadFromJObj(const QJsonObject &jobj);
 	int api_id;
@@ -1610,7 +1641,7 @@ class Api_Mst_Payitem : public KAPIBaseData
 {
 
 public:
-	Api_Mst_Payitem(){}
+	Api_Mst_Payitem() {}
 
 	virtual bool ReadFromJObj(const QJsonObject &jobj);
 	int api_id;
@@ -1625,7 +1656,7 @@ class Api_Mst_Maparea : public KAPIBaseData
 {
 
 public:
-	Api_Mst_Maparea(){}
+	Api_Mst_Maparea() {}
 
 	virtual bool ReadFromJObj(const QJsonObject &jobj);
 	int api_id;
@@ -1639,7 +1670,7 @@ class Api_Mst_Mapinfo : public KAPIBaseData
 {
 
 public:
-	Api_Mst_Mapinfo(){}
+	Api_Mst_Mapinfo() {}
 
 	virtual bool ReadFromJObj(const QJsonObject &jobj);
 	int api_id;
@@ -1659,7 +1690,7 @@ class Api_Mst_Mapbgm : public KAPIBaseData
 {
 
 public:
-	Api_Mst_Mapbgm(){}
+	Api_Mst_Mapbgm() {}
 
 	virtual bool ReadFromJObj(const QJsonObject &jobj);
 	int api_id;
@@ -1673,7 +1704,7 @@ class Api_Mst_Mapcell : public KAPIBaseData
 {
 
 public:
-	Api_Mst_Mapcell(){}
+	Api_Mst_Mapcell() {}
 
 	virtual bool ReadFromJObj(const QJsonObject &jobj);
 	int api_map_no;
@@ -1688,7 +1719,7 @@ class Api_Mst_Mission : public KAPIBaseData
 {
 
 public:
-	Api_Mst_Mission(){}
+	Api_Mst_Mission() {}
 
 	virtual bool ReadFromJObj(const QJsonObject &jobj);
 	int api_id;
@@ -1708,7 +1739,7 @@ class Api_Mst_Shipupgrade : public KAPIBaseData
 {
 
 public:
-	Api_Mst_Shipupgrade(){}
+	Api_Mst_Shipupgrade() {}
 
 	virtual bool ReadFromJObj(const QJsonObject &jobj);
 	int api_id;
@@ -1725,7 +1756,7 @@ class kcsapi_start2 : public KAPIBaseData
 {
 
 public:
-	kcsapi_start2(){}
+	kcsapi_start2() {}
 
 	virtual bool ReadFromJObj(const QJsonObject &jobj);
 
@@ -1760,14 +1791,14 @@ class kcsapi_port : public KAPIBaseData
 {
 
 public:
-	kcsapi_port(){}
+	kcsapi_port() {}
 
 	virtual bool ReadFromJObj(const QJsonObject &jobj);
 	QList<kcsapi_material> api_material;
 	QList<kcsapi_deck> api_deck_port;
 	QList<kcsapi_ndock> api_ndock;
 	QList<kcsapi_ship2> api_ship;
-    int api_combined_Flag;
+	int api_combined_Flag;
 	kcsapi_basic api_basic;
 	//public Api_Log[] api_log;
 };
@@ -1779,7 +1810,7 @@ class kcsapi_useitem : public KAPIBaseData
 {
 
 public:
-	kcsapi_useitem(){}
+	kcsapi_useitem() {}
 
 	virtual bool ReadFromJObj(const QJsonObject &jobj);
 
@@ -1797,7 +1828,7 @@ public:
 class kcsapi_next_enemy : public KAPIBaseData
 {
 public:
-	kcsapi_next_enemy(){}
+	kcsapi_next_enemy() {}
 
 	virtual bool ReadFromJObj(const QJsonObject &jobj);
 
@@ -1809,7 +1840,7 @@ public:
 class kcsapi_airsearch : public KAPIBaseData
 {
 public:
-	kcsapi_airsearch(){}
+	kcsapi_airsearch() {}
 	virtual bool ReadFromJObj(const QJsonObject &jobj);
 	int api_plane_type;
 	int api_result;
@@ -1818,7 +1849,7 @@ public:
 class kcsapi_eventmap : public KAPIBaseData
 {
 public:
-	kcsapi_eventmap(){}
+	kcsapi_eventmap() {}
 	virtual bool ReadFromJObj(const QJsonObject &jobj);
 	int api_max_maphp = 0;
 	int api_now_maphp;
@@ -1831,7 +1862,7 @@ public:
 class kcsapi_next : public KAPIBaseData
 {
 public:
-	kcsapi_next(){}
+	kcsapi_next() {}
 
 	virtual bool ReadFromJObj(const QJsonObject &jobj);
 	int api_rashin_flg;
@@ -1859,7 +1890,7 @@ public:
 class kcsapi_mission_start : public KAPIBaseData
 {
 public:
-	kcsapi_mission_start(){}
+	kcsapi_mission_start() {}
 
 	virtual bool ReadFromJObj(const QJsonObject &jobj);
 
@@ -1874,7 +1905,7 @@ public:
 class kcsapi_hensei_lock : public KAPIBaseData
 {
 public:
-	kcsapi_hensei_lock(){}
+	kcsapi_hensei_lock() {}
 
 	virtual bool ReadFromJObj(const QJsonObject &jobj);
 
@@ -1887,7 +1918,7 @@ public:
 class kcsapi_hensei_preset_register : public KAPIBaseData
 {
 public:
-	kcsapi_hensei_preset_register(){}
+	kcsapi_hensei_preset_register() {}
 
 	virtual bool ReadFromJObj(const QJsonObject &jobj);
 
@@ -1903,7 +1934,7 @@ public:
 class kcsapi_hensei_preset_select : public KAPIBaseData
 {
 public:
-	kcsapi_hensei_preset_select(){}
+	kcsapi_hensei_preset_select() {}
 
 	virtual bool ReadFromJObj(const QJsonObject &jobj);
 
@@ -1922,7 +1953,7 @@ public:
 class kcsapi_kaisou_lock : public KAPIBaseData
 {
 public:
-	kcsapi_kaisou_lock(){}
+	kcsapi_kaisou_lock() {}
 
 	virtual bool ReadFromJObj(const QJsonObject &jobj);
 
@@ -1932,7 +1963,7 @@ public:
 class kcsapi_kaisou_deprive_ship_data : public KAPIBaseData
 {
 public:
-	kcsapi_kaisou_deprive_ship_data(){}
+	kcsapi_kaisou_deprive_ship_data() {}
 
 	virtual bool ReadFromJObj(const QJsonObject &jobj);
 
@@ -1943,7 +1974,7 @@ public:
 class kcsapi_kaisou_deprive : public KAPIBaseData
 {
 public:
-	kcsapi_kaisou_deprive(){}
+	kcsapi_kaisou_deprive() {}
 
 	virtual bool ReadFromJObj(const QJsonObject& jobj);
 
@@ -1957,7 +1988,7 @@ public:
 class kcsapi_remodel_slot : public KAPIBaseData
 {
 public:
-	kcsapi_remodel_slot(){}
+	kcsapi_remodel_slot() {}
 
 	virtual bool ReadFromJObj(const QJsonObject &jobj);
 

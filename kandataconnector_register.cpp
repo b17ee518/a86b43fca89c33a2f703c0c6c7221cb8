@@ -166,12 +166,12 @@ KanDataConnector::KanDataConnector(void)
 	req_battle_midnight_battle_flag = PARSEFLAG_NORMAL;
 	req_battle_midnight_sp_midnight_flag = PARSEFLAG_NORMAL;
 	req_sortie_night_to_day_flag = PARSEFLAG_NORMAL;
-    req_sortie_airbattle_flag = PARSEFLAG_NORMAL;
-    req_sortie_ld_airbattle_flag = PARSEFLAG_NORMAL;
-    req_sortie_ld_shooting_flag = PARSEFLAG_NORMAL;
-    req_combined_battle_airbattle_flag = PARSEFLAG_NORMAL;
-    req_combined_battle_ld_airbattle_flag = PARSEFLAG_NORMAL;
-    req_combined_battle_ld_shooting_flag = PARSEFLAG_NORMAL;
+	req_sortie_airbattle_flag = PARSEFLAG_NORMAL;
+	req_sortie_ld_airbattle_flag = PARSEFLAG_NORMAL;
+	req_sortie_ld_shooting_flag = PARSEFLAG_NORMAL;
+	req_combined_battle_airbattle_flag = PARSEFLAG_NORMAL;
+	req_combined_battle_ld_airbattle_flag = PARSEFLAG_NORMAL;
+	req_combined_battle_ld_shooting_flag = PARSEFLAG_NORMAL;
 	req_combined_battle_battlewater_flag = PARSEFLAG_NORMAL;
 	req_combined_battle_battleresult_flag = PARSEFLAG_NORMAL;
 	req_combined_battle_battle_flag = PARSEFLAG_NORMAL;
@@ -204,9 +204,9 @@ KanDataConnector::KanDataConnector(void)
 	req_ranking_getlist_flag = PARSEFLAG_NORMAL;
 	req_ranking_mxltvkpyuklh_flag = PARSEFLAG_NORMAL;
 	get_member_picture_book_flag = PARSEFLAG_NORMAL;
-    get_member_book2_flag = PARSEFLAG_NORMAL;
-    req_member_get_incentive_flag = PARSEFLAG_NORMAL;
-    req_member_set_oss_condition_flag = PARSEFLAG_NORMAL;
+	get_member_book2_flag = PARSEFLAG_NORMAL;
+	req_member_get_incentive_flag = PARSEFLAG_NORMAL;
+	req_member_set_oss_condition_flag = PARSEFLAG_NORMAL;
 	get_member_payitem_flag = PARSEFLAG_NORMAL;
 	req_kaisou_lock_flag = PARSEFLAG_NORMAL;			// lock slot item
 	req_mission_return_instruction_flag = PARSEFLAG_NORMAL;	// force mission return
@@ -225,6 +225,7 @@ KanDataConnector::KanDataConnector(void)
 	req_air_corps_supply_flag = PARSEFLAG_NORMAL;
 	req_air_corps_set_action_flag = PARSEFLAG_NORMAL;
 	req_sortie_goback_port_flag = PARSEFLAG_NORMAL;
+	req_member_set_flagship_position_flag = PARSEFLAG_NORMAL;
 
 
 	/************************************************************************/
@@ -237,8 +238,8 @@ KanDataConnector::KanDataConnector(void)
 	//	req_battle_midnight_battle_flag = PARSEFLAG_OUTPUT;
 	//	req_battle_midnight_sp_midnight_flag = PARSEFLAG_OUTPUT;
 	req_sortie_night_to_day_flag = PARSEFLAG_OUTPUT;
-    req_combined_battle_ec_night_to_day_flag = PARSEFLAG_OUTPUT;
-    req_combined_battle_ld_shooting_flag = PARSEFLAG_OUTPUT;
+	req_combined_battle_ec_night_to_day_flag = PARSEFLAG_OUTPUT;
+	req_combined_battle_ld_shooting_flag = PARSEFLAG_OUTPUT;
 	//	req_combined_battle_ec_battle_flag = PARSEFLAG_OUTPUT;
 	//	req_combined_battle_ec_midnight_battle_flag = PARSEFLAG_OUTPUT;
 	//	req_combined_battle_each_battle_flag = PARSEFLAG_OUTPUT;
@@ -338,15 +339,15 @@ bool KanDataConnector::Parse(const QString& pathAndQuery, const QString& request
 		PARSEAPI("/kcsapi/api_req_map/next", req_map_next)
 		PARSEAPI("/kcsapi/api_req_sortie/battleresult", req_sortie_battleresult)
 		PARSEAPI("/kcsapi/api_req_sortie/battle", req_sortie_battle)
-        PARSEAPI("/kcsapi/api_req_battle_midnight/battle", req_battle_midnight_battle)
-        PARSEAPI("/kcsapi/api_req_battle_midnight/sp_midnight", req_battle_midnight_sp_midnight)
+		PARSEAPI("/kcsapi/api_req_battle_midnight/battle", req_battle_midnight_battle)
+		PARSEAPI("/kcsapi/api_req_battle_midnight/sp_midnight", req_battle_midnight_sp_midnight)
 		PARSEAPI("/kcsapi/api_req_sortie/night_to_day", req_sortie_night_to_day)
-        PARSEAPI("/kcsapi/api_req_sortie/airbattle", req_sortie_airbattle)
-        PARSEAPI("/kcsapi/api_req_sortie/ld_airbattle", req_sortie_ld_airbattle)
-        PARSEAPI("/kcsapi/api_req_sortie/ld_shooting", req_sortie_ld_shooting)
-        PARSEAPI("/kcsapi/api_req_combined_battle/airbattle", req_combined_battle_airbattle)
-        PARSEAPI("/kcsapi/api_req_combined_battle/ld_airbattle", req_combined_battle_ld_airbattle)
-        PARSEAPI("/kcsapi/api_req_combined_battle/ld_shooting", req_combined_battle_ld_shooting)
+		PARSEAPI("/kcsapi/api_req_sortie/airbattle", req_sortie_airbattle)
+		PARSEAPI("/kcsapi/api_req_sortie/ld_airbattle", req_sortie_ld_airbattle)
+		PARSEAPI("/kcsapi/api_req_sortie/ld_shooting", req_sortie_ld_shooting)
+		PARSEAPI("/kcsapi/api_req_combined_battle/airbattle", req_combined_battle_airbattle)
+		PARSEAPI("/kcsapi/api_req_combined_battle/ld_airbattle", req_combined_battle_ld_airbattle)
+		PARSEAPI("/kcsapi/api_req_combined_battle/ld_shooting", req_combined_battle_ld_shooting)
 		PARSEAPI("/kcsapi/api_req_combined_battle/battle_water", req_combined_battle_battlewater)
 		PARSEAPI("/kcsapi/api_req_combined_battle/battleresult", req_combined_battle_battleresult)
 		PARSEAPI("/kcsapi/api_req_combined_battle/battle", req_combined_battle_battle)
@@ -382,9 +383,9 @@ bool KanDataConnector::Parse(const QString& pathAndQuery, const QString& request
 		PARSEAPI("/kcsapi/api_req_ranking/getlist", req_ranking_getlist)
 		PARSEAPI("/kcsapi/api_req_ranking/mxltvkpyuklh", req_ranking_mxltvkpyuklh)
 		PARSEAPI("/kcsapi/api_get_member/picture_book", get_member_picture_book)
-        PARSEAPI("/kcsapi/api_get_member/book2", get_member_book2)
-        PARSEAPI("/kcsapi/api_req_member/get_incentive", req_member_get_incentive)
-        PARSEAPI("/kcsapi/api_req_member/set_oss_condition", req_member_set_oss_condition)
+		PARSEAPI("/kcsapi/api_get_member/book2", get_member_book2)
+		PARSEAPI("/kcsapi/api_req_member/get_incentive", req_member_get_incentive)
+		PARSEAPI("/kcsapi/api_req_member/set_oss_condition", req_member_set_oss_condition)
 		PARSEAPI("/kcsapi/api_get_member/payitem", get_member_payitem)
 		PARSEAPI("/kcsapi/api_req_kaisou/lock", req_kaisou_lock)
 		PARSEAPI("/kcsapi/api_req_mission/return_instruction", req_mission_return_instruction)
@@ -407,6 +408,7 @@ bool KanDataConnector::Parse(const QString& pathAndQuery, const QString& request
 		PARSEAPI("/kcsapi/api_req_air_corps/supply", req_air_corps_supply)
 		PARSEAPI("/kcsapi/api_req_air_corps/set_action", req_air_corps_set_action)
 		PARSEAPI("/kcsapi/api_req_sortie/goback_port", req_sortie_goback_port)
+		PARSEAPI("/kcsapi/api_req_member/set_flagship_position", req_member_set_flagship_position)
 
 		if (!bRet)
 		{

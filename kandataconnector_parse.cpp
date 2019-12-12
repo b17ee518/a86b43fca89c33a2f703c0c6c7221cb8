@@ -500,7 +500,7 @@ bool KanDataConnector::req_hensei_preset_select_parse()
 		}
 		updateFleetTable();
 
-        lstship = &(pksd->portdata.api_deck_port[team - 1].api_ship);
+		lstship = &(pksd->portdata.api_deck_port[team - 1].api_ship);
 		// assume only fleet 1
 		if (team == 1)
 		{
@@ -637,7 +637,7 @@ bool KanDataConnector::req_kousyou_createship_parse()
 	pksd->portdata.api_material[(int)MaterialDataIndex::Development].api_value -= usedev;
 	if (highspeed)
 	{
-        pksd->portdata.api_material[(int)MaterialDataIndex::InstantBuild].api_value -= 1;
+		pksd->portdata.api_material[(int)MaterialDataIndex::InstantBuild].api_value -= 1;
 		updateOverviewTable();
 	}
 
@@ -653,7 +653,7 @@ bool KanDataConnector::req_kousyou_createship_speedchange_parse()
 	{
 		pksd->kdockdata[dockid].api_complete_time = 0;
 		updateBuildDockTable();
-        pksd->portdata.api_material[(int)MaterialDataIndex::InstantBuild].api_value -= 1;
+		pksd->portdata.api_material[(int)MaterialDataIndex::InstantBuild].api_value -= 1;
 		updateOverviewTable();
 	}
 	return true;
@@ -893,26 +893,74 @@ bool KanDataConnector::get_member_mission_parse()
 
 bool KanDataConnector::get_member_mapinfo_parse()
 {
-	QMap<int, QList<kcsapi_air_base_corps> > tcorpsMap;
 
-	auto jarray = _jdoc.object()["api_data"].toObject()["api_air_base"].toArray();
-	for (int i = 0; i < jarray.count(); i++)
+	// map hp
 	{
-		auto corp = jarray[i].toObject();
-		kcsapi_air_base_corps tcorp;
-		tcorp.ReadFromJObj(corp);
-
-		if (tcorpsMap[tcorp.api_area_id].isEmpty())
+		auto jarray = _jdoc.object()["api_data"].toObject()["api_map_info"].toArray();
+		int latestMapHp = 0;
+		int latestMapMaxHp = 0;
+		int latestAreaMap = 0;
+		for (int i = 0; i < jarray.count(); i++)
 		{
-			tcorpsMap[tcorp.api_area_id].append(kcsapi_air_base_corps());
-			tcorpsMap[tcorp.api_area_id].append(kcsapi_air_base_corps());
-			tcorpsMap[tcorp.api_area_id].append(kcsapi_air_base_corps());
-		}
-		tcorpsMap[tcorp.api_area_id][tcorp.api_rid - 1] = tcorp;
-		pksd->airbasedata[tcorp.api_area_id] = tcorpsMap[tcorp.api_area_id];
-	}
+			kcsapi_map_info mapInfo;
+			mapInfo.ReadFromJObj(jarray[i].toObject());
 
-	checkAirBase();
+			pksd->mapinfodata[mapInfo.api_id] = mapInfo;
+			if (mapInfo.api_eventmap.api_max_maphp > 0 && mapInfo.api_eventmap.api_now_maphp > 0)
+			{
+				latestAreaMap = mapInfo.api_id;
+				latestMapHp = mapInfo.api_eventmap.api_now_maphp;
+				latestMapMaxHp = mapInfo.api_eventmap.api_max_maphp;
+			}
+		}
+		auto& cm = ControlManager::getInstance();
+		int area = cm.getAnySetting().area;
+		int map = cm.getAnySetting().map;
+		int areamap = area * 10 + (map % 10);
+		if (pksd->mapinfodata.contains(areamap))
+		{
+			int curHp = pksd->mapinfodata[areamap].api_eventmap.api_now_maphp;
+			int maxHp = pksd->mapinfodata[areamap].api_eventmap.api_max_maphp;
+			if (curHp > 0 && maxHp > 0)
+			{
+				latestMapHp = curHp;
+				latestMapMaxHp = maxHp;
+				latestAreaMap = areamap;
+			}
+		}
+		if (latestMapHp > 0 && latestMapMaxHp > 0)
+		{
+			QString mapHp = QString("%1 (%2/%3)").arg(latestAreaMap).arg(latestMapHp).arg(latestMapMaxHp);
+			MainWindow::mainWindow()->timerWindow()->setMapHp(mapHp);
+		}
+		else
+		{
+			MainWindow::mainWindow()->timerWindow()->setMapHp("");
+		}
+
+	}
+	// airbase
+	{
+		QMap<int, QList<kcsapi_air_base_corps> > tcorpsMap;
+		auto jarray = _jdoc.object()["api_data"].toObject()["api_air_base"].toArray();
+		for (int i = 0; i < jarray.count(); i++)
+		{
+			auto corp = jarray[i].toObject();
+			kcsapi_air_base_corps tcorp;
+			tcorp.ReadFromJObj(corp);
+
+			if (tcorpsMap[tcorp.api_area_id].isEmpty())
+			{
+				tcorpsMap[tcorp.api_area_id].append(kcsapi_air_base_corps());
+				tcorpsMap[tcorp.api_area_id].append(kcsapi_air_base_corps());
+				tcorpsMap[tcorp.api_area_id].append(kcsapi_air_base_corps());
+			}
+			tcorpsMap[tcorp.api_area_id][tcorp.api_rid - 1] = tcorp;
+			pksd->airbasedata[tcorp.api_area_id] = tcorpsMap[tcorp.api_area_id];
+		}
+
+		checkAirBase();
+	}
 
 	return true;
 }
@@ -1018,21 +1066,21 @@ bool KanDataConnector::req_sortie_airbattle_parse()
 
 bool KanDataConnector::req_sortie_ld_airbattle_parse()
 {
-    pksd->battledata.ReadFromJObj(_jobj);
+	pksd->battledata.ReadFromJObj(_jobj);
 
-    updateBattle(pksd->battledata, KanBattleType::Air);
-    // TODO check air???
-    return true;
+	updateBattle(pksd->battledata, KanBattleType::Air);
+	// TODO check air???
+	return true;
 
 }
 
 bool KanDataConnector::req_sortie_ld_shooting_parse()
 {
-    pksd->battledata.ReadFromJObj(_jobj);
+	pksd->battledata.ReadFromJObj(_jobj);
 
-    // untested
-    updateBattle(pksd->battledata, KanBattleType::LDShooting);
-    return true;
+	// untested
+	updateBattle(pksd->battledata, KanBattleType::LDShooting);
+	return true;
 
 }
 
@@ -1046,19 +1094,19 @@ bool KanDataConnector::req_combined_battle_airbattle_parse()
 
 bool KanDataConnector::req_combined_battle_ld_airbattle_parse()
 {
-    pksd->battledata.ReadFromJObj(_jobj);
+	pksd->battledata.ReadFromJObj(_jobj);
 
-    updateBattle(pksd->battledata, KanBattleType::Combined_KouKu);
-    return true;
+	updateBattle(pksd->battledata, KanBattleType::Combined_KouKu);
+	return true;
 }
 
 bool KanDataConnector::req_combined_battle_ld_shooting_parse()
 {
-    pksd->battledata.ReadFromJObj(_jobj);
+	pksd->battledata.ReadFromJObj(_jobj);
 
-    // completely untested
-    updateBattle(pksd->battledata, KanBattleType::Combined_LDShooting);
-    return true;
+	// completely untested
+	updateBattle(pksd->battledata, KanBattleType::Combined_LDShooting);
+	return true;
 }
 
 bool KanDataConnector::req_combined_battle_battlewater_parse()
@@ -1401,7 +1449,7 @@ bool KanDataConnector::req_quest_clearitemget_parse()
 			}
 			else if (pbonus->api_type == 14)
 			{
-				// ??
+				// furniture
 			}
 			else if (pbonus->api_type == 15)
 			{
@@ -1413,7 +1461,7 @@ bool KanDataConnector::req_quest_clearitemget_parse()
 			}
 			else
 			{
-				DAPILOG();
+				// DAPILOG();
 			}
 			// ship?
 		}
@@ -1516,12 +1564,12 @@ bool KanDataConnector::get_member_book2_parse()
 
 bool KanDataConnector::req_member_get_incentive_parse()
 {
-    return true;
+	return true;
 }
 
 bool KanDataConnector::req_member_set_oss_condition_parse()
 {
-    return true;
+	return true;
 }
 
 bool KanDataConnector::get_member_payitem_parse()
@@ -1748,3 +1796,10 @@ bool KanDataConnector::req_sortie_goback_port_parse()
 {
 	return true;
 }
+
+bool KanDataConnector::req_member_set_flagship_position_parse()
+{
+	// ???
+	return true;
+}
+

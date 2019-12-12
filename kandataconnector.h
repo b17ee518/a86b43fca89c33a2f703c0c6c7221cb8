@@ -44,9 +44,9 @@ public:
 		return isShipHasSlotitem(findShipFromShipno(shipno), sitype, count, hasCount);
 	}
 
-	void setOutputAllLog(bool bVal){ _outputAllLog = bVal; }
+	void setOutputAllLog(bool bVal) { _outputAllLog = bVal; }
 
-	void callUpdateOverviewTable(){ updateOverviewTable(); }
+	void callUpdateOverviewTable() { updateOverviewTable(); }
 
 private:
 	void updateOverviewTable();
@@ -71,8 +71,8 @@ private:
 
 	void processHougekiDamages(const kcsapi_battle_hougeki& api_hougeki
 		, bool bOnlyCombinedSelf
-        , bool bOnlyCombinedEnemy
-        , bool bIsFriendly=false);
+		, bool bOnlyCombinedEnemy
+		, bool bIsFriendly = false);
 	void processAirBaseAttackDamages(const kcsapi_battle_base_attack& api_air_base_attack);
 	void processKoukuDamages(const kcsapi_battle_kouku& api_kouku);
 	void processSupportDamages(int api_support_flag, const kcsapi_battle_support_info& api_support);
@@ -159,12 +159,12 @@ private:
 	bool req_battle_midnight_battle_parse();
 	bool req_battle_midnight_sp_midnight_parse();
 	bool req_sortie_night_to_day_parse();
-    bool req_sortie_airbattle_parse();
-    bool req_sortie_ld_airbattle_parse();
-    bool req_sortie_ld_shooting_parse();
-    bool req_combined_battle_airbattle_parse();
-    bool req_combined_battle_ld_airbattle_parse();
-    bool req_combined_battle_ld_shooting_parse();
+	bool req_sortie_airbattle_parse();
+	bool req_sortie_ld_airbattle_parse();
+	bool req_sortie_ld_shooting_parse();
+	bool req_combined_battle_airbattle_parse();
+	bool req_combined_battle_ld_airbattle_parse();
+	bool req_combined_battle_ld_shooting_parse();
 	bool req_combined_battle_battlewater_parse();
 	bool req_combined_battle_battleresult_parse();
 	bool req_combined_battle_battle_parse();
@@ -200,9 +200,9 @@ private:
 	bool req_ranking_getlist_parse();
 	bool req_ranking_mxltvkpyuklh_parse();
 	bool get_member_picture_book_parse();
-    bool get_member_book2_parse();
-    bool req_member_get_incentive_parse();
-    bool req_member_set_oss_condition_parse();
+	bool get_member_book2_parse();
+	bool req_member_get_incentive_parse();
+	bool req_member_set_oss_condition_parse();
 	bool get_member_payitem_parse();
 	bool req_kaisou_lock_parse();			// lock slot item
 	bool req_mission_return_instruction_parse();	// force mission return
@@ -224,6 +224,7 @@ private:
 	bool req_air_corps_supply_parse();
 	bool req_air_corps_set_action_parse();
 	bool req_sortie_goback_port_parse();
+	bool req_member_set_flagship_position_parse();
 
 
 private:
@@ -277,12 +278,12 @@ private:
 	int req_battle_midnight_battle_flag;
 	int req_battle_midnight_sp_midnight_flag;
 	int req_sortie_night_to_day_flag;
-    int req_sortie_airbattle_flag;
-    int req_sortie_ld_airbattle_flag;
-    int req_sortie_ld_shooting_flag;
-    int req_combined_battle_airbattle_flag;
-    int req_combined_battle_ld_airbattle_flag;
-    int req_combined_battle_ld_shooting_flag;
+	int req_sortie_airbattle_flag;
+	int req_sortie_ld_airbattle_flag;
+	int req_sortie_ld_shooting_flag;
+	int req_combined_battle_airbattle_flag;
+	int req_combined_battle_ld_airbattle_flag;
+	int req_combined_battle_ld_shooting_flag;
 	int req_combined_battle_battlewater_flag;
 	int req_combined_battle_battleresult_flag;
 	int req_combined_battle_battle_flag;
@@ -318,9 +319,9 @@ private:
 	int req_ranking_getlist_flag;
 	int req_ranking_mxltvkpyuklh_flag;	// getlist
 	int get_member_picture_book_flag;
-    int get_member_book2_flag;
-    int req_member_get_incentive_flag;
-    int req_member_set_oss_condition_flag;
+	int get_member_book2_flag;
+	int req_member_get_incentive_flag;
+	int req_member_set_oss_condition_flag;
 	int get_member_payitem_flag;
 	int req_kaisou_lock_flag;			// lock slot item
 	int req_mission_return_instruction_flag;	// force mission return
@@ -342,6 +343,7 @@ private:
 	int req_air_corps_supply_flag;
 	int req_air_corps_set_action_flag;
 	int req_sortie_goback_port_flag;
+	int req_member_set_flagship_position_flag;
 
 private:
 	QColor _colWhite;

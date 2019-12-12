@@ -5,6 +5,7 @@
 #include "kansavedata.h"
 #include "ControlManager.h"
 #include "kandataconnector.h"
+#include "MainWindow.h"
 
 AnyActionSelectDialog::AnyActionSelectDialog(QWidget *parent)
 	: QDialog(parent)
@@ -36,9 +37,9 @@ AnyActionSelectDialog::AnyActionSelectDialog(QWidget *parent)
 	connect(restoreToDefaultButton, SIGNAL(clicked()), this, SLOT(slotOnRestoreToDefault()));
 
 	ui->leCount->setText(QString::number(ControlManager::getInstance().getAnySetting().count));
-    ui->leSSOnlyCount->setText(QString::number(ControlManager::getInstance().getAnySetting().onlySSTeamSize));
-    ui->cbAutoFastRepair->setChecked(ControlManager::getInstance().getAnySetting().autoFastRepair);
-    ui->cbSwapLowCond->setChecked(ControlManager::getInstance().getAnySetting().swapLowCond);
+	ui->leSSOnlyCount->setText(QString::number(ControlManager::getInstance().getAnySetting().onlySSTeamSize));
+	ui->cbAutoFastRepair->setChecked(ControlManager::getInstance().getAnySetting().autoFastRepair);
+	ui->cbSwapLowCond->setChecked(ControlManager::getInstance().getAnySetting().swapLowCond);
 	ui->cbAirBaseCond->setChecked(ControlManager::getInstance().getAnySetting().checkAirBaseCond);
 	ui->cbCond->setChecked(ControlManager::getInstance().getAnySetting().checkCond);
 	ui->cbMiddleDamage->setChecked(ControlManager::getInstance().getAnySetting().allowMiddleDamageSortie);
@@ -46,6 +47,10 @@ AnyActionSelectDialog::AnyActionSelectDialog(QWidget *parent)
 
 	connect(ui->leArea, SIGNAL(textEdited()), this, SLOT(slotUncheckAllAreaButtons()));
 	connect(ui->leMap, SIGNAL(textEdited()), this, SLOT(slotUncheckAllAreaButtons()));
+
+	QTimer *timer = new QTimer(this);
+	connect(timer, SIGNAL(timeout()), this, SLOT(slotDisplayMapInfo()));
+	timer->start(100);
 
 	for (int i = 0; i < 7; i++)
 	{
@@ -165,7 +170,7 @@ void AnyActionSelectDialog::slotOnReset()
 
 		ui->cbAirBaseCond->setChecked(false);
 		ui->cbCond->setChecked(true);
-        ui->cbSwapLowCond->setChecked(false);
+		ui->cbSwapLowCond->setChecked(false);
 		ui->cbMiddleDamage->setChecked(false);
 		ui->cbAutoFastRepair->setChecked(false);
 		ui->leSSOnlyCount->setText("0");
@@ -182,12 +187,12 @@ void AnyActionSelectDialog::slotOnRestoreToDefault()
 
 bool AnyActionSelectDialog::isAutoFastRepair()
 {
-    return ui->cbAutoFastRepair->isChecked();
+	return ui->cbAutoFastRepair->isChecked();
 }
 
 bool AnyActionSelectDialog::isSwapLowCond()
 {
-    return ui->cbSwapLowCond->isChecked();
+	return ui->cbSwapLowCond->isChecked();
 }
 
 bool AnyActionSelectDialog::isCheckAirBaseCond()
@@ -242,6 +247,26 @@ void AnyActionSelectDialog::slotUncheckAllAreaButtons()
 	*/
 	ui->bgArea->setExclusive(true);
 	ui->bgMap->setExclusive(true);
+}
+
+void AnyActionSelectDialog::slotDisplayMapInfo()
+{
+	KanSaveData* pksd = &KanSaveData::getInstance();
+	int area, map;
+	getMapAndArea(area, map);
+	int maparea = area * 10 + (map % 10);
+	if (pksd->mapinfodata.contains(maparea))
+	{
+		const kcsapi_map_info_eventmap& eventMap = pksd->mapinfodata[maparea].api_eventmap;
+		if (eventMap.api_max_maphp > 0)
+		{
+			QString mapHp = QString("Map (%1/%2)").arg(eventMap.api_now_maphp).arg(eventMap.api_max_maphp);
+			ui->groupBox_2->setTitle(mapHp);
+			MainWindow::mainWindow()->timerWindow()->setMapHp(mapHp);
+			return;
+		}
+	}
+	ui->groupBox_2->setTitle("Map");
 }
 
 void AnyActionSelectDialog::slotClearLEAreaAndMap()

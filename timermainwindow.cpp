@@ -20,7 +20,7 @@ TimerMainWindow::TimerMainWindow(QWidget *parent)
 	_pPlayer = new QMediaPlayer();
 	_pPlaylist = new QMediaPlaylist(_pPlayer);
 
-    QString filename = MainWindow::getAbsoluteResourcePath();
+	QString filename = MainWindow::getAbsoluteResourcePath();
 	filename += "/se";
 	_pPlaylist->addMedia(QUrl::fromLocalFile(filename + "/expedition.mp3"));
 	_pPlaylist->addMedia(QUrl::fromLocalFile(filename + "/repair.mp3"));
@@ -127,6 +127,13 @@ void TimerMainWindow::setLastDrop(const QString& displayName, const QColor& col/
 	pNameItem->setTextColor(col);
 }
 
+void TimerMainWindow::setMapHp(const QString& displayName, const QColor& col/* = QColor(0xff, 0xff, 0xff)*/)
+{
+	QTableWidgetItem * pNameItem = ui->dropTable->item(0, 1);
+	pNameItem->setText(displayName);
+	pNameItem->setTextColor(col);
+}
+
 
 void TimerMainWindow::setAutoRepairTime(bool bOn, bool bResetIfOver/*=false*/)
 {
@@ -210,7 +217,7 @@ void TimerMainWindow::slotUpdateTimer()
 				, ui->expeditionTable->item(i * 2, 2)
 				, _progressExpUs[i]
 				, true
-				);
+			);
 			if (mintdiff <= 0)
 			{
 				progressbarstate = ProgressBarState::Stopped;
@@ -230,7 +237,7 @@ void TimerMainWindow::slotUpdateTimer()
 				, ui->expeditionTable->item(i * 2, 2)
 				, _progressExpUs[i]
 				, true
-				);
+			);
 		}
 		if (!bRepaint && bUpdated)
 		{
@@ -263,7 +270,7 @@ void TimerMainWindow::slotUpdateTimer()
 				, ui->repairTable->item(i * 2, 2)
 				, _progressRepairUs[i]
 				, true
-				);
+			);
 			if (mintdiff <= 0 && progressbarstate == ProgressBarState::Normal)
 			{
 				progressbarstate = ProgressBarState::Paused;
@@ -281,7 +288,7 @@ void TimerMainWindow::slotUpdateTimer()
 				, ui->repairTable->item(i * 2, 2)
 				, _progressRepairUs[i]
 				, true
-				);
+			);
 		}
 		if (!bRepaint && bUpdated)
 		{
@@ -312,7 +319,7 @@ void TimerMainWindow::slotUpdateTimer()
 				, dt
 				, _buildtimerecord[i].totaltime
 				, ui->buildTable->item(i, 1)
-				);
+			);
 		}
 		else if (_buildtimerecord[i].desttime == -1)
 		{
@@ -323,7 +330,7 @@ void TimerMainWindow::slotUpdateTimer()
 				, 0
 				, 0
 				, ui->buildTable->item(i, 1)
-				);
+			);
 		}
 		if (!bRepaint && bUpdated)
 		{
@@ -372,15 +379,15 @@ qint64 TimerMainWindow::currentMSUtc()
 	ct *= 1000;
 	int ms = dt.time().msec();
 	ct += ms;
-    return ct;
+	return ct;
 }
 
 void TimerMainWindow::setVolume(int vol)
 {
-    if (_pPlayer)
-    {
-        _pPlayer->setVolume(vol);
-    }
+	if (_pPlayer)
+	{
+		_pPlayer->setVolume(vol);
+	}
 }
 
 QString TimerMainWindow::getRemainTimeStr(qint64 ct, qint64 dt)
@@ -565,14 +572,14 @@ bool TimerMainWindow::updateDisplay(int &mintdiff, qint64 ct, qint64 dt, qint64 
 
 void TimerMainWindow::playSound(SoundIndex i, bool bSilent/*=false*/)
 {
-    if (_pPlayer->state() == QMediaPlayer::State::PlayingState)
-    {
-        _pPlayer->stop();
-    }
+	if (_pPlayer->state() == QMediaPlayer::State::PlayingState)
+	{
+		_pPlayer->stop();
+	}
 
 	if (!((ControlManager::getInstance().isExpeditionMode() || ControlManager::getInstance().isInactiveWaiting()) && i == SoundIndex::Expedition) && !bSilent)
 	{
-        MainWindow::mainWindow()->AdjustVolume(75);
+		MainWindow::mainWindow()->AdjustVolume(75);
 	}
 	_pPlaylist->setCurrentIndex((int)i);
 	_pPlayer->play();

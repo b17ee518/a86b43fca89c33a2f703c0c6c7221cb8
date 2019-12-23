@@ -15,7 +15,7 @@ public:
 	{
 	};
 
-	virtual bool action(){ return true; }
+	virtual bool action() { return true; }
 
 	void setDoneRequest(const QString& api);
 
@@ -188,7 +188,7 @@ public:
 	};
 
 	ChargeAction(QObject* parent = NULL)
-		:ControlAction(parent){}	// only charge flagship of team1
+		:ControlAction(parent) {}	// only charge flagship of team1
 
 	virtual bool action() override;
 
@@ -212,7 +212,7 @@ class ExpeditionAction : public ControlAction
 {
 public:
 	ExpeditionAction(QObject* parent = NULL)
-		:ControlAction(parent){}
+		:ControlAction(parent) {}
 
 	enum class State
 	{
@@ -254,7 +254,7 @@ class DestroyShipAction : public ControlAction
 {
 public:
 	DestroyShipAction(QObject* parent = NULL)
-		:ControlAction(parent){}
+		:ControlAction(parent) {}
 
 	enum class State
 	{
@@ -310,7 +310,7 @@ class RepairShipAction : public ControlAction
 {
 public:
 	RepairShipAction(QObject* parent = NULL)
-		:ControlAction(parent){}
+		:ControlAction(parent) {}
 
 	enum class State
 	{
@@ -375,7 +375,7 @@ class DevelopAction : public ControlAction
 public:
 
 	DevelopAction(QObject* parent = NULL)
-		:ControlAction(parent){}
+		:ControlAction(parent) {}
 
 	enum class State
 	{
@@ -406,6 +406,12 @@ private:
 class SortieAction : public ControlAction
 {
 public:
+	struct MapExClick
+	{
+		QList<float> checkList;
+		QList<float> clickPoint;
+	};
+
 	enum class State
 	{
 		None,
@@ -422,14 +428,18 @@ public:
 
 		SelectEx2MapChecking,
 		SelectEx2MapDone, // click ex map
+		SelectEx3MapChecking,
+		SelectEx3MapDone, // click ex map
+		SelectEx4MapChecking,
+		SelectEx4MapDone, // click ex map
 
-        LDChargeChecking,
-        LDChargeDone,   // click charge button
-        LDSelectTeamChecking,
-        LDSelectTeamDone,   // click team
-        LDDoChargeChecking,
-        LDDoChargeDone,
-        LDAllChargeDone,    // click somewhere
+		LDChargeChecking,
+		LDChargeDone,   // click charge button
+		LDSelectTeamChecking,
+		LDSelectTeamDone,   // click team
+		LDDoChargeChecking,
+		LDDoChargeDone,
+		LDAllChargeDone,    // click somewhere
 
 		SkipBoardChecking,
 		SkipBoardDone,	// skip mission (ev only)
@@ -455,10 +465,7 @@ public:
 	void setAreaAndMap(int area, int map
 		, const QList<float>& areaCheckList = QList<float>()
 		, const QList<float>& mapClickPoint = QList<float>()
-		, const QList<float>& mapExCheckList = QList<float>()
-		, const QList<float>& mapExClickPoint = QList<float>()
-		, const QList<float>& mapEx2CheckList = QList<float>()
-		, const QList<float>& mapEx2ClickPoint = QList<float>());
+		, const QMap<int, MapExClick>& mapExClickList = QMap<int, MapExClick>());
 
 	void setTeam(int team) { _team = team; }
 
@@ -475,10 +482,7 @@ public:
 
 	QList<float> _areaCheckList;
 	QList<float> _mapClickPoint;	// click E1~E3 or Ex button
-	QList<float> _mapExCheckList;	// for Ex only
-	QList<float> _mapExClickPoint;	// click after Ex
-	QList<float> _mapEx2CheckList;	// for Ex only
-	QList<float> _mapEx2ClickPoint;	// click after Ex
+	QMap<int, MapExClick> _mapExClickList;
 
 	virtual bool action() override;
 
@@ -505,7 +509,7 @@ public:
 
 private:
 	State _state = State::None;
-    int _clickCount = 0;
+	int _clickCount = 0;
 	void setState(State state, const char* str);
 };
 
@@ -517,16 +521,16 @@ public:
 		None,
 		Checking,
 
-        LDChecking,
-        LDDone,
+		LDChecking,
+		LDDone,
 
 		ClickElse,
 		SelectFormation,
 		SelectCombinedFormation,
 		ClickLeft,
 		ClickRight,
-        ClickAirBaseOK,
-        ClickAirBaseROK,
+		ClickAirBaseOK,
+		ClickAirBaseROK,
 
 		Done,
 	};
@@ -546,7 +550,7 @@ private:
 
 	int _totalFormationCount = 0;
 
-    int _ldCheckingIndex = -1;
+	int _ldCheckingIndex = -1;
 
 	bool _withKeiKaiJin = false;
 };
@@ -596,7 +600,7 @@ private:
 	bool _isSkippingMissionComplete = false;
 
 public:
-    static const int maxMissionAcceptCount = 7;
+	static const int maxMissionAcceptCount = 7;
 };
 
 class RepeatAction : public ControlAction

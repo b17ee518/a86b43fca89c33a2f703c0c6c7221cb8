@@ -2496,7 +2496,7 @@ bool SortieAction::action()
 				if (_isEvent)
 				{
 					QList<float> pPoint;
-					pPoint = _mapExCheckList;
+					pPoint = _mapExClickList[0].checkList;
 					if (cm.checkColors(pPoint[0], pPoint[1], pPoint[2], pPoint[3], pPoint[4]
 						, pPoint[5], pPoint[6], pPoint[7], pPoint[8], pPoint[9]))
 					{
@@ -2530,7 +2530,7 @@ bool SortieAction::action()
 				QList<float> pPoint;
 				if (_isEvent)
 				{
-					pPoint = _mapExClickPoint;
+					pPoint = _mapExClickList[0].clickPoint;
 					cm.moveMouseToAndClick(pPoint[0], pPoint[1], pPoint[2], pPoint[3]); // map 1
 				}
 				else
@@ -2571,7 +2571,7 @@ bool SortieAction::action()
 			QTimer::singleShot(DELAY_TIME_LONG, Qt::PreciseTimer, this, [this, &cm]()
 			{
 				QList<float> pPoint;
-				pPoint = _mapEx2CheckList;
+				pPoint = _mapExClickList[1].checkList;
 
 				if (cm.checkColors(pPoint[0], pPoint[1], pPoint[2], pPoint[3], pPoint[4]
 					, pPoint[5], pPoint[6], pPoint[7], pPoint[8], pPoint[9]))
@@ -2594,7 +2594,115 @@ bool SortieAction::action()
 			QTimer::singleShot(DELAY_TIME_CLICK, Qt::PreciseTimer, this, [this, &cm]()
 			{
 				QList<float> pPoint;
-				pPoint = _mapEx2ClickPoint;
+				pPoint = _mapExClickList[1].clickPoint;
+				cm.moveMouseToAndClick(pPoint[0], pPoint[1], pPoint[2], pPoint[3]); // map 1
+
+				// should always be ev
+				if (_isEvent)
+				{
+					if (_map > 30)
+					{
+						setState(State::SelectEx3MapChecking, "Sortie:SelectEx3MapChecking");
+					}
+					else
+					{
+						setState(State::SkipBoardChecking, "Sortie:SkipBoardChecking");
+					}
+				}
+				else
+				{
+					setState(State::SortieCheckChecking, "Sortie:SortieCheckChecking");
+				}
+				resetRetryAndWainting();
+			});
+		}
+
+		break;
+	case SortieAction::State::SelectEx3MapChecking:
+		if (!_waiting)
+		{
+			_waiting = true;
+			QTimer::singleShot(DELAY_TIME_LONG, Qt::PreciseTimer, this, [this, &cm]()
+			{
+				QList<float> pPoint;
+				pPoint = _mapExClickList[2].checkList;
+
+				if (cm.checkColors(pPoint[0], pPoint[1], pPoint[2], pPoint[3], pPoint[4]
+					, pPoint[5], pPoint[6], pPoint[7], pPoint[8], pPoint[9]))
+				{
+					_waiting = false;
+					setState(State::SelectEx3MapDone, "Sortie:SelectEx3MapDone");
+				}
+				else
+				{
+					tryRetry();
+				}
+			});
+		}
+		break;
+	case SortieAction::State::SelectEx3MapDone:
+
+		if (!_waiting)
+		{
+			_waiting = true;
+			QTimer::singleShot(DELAY_TIME_CLICK, Qt::PreciseTimer, this, [this, &cm]()
+			{
+				QList<float> pPoint;
+				pPoint = _mapExClickList[2].clickPoint;
+				cm.moveMouseToAndClick(pPoint[0], pPoint[1], pPoint[2], pPoint[3]); // map 1
+
+				// should always be ev
+				if (_isEvent)
+				{
+					if (_map > 40)
+					{
+						setState(State::SelectEx4MapChecking, "Sortie:SelectEx4MapChecking");
+					}
+					else
+					{
+						setState(State::SkipBoardChecking, "Sortie:SkipBoardChecking");
+					}
+				}
+				else
+				{
+					setState(State::SortieCheckChecking, "Sortie:SortieCheckChecking");
+				}
+				resetRetryAndWainting();
+			});
+		}
+
+		break;
+	case SortieAction::State::SelectEx4MapChecking:
+		if (!_waiting)
+		{
+			_waiting = true;
+			QTimer::singleShot(DELAY_TIME_LONG, Qt::PreciseTimer, this, [this, &cm]()
+			{
+				QList<float> pPoint;
+				pPoint = _mapExClickList[3].checkList;
+
+				if (cm.checkColors(pPoint[0], pPoint[1], pPoint[2], pPoint[3], pPoint[4]
+					, pPoint[5], pPoint[6], pPoint[7], pPoint[8], pPoint[9]))
+				{
+					_waiting = false;
+					setState(State::SelectEx4MapDone, "Sortie:SelectEx4MapDone");
+				}
+				else
+				{
+					tryRetry();
+				}
+			});
+		}
+		break;
+	case SortieAction::State::SelectEx4MapDone:
+
+		if (!_waiting)
+		{
+			_waiting = true;
+			QTimer::singleShot(DELAY_TIME_CLICK, Qt::PreciseTimer, this, [this, &cm]()
+			{
+				QList<float> pPoint;
+				pPoint = _mapExClickList[3].clickPoint;
 				cm.moveMouseToAndClick(pPoint[0], pPoint[1], pPoint[2], pPoint[3]); // map 1
 
 				// should always be ev
@@ -2713,9 +2821,9 @@ bool SortieAction::action()
 			QTimer::singleShot(DELAY_TIME_SUPERLONG, Qt::PreciseTimer, this, [this, &cm]()
 			{
 				if (ActionCheckAndClickDefine::CheckColor(ActionCheckAndClickDefine::CheckColorNameDefine::LDChargeTeam1)
-                    || ActionCheckAndClickDefine::CheckColor(ActionCheckAndClickDefine::CheckColorNameDefine::LDChargeTeam2)
-                    || ActionCheckAndClickDefine::CheckColor(ActionCheckAndClickDefine::CheckColorNameDefine::LDChargeTeam3)
-                    || ActionCheckAndClickDefine::CheckColor(ActionCheckAndClickDefine::CheckColorNameDefine::LDChargeTeamOnly1))
+					|| ActionCheckAndClickDefine::CheckColor(ActionCheckAndClickDefine::CheckColorNameDefine::LDChargeTeam2)
+					|| ActionCheckAndClickDefine::CheckColor(ActionCheckAndClickDefine::CheckColorNameDefine::LDChargeTeam3)
+					|| ActionCheckAndClickDefine::CheckColor(ActionCheckAndClickDefine::CheckColorNameDefine::LDChargeTeamOnly1))
 				{
 					_waiting = false;
 					int team = cm.getNeedSupplyLDTeam();
@@ -2905,7 +3013,7 @@ bool SortieAction::action()
 			_waiting = true;
 			QTimer::singleShot(DELAY_TIME_CLICK, Qt::PreciseTimer, this, [this, &cm]()
 			{
-                ActionCheckAndClickDefine::MoveAndClick(ActionCheckAndClickDefine::MoveMouseNameDefine::SortieTeamHorizontalButton, _team-1); // team label
+				ActionCheckAndClickDefine::MoveAndClick(ActionCheckAndClickDefine::MoveMouseNameDefine::SortieTeamHorizontalButton, _team - 1); // team label
 				setState(State::TeamSelectChecking, "Sortie:TeamSelectChecking");
 				resetRetryAndWainting();
 			});
@@ -2954,19 +3062,13 @@ void SortieAction::setState(State state, const char* str)
 void SortieAction::setAreaAndMap(int area, int map
 	, const QList<float>& areaCheckList/* = QList<float>()*/
 	, const QList<float>& mapClickPoint/* = QList<float>()*/
-	, const QList<float>& mapExCheckList/* = QList<float>()*/
-	, const QList<float>& mapExClickPoint/* = QList<float>()*/
-	, const QList<float>& mapEx2CheckList/* = QList<float>()*/
-	, const QList<float>& mapEx2ClickPoint/* = QList<float>()*/)
+	, const QMap<int, MapExClick>& mapExClickList/* = QList<float>()*/)
 {
 	_area = area;
 	_map = map;
 	_areaCheckList = areaCheckList;
 	_mapClickPoint = mapClickPoint;
-	_mapExCheckList = mapExCheckList;
-	_mapExClickPoint = mapExClickPoint;
-	_mapEx2CheckList = mapEx2CheckList;
-	_mapEx2ClickPoint = mapEx2ClickPoint;
+	_mapExClickList = mapExClickList;
 
 	if (_area >= 30 || _area < 0)
 	{
@@ -3001,17 +3103,17 @@ bool SortieAdvanceAction::action()
 				}
 				else
 				{
-                    _clickCount++;
+					_clickCount++;
 					if (cm.isBulletMode())
-                    {
-                        if (_clickCount % 3 > 0)
-                        {
-                            ActionCheckAndClickDefine::MoveAndClick(ActionCheckAndClickDefine::MoveMouseNameDefine::SortieSimpleAdvance); // advance
-                        }
-                        else
-                        {
-                            ActionCheckAndClickDefine::MoveAndClick(ActionCheckAndClickDefine::MoveMouseNameDefine::SortieSimpleAdvanceMegami); // advance
-                        }
+					{
+						if (_clickCount % 3 > 0)
+						{
+							ActionCheckAndClickDefine::MoveAndClick(ActionCheckAndClickDefine::MoveMouseNameDefine::SortieSimpleAdvance); // advance
+						}
+						else
+						{
+							ActionCheckAndClickDefine::MoveAndClick(ActionCheckAndClickDefine::MoveMouseNameDefine::SortieSimpleAdvanceMegami); // advance
+						}
 						resetRetryAndWainting();
 					}
 					else
@@ -3085,10 +3187,10 @@ bool SortieCommonAdvanceAction::action()
 				{
 					setState(State::ClickAirBaseROK, "SortieAdv:ClickAirBaseROK");
 				}
-                else if (ActionCheckAndClickDefine::CheckColor(ActionCheckAndClickDefine::CheckColorNameDefine::LDAssign1)
-                     || ActionCheckAndClickDefine::CheckColor(ActionCheckAndClickDefine::CheckColorNameDefine::LDAssign1R)
-                     || ActionCheckAndClickDefine::CheckColor(ActionCheckAndClickDefine::CheckColorNameDefine::LDAssignOnly1)
-                     || ActionCheckAndClickDefine::CheckColor(ActionCheckAndClickDefine::CheckColorNameDefine::LDAssignOnly1R))
+				else if (ActionCheckAndClickDefine::CheckColor(ActionCheckAndClickDefine::CheckColorNameDefine::LDAssign1)
+					|| ActionCheckAndClickDefine::CheckColor(ActionCheckAndClickDefine::CheckColorNameDefine::LDAssign1R)
+					|| ActionCheckAndClickDefine::CheckColor(ActionCheckAndClickDefine::CheckColorNameDefine::LDAssignOnly1)
+					|| ActionCheckAndClickDefine::CheckColor(ActionCheckAndClickDefine::CheckColorNameDefine::LDAssignOnly1R))
 				{
 					_ldCheckingIndex = 0;
 					setState(State::LDDone, "SortieAdv:LDDone");
@@ -4109,23 +4211,23 @@ bool MissionAction::action()
 						{
 							const auto& questList = pksd.lastQuestList;
 							if (_isCompleting)
-                            {
-                                bool toComplete = questList.api_completed_kind != 0;
-                                if (!toComplete)
-                                {
-                                    auto& missionSetting = cm.getMissionSetting();
-                                    foreach (const int toDrop, missionSetting.dropMissionList)
-                                    {
-                                        if (missionSetting.acceptedMissionList.contains(toDrop))
-                                        {
-                                            toComplete = true;
-                                            break;
-                                        }
-                                    }
+							{
+								bool toComplete = questList.api_completed_kind != 0;
+								if (!toComplete)
+								{
+									auto& missionSetting = cm.getMissionSetting();
+									foreach(const int toDrop, missionSetting.dropMissionList)
+									{
+										if (missionSetting.acceptedMissionList.contains(toDrop))
+										{
+											toComplete = true;
+											break;
+										}
+									}
 
-                                }
+								}
 
-                                if (!toComplete)
+								if (!toComplete)
 								{
 									_isCompleting = false;
 									if (questList.api_disp_page != 1)
@@ -4139,13 +4241,13 @@ bool MissionAction::action()
 
 							if (_isCompleting)
 							{
-                                auto& missionSetting = cm.getMissionSetting();
+								auto& missionSetting = cm.getMissionSetting();
 								bool toComplete = false;
 								for (int i = 0; i < questList.api_list.count(); i++)
 								{
-                                    // complete or drop mission
-                                    if (questList.api_list[i].api_state == 3 ||
-                                            (questList.api_list[i].api_state == 2 && missionSetting.dropMissionList.contains(questList.api_list[i].api_no)))
+									// complete or drop mission
+									if (questList.api_list[i].api_state == 3 ||
+										(questList.api_list[i].api_state == 2 && missionSetting.dropMissionList.contains(questList.api_list[i].api_no)))
 									{
 										_targetIndex = i;
 										_waiting = false;
@@ -4174,7 +4276,7 @@ bool MissionAction::action()
 								for (int i = 0; i < questList.api_list.count(); i++)
 								{
 									const auto& quest = questList.api_list[i];
-                                    if (missionSetting.todoMissionList.contains(quest.api_no) && !missionSetting.dropMissionList.contains(quest.api_no))
+									if (missionSetting.todoMissionList.contains(quest.api_no) && !missionSetting.dropMissionList.contains(quest.api_no))
 									{
 										if (quest.api_state == 1)
 										{

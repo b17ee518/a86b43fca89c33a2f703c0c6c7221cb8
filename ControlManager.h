@@ -173,12 +173,11 @@ public:
 
 		int tillDropShip = -1;
 
+
 		QList<float> areaCheckList;
 		QList<float> mapClickPoint;	// click E1~E3 or Ex button
-		QList<float> mapExCheckList;	// for Ex only
-		QList<float> mapExClickPoint;	// click after Ex
-		QList<float> mapEx2CheckList;	// for Ex only
-		QList<float> mapEx2ClickPoint;	// click after Ex
+
+		QMap<int, SortieAction::MapExClick> mapExClickList;
 		QList<int> additionalToSSTeam;
 	};
 
@@ -197,7 +196,7 @@ public:
 	{
 		QList<int> todoMissionList;
 		QList<int> todoGreedyMissionList;
-        QList<int> dropMissionList;
+		QList<int> dropMissionList;
 
 		QList<int> acceptedMissionList;
 	};

@@ -80,11 +80,11 @@ bool ControlManager::BuildNext_Kira()
 	while (isShipKiraDone(togoShipId)
 		|| isShipInOtherTeam(togoShipId, 0)
 		|| isShipInDock(togoShipId)
-           /*
-		|| hasSlotitem(togoShipId, SlotitemType::Sonar)
-		|| hasSlotitem(togoShipId, SlotitemType::BaKuRai)
-		|| hasSlotitem(togoShipId, SlotitemType::Sonar_L)
-               */
+		/*
+	 || hasSlotitem(togoShipId, SlotitemType::Sonar)
+	 || hasSlotitem(togoShipId, SlotitemType::BaKuRai)
+	 || hasSlotitem(togoShipId, SlotitemType::Sonar_L)
+			*/
 		|| hasSlotitem(togoShipId, SlotitemType::YuSou, 3)
 		|| noSlotitem(togoShipId)
 		|| noAttackItem(togoShipId)
@@ -243,7 +243,7 @@ bool ControlManager::BuildNext_Fuel()
 	int teamSize = getTeamSize(0);
 	if (_target == ActionTarget::SouthEast)
 	{
-        KanSaveData* pksd = &KanSaveData::getInstance();
+		KanSaveData* pksd = &KanSaveData::getInstance();
 		if (pksd->totalSouthEastWin >= 5)
 		{
 			setToTerminate("Terminated:DoneFuelMission", false, RemoteNotifyHandler::Level::Low);
@@ -930,7 +930,7 @@ bool ControlManager::BuildNext_Morning(bool isFromRepeating)
 	_missionSetting.todoMissionList.append((int)MissionDefines::WeeklyRo);
 
 	_missionSetting.todoGreedyMissionList.clear();
-    _missionSetting.dropMissionList.clear();
+	_missionSetting.dropMissionList.clear();
 
 	switch (_morningSetting.morningStage)
 	{
@@ -1028,7 +1028,7 @@ bool ControlManager::BuildNext_Morning(bool isFromRepeating)
 			setting.onlySSTeamSize = 3;
 
 			setting.count = 2;
-            if (_missionSetting.acceptedMissionList.contains((int)MissionDefines::YuSou5))
+			if (_missionSetting.acceptedMissionList.contains((int)MissionDefines::YuSou5))
 			{
 				setting.count = 3;
 			}
@@ -1056,9 +1056,9 @@ bool ControlManager::BuildNext_Morning(bool isFromRepeating)
 
 		_target = ActionTarget::Mission;
 
-        _missionSetting.dropMissionList.append((int)MissionDefines::YuSou5);
-        _missionSetting.dropMissionList.append((int)MissionDefines::WeeklyYuSou);
-        _missionSetting.dropMissionList.append((int)MissionDefines::WeeklyRo);
+		_missionSetting.dropMissionList.append((int)MissionDefines::YuSou5);
+		_missionSetting.dropMissionList.append((int)MissionDefines::WeeklyYuSou);
+		_missionSetting.dropMissionList.append((int)MissionDefines::WeeklyRo);
 		_missionSetting.todoGreedyMissionList.append((int)MissionDefines::Defeat10);
 		_missionSetting.todoGreedyMissionList.append((int)MissionDefines::KuBou3);
 		_missionSetting.todoGreedyMissionList.append((int)MissionDefines::WeeklyI);
@@ -1185,6 +1185,12 @@ void ControlManager::LoadAnyTemplateSettings()
 			}
 
 			int cell = key.toInt(&bOk);
+
+			QRegExp rxCheck("MapEx[0-9]?Check");
+			rxCheck.setCaseSensitivity(Qt::CaseInsensitive);
+			QRegExp rxClick("MapEx[0-9]?Click");
+			rxClick.setCaseSensitivity(Qt::CaseInsensitive);
+
 			if (!bOk)
 			{
 				auto splited = setting->value(key).toStringList();
@@ -1212,54 +1218,42 @@ void ControlManager::LoadAnyTemplateSettings()
 						_anyTemplateSettings[pair].mapClickPoint.append(str.toInt(&bOk));
 					}
 				}
-
-				else if (!key.compare("MapExCheck", Qt::CaseInsensitive))
+				else if (key.contains(rxCheck))
 				{
 					if (splited.size() != 10)
 					{
 						// error
 						continue;
 					}
+					int index = 0;
+					QRegExp rx("(\\d+)");
+					if (rx.indexIn(key) != -1)
+					{
+						index = rx.cap(1).toInt() - 1;
+					}
+					auto& l = _anyTemplateSettings[pair].mapExClickList[index];
 					for (const auto& str : splited)
 					{
-						_anyTemplateSettings[pair].mapExCheckList.append(str.toInt(&bOk));
+						l.checkList.append(str.toInt(&bOk));
 					}
 				}
-				else if (!key.compare("MapExClick", Qt::CaseInsensitive))
+				else if (key.contains(rxClick))
 				{
 					if (splited.size() != 4)
 					{
 						// error
 						continue;
 					}
+					int index = 0;
+					QRegExp rx("(\\d+)");
+					if (rx.indexIn(key) != -1)
+					{
+						index = rx.cap(1).toInt() - 1;
+					}
+					auto& l = _anyTemplateSettings[pair].mapExClickList[index];
 					for (const auto& str : splited)
 					{
-						_anyTemplateSettings[pair].mapExClickPoint.append(str.toInt(&bOk));
-					}
-				}
-
-				else if (!key.compare("MapEx2Check", Qt::CaseInsensitive))
-				{
-					if (splited.size() != 10)
-					{
-						// error
-						continue;
-					}
-					for (const auto& str : splited)
-					{
-						_anyTemplateSettings[pair].mapEx2CheckList.append(str.toInt(&bOk));
-					}
-				}
-				else if (!key.compare("MapEx2Click", Qt::CaseInsensitive))
-				{
-					if (splited.size() != 4)
-					{
-						// error
-						continue;
-					}
-					for (const auto& str : splited)
-					{
-						_anyTemplateSettings[pair].mapEx2ClickPoint.append(str.toInt(&bOk));
+						l.clickPoint.append(str.toInt(&bOk));
 					}
 				}
 				else if (!key.compare("LD1", Qt::CaseInsensitive))
@@ -1304,7 +1298,7 @@ void ControlManager::LoadAnyTemplateSettings()
 				{
 					_anyTemplateSettings[pair].waitForFullCond = splited[0].toInt(&bOk);
 				}
-                else if (!key.compare("FullRepair", Qt::CaseInsensitive))
+				else if (!key.compare("FullRepair", Qt::CaseInsensitive))
 				{
 					_anyTemplateSettings[pair].waitForFullRepair = splited[0].toInt(&bOk);
 				}
@@ -1612,8 +1606,7 @@ bool ControlManager::BuildNext_Any(bool advanceOnly, bool stopAfterCharge)
 			SortieAction* sortieAction = new SortieAction();
 			sortieAction->setAreaAndMap(_anySetting.area, _anySetting.map
 				, _anySetting.areaCheckList, _anySetting.mapClickPoint
-				, _anySetting.mapExCheckList, _anySetting.mapExClickPoint
-				, _anySetting.mapEx2CheckList, _anySetting.mapEx2ClickPoint);
+				, _anySetting.mapExClickList);
 			sortieAction->setTeam(_anySetting.team);
 			sortieAction->setShouldPauseNext(_anySetting.pauseAtStartMap);
 			_actionList.append(sortieAction);

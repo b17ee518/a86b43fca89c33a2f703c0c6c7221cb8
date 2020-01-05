@@ -226,6 +226,7 @@ KanDataConnector::KanDataConnector(void)
 	req_air_corps_set_action_flag = PARSEFLAG_NORMAL;
 	req_sortie_goback_port_flag = PARSEFLAG_NORMAL;
 	req_member_set_flagship_position_flag = PARSEFLAG_NORMAL;
+    req_map_anchorage_repair_flag = PARSEFLAG_NORMAL;
 
 
 	/************************************************************************/
@@ -409,6 +410,7 @@ bool KanDataConnector::Parse(const QString& pathAndQuery, const QString& request
 		PARSEAPI("/kcsapi/api_req_air_corps/set_action", req_air_corps_set_action)
 		PARSEAPI("/kcsapi/api_req_sortie/goback_port", req_sortie_goback_port)
 		PARSEAPI("/kcsapi/api_req_member/set_flagship_position", req_member_set_flagship_position)
+        PARSEAPI("/kcsapi/api_req_map/anchorage_repair", req_map_anchorage_repair)
 
 		if (!bRet)
 		{

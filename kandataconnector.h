@@ -225,6 +225,7 @@ private:
 	bool req_air_corps_set_action_parse();
 	bool req_sortie_goback_port_parse();
 	bool req_member_set_flagship_position_parse();
+    bool req_map_anchorage_repair_parse();
 
 
 private:
@@ -344,6 +345,7 @@ private:
 	int req_air_corps_set_action_flag;
 	int req_sortie_goback_port_flag;
 	int req_member_set_flagship_position_flag;
+    int req_map_anchorage_repair_flag;
 
 private:
 	QColor _colWhite;

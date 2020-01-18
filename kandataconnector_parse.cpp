@@ -787,10 +787,11 @@ bool KanDataConnector::req_hokyu_charge_parse()
 bool KanDataConnector::req_kaisou_powerup_parse()
 {
     QStringList shipsids = _req.GetItemAsString("api_id_items").split("%2C");
+    bool withEquip = _req.GetItemAsString("api_slot_dest_flag").toInt() > 0;
     foreach(const QString &v, shipsids)
     {
         int shipno = v.toInt();
-        RemoveShip(shipno);
+        RemoveShip(shipno, withEquip);
     }
 
     kcsapi_powerup api_powerup;

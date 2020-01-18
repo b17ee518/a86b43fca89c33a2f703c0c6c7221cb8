@@ -193,18 +193,21 @@ bool KanDataConnector::isAutoRepairing(int flagshipno/*=-1*/)
 	return false;
 }
 
-bool KanDataConnector::RemoveShip(int shipno)
+bool KanDataConnector::RemoveShip(int shipno, bool withEquip/*=true*/)
 {
 	for (QList<kcsapi_ship2>::iterator it = pksd->portdata.api_ship.begin();
 		it != pksd->portdata.api_ship.end(); ++it)
 	{
 		if (it->api_id == shipno)
 		{
-			foreach(auto itemid, it->api_slot)
-			{
-				RemoveSlotItem(itemid);
-			}
-			RemoveSlotItem(it->api_slot_ex);
+            if (withEquip)
+            {
+                foreach(auto itemid, it->api_slot)
+                {
+                    RemoveSlotItem(itemid);
+                }
+                RemoveSlotItem(it->api_slot_ex);
+            }
 			pksd->portdata.api_ship.erase(it);
 			return true;
 		}

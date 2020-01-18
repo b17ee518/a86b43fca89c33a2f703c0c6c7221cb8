@@ -98,7 +98,7 @@ private:
 
 	void checkWoundQuit();
 
-	bool RemoveShip(int shipno);
+    bool RemoveShip(int shipno, bool withEquip=true);
 	bool RemoveSlotItem(int id);
 	bool AddShip(const kcsapi_ship2& ship);
 	bool AddSlotItem(const kcsapi_slotitem& item);

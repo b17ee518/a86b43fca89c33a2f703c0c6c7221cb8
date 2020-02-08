@@ -228,7 +228,7 @@ QMap < ActionCheckAndClickDefine::CheckColorNameDefine, QList<int>> ActionCheckA
 		CheckColorNameDefine::NyukyoSortDone,
 		QList<int>{
 			509, 162, 165, 158, 150,
-				1183, 162, 223, 233, 222
+                1185, 162, 188, 211, 208
 		}
 	},
 	{

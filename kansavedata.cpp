@@ -181,7 +181,7 @@ void KanSaveData::adjustAnyAndSouthEast(int addval)
 
 void KanSaveData::clearQuestByType(int type, int beginIndex, int endIndex, int page)
 {
-	if (!questdata.size())
+	if (!activeQuestData.size())
 	{
 		return;
 	}
@@ -195,14 +195,14 @@ void KanSaveData::clearQuestByType(int type, int beginIndex, int endIndex, int p
 		// remove all out of page
 		QList<kcsapi_quest>::iterator it;
 		int count = 0;
-		for (it = questdata.begin(); it != questdata.end();)
+		for (it = activeQuestData.begin(); it != activeQuestData.end();)
 		{
 			if (it->api_type == type || type == 0 || type == 9)
 			{
 				count++;
 				if (count > page*questPerPage)
 				{
-					it = questdata.erase(it);
+					it = activeQuestData.erase(it);
 				}
 				else
 				{
@@ -219,12 +219,12 @@ void KanSaveData::clearQuestByType(int type, int beginIndex, int endIndex, int p
 	}
 
 	QList<kcsapi_quest>::iterator it;
-	for (it = questdata.begin(); it != questdata.end();)
+	for (it = activeQuestData.begin(); it != activeQuestData.end();)
 	{
 		if ((it->api_type == type || type == 0 || type == 9)
 			&& it->api_no >= beginIndex && it->api_no <= endIndex)
 		{
-			it = questdata.erase(it);
+			it = activeQuestData.erase(it);
 		}
 		else
 		{

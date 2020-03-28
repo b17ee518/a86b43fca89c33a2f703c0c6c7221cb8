@@ -118,14 +118,13 @@ bool KanDataConnector::get_member_require_info_parse()
     return true;
 }
 
-
 bool KanDataConnector::get_member_ship_parse()
 {
     kcsapi_ship api_ship;
     api_ship.ReadFromJObj(_jobj);
     if (api_ship.api_id > 0)
     {
-        kcsapi_ship2 * pship = findShipFromShipno(api_ship.api_id);
+        kcsapi_ship2 *pship = findShipFromShipno(api_ship.api_id);
         if (pship)
         {
             pship->ReadFromShip(api_ship);
@@ -163,7 +162,7 @@ bool KanDataConnector::get_member_ship3_parse()
     api_ship3.ReadFromJObj(_jobj);
 
     //        pksd->portdata.api_ship = api_ship3.api_ship_data;
-    foreach(const kcsapi_ship2 &v, api_ship3.api_ship_data)
+    foreach (const kcsapi_ship2 &v, api_ship3.api_ship_data)
     {
         QList<kcsapi_ship2>::iterator it;
         for (it = pksd->portdata.api_ship.begin(); it != pksd->portdata.api_ship.end(); ++it)
@@ -174,7 +173,6 @@ bool KanDataConnector::get_member_ship3_parse()
             }
         }
     }
-
 
     pksd->portdata.api_deck_port = api_ship3.api_deck_data;
     updateOverviewTable();
@@ -194,7 +192,7 @@ bool KanDataConnector::get_member_ship_deck_parse()
     api_ship_deck.ReadFromJObj(_jobj);
 
     //        pksd->portdata.api_ship = api_ship_deck.api_ship_data;
-    foreach(const kcsapi_ship2 &v, api_ship_deck.api_ship_data)
+    foreach (const kcsapi_ship2 &v, api_ship_deck.api_ship_data)
     {
         QList<kcsapi_ship2>::iterator it;
         for (it = pksd->portdata.api_ship.begin(); it != pksd->portdata.api_ship.end(); ++it)
@@ -206,7 +204,7 @@ bool KanDataConnector::get_member_ship_deck_parse()
         }
     }
 
-    foreach(const kcsapi_deck &v, api_ship_deck.api_deck_data)
+    foreach (const kcsapi_deck &v, api_ship_deck.api_deck_data)
     {
         QList<kcsapi_deck>::iterator it;
         for (it = pksd->portdata.api_deck_port.begin(); it != pksd->portdata.api_deck_port.end(); ++it)
@@ -340,7 +338,7 @@ bool KanDataConnector::req_hensei_change_parse()
     int index = _req.GetItemAsString("api_ship_idx").toInt();
     int shipid = _req.GetItemAsString("api_ship_id").toInt();
 
-    QList<int> * lstship = &(pksd->portdata.api_deck_port[team - 1].api_ship);
+    QList<int> *lstship = &(pksd->portdata.api_deck_port[team - 1].api_ship);
 
     while (lstship->count() < KanSaveData::maxSingleTeamSize)
     {
@@ -372,7 +370,7 @@ bool KanDataConnector::req_hensei_change_parse()
         int teamcount = pksd->portdata.api_deck_port.count();
         for (int i = 0; i < teamcount; i++)
         {
-            QList<int> * lstteamship = &(pksd->portdata.api_deck_port[i].api_ship);
+            QList<int> *lstteamship = &(pksd->portdata.api_deck_port[i].api_ship);
             while (lstteamship->count() < KanSaveData::maxSingleTeamSize)
             {
                 lstteamship->append(-1);
@@ -470,7 +468,7 @@ bool KanDataConnector::req_hensei_lock_parse()
     int shipid = _req.GetItemAsString("api_ship_id").toInt();
     kcsapi_hensei_lock api_hensei_lock;
     api_hensei_lock.ReadFromJObj(_jobj);
-    kcsapi_ship2 * pship = findShipFromShipno(shipid);
+    kcsapi_ship2 *pship = findShipFromShipno(shipid);
     if (pship)
     {
         pship->api_locked = api_hensei_lock.api_locked;
@@ -492,7 +490,7 @@ bool KanDataConnector::req_hensei_preset_select_parse()
 
     if (api_hensei_preset_select.api_ship.size())
     {
-        QList<int> * lstship = &(pksd->portdata.api_deck_port[team - 1].api_ship);
+        QList<int> *lstship = &(pksd->portdata.api_deck_port[team - 1].api_ship);
         lstship->clear();
         for (auto shipid : api_hensei_preset_select.api_ship)
         {
@@ -524,7 +522,6 @@ bool KanDataConnector::req_hensei_preset_delete_parse()
 {
     return true;
 }
-
 
 bool KanDataConnector::get_member_preset_deck_parse()
 {
@@ -570,7 +567,7 @@ bool KanDataConnector::req_kousyou_getship_parse()
 
     kcsapi_kdock_getship api_kdock_getship;
     api_kdock_getship.ReadFromJObj(_jobj);
-    foreach(const kcsapi_slotitem &v, api_kdock_getship.api_slotitem)
+    foreach (const kcsapi_slotitem &v, api_kdock_getship.api_slotitem)
     {
         if (v.api_slotitem_id >= 0)
         {
@@ -664,7 +661,7 @@ bool KanDataConnector::req_kousyou_destroyship_parse()
     QString idsstr = _req.GetItemAsString("api_ship_id");
     QStringList idslst = idsstr.split("%2C");
 
-    foreach(auto& v, idslst)
+    foreach (auto &v, idslst)
     {
         int itemid = v.toInt();
         RemoveShip(itemid);
@@ -692,13 +689,12 @@ bool KanDataConnector::req_kousyou_destroyitem2_parse()
     QString idsstr = _req.GetItemAsString("api_slotitem_ids");
     QStringList idslst = idsstr.split("%2C");
 
-    foreach(auto& v, idslst)
+    foreach (auto &v, idslst)
     {
         int itemid = v.toInt();
         RemoveSlotItem(itemid);
     }
     //	pksd->slotitemcountoffset -= idslst.count();
-
 
     kcsapi_destroyitem2 api_destroyitem2;
     api_destroyitem2.ReadFromJObj(_jobj);
@@ -718,7 +714,7 @@ bool KanDataConnector::req_nyukyo_start_parse()
     int shipno = _req.GetItemAsString("api_ship_id").toInt();
     if (highspeed && shipno > 0)
     {
-        kcsapi_ship2 * pship = findShipFromShipno(shipno);
+        kcsapi_ship2 *pship = findShipFromShipno(shipno);
         if (pship)
         {
             pship->api_nowhp = pship->api_maxhp;
@@ -741,7 +737,7 @@ bool KanDataConnector::req_nyukyo_speedchange_parse()
         if (shipno > 0)
         {
             pksd->portdata.api_ndock[dockid].api_ship_id = 0;
-            kcsapi_ship2 * pship = findShipFromShipno(shipno);
+            kcsapi_ship2 *pship = findShipFromShipno(shipno);
             if (pship)
             {
                 pship->api_nowhp = pship->api_maxhp;
@@ -761,7 +757,7 @@ bool KanDataConnector::req_hokyu_charge_parse()
     kcsapi_charge api_charge;
     api_charge.ReadFromJObj(_jobj);
 
-    foreach(const kcsapi_charge_ship &v, api_charge.api_ship)
+    foreach (const kcsapi_charge_ship &v, api_charge.api_ship)
     {
         QList<kcsapi_ship2>::iterator it;
         for (it = pksd->portdata.api_ship.begin(); it != pksd->portdata.api_ship.end(); ++it)
@@ -788,7 +784,7 @@ bool KanDataConnector::req_kaisou_powerup_parse()
 {
     QStringList shipsids = _req.GetItemAsString("api_id_items").split("%2C");
     bool withEquip = _req.GetItemAsString("api_slot_dest_flag").toInt() > 0;
-    foreach(const QString &v, shipsids)
+    foreach (const QString &v, shipsids)
     {
         int shipno = v.toInt();
         RemoveShip(shipno, withEquip);
@@ -914,7 +910,7 @@ bool KanDataConnector::get_member_mapinfo_parse()
                 latestMapMaxHp = mapInfo.api_eventmap.api_max_maphp;
             }
         }
-        auto& cm = ControlManager::getInstance();
+        auto &cm = ControlManager::getInstance();
         int area = cm.getAnySetting().area;
         int map = cm.getAnySetting().map;
         int areamap = area * 10 + (map % 10);
@@ -938,11 +934,10 @@ bool KanDataConnector::get_member_mapinfo_parse()
         {
             MainWindow::mainWindow()->timerWindow()->setMapHp("");
         }
-
     }
     // airbase
     {
-        QMap<int, QList<kcsapi_air_base_corps> > tcorpsMap;
+        QMap<int, QList<kcsapi_air_base_corps>> tcorpsMap;
         auto jarray = _jdoc.object()["api_data"].toObject()["api_air_base"].toArray();
         for (int i = 0; i < jarray.count(); i++)
         {
@@ -1002,10 +997,10 @@ bool KanDataConnector::req_sortie_battleresult_parse()
     if (shipid > 0)
     {
         pksd->shipcountoffset++;
-        const kcsapi_mst_ship * pmstship = findMstShipFromShipid(shipid);
+        const kcsapi_mst_ship *pmstship = findMstShipFromShipid(shipid);
         if (pmstship)
         {
-            foreach(int slotitemid, pmstship->api_defeq)
+            foreach (int slotitemid, pmstship->api_defeq)
             {
                 if (slotitemid > 0)
                 {
@@ -1072,7 +1067,6 @@ bool KanDataConnector::req_sortie_ld_airbattle_parse()
     updateBattle(pksd->battledata, KanBattleType::Air);
     // TODO check air???
     return true;
-
 }
 
 bool KanDataConnector::req_sortie_ld_shooting_parse()
@@ -1082,7 +1076,6 @@ bool KanDataConnector::req_sortie_ld_shooting_parse()
     // untested
     updateBattle(pksd->battledata, KanBattleType::LDShooting);
     return true;
-
 }
 
 bool KanDataConnector::req_combined_battle_airbattle_parse()
@@ -1125,10 +1118,10 @@ bool KanDataConnector::req_combined_battle_battleresult_parse()
     if (shipid > 0)
     {
         pksd->shipcountoffset++;
-        const kcsapi_mst_ship * pmstship = findMstShipFromShipid(shipid);
+        const kcsapi_mst_ship *pmstship = findMstShipFromShipid(shipid);
         if (pmstship)
         {
-            foreach(int slotitemid, pmstship->api_defeq)
+            foreach (int slotitemid, pmstship->api_defeq)
             {
                 if (slotitemid > 0)
                 {
@@ -1168,7 +1161,6 @@ bool KanDataConnector::req_combined_battle_sp_midnight_parse()
 
     updateBattle(pksd->battledata, KanBattleType::Combined_Night);
     return true;
-
 }
 
 bool KanDataConnector::req_combined_battle_goback_port_parse()
@@ -1264,6 +1256,7 @@ bool KanDataConnector::get_member_questlist_parse()
 
     KanSaveData::getInstance().recordLastQuestList(api_questlist);
 
+    /*
     QList<kcsapi_quest>::iterator it = api_questlist.api_list.begin();
     for (; it != api_questlist.api_list.end();)
     {
@@ -1287,7 +1280,7 @@ bool KanDataConnector::get_member_questlist_parse()
         }
         else
         {
-        */
+        * /
         // first page nothing: clear type
         if (api_questlist.api_disp_page == 1)
         {
@@ -1325,19 +1318,24 @@ bool KanDataConnector::get_member_questlist_parse()
         }
 
         // first clear all
-        pksd->clearQuestByType(api_tab_id, beginIndex, endIndex);
+        pksd->clearQuestByType(api_tab_id, beginIndex, endIndex);        
         // then add back
-        for (int i = 0; i < api_questlist.api_list.size(); i++)
-        {
-            if (api_questlist.api_list[i].api_state > 1)
-            {
-                pksd->questdata.append(api_questlist.api_list[i]);
-            }
-        }
-        std::sort(pksd->questdata.begin(), pksd->questdata.end(), questDataSort);
-    }
 
-    if (pksd->questdata.size() > api_questlist.api_exec_count)
+        */
+    pksd->fullQuestData.clear();
+    pksd->activeQuestData.clear();
+
+    for (int i = 0; i < api_questlist.api_list.size(); i++)
+    {
+        pksd->fullQuestData.append(api_questlist.api_list[i]);
+        if (api_questlist.api_list[i].api_state > 1)
+        {
+            pksd->activeQuestData.append(api_questlist.api_list[i]);
+        }
+    }
+    //std::sort(pksd->questdata.begin(), pksd->questdata.end(), questDataSort);
+
+    if (pksd->activeQuestData.size() > api_questlist.api_exec_count)
     {
         DAPILOG();
     }
@@ -1401,11 +1399,11 @@ bool KanDataConnector::req_quest_stop_parse()
 {
     int questid = _req.GetItemAsString("api_quest_id").toInt();
 
-    for (QList<kcsapi_quest>::iterator it = pksd->questdata.begin(); it != pksd->questdata.end(); ++it)
+    for (QList<kcsapi_quest>::iterator it = pksd->activeQuestData.begin(); it != pksd->activeQuestData.end(); ++it)
     {
         if (it->api_no == questid)
         {
-            pksd->questdata.erase(it);
+            pksd->activeQuestData.erase(it);
             break;
         }
     }
@@ -1470,11 +1468,11 @@ bool KanDataConnector::req_quest_clearitemget_parse()
 
     int questid = _req.GetItemAsString("api_quest_id").toInt();
 
-    for (QList<kcsapi_quest>::iterator it = pksd->questdata.begin(); it != pksd->questdata.end(); ++it)
+    for (QList<kcsapi_quest>::iterator it = pksd->activeQuestData.begin(); it != pksd->activeQuestData.end(); ++it)
     {
         if (it->api_no == questid)
         {
-            pksd->questdata.erase(it);
+            pksd->activeQuestData.erase(it);
             break;
         }
     }
@@ -1673,7 +1671,7 @@ bool KanDataConnector::req_kaisou_slotset_ex_parse()
 {
     int slotitemid = _req.GetItemAsString("api_item_id").toInt();
     int shipno = _req.GetItemAsString("api_id").toInt();
-    kcsapi_ship2* pship = findShipFromShipno(shipno);
+    kcsapi_ship2 *pship = findShipFromShipno(shipno);
     if (pship)
     {
         pship->api_slot_ex = slotitemid;
@@ -1685,7 +1683,7 @@ bool KanDataConnector::req_kaisou_slotset_ex_parse()
 
 bool KanDataConnector::get_member_base_air_corps_parse()
 {
-    QMap<int, QList<kcsapi_air_base_corps> > tcorpsMap;
+    QMap<int, QList<kcsapi_air_base_corps>> tcorpsMap;
 
     auto jarray = _jdoc.object()["api_data"].toArray();
     for (int i = 0; i < jarray.count(); i++)
@@ -1729,7 +1727,7 @@ bool KanDataConnector::req_air_corps_set_plane_parse()
 
     kcsapi_air_base_corps tcorps;
     tcorps.ReadFromJObj(_jobj);
-    for (const auto& item : tcorps.api_plane_info)
+    for (const auto &item : tcorps.api_plane_info)
     {
         pksd->airbasedata[areaid][baseid - 1].api_plane_info[item.api_squadron_id - 1] = item;
     }
@@ -1766,14 +1764,14 @@ bool KanDataConnector::req_air_corps_supply_parse()
         pksd->airbasedata[areaid].append(kcsapi_air_base_corps());
     }
 
-    for (const auto& idStr : squadronIds)
+    for (const auto &idStr : squadronIds)
     {
         int squadronid = idStr.toInt();
         while (pksd->airbasedata[areaid][baseid - 1].api_plane_info.size() < squadronid)
         {
             pksd->airbasedata[areaid][baseid - 1].api_plane_info.append(kcsapi_air_base_corps_plane_info());
         }
-        for (const auto& plane : tcorp.api_plane_info)
+        for (const auto &plane : tcorp.api_plane_info)
         {
             if (plane.api_squadron_id == squadronid)
             {
@@ -1825,4 +1823,3 @@ bool KanDataConnector::req_map_anchorage_repair_parse()
     updateFleetTable();
     return true;
 }
-

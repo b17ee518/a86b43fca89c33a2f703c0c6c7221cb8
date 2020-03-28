@@ -7,7 +7,8 @@ class QProcess;
 class RemoteNotifyHandler
 {
 public:
-	static RemoteNotifyHandler& getInstance() {
+	static RemoteNotifyHandler &getInstance()
+	{
 		static RemoteNotifyHandler instance;
 		return instance;
 	}
@@ -15,12 +16,10 @@ public:
 private:
 	RemoteNotifyHandler();
 	virtual ~RemoteNotifyHandler();
-	RemoteNotifyHandler(RemoteNotifyHandler const&);
-	void operator=(RemoteNotifyHandler const&);
-
+	RemoteNotifyHandler(RemoteNotifyHandler const &);
+	void operator=(RemoteNotifyHandler const &);
 
 public:
-
 	enum class Level
 	{
 		Invalid = -1,
@@ -42,12 +41,11 @@ public:
 
 	void LoadSettings();
 
-    void RunKillMITMNetStat();
+	void RunKillMITMNetStat();
 
-    void ToggleReport(bool report);
+	void ToggleReport(bool report);
 
 private:
-
 	void RunInstanceNotify();
 
 	QString senderEmailAddress;
@@ -56,11 +54,10 @@ private:
 	QString anotherReceiverEmailAddress;
 
 #if defined Q_OS_MAC
-    QProcess* process = NULL;
+	QProcess *process = NULL;
 #endif
 
 	QString text;
 	Level level;
-    QTimer* reportTimer = NULL;
+	QTimer *reportTimer = NULL;
 };
-

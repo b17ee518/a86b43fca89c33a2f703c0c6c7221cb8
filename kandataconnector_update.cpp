@@ -120,16 +120,16 @@ void KanDataConnector::updateMissionTable()
 
 	QList<KQRowData> rows;
 
-	int questcount = pksd->questdata.count();
+	int questcount = pksd->activeQuestData.count();
 	for (int i = 0; i < questcount; i++)
 	{
 		KQRowData rd;
 		rd.appendCell(KQRowCellData(" - "));
-		rd.appendCell(KQRowCellData(pksd->questdata[i].api_title, pksd->questdata[i].api_detail, _colWhite));
+		rd.appendCell(KQRowCellData(pksd->activeQuestData[i].api_title, pksd->activeQuestData[i].api_detail, _colWhite));
 
 		QString progress;
 		bool bDone = false;
-		switch (pksd->questdata[i].api_state)
+		switch (pksd->activeQuestData[i].api_state)
 		{
 		case 1:
 			qDebug("Quest not taken.");
@@ -143,7 +143,7 @@ void KanDataConnector::updateMissionTable()
 		}
 		if (!bDone)
 		{
-			switch (pksd->questdata[i].api_progress_flag)
+			switch (pksd->activeQuestData[i].api_progress_flag)
 			{
 			case 0:
 				progress = "(0%)";

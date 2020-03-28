@@ -6,23 +6,23 @@
 #include "ExpeditionManager.h"
 #include "ActionCheckAndClickDefine.h"
 
-#define DELAY_TIME			(250*_intervalMul)
-#define DELAY_TIME_CLICK	(250*_intervalMul)
-#define DELAY_TIME_LONG	(500*_intervalMul)
-#define DELAY_TIME_PAGE	(300*_intervalMul)
-#define DELAY_TIME_SUPERLONG	(1200*_intervalMul)
-#define DELAY_TIME_SUPERSUPERLONG	(2000*_intervalMul)
-#define DELAY_TIME_SKIP_DESTROY	(4500*_intervalMul)
-#define DELAY_TIME_SKIP_REPAIR	(10000*_intervalMul)
-#define DELAY_TIME_SKIP	(7000*_intervalMul)
+#define DELAY_TIME (250 * _intervalMul)
+#define DELAY_TIME_CLICK (250 * _intervalMul)
+#define DELAY_TIME_LONG (500 * _intervalMul)
+#define DELAY_TIME_PAGE (300 * _intervalMul)
+#define DELAY_TIME_SUPERLONG (1200 * _intervalMul)
+#define DELAY_TIME_SUPERSUPERLONG (2000 * _intervalMul)
+#define DELAY_TIME_SKIP_DESTROY (4500 * _intervalMul)
+#define DELAY_TIME_SKIP_REPAIR (10000 * _intervalMul)
+#define DELAY_TIME_SKIP (7000 * _intervalMul)
 
-ControlAction::ControlAction(QObject* parent /*= NULL*/)
-	:QObject(parent)
+ControlAction::ControlAction(QObject *parent /*= NULL*/)
+	: QObject(parent)
 {
 	_intervalMul = ControlManager::getInstance().getIntervalMul();
 }
 
-void ControlAction::setDoneRequest(const QString& api)
+void ControlAction::setDoneRequest(const QString &api)
 {
 	if (api == _expectingRequest)
 	{
@@ -37,10 +37,9 @@ void ControlAction::tryRetry()
 		_retryTime++;
 		_waiting = false;
 		QString str = QString::fromLocal8Bit("Retrying %1:%2")
-			.arg(_retryTime)
-			.arg(ControlManager::getInstance().getStateStr());
+						  .arg(_retryTime)
+						  .arg(ControlManager::getInstance().getStateStr());
 		ControlManager::getInstance().setStateStr(str);
-
 	}
 	else
 	{
@@ -51,7 +50,7 @@ void ControlAction::tryRetry()
 
 bool WaitCondAction::action()
 {
-	auto& cm = ControlManager::getInstance();
+	auto &cm = ControlManager::getInstance();
 	switch (_state)
 	{
 	case WaitCondAction::State::None:
@@ -72,8 +71,7 @@ bool WaitCondAction::action()
 		{
 			_waiting = true;
 			cm.setInactiveWaiting(true);
-			QTimer::singleShot(_waitMS, Qt::PreciseTimer, this, [this, &cm]()
-			{
+			QTimer::singleShot(_waitMS, Qt::PreciseTimer, this, [this, &cm]() {
 				_waiting = false;
 				cm.setInactiveWaiting(false);
 				setState(State::HomePortChecking, "Wait:HomePortChecking");
@@ -84,8 +82,7 @@ bool WaitCondAction::action()
 		if (!_waiting)
 		{
 			_waiting = true;
-			QTimer::singleShot(DELAY_TIME, Qt::PreciseTimer, this, [this, &cm]()
-			{
+			QTimer::singleShot(DELAY_TIME, Qt::PreciseTimer, this, [this, &cm]() {
 				// home port
 				if (ActionCheckAndClickDefine::CheckColor(ActionCheckAndClickDefine::CheckColorNameDefine::HomePort))
 				{
@@ -103,8 +100,7 @@ bool WaitCondAction::action()
 		if (!_waiting)
 		{
 			_waiting = true;
-			QTimer::singleShot(DELAY_TIME_CLICK, Qt::PreciseTimer, this, [this, &cm]()
-			{
+			QTimer::singleShot(DELAY_TIME_CLICK, Qt::PreciseTimer, this, [this, &cm]() {
 				ActionCheckAndClickDefine::MoveAndClick(ActionCheckAndClickDefine::MoveMouseNameDefine::HenseiButton); // change button
 				setState(State::FakeHenseiChecking, "Wait:FakeHenseiChecking");
 				resetRetryAndWainting();
@@ -115,8 +111,7 @@ bool WaitCondAction::action()
 		if (!_waiting)
 		{
 			_waiting = true;
-			QTimer::singleShot(DELAY_TIME, Qt::PreciseTimer, this, [this, &cm]()
-			{
+			QTimer::singleShot(DELAY_TIME, Qt::PreciseTimer, this, [this, &cm]() {
 				// home port
 				if (ActionCheckAndClickDefine::CheckColor(ActionCheckAndClickDefine::CheckColorNameDefine::HenseiFirstView))
 				{
@@ -135,8 +130,7 @@ bool WaitCondAction::action()
 		{
 			_waiting = true;
 			_expectingRequest = "/kcsapi/api_port/port";
-			QTimer::singleShot(DELAY_TIME_CLICK, Qt::PreciseTimer, this, [this, &cm]()
-			{
+			QTimer::singleShot(DELAY_TIME_CLICK, Qt::PreciseTimer, this, [this, &cm]() {
 				ActionCheckAndClickDefine::MoveAndClick(ActionCheckAndClickDefine::MoveMouseNameDefine::PortButtonInPanel); // port button
 				setState(State::ExpectingPort, "Wait:ExpectingPort");
 				resetRetryAndWainting();
@@ -169,7 +163,7 @@ void WaitCondAction::setWaitMS(qint64 waitms, bool isExpedition)
 		auto timerWindow = MainWindow::mainWindow()->timerWindow();
 
 		QList<int> excludeTeams;
-		SingleExpedition* pExp;
+		SingleExpedition *pExp;
 		qint64 waitMSExpedition = 0;
 		for (int i = 0; i < 3; i++)
 		{
@@ -198,12 +192,12 @@ void WaitCondAction::setWaitMS(qint64 waitms, bool isExpedition)
 	_waitMSTo = waitms + ctUtc;
 }
 
-void WaitCondAction::setWaitName(const QString& name)
+void WaitCondAction::setWaitName(const QString &name)
 {
 	_waitName = name;
 }
 
-void WaitCondAction::setState(State state, const char* str)
+void WaitCondAction::setState(State state, const char *str)
 {
 	_state = state;
 	ControlManager::getInstance().setStateStr(str);
@@ -211,7 +205,7 @@ void WaitCondAction::setState(State state, const char* str)
 
 bool WaitNextPortAction::action()
 {
-	auto& cm = ControlManager::getInstance();
+	auto &cm = ControlManager::getInstance();
 	switch (_state)
 	{
 	case WaitNextPortAction::State::None:
@@ -232,8 +226,7 @@ bool WaitNextPortAction::action()
 		{
 			_waiting = true;
 			cm.setInactiveWaiting(true);
-			QTimer::singleShot(_maxWaitMS, Qt::PreciseTimer, this, [this, &cm]()
-			{
+			QTimer::singleShot(_maxWaitMS, Qt::PreciseTimer, this, [this, &cm]() {
 				_waiting = false;
 				cm.setInactiveWaiting(false);
 				setState(State::Done, "Wait:Done");
@@ -249,7 +242,6 @@ bool WaitNextPortAction::action()
 		break;
 	}
 	return false;
-
 }
 
 void WaitNextPortAction::setMaxWaitMS(qint64 waitms)
@@ -261,7 +253,7 @@ void WaitNextPortAction::setMaxWaitMS(qint64 waitms)
 	}
 }
 
-void WaitNextPortAction::setState(State state, const char* str)
+void WaitNextPortAction::setState(State state, const char *str)
 {
 	_state = state;
 	ControlManager::getInstance().setStateStr(str);
@@ -269,7 +261,7 @@ void WaitNextPortAction::setState(State state, const char* str)
 
 bool ChangeHenseiAction::action()
 {
-	auto& cm = ControlManager::getInstance();
+	auto &cm = ControlManager::getInstance();
 	switch (_state)
 	{
 	case ChangeHenseiAction::State::None:
@@ -311,8 +303,7 @@ bool ChangeHenseiAction::action()
 		if (!_waiting)
 		{
 			_waiting = true;
-			QTimer::singleShot(DELAY_TIME, Qt::PreciseTimer, this, [this, &cm]()
-			{
+			QTimer::singleShot(DELAY_TIME, Qt::PreciseTimer, this, [this, &cm]() {
 				// home port
 				if (ActionCheckAndClickDefine::CheckColor(ActionCheckAndClickDefine::CheckColorNameDefine::HomePort))
 				{
@@ -337,8 +328,7 @@ bool ChangeHenseiAction::action()
 			}
 			else
 			{
-				QTimer::singleShot(DELAY_TIME_CLICK, Qt::PreciseTimer, this, [this, &cm]()
-				{
+				QTimer::singleShot(DELAY_TIME_CLICK, Qt::PreciseTimer, this, [this, &cm]() {
 					ActionCheckAndClickDefine::MoveAndClick(ActionCheckAndClickDefine::MoveMouseNameDefine::HenseiButton); // change button
 					if (_team == 0)
 					{
@@ -357,8 +347,7 @@ bool ChangeHenseiAction::action()
 		if (!_waiting)
 		{
 			_waiting = true;
-			QTimer::singleShot(DELAY_TIME, Qt::PreciseTimer, this, [this, &cm]()
-			{
+			QTimer::singleShot(DELAY_TIME, Qt::PreciseTimer, this, [this, &cm]() {
 				if (ActionCheckAndClickDefine::CheckColor(ActionCheckAndClickDefine::CheckColorNameDefine::HenseiFirstView))
 				{
 					_waiting = false;
@@ -375,8 +364,7 @@ bool ChangeHenseiAction::action()
 		if (!_waiting)
 		{
 			_waiting = true;
-			QTimer::singleShot(DELAY_TIME_CLICK, Qt::PreciseTimer, this, [this, &cm]()
-			{
+			QTimer::singleShot(DELAY_TIME_CLICK, Qt::PreciseTimer, this, [this, &cm]() {
 				ActionCheckAndClickDefine::MoveAndClick(ActionCheckAndClickDefine::MoveMouseNameDefine::HenseiFleetTeam, _team);
 
 				setState(State::HenseiChecking, "Hensei:HenseiChecking");
@@ -388,8 +376,7 @@ bool ChangeHenseiAction::action()
 		if (!_waiting)
 		{
 			_waiting = true;
-			QTimer::singleShot(DELAY_TIME, Qt::PreciseTimer, this, [this, &cm]()
-			{
+			QTimer::singleShot(DELAY_TIME, Qt::PreciseTimer, this, [this, &cm]() {
 				if (ActionCheckAndClickDefine::CheckColor(ActionCheckAndClickDefine::CheckColorNameDefine::HenseiFirstView))
 				{
 					_waiting = false;
@@ -406,8 +393,7 @@ bool ChangeHenseiAction::action()
 		if (!_waiting)
 		{
 			_waiting = true;
-			QTimer::singleShot(DELAY_TIME_CLICK, Qt::PreciseTimer, this, [this, &cm]()
-			{
+			QTimer::singleShot(DELAY_TIME_CLICK, Qt::PreciseTimer, this, [this, &cm]() {
 				// need remove all
 				if (cm.getTeamSize(_team) > _ships.size())
 				{
@@ -441,8 +427,7 @@ bool ChangeHenseiAction::action()
 		if (!_waiting)
 		{
 			_waiting = true;
-			QTimer::singleShot(DELAY_TIME, Qt::PreciseTimer, this, [this, &cm]()
-			{
+			QTimer::singleShot(DELAY_TIME, Qt::PreciseTimer, this, [this, &cm]() {
 				if (ActionCheckAndClickDefine::CheckColor(ActionCheckAndClickDefine::CheckColorNameDefine::HenseiFirstView))
 				{
 					_waiting = false;
@@ -459,13 +444,11 @@ bool ChangeHenseiAction::action()
 		if (!_waiting)
 		{
 			_waiting = true;
-			QTimer::singleShot(DELAY_TIME_CLICK, Qt::PreciseTimer, this, [this, &cm]()
-			{
+			QTimer::singleShot(DELAY_TIME_CLICK, Qt::PreciseTimer, this, [this, &cm]() {
 				ActionCheckAndClickDefine::MoveAndClick(ActionCheckAndClickDefine::MoveMouseNameDefine::HenseiRemoveAllButton); // remove all button
 
 				// jump to done directly
-				QTimer::singleShot(DELAY_TIME_SUPERLONG, Qt::PreciseTimer, this, [this, &cm]()
-				{
+				QTimer::singleShot(DELAY_TIME_SUPERLONG, Qt::PreciseTimer, this, [this, &cm]() {
 					setState(State::HenseiDone, "Hensei:HenseiDone");
 					resetRetryAndWainting();
 				});
@@ -476,8 +459,7 @@ bool ChangeHenseiAction::action()
 		if (!_waiting)
 		{
 			_waiting = true;
-			QTimer::singleShot(DELAY_TIME, Qt::PreciseTimer, this, [this, &cm]()
-			{
+			QTimer::singleShot(DELAY_TIME, Qt::PreciseTimer, this, [this, &cm]() {
 				bool sortOK = ActionCheckAndClickDefine::CheckColor(ActionCheckAndClickDefine::CheckColorNameDefine::HenseiChangeMemberSelectionSortOK);
 				bool filterOK = ActionCheckAndClickDefine::CheckColor(ActionCheckAndClickDefine::CheckColorNameDefine::HenseiChangeMemberSelectionFilterOK);
 
@@ -507,8 +489,7 @@ bool ChangeHenseiAction::action()
 		if (!_waiting)
 		{
 			_waiting = true;
-			QTimer::singleShot(DELAY_TIME_CLICK, Qt::PreciseTimer, this, [this, &cm]()
-			{
+			QTimer::singleShot(DELAY_TIME_CLICK, Qt::PreciseTimer, this, [this, &cm]() {
 				ActionCheckAndClickDefine::MoveAndClick(ActionCheckAndClickDefine::MoveMouseNameDefine::HenseiSortButton); // sort button
 				setState(State::FindShipChecking, "Hensei:FindShipChecking");
 				resetRetryAndWainting();
@@ -519,8 +500,7 @@ bool ChangeHenseiAction::action()
 		if (!_waiting)
 		{
 			_waiting = true;
-			QTimer::singleShot(DELAY_TIME_CLICK, Qt::PreciseTimer, this, [this, &cm]()
-			{
+			QTimer::singleShot(DELAY_TIME_CLICK, Qt::PreciseTimer, this, [this, &cm]() {
 				ActionCheckAndClickDefine::MoveAndClick(ActionCheckAndClickDefine::MoveMouseNameDefine::HenseiFilterButton); // filter button
 				setState(State::FindShipChecking, "Hensei:FindShipChecking");
 				resetRetryAndWainting();
@@ -531,8 +511,7 @@ bool ChangeHenseiAction::action()
 		if (!_waiting)
 		{
 			_waiting = true;
-			QTimer::singleShot(DELAY_TIME_CLICK, Qt::PreciseTimer, this, [this, &cm]()
-			{
+			QTimer::singleShot(DELAY_TIME_CLICK, Qt::PreciseTimer, this, [this, &cm]() {
 				ActionCheckAndClickDefine::MoveAndClick(ActionCheckAndClickDefine::MoveMouseNameDefine::HenseiLeftMostButton); // left most button
 				setState(State::FindShipFirstPageChecking, "Hensei:FindShipFirstPageChecking");
 				resetRetryAndWainting();
@@ -543,12 +522,9 @@ bool ChangeHenseiAction::action()
 		if (!_waiting)
 		{
 			_waiting = true;
-			QTimer::singleShot(DELAY_TIME, Qt::PreciseTimer, this, [this, &cm]()
-			{
+			QTimer::singleShot(DELAY_TIME, Qt::PreciseTimer, this, [this, &cm]() {
 				// home port
-				if (ActionCheckAndClickDefine::CheckColor(ActionCheckAndClickDefine::CheckColorNameDefine::HenseiChangeMemberSelectionLeftMost)
-					|| ActionCheckAndClickDefine::CheckColor(ActionCheckAndClickDefine::CheckColorNameDefine::HenseiChangeMemberSelectionLeftMostMac)
-					|| ActionCheckAndClickDefine::CheckColor(ActionCheckAndClickDefine::CheckColorNameDefine::HenseiChangeMemberSelectionLeftMostMac2))
+				if (ActionCheckAndClickDefine::CheckColor(ActionCheckAndClickDefine::CheckColorNameDefine::HenseiChangeMemberSelectionLeftMost) || ActionCheckAndClickDefine::CheckColor(ActionCheckAndClickDefine::CheckColorNameDefine::HenseiChangeMemberSelectionLeftMostMac) || ActionCheckAndClickDefine::CheckColor(ActionCheckAndClickDefine::CheckColorNameDefine::HenseiChangeMemberSelectionLeftMostMac2))
 				{
 					_waiting = false;
 					setState(State::FindShipFirstPageDone, "Hensei:FindShipFirstPageDone");
@@ -566,8 +542,7 @@ bool ChangeHenseiAction::action()
 			_waiting = true;
 			if (_pageList[_nowIndex] == 0)
 			{
-				QTimer::singleShot(DELAY_TIME_CLICK, Qt::PreciseTimer, this, [this, &cm]()
-				{
+				QTimer::singleShot(DELAY_TIME_CLICK, Qt::PreciseTimer, this, [this, &cm]() {
 					ActionCheckAndClickDefine::MoveAndClick(ActionCheckAndClickDefine::MoveMouseNameDefine::HenseiVerticalMemberSelection, 0, _posList[_nowIndex]);
 					setState(State::FindShipOKChecking, "Hensei:FindShipOKChecking");
 					resetRetryAndWainting();
@@ -575,8 +550,7 @@ bool ChangeHenseiAction::action()
 			}
 			else
 			{
-				QTimer::singleShot(DELAY_TIME_CLICK, Qt::PreciseTimer, this, [this, &cm]()
-				{
+				QTimer::singleShot(DELAY_TIME_CLICK, Qt::PreciseTimer, this, [this, &cm]() {
 					if (_lastPage == _pageList[_nowIndex])
 					{
 						ActionCheckAndClickDefine::MoveAndClick(ActionCheckAndClickDefine::MoveMouseNameDefine::HenseiRightMostButton); // last page
@@ -602,8 +576,7 @@ bool ChangeHenseiAction::action()
 		if (!_waiting)
 		{
 			_waiting = true;
-			QTimer::singleShot(DELAY_TIME_PAGE, Qt::PreciseTimer, this, [this, &cm]()
-			{
+			QTimer::singleShot(DELAY_TIME_PAGE, Qt::PreciseTimer, this, [this, &cm]() {
 				_waiting = false;
 				setState(State::FindShipNextPageDone, "Hensei:FindShipNextPageDone");
 				// just assume page flip is ok
@@ -616,8 +589,7 @@ bool ChangeHenseiAction::action()
 			_waiting = true;
 			if (_pageList[_nowIndex] == _curPage)
 			{
-				QTimer::singleShot(DELAY_TIME_CLICK, Qt::PreciseTimer, this, [this, &cm]()
-				{
+				QTimer::singleShot(DELAY_TIME_CLICK, Qt::PreciseTimer, this, [this, &cm]() {
 					ActionCheckAndClickDefine::MoveAndClick(ActionCheckAndClickDefine::MoveMouseNameDefine::HenseiVerticalMemberSelection, 0, _posList[_nowIndex]);
 					setState(State::FindShipOKChecking, "Hensei:FindShipOKChecking");
 					resetRetryAndWainting();
@@ -625,8 +597,7 @@ bool ChangeHenseiAction::action()
 			}
 			else
 			{
-				QTimer::singleShot(DELAY_TIME_CLICK, Qt::PreciseTimer, this, [this, &cm]()
-				{
+				QTimer::singleShot(DELAY_TIME_CLICK, Qt::PreciseTimer, this, [this, &cm]() {
 					if (_curPage == 1)
 					{
 						ActionCheckAndClickDefine::MoveAndClick(ActionCheckAndClickDefine::MoveMouseNameDefine::HenseiThirdButton); // third page
@@ -652,8 +623,7 @@ bool ChangeHenseiAction::action()
 		if (!_waiting)
 		{
 			_waiting = true;
-			QTimer::singleShot(DELAY_TIME_SUPERLONG, Qt::PreciseTimer, this, [this, &cm]()
-			{
+			QTimer::singleShot(DELAY_TIME_SUPERLONG, Qt::PreciseTimer, this, [this, &cm]() {
 				if (ActionCheckAndClickDefine::CheckColor(ActionCheckAndClickDefine::CheckColorNameDefine::HenseiChangeMemberChangeButton))
 				{
 					_waiting = false;
@@ -670,8 +640,7 @@ bool ChangeHenseiAction::action()
 		if (!_waiting)
 		{
 			_waiting = true;
-			QTimer::singleShot(DELAY_TIME_CLICK, Qt::PreciseTimer, this, [this, &cm]()
-			{
+			QTimer::singleShot(DELAY_TIME_CLICK, Qt::PreciseTimer, this, [this, &cm]() {
 				ActionCheckAndClickDefine::MoveAndClick(ActionCheckAndClickDefine::MoveMouseNameDefine::HenseiChangeMemberChangeButton); // change button
 				if (_nowIndex == _ships.size() - 1)
 				{
@@ -681,8 +650,7 @@ bool ChangeHenseiAction::action()
 				else
 				{
 					_waiting = true;
-					QTimer::singleShot(DELAY_TIME_SUPERSUPERLONG, Qt::PreciseTimer, this, [this, &cm]()
-					{
+					QTimer::singleShot(DELAY_TIME_SUPERSUPERLONG, Qt::PreciseTimer, this, [this, &cm]() {
 						if (cm.isHenseiDone(_ships, _team, _nowIndex))
 						{
 							_nowIndex++;
@@ -704,8 +672,7 @@ bool ChangeHenseiAction::action()
 		if (!_waiting)
 		{
 			_waiting = true;
-			QTimer::singleShot(DELAY_TIME, Qt::PreciseTimer, this, [this, &cm]()
-			{
+			QTimer::singleShot(DELAY_TIME, Qt::PreciseTimer, this, [this, &cm]() {
 				if (ActionCheckAndClickDefine::CheckColor(ActionCheckAndClickDefine::CheckColorNameDefine::HenseiFirstView))
 				{
 					_waiting = false;
@@ -718,13 +685,12 @@ bool ChangeHenseiAction::action()
 			});
 		}
 		break;
-	case  ChangeHenseiAction::State::ReturnToPortDone:
+	case ChangeHenseiAction::State::ReturnToPortDone:
 		if (!_waiting)
 		{
 			_waiting = true;
 			_expectingRequest = "/kcsapi/api_port/port";
-			QTimer::singleShot(DELAY_TIME_CLICK, Qt::PreciseTimer, this, [this, &cm]()
-			{
+			QTimer::singleShot(DELAY_TIME_CLICK, Qt::PreciseTimer, this, [this, &cm]() {
 				ActionCheckAndClickDefine::MoveAndClick(ActionCheckAndClickDefine::MoveMouseNameDefine::PortButtonInPanel); // port button
 				setState(State::ExpectingPort, "Hensei:ExpectingPort");
 				resetRetryAndWainting();
@@ -768,7 +734,7 @@ void ChangeHenseiAction::setShips(int ship0, int ship1)
 	setShips(ships);
 }
 
-void ChangeHenseiAction::setShips(const QList<int>& ships)
+void ChangeHenseiAction::setShips(const QList<int> &ships)
 {
 	for (int shipno : ships)
 	{
@@ -788,7 +754,7 @@ void ChangeHenseiAction::setTeam(int team)
 	}
 }
 
-void ChangeHenseiAction::setState(State state, const char* str)
+void ChangeHenseiAction::setState(State state, const char *str)
 {
 	_state = state;
 	ControlManager::getInstance().setStateStr(str);
@@ -796,7 +762,7 @@ void ChangeHenseiAction::setState(State state, const char* str)
 
 bool ChargeAction::action()
 {
-	auto& cm = ControlManager::getInstance();
+	auto &cm = ControlManager::getInstance();
 	switch (_state)
 	{
 	case ChargeAction::State::None:
@@ -820,8 +786,7 @@ bool ChargeAction::action()
 		if (!_waiting)
 		{
 			_waiting = true;
-			QTimer::singleShot(DELAY_TIME, Qt::PreciseTimer, this, [this, &cm]()
-			{
+			QTimer::singleShot(DELAY_TIME, Qt::PreciseTimer, this, [this, &cm]() {
 				// charge panel
 				if (ActionCheckAndClickDefine::CheckColor(ActionCheckAndClickDefine::CheckColorNameDefine::ChargePanel))
 				{
@@ -849,8 +814,7 @@ bool ChargeAction::action()
 		if (!_waiting)
 		{
 			_waiting = true;
-			QTimer::singleShot(DELAY_TIME, Qt::PreciseTimer, this, [this, &cm]()
-			{
+			QTimer::singleShot(DELAY_TIME, Qt::PreciseTimer, this, [this, &cm]() {
 				// home port
 				if (ActionCheckAndClickDefine::CheckColor(ActionCheckAndClickDefine::CheckColorNameDefine::HomePort))
 				{
@@ -869,8 +833,7 @@ bool ChargeAction::action()
 		if (!_waiting)
 		{
 			_waiting = true;
-			QTimer::singleShot(DELAY_TIME_CLICK, Qt::PreciseTimer, this, [this, &cm]()
-			{
+			QTimer::singleShot(DELAY_TIME_CLICK, Qt::PreciseTimer, this, [this, &cm]() {
 				ActionCheckAndClickDefine::MoveAndClick(ActionCheckAndClickDefine::MoveMouseNameDefine::ChargeButton); // charge button
 				setState(State::NeedChargeChecking, "Charge:NeedChargeChecking");
 				resetRetryAndWainting();
@@ -881,8 +844,7 @@ bool ChargeAction::action()
 		if (!_waiting)
 		{
 			_waiting = true;
-			QTimer::singleShot(DELAY_TIME, Qt::PreciseTimer, this, [this, &cm]()
-			{
+			QTimer::singleShot(DELAY_TIME, Qt::PreciseTimer, this, [this, &cm]() {
 				if (ActionCheckAndClickDefine::CheckColor(ActionCheckAndClickDefine::CheckColorNameDefine::ChargePanel))
 				{
 					_waiting = false;
@@ -899,8 +861,7 @@ bool ChargeAction::action()
 		if (!_waiting)
 		{
 			_waiting = true;
-			QTimer::singleShot(DELAY_TIME_CLICK, Qt::PreciseTimer, this, [this, &cm]()
-			{
+			QTimer::singleShot(DELAY_TIME_CLICK, Qt::PreciseTimer, this, [this, &cm]() {
 				if ((_team > 0 || _forceTeamChange) && !_teamChanged)
 				{
 					ActionCheckAndClickDefine::MoveAndClick(ActionCheckAndClickDefine::MoveMouseNameDefine::ChargeFleetTeam, _team); // team
@@ -940,8 +901,7 @@ bool ChargeAction::action()
 		if (!_waiting)
 		{
 			_waiting = true;
-			QTimer::singleShot(DELAY_TIME, Qt::PreciseTimer, this, [this, &cm]()
-			{
+			QTimer::singleShot(DELAY_TIME, Qt::PreciseTimer, this, [this, &cm]() {
 				if (ActionCheckAndClickDefine::CheckColor(ActionCheckAndClickDefine::CheckColorNameDefine::ChargeNeedChargeButton))
 				{
 					_waiting = false;
@@ -958,8 +918,7 @@ bool ChargeAction::action()
 		if (!_waiting)
 		{
 			_waiting = true;
-			QTimer::singleShot(DELAY_TIME_CLICK, Qt::PreciseTimer, this, [this, &cm]()
-			{
+			QTimer::singleShot(DELAY_TIME_CLICK, Qt::PreciseTimer, this, [this, &cm]() {
 				ActionCheckAndClickDefine::MoveAndClick(ActionCheckAndClickDefine::MoveMouseNameDefine::ChargeDoChargeButton); // charge button
 				// other teams! todo check
 				for (int i = 0; i < 4; i++)
@@ -986,8 +945,7 @@ bool ChargeAction::action()
 		if (!_waiting)
 		{
 			_waiting = true;
-			QTimer::singleShot(DELAY_TIME, Qt::PreciseTimer, this, [this, &cm]()
-			{
+			QTimer::singleShot(DELAY_TIME, Qt::PreciseTimer, this, [this, &cm]() {
 				if (ActionCheckAndClickDefine::CheckColor(ActionCheckAndClickDefine::CheckColorNameDefine::ChargeActionDone))
 				{
 					_waiting = false;
@@ -1005,8 +963,7 @@ bool ChargeAction::action()
 		{
 			_waiting = true;
 			_expectingRequest = "/kcsapi/api_port/port";
-			QTimer::singleShot(DELAY_TIME_CLICK, Qt::PreciseTimer, this, [this, &cm]()
-			{
+			QTimer::singleShot(DELAY_TIME_CLICK, Qt::PreciseTimer, this, [this, &cm]() {
 				ActionCheckAndClickDefine::MoveAndClick(ActionCheckAndClickDefine::MoveMouseNameDefine::PortButtonInPanel); // home button
 				setState(State::ExpectingPort, "Charge:ExpectingPort");
 				resetRetryAndWainting();
@@ -1043,7 +1000,7 @@ void ChargeAction::setSkipExpedition(bool skip)
 	_skipExpedition = skip;
 }
 
-void ChargeAction::setState(State state, const char* str)
+void ChargeAction::setState(State state, const char *str)
 {
 	_state = state;
 	ControlManager::getInstance().setStateStr(str);
@@ -1051,7 +1008,7 @@ void ChargeAction::setState(State state, const char* str)
 
 bool DestroyShipAction::action()
 {
-	auto& cm = ControlManager::getInstance();
+	auto &cm = ControlManager::getInstance();
 	switch (_state)
 	{
 	case DestroyShipAction::State::None:
@@ -1113,8 +1070,7 @@ bool DestroyShipAction::action()
 		if (!_waiting)
 		{
 			_waiting = true;
-			QTimer::singleShot(DELAY_TIME, Qt::PreciseTimer, this, [this, &cm]()
-			{
+			QTimer::singleShot(DELAY_TIME, Qt::PreciseTimer, this, [this, &cm]() {
 				// home port
 				if (ActionCheckAndClickDefine::CheckColor(ActionCheckAndClickDefine::CheckColorNameDefine::HomePort))
 				{
@@ -1139,8 +1095,7 @@ bool DestroyShipAction::action()
 			}
 			else
 			{
-				QTimer::singleShot(DELAY_TIME_CLICK, Qt::PreciseTimer, this, [this, &cm]()
-				{
+				QTimer::singleShot(DELAY_TIME_CLICK, Qt::PreciseTimer, this, [this, &cm]() {
 					ActionCheckAndClickDefine::MoveAndClick(ActionCheckAndClickDefine::MoveMouseNameDefine::KousyouButton); // kousyou button
 					setState(State::KouShouSelectChecking, "Destroy:KouShouSelectChecking");
 					resetRetryAndWainting();
@@ -1152,8 +1107,7 @@ bool DestroyShipAction::action()
 		if (!_waiting)
 		{
 			_waiting = true;
-			QTimer::singleShot(DELAY_TIME, Qt::PreciseTimer, this, [this, &cm]()
-			{
+			QTimer::singleShot(DELAY_TIME, Qt::PreciseTimer, this, [this, &cm]() {
 				// destroy
 				if (ActionCheckAndClickDefine::CheckColor(ActionCheckAndClickDefine::CheckColorNameDefine::KousyouPanel))
 				{
@@ -1171,8 +1125,7 @@ bool DestroyShipAction::action()
 		if (!_waiting)
 		{
 			_waiting = true;
-			QTimer::singleShot(DELAY_TIME_CLICK, Qt::PreciseTimer, this, [this, &cm]()
-			{
+			QTimer::singleShot(DELAY_TIME_CLICK, Qt::PreciseTimer, this, [this, &cm]() {
 				ActionCheckAndClickDefine::MoveAndClick(ActionCheckAndClickDefine::MoveMouseNameDefine::KousyouDestroyButton); // destroy
 
 				setState(State::FindShipChecking, "Destroy:FindShipChecking");
@@ -1184,8 +1137,7 @@ bool DestroyShipAction::action()
 		if (!_waiting)
 		{
 			_waiting = true;
-			QTimer::singleShot(DELAY_TIME, Qt::PreciseTimer, this, [this, &cm]()
-			{
+			QTimer::singleShot(DELAY_TIME, Qt::PreciseTimer, this, [this, &cm]() {
 				if (ActionCheckAndClickDefine::CheckColor(ActionCheckAndClickDefine::CheckColorNameDefine::DestroySortDone))
 				{
 					_waiting = false;
@@ -1207,8 +1159,7 @@ bool DestroyShipAction::action()
 		if (!_waiting)
 		{
 			_waiting = true;
-			QTimer::singleShot(DELAY_TIME_CLICK, Qt::PreciseTimer, this, [this, &cm]()
-			{
+			QTimer::singleShot(DELAY_TIME_CLICK, Qt::PreciseTimer, this, [this, &cm]() {
 				ActionCheckAndClickDefine::MoveAndClick(ActionCheckAndClickDefine::MoveMouseNameDefine::DestroySortButton); // sort button
 				setState(State::FindShipChecking, "Destroy:FindShipChecking");
 				resetRetryAndWainting();
@@ -1219,8 +1170,7 @@ bool DestroyShipAction::action()
 		if (!_waiting)
 		{
 			_waiting = true;
-			QTimer::singleShot(DELAY_TIME_CLICK, Qt::PreciseTimer, this, [this, &cm]()
-			{
+			QTimer::singleShot(DELAY_TIME_CLICK, Qt::PreciseTimer, this, [this, &cm]() {
 				if (ActionCheckAndClickDefine::CheckColor(ActionCheckAndClickDefine::CheckColorNameDefine::DestroyFirstPage))
 				{
 					setState(State::FindShipFirstPageDone, "Destroy:FindShipFirstPageDone");
@@ -1239,8 +1189,7 @@ bool DestroyShipAction::action()
 		if (!_waiting)
 		{
 			_waiting = true;
-			QTimer::singleShot(DELAY_TIME, Qt::PreciseTimer, this, [this, &cm]()
-			{
+			QTimer::singleShot(DELAY_TIME, Qt::PreciseTimer, this, [this, &cm]() {
 				if (ActionCheckAndClickDefine::CheckColor(ActionCheckAndClickDefine::CheckColorNameDefine::DestroyFirstPage))
 				{
 					_waiting = false;
@@ -1265,8 +1214,7 @@ bool DestroyShipAction::action()
 			}
 			else if (_page == 0)
 			{
-				QTimer::singleShot(DELAY_TIME_CLICK, Qt::PreciseTimer, this, [this, &cm]()
-				{
+				QTimer::singleShot(DELAY_TIME_CLICK, Qt::PreciseTimer, this, [this, &cm]() {
 					ActionCheckAndClickDefine::MoveAndClick(ActionCheckAndClickDefine::MoveMouseNameDefine::DestroyVerticalMember, 0, _posList[_nowSelectingPosIndex]);
 
 					_nowSelectingPosIndex++;
@@ -1279,8 +1227,7 @@ bool DestroyShipAction::action()
 			}
 			else
 			{
-				QTimer::singleShot(DELAY_TIME_CLICK, Qt::PreciseTimer, this, [this, &cm]()
-				{
+				QTimer::singleShot(DELAY_TIME_CLICK, Qt::PreciseTimer, this, [this, &cm]() {
 					if (_lastPage == _page)
 					{
 						ActionCheckAndClickDefine::MoveAndClick(ActionCheckAndClickDefine::MoveMouseNameDefine::DestroyRightMost); // last page
@@ -1306,8 +1253,7 @@ bool DestroyShipAction::action()
 		if (!_waiting)
 		{
 			_waiting = true;
-			QTimer::singleShot(DELAY_TIME_PAGE, Qt::PreciseTimer, this, [this, &cm]()
-			{
+			QTimer::singleShot(DELAY_TIME_PAGE, Qt::PreciseTimer, this, [this, &cm]() {
 				_waiting = false;
 				setState(State::FindShipNextPageDone, "Destroy:FindShipNextPageDone");
 				// just assume page flip is ok
@@ -1320,8 +1266,7 @@ bool DestroyShipAction::action()
 			_waiting = true;
 			if (_page == _curPage)
 			{
-				QTimer::singleShot(DELAY_TIME_CLICK, Qt::PreciseTimer, this, [this, &cm]()
-				{
+				QTimer::singleShot(DELAY_TIME_CLICK, Qt::PreciseTimer, this, [this, &cm]() {
 					ActionCheckAndClickDefine::MoveAndClick(ActionCheckAndClickDefine::MoveMouseNameDefine::DestroyVerticalMember, 0, _posList[_nowSelectingPosIndex]);
 					_nowSelectingPosIndex++;
 					if (_nowSelectingPosIndex >= _posList.count())
@@ -1333,8 +1278,7 @@ bool DestroyShipAction::action()
 			}
 			else
 			{
-				QTimer::singleShot(DELAY_TIME_CLICK, Qt::PreciseTimer, this, [this, &cm]()
-				{
+				QTimer::singleShot(DELAY_TIME_CLICK, Qt::PreciseTimer, this, [this, &cm]() {
 					if (_curPage == 1)
 					{
 						ActionCheckAndClickDefine::MoveAndClick(ActionCheckAndClickDefine::MoveMouseNameDefine::DestroyThirdButton); // third page
@@ -1360,8 +1304,7 @@ bool DestroyShipAction::action()
 		if (!_waiting)
 		{
 			_waiting = true;
-			QTimer::singleShot(DELAY_TIME_LONG, Qt::PreciseTimer, this, [this, &cm]()
-			{
+			QTimer::singleShot(DELAY_TIME_LONG, Qt::PreciseTimer, this, [this, &cm]() {
 				if (ActionCheckAndClickDefine::CheckColor(ActionCheckAndClickDefine::CheckColorNameDefine::DestroyButtonReady))
 				{
 					_waiting = false;
@@ -1378,15 +1321,13 @@ bool DestroyShipAction::action()
 		if (!_waiting)
 		{
 			_waiting = true;
-			QTimer::singleShot(DELAY_TIME_CLICK, Qt::PreciseTimer, this, [this, &cm]()
-			{
+			QTimer::singleShot(DELAY_TIME_CLICK, Qt::PreciseTimer, this, [this, &cm]() {
 				ActionCheckAndClickDefine::MoveAndClick(ActionCheckAndClickDefine::MoveMouseNameDefine::DestroyDoDestroyButton); // Destroy button
 				if (_nowEndIndex == _ships.size() - 1)
 				{
 					_waiting = true;
 					{
-						QTimer::singleShot(DELAY_TIME_SKIP_DESTROY + cm.randVal(0, 250), Qt::PreciseTimer, this, [this, &cm]()
-						{
+						QTimer::singleShot(DELAY_TIME_SKIP_DESTROY + cm.randVal(0, 250), Qt::PreciseTimer, this, [this, &cm]() {
 							setState(State::ReturnToPortChecking, "Destroy:ReturnToPortChecking");
 							resetRetryAndWainting();
 						});
@@ -1395,8 +1336,7 @@ bool DestroyShipAction::action()
 				else
 				{
 					_waiting = true;
-					QTimer::singleShot(DELAY_TIME_SKIP_DESTROY + cm.randVal(0, 250), Qt::PreciseTimer, this, [this, &cm]()
-					{
+					QTimer::singleShot(DELAY_TIME_SKIP_DESTROY + cm.randVal(0, 250), Qt::PreciseTimer, this, [this, &cm]() {
 						bool misDestroyed = false;
 						for (int i = _nowIndex; i <= _nowEndIndex; i++)
 						{
@@ -1467,8 +1407,7 @@ bool DestroyShipAction::action()
 		if (!_waiting)
 		{
 			_waiting = true;
-			QTimer::singleShot(DELAY_TIME, Qt::PreciseTimer, this, [this, &cm]()
-			{
+			QTimer::singleShot(DELAY_TIME, Qt::PreciseTimer, this, [this, &cm]() {
 				if (ActionCheckAndClickDefine::CheckColor(ActionCheckAndClickDefine::CheckColorNameDefine::DestroyPanelEmptySelected))
 				{
 					_waiting = false;
@@ -1481,13 +1420,12 @@ bool DestroyShipAction::action()
 			});
 		}
 		break;
-	case  DestroyShipAction::State::ReturnToPortDone:
+	case DestroyShipAction::State::ReturnToPortDone:
 		if (!_waiting)
 		{
 			_waiting = true;
 			_expectingRequest = "/kcsapi/api_port/port";
-			QTimer::singleShot(DELAY_TIME_CLICK, Qt::PreciseTimer, this, [this, &cm]()
-			{
+			QTimer::singleShot(DELAY_TIME_CLICK, Qt::PreciseTimer, this, [this, &cm]() {
 				ActionCheckAndClickDefine::MoveAndClick(ActionCheckAndClickDefine::MoveMouseNameDefine::PortButtonInPanel); // port button
 				setState(State::ExpectingPort, "Destroy:ExpectingPort");
 				resetRetryAndWainting();
@@ -1512,13 +1450,13 @@ bool DestroyShipAction::action()
 	return false;
 }
 
-void DestroyShipAction::setState(State state, const char* str)
+void DestroyShipAction::setState(State state, const char *str)
 {
 	_state = state;
 	ControlManager::getInstance().setStateStr(str);
 }
 
-void DestroyShipAction::setShips(const QList<int>& ships)
+void DestroyShipAction::setShips(const QList<int> &ships)
 {
 	for (int shipno : ships)
 	{
@@ -1530,10 +1468,9 @@ void DestroyShipAction::setShips(const QList<int>& ships)
 	}
 }
 
-
 bool RepairShipAction::action()
 {
-	auto& cm = ControlManager::getInstance();
+	auto &cm = ControlManager::getInstance();
 	switch (_state)
 	{
 	case RepairShipAction::State::None:
@@ -1575,8 +1512,7 @@ bool RepairShipAction::action()
 		if (!_waiting)
 		{
 			_waiting = true;
-			QTimer::singleShot(DELAY_TIME, Qt::PreciseTimer, this, [this, &cm]()
-			{
+			QTimer::singleShot(DELAY_TIME, Qt::PreciseTimer, this, [this, &cm]() {
 				// home port
 				if (ActionCheckAndClickDefine::CheckColor(ActionCheckAndClickDefine::CheckColorNameDefine::HomePort))
 				{
@@ -1601,8 +1537,7 @@ bool RepairShipAction::action()
 			}
 			else
 			{
-				QTimer::singleShot(DELAY_TIME_CLICK, Qt::PreciseTimer, this, [this, &cm]()
-				{
+				QTimer::singleShot(DELAY_TIME_CLICK, Qt::PreciseTimer, this, [this, &cm]() {
 					ActionCheckAndClickDefine::MoveAndClick(ActionCheckAndClickDefine::MoveMouseNameDefine::NyukyoButton); // nyukyo button
 					setState(State::NyuKyoSelectChecking, "Repair:NyuKyoSelectChecking");
 					resetRetryAndWainting();
@@ -1614,8 +1549,7 @@ bool RepairShipAction::action()
 		if (!_waiting)
 		{
 			_waiting = true;
-			QTimer::singleShot(DELAY_TIME, Qt::PreciseTimer, this, [this, &cm]()
-			{
+			QTimer::singleShot(DELAY_TIME, Qt::PreciseTimer, this, [this, &cm]() {
 				// Repair
 				if (ActionCheckAndClickDefine::CheckColor(ActionCheckAndClickDefine::CheckColorNameDefine::NyukyoPanel))
 				{
@@ -1633,8 +1567,7 @@ bool RepairShipAction::action()
 		if (!_waiting)
 		{
 			_waiting = true;
-			QTimer::singleShot(DELAY_TIME_CLICK, Qt::PreciseTimer, this, [this, &cm]()
-			{
+			QTimer::singleShot(DELAY_TIME_CLICK, Qt::PreciseTimer, this, [this, &cm]() {
 				ActionCheckAndClickDefine::MoveAndClick(ActionCheckAndClickDefine::MoveMouseNameDefine::NyukyoVerticalSlot, 0, _usingSlots[_nowIndex]); // slot
 
 				setState(State::FindShipChecking, "Repair:FindShipChecking");
@@ -1646,8 +1579,7 @@ bool RepairShipAction::action()
 		if (!_waiting)
 		{
 			_waiting = true;
-			QTimer::singleShot(DELAY_TIME, Qt::PreciseTimer, this, [this, &cm]()
-			{
+			QTimer::singleShot(DELAY_TIME, Qt::PreciseTimer, this, [this, &cm]() {
 				if (ActionCheckAndClickDefine::CheckColor(ActionCheckAndClickDefine::CheckColorNameDefine::NyukyoSortDone))
 				{
 					_waiting = false;
@@ -1669,8 +1601,7 @@ bool RepairShipAction::action()
 		if (!_waiting)
 		{
 			_waiting = true;
-			QTimer::singleShot(DELAY_TIME_CLICK, Qt::PreciseTimer, this, [this, &cm]()
-			{
+			QTimer::singleShot(DELAY_TIME_CLICK, Qt::PreciseTimer, this, [this, &cm]() {
 				ActionCheckAndClickDefine::MoveAndClick(ActionCheckAndClickDefine::MoveMouseNameDefine::NyukyoSortButton); // sort button
 				setState(State::FindShipChecking, "Repair:FindShipChecking");
 				resetRetryAndWainting();
@@ -1681,8 +1612,7 @@ bool RepairShipAction::action()
 		if (!_waiting)
 		{
 			_waiting = true;
-			QTimer::singleShot(DELAY_TIME_CLICK, Qt::PreciseTimer, this, [this, &cm]()
-			{
+			QTimer::singleShot(DELAY_TIME_CLICK, Qt::PreciseTimer, this, [this, &cm]() {
 				if (ActionCheckAndClickDefine::CheckColor(ActionCheckAndClickDefine::CheckColorNameDefine::NyukyoFirstPage))
 				{
 					setState(State::FindShipFirstPageDone, "Repair:FindShipFirstPageDone");
@@ -1701,8 +1631,7 @@ bool RepairShipAction::action()
 		if (!_waiting)
 		{
 			_waiting = true;
-			QTimer::singleShot(DELAY_TIME, Qt::PreciseTimer, this, [this, &cm]()
-			{
+			QTimer::singleShot(DELAY_TIME, Qt::PreciseTimer, this, [this, &cm]() {
 				if (ActionCheckAndClickDefine::CheckColor(ActionCheckAndClickDefine::CheckColorNameDefine::NyukyoFirstPage))
 				{
 					_waiting = false;
@@ -1727,8 +1656,7 @@ bool RepairShipAction::action()
 			}
 			else if (_pageList[_nowIndex] == 0)
 			{
-				QTimer::singleShot(DELAY_TIME_CLICK, Qt::PreciseTimer, this, [this, &cm]()
-				{
+				QTimer::singleShot(DELAY_TIME_CLICK, Qt::PreciseTimer, this, [this, &cm]() {
 					ActionCheckAndClickDefine::MoveAndClick(ActionCheckAndClickDefine::MoveMouseNameDefine::NyukyoVerticalMember, 0, _posList[_nowIndex]);
 					setState(State::FindShipOKChecking, "Repair:FindShipOKChecking");
 					resetRetryAndWainting();
@@ -1736,8 +1664,7 @@ bool RepairShipAction::action()
 			}
 			else
 			{
-				QTimer::singleShot(DELAY_TIME_CLICK, Qt::PreciseTimer, this, [this, &cm]()
-				{
+				QTimer::singleShot(DELAY_TIME_CLICK, Qt::PreciseTimer, this, [this, &cm]() {
 					if (_lastPage == _pageList[_nowIndex])
 					{
 						ActionCheckAndClickDefine::MoveAndClick(ActionCheckAndClickDefine::MoveMouseNameDefine::NyukyoRightMost); // last page
@@ -1763,8 +1690,7 @@ bool RepairShipAction::action()
 		if (!_waiting)
 		{
 			_waiting = true;
-			QTimer::singleShot(DELAY_TIME_PAGE, Qt::PreciseTimer, this, [this, &cm]()
-			{
+			QTimer::singleShot(DELAY_TIME_PAGE, Qt::PreciseTimer, this, [this, &cm]() {
 				_waiting = false;
 				setState(State::FindShipNextPageDone, "Repair:FindShipNextPageDone");
 				// just assume page flip is ok
@@ -1777,8 +1703,7 @@ bool RepairShipAction::action()
 			_waiting = true;
 			if (_pageList[_nowIndex] == _curPage)
 			{
-				QTimer::singleShot(DELAY_TIME_CLICK, Qt::PreciseTimer, this, [this, &cm]()
-				{
+				QTimer::singleShot(DELAY_TIME_CLICK, Qt::PreciseTimer, this, [this, &cm]() {
 					ActionCheckAndClickDefine::MoveAndClick(ActionCheckAndClickDefine::MoveMouseNameDefine::NyukyoVerticalMember, 0, _posList[_nowIndex]);
 					setState(State::FindShipOKChecking, "Repair:FindShipOKChecking");
 					resetRetryAndWainting();
@@ -1786,8 +1711,7 @@ bool RepairShipAction::action()
 			}
 			else
 			{
-				QTimer::singleShot(DELAY_TIME_CLICK, Qt::PreciseTimer, this, [this, &cm]()
-				{
+				QTimer::singleShot(DELAY_TIME_CLICK, Qt::PreciseTimer, this, [this, &cm]() {
 					if (_curPage == 1)
 					{
 						ActionCheckAndClickDefine::MoveAndClick(ActionCheckAndClickDefine::MoveMouseNameDefine::NyukyoThirdButton); // third page
@@ -1813,8 +1737,7 @@ bool RepairShipAction::action()
 		if (!_waiting)
 		{
 			_waiting = true;
-			QTimer::singleShot(DELAY_TIME_LONG, Qt::PreciseTimer, this, [this, &cm]()
-			{
+			QTimer::singleShot(DELAY_TIME_LONG, Qt::PreciseTimer, this, [this, &cm]() {
 				if (ActionCheckAndClickDefine::CheckColor(ActionCheckAndClickDefine::CheckColorNameDefine::NyukyoButtonReady))
 				{
 					_waiting = false;
@@ -1831,8 +1754,7 @@ bool RepairShipAction::action()
 		if (!_waiting)
 		{
 			_waiting = true;
-			QTimer::singleShot(DELAY_TIME_CLICK, Qt::PreciseTimer, this, [this, &cm]()
-			{
+			QTimer::singleShot(DELAY_TIME_CLICK, Qt::PreciseTimer, this, [this, &cm]() {
 				if (_useFastRepair)
 				{
 					ActionCheckAndClickDefine::MoveAndClick(ActionCheckAndClickDefine::MoveMouseNameDefine::NyukyoToggleFastButton); // toggle
@@ -1850,8 +1772,7 @@ bool RepairShipAction::action()
 		break;
 	case RepairShipAction::State::NyuKyoFastToggleChecking:
 		_waiting = true;
-		QTimer::singleShot(DELAY_TIME_LONG, Qt::PreciseTimer, this, [this, &cm]()
-		{
+		QTimer::singleShot(DELAY_TIME_LONG, Qt::PreciseTimer, this, [this, &cm]() {
 			if (ActionCheckAndClickDefine::CheckColor(ActionCheckAndClickDefine::CheckColorNameDefine::NyukyoFastToggled))
 			{
 				_waiting = false;
@@ -1867,8 +1788,7 @@ bool RepairShipAction::action()
 		if (!_waiting)
 		{
 			_waiting = true;
-			QTimer::singleShot(DELAY_TIME_CLICK, Qt::PreciseTimer, this, [this, &cm]()
-			{
+			QTimer::singleShot(DELAY_TIME_CLICK, Qt::PreciseTimer, this, [this, &cm]() {
 				ActionCheckAndClickDefine::MoveAndClick(ActionCheckAndClickDefine::MoveMouseNameDefine::NyukyoDoNyukyoButton); // Repair button
 				setState(State::NyuKyoOKChecking, "Repair:NyuKyoOKChecking");
 				resetRetryAndWainting();
@@ -1877,8 +1797,7 @@ bool RepairShipAction::action()
 		break;
 	case RepairShipAction::State::NyuKyoOKChecking:
 		_waiting = true;
-		QTimer::singleShot(DELAY_TIME_LONG, Qt::PreciseTimer, this, [this, &cm]()
-		{
+		QTimer::singleShot(DELAY_TIME_LONG, Qt::PreciseTimer, this, [this, &cm]() {
 			if (ActionCheckAndClickDefine::CheckColor(ActionCheckAndClickDefine::CheckColorNameDefine::NyukyoFinalConfirmPage))
 			{
 				_waiting = false;
@@ -1894,8 +1813,7 @@ bool RepairShipAction::action()
 		if (!_waiting)
 		{
 			_waiting = true;
-			QTimer::singleShot(DELAY_TIME_CLICK, Qt::PreciseTimer, this, [this, &cm]()
-			{
+			QTimer::singleShot(DELAY_TIME_CLICK, Qt::PreciseTimer, this, [this, &cm]() {
 				ActionCheckAndClickDefine::MoveAndClick(ActionCheckAndClickDefine::MoveMouseNameDefine::NyukyoFinalOKButton); // ok button
 				setState(State::Skipping, "Repair:Skipping");
 				resetRetryAndWainting();
@@ -1917,8 +1835,7 @@ bool RepairShipAction::action()
 			{
 				_waiting = true;
 				{
-					QTimer::singleShot(delayTime, Qt::PreciseTimer, this, [this, &cm]()
-					{
+					QTimer::singleShot(delayTime, Qt::PreciseTimer, this, [this, &cm]() {
 						setState(State::ReturnToPortChecking, "Repair:ReturnToPortChecking");
 						resetRetryAndWainting();
 					});
@@ -1927,8 +1844,7 @@ bool RepairShipAction::action()
 			else
 			{
 				_waiting = true;
-				QTimer::singleShot(delayTime, Qt::PreciseTimer, this, [this, &cm]()
-				{
+				QTimer::singleShot(delayTime, Qt::PreciseTimer, this, [this, &cm]() {
 					if (_state != State::Skipping)
 					{
 						return;
@@ -1967,8 +1883,7 @@ bool RepairShipAction::action()
 		if (!_waiting)
 		{
 			_waiting = true;
-			QTimer::singleShot(DELAY_TIME, Qt::PreciseTimer, this, [this, &cm]()
-			{
+			QTimer::singleShot(DELAY_TIME, Qt::PreciseTimer, this, [this, &cm]() {
 				if (ActionCheckAndClickDefine::CheckColor(ActionCheckAndClickDefine::CheckColorNameDefine::NyukyoPanel))
 				{
 					_waiting = false;
@@ -1981,13 +1896,12 @@ bool RepairShipAction::action()
 			});
 		}
 		break;
-	case  RepairShipAction::State::ReturnToPortDone:
+	case RepairShipAction::State::ReturnToPortDone:
 		if (!_waiting)
 		{
 			_waiting = true;
 			_expectingRequest = "/kcsapi/api_port/port";
-			QTimer::singleShot(DELAY_TIME_CLICK, Qt::PreciseTimer, this, [this, &cm]()
-			{
+			QTimer::singleShot(DELAY_TIME_CLICK, Qt::PreciseTimer, this, [this, &cm]() {
 				ActionCheckAndClickDefine::MoveAndClick(ActionCheckAndClickDefine::MoveMouseNameDefine::PortButtonInPanel); // port button
 				setState(State::ExpectingPort, "Repair:ExpectingPort");
 				resetRetryAndWainting();
@@ -2012,13 +1926,13 @@ bool RepairShipAction::action()
 	return false;
 }
 
-void RepairShipAction::setState(State state, const char* str)
+void RepairShipAction::setState(State state, const char *str)
 {
 	_state = state;
 	ControlManager::getInstance().setStateStr(str);
 }
 
-void RepairShipAction::setShips(const QList<int>& ships, const QList<int>& usingSlots, bool useFastRepair)
+void RepairShipAction::setShips(const QList<int> &ships, const QList<int> &usingSlots, bool useFastRepair)
 {
 	for (int i = 0; i < ships.size(); i++)
 	{
@@ -2035,13 +1949,12 @@ void RepairShipAction::setShips(const QList<int>& ships, const QList<int>& using
 
 void DevelopAction::addItem(int itemId, int buildCount)
 {
-	_toBuildSlotItems[itemId] = buildCount;// +ControlManager::getInstance().getTotalSlotItemCountForID(itemId);
+	_toBuildSlotItems[itemId] = buildCount; // +ControlManager::getInstance().getTotalSlotItemCountForID(itemId);
 }
-
 
 bool DevelopAction::action()
 {
-	auto& cm = ControlManager::getInstance();
+	auto &cm = ControlManager::getInstance();
 	switch (_state)
 	{
 	case State::None:
@@ -2049,7 +1962,8 @@ bool DevelopAction::action()
 		setState(DevelopAction::State::SelectDevelopChecking, "SelectDevelopChecking");
 		QMap<int, int>::iterator it = _toBuildSlotItems.begin();
 		bool bAllDone = true;
-		while (it != _toBuildSlotItems.end()) {
+		while (it != _toBuildSlotItems.end())
+		{
 			int slotitemId = it.key();
 			if (cm.getTotalSlotItemCountForID(slotitemId) < it.value())
 			{
@@ -2071,8 +1985,7 @@ bool DevelopAction::action()
 		if (!_waiting)
 		{
 			_waiting = true;
-			QTimer::singleShot(DELAY_TIME, Qt::PreciseTimer, this, [this, &cm]()
-			{
+			QTimer::singleShot(DELAY_TIME, Qt::PreciseTimer, this, [this, &cm]() {
 				// ok to develop
 				if (ActionCheckAndClickDefine::CheckColor(ActionCheckAndClickDefine::CheckColorNameDefine::DevelopReadyPanel))
 				{
@@ -2097,8 +2010,7 @@ bool DevelopAction::action()
 		if (!_waiting)
 		{
 			_waiting = true;
-			QTimer::singleShot(DELAY_TIME_CLICK, Qt::PreciseTimer, this, [this, &cm]()
-			{
+			QTimer::singleShot(DELAY_TIME_CLICK, Qt::PreciseTimer, this, [this, &cm]() {
 				ActionCheckAndClickDefine::MoveAndClick(ActionCheckAndClickDefine::MoveMouseNameDefine::ToDevelopButton); // develop
 				setState(State::SelectOKChecking, "Develop:SelectOKChecking");
 				resetRetryAndWainting();
@@ -2109,8 +2021,7 @@ bool DevelopAction::action()
 		if (!_waiting)
 		{
 			_waiting = true;
-			QTimer::singleShot(DELAY_TIME, Qt::PreciseTimer, this, [this, &cm]()
-			{
+			QTimer::singleShot(DELAY_TIME, Qt::PreciseTimer, this, [this, &cm]() {
 				// ok to develop
 				if (ActionCheckAndClickDefine::CheckColor(ActionCheckAndClickDefine::CheckColorNameDefine::DevelopReadyPanel))
 				{
@@ -2128,8 +2039,7 @@ bool DevelopAction::action()
 		if (!_waiting)
 		{
 			_waiting = true;
-			QTimer::singleShot(DELAY_TIME_CLICK, Qt::PreciseTimer, this, [this, &cm]()
-			{
+			QTimer::singleShot(DELAY_TIME_CLICK, Qt::PreciseTimer, this, [this, &cm]() {
 				ActionCheckAndClickDefine::MoveAndClick(ActionCheckAndClickDefine::MoveMouseNameDefine::DoDevelopButton); // ok button
 				setState(State::Skipping, "Develop:Skipping");
 				resetRetryAndWainting();
@@ -2141,8 +2051,7 @@ bool DevelopAction::action()
 		if (!_waiting)
 		{
 			_waiting = true;
-			QTimer::singleShot(DELAY_TIME, Qt::PreciseTimer, this, [this, &cm]()
-			{
+			QTimer::singleShot(DELAY_TIME, Qt::PreciseTimer, this, [this, &cm]() {
 				// panel
 				if (ActionCheckAndClickDefine::CheckColor(ActionCheckAndClickDefine::CheckColorNameDefine::KousyouPanel))
 				{
@@ -2150,7 +2059,8 @@ bool DevelopAction::action()
 
 					QMap<int, int>::iterator it = _toBuildSlotItems.begin();
 					bool bAllDone = true;
-					while (it != _toBuildSlotItems.end()) {
+					while (it != _toBuildSlotItems.end())
+					{
 						int slotitemId = it.key();
 						if (cm.getTotalSlotItemCountForID(slotitemId) < it.value())
 						{
@@ -2180,8 +2090,7 @@ bool DevelopAction::action()
 		if (!_waiting)
 		{
 			_waiting = true;
-			QTimer::singleShot(DELAY_TIME, Qt::PreciseTimer, this, [this, &cm]()
-			{
+			QTimer::singleShot(DELAY_TIME, Qt::PreciseTimer, this, [this, &cm]() {
 				if (ActionCheckAndClickDefine::CheckColor(ActionCheckAndClickDefine::CheckColorNameDefine::KousyouPanel))
 				{
 					_waiting = false;
@@ -2194,13 +2103,12 @@ bool DevelopAction::action()
 			});
 		}
 		break;
-	case  State::ReturnToPortDone:
+	case State::ReturnToPortDone:
 		if (!_waiting)
 		{
 			_waiting = true;
 			_expectingRequest = "/kcsapi/api_port/port";
-			QTimer::singleShot(DELAY_TIME_CLICK, Qt::PreciseTimer, this, [this, &cm]()
-			{
+			QTimer::singleShot(DELAY_TIME_CLICK, Qt::PreciseTimer, this, [this, &cm]() {
 				ActionCheckAndClickDefine::MoveAndClick(ActionCheckAndClickDefine::MoveMouseNameDefine::PortButtonInPanel); // port button
 				setState(State::ExpectingPort, "Develop:ExpectingPort");
 				resetRetryAndWainting();
@@ -2223,8 +2131,7 @@ bool DevelopAction::action()
 	return false;
 }
 
-
-void DevelopAction::setState(State state, const char* str)
+void DevelopAction::setState(State state, const char *str)
 {
 	_state = state;
 	ControlManager::getInstance().setStateStr(str);
@@ -2232,7 +2139,7 @@ void DevelopAction::setState(State state, const char* str)
 
 bool SortieAction::action()
 {
-	auto& cm = ControlManager::getInstance();
+	auto &cm = ControlManager::getInstance();
 	switch (_state)
 	{
 	case SortieAction::State::None:
@@ -2276,8 +2183,7 @@ bool SortieAction::action()
 		if (!_waiting)
 		{
 			_waiting = true;
-			QTimer::singleShot(DELAY_TIME, Qt::PreciseTimer, this, [this, &cm]()
-			{
+			QTimer::singleShot(DELAY_TIME, Qt::PreciseTimer, this, [this, &cm]() {
 				// home port
 				if (ActionCheckAndClickDefine::CheckColor(ActionCheckAndClickDefine::CheckColorNameDefine::HomePort))
 				{
@@ -2296,8 +2202,7 @@ bool SortieAction::action()
 		if (!_waiting)
 		{
 			_waiting = true;
-			QTimer::singleShot(DELAY_TIME_CLICK, Qt::PreciseTimer, this, [this, &cm]()
-			{
+			QTimer::singleShot(DELAY_TIME_CLICK, Qt::PreciseTimer, this, [this, &cm]() {
 				ActionCheckAndClickDefine::MoveAndClick(ActionCheckAndClickDefine::MoveMouseNameDefine::SortieButton); // sortie button
 				setState(State::SortieSelectChecking, "Sortie:SortieSelectChecking");
 				resetRetryAndWainting();
@@ -2308,8 +2213,7 @@ bool SortieAction::action()
 		if (!_waiting)
 		{
 			_waiting = true;
-			QTimer::singleShot(DELAY_TIME, Qt::PreciseTimer, this, [this, &cm]()
-			{
+			QTimer::singleShot(DELAY_TIME, Qt::PreciseTimer, this, [this, &cm]() {
 				// sortie select
 				if (ActionCheckAndClickDefine::CheckColor(ActionCheckAndClickDefine::CheckColorNameDefine::SortiePanel))
 				{
@@ -2328,8 +2232,7 @@ bool SortieAction::action()
 		if (!_waiting)
 		{
 			_waiting = true;
-			QTimer::singleShot(DELAY_TIME_CLICK, Qt::PreciseTimer, this, [this, &cm]()
-			{
+			QTimer::singleShot(DELAY_TIME_CLICK, Qt::PreciseTimer, this, [this, &cm]() {
 				ActionCheckAndClickDefine::MoveAndClick(ActionCheckAndClickDefine::MoveMouseNameDefine::SortieSortieButton); // sortie button 2
 				setState(State::SelectAreaChecking, "Sortie:SelectAreaChecking");
 				cm.moveMouseTo(0, 0);
@@ -2341,8 +2244,7 @@ bool SortieAction::action()
 		if (!_waiting)
 		{
 			_waiting = true;
-			QTimer::singleShot(DELAY_TIME, Qt::PreciseTimer, this, [this, &cm]()
-			{
+			QTimer::singleShot(DELAY_TIME, Qt::PreciseTimer, this, [this, &cm]() {
 				// area 1 sortie map
 				if (ActionCheckAndClickDefine::CheckColor(ActionCheckAndClickDefine::CheckColorNameDefine::SortieMapArea1))
 				{
@@ -2368,8 +2270,7 @@ bool SortieAction::action()
 			if (!_waiting)
 			{
 				_waiting = true;
-				QTimer::singleShot(DELAY_TIME_LONG, Qt::PreciseTimer, this, [this, &cm]()
-				{
+				QTimer::singleShot(DELAY_TIME_LONG, Qt::PreciseTimer, this, [this, &cm]() {
 					if (_isEvent)
 					{
 						ActionCheckAndClickDefine::MoveAndClick(ActionCheckAndClickDefine::MoveMouseNameDefine::SortieAreaEventButton);
@@ -2390,16 +2291,13 @@ bool SortieAction::action()
 		if (!_waiting)
 		{
 			_waiting = true;
-			QTimer::singleShot(DELAY_TIME, Qt::PreciseTimer, this, [this, &cm]()
-			{
-
+			QTimer::singleShot(DELAY_TIME, Qt::PreciseTimer, this, [this, &cm]() {
 				bool isCheckDone = false;
 				if (_isEvent)
 				{
 					QList<float> pPoint;
 					pPoint = _areaCheckList;
-					if (cm.checkColors(pPoint[0], pPoint[1], pPoint[2], pPoint[3], pPoint[4]
-						, pPoint[5], pPoint[6], pPoint[7], pPoint[8], pPoint[9]))
+					if (cm.checkColors(pPoint[0], pPoint[1], pPoint[2], pPoint[3], pPoint[4], pPoint[5], pPoint[6], pPoint[7], pPoint[8], pPoint[9]))
 					{
 						isCheckDone = true;
 					}
@@ -2427,8 +2325,7 @@ bool SortieAction::action()
 		{
 			_waiting = true;
 
-			QTimer::singleShot(DELAY_TIME_CLICK, Qt::PreciseTimer, this, [this, &cm]()
-			{
+			QTimer::singleShot(DELAY_TIME_CLICK, Qt::PreciseTimer, this, [this, &cm]() {
 				// use in every mode
 				if (cm.needChargeCondAirBase(cm.getAnySetting().checkAirBaseCond))
 				{
@@ -2445,23 +2342,22 @@ bool SortieAction::action()
 					else
 					{
 						QMap<int, QList<float>> mapPoints;
-						mapPoints[1] = { 281, 207, 100, 41 };
-						mapPoints[2] = { 600, 199, 60, 36 };
-						mapPoints[3] = { 288.5f, 350, 102.5f, 36 };
-						mapPoints[4] = { 600, 350, 60, 36 };
+						mapPoints[1] = {281, 207, 100, 41};
+						mapPoints[2] = {600, 199, 60, 36};
+						mapPoints[3] = {288.5f, 350, 102.5f, 36};
+						mapPoints[4] = {600, 350, 60, 36};
 						if (_area >= 6)
 						{
-							mapPoints[4] = { 694, 378, 50, 20 };
+							mapPoints[4] = {694, 378, 50, 20};
 						}
-						mapPoints[5] = mapPoints[6] = { 720, 275, 30, 50 };
+						mapPoints[5] = mapPoints[6] = {720, 275, 30, 50};
 						pPoint = mapPoints[_map];
 
 						float scale = 1.5f;
 						cm.moveMouseToAndClick(pPoint[0] * scale, pPoint[1] * scale, pPoint[2] * scale, pPoint[3] * scale); // map 1
 					}
 
-
-					if (_map > 4)	// when ex map is over 10
+					if (_map > 4) // when ex map is over 10
 					{
 						setState(State::SelectExMapChecking, "Sortie:SelectExMapChecking");
 					}
@@ -2476,7 +2372,6 @@ bool SortieAction::action()
 							setState(State::SortieCheckChecking, "Sortie:SortieCheckChecking");
 						}
 					}
-
 				}
 
 				resetRetryAndWainting();
@@ -2485,20 +2380,17 @@ bool SortieAction::action()
 
 		break;
 
-
 	case SortieAction::State::SelectExMapChecking:
 		if (!_waiting)
 		{
 			_waiting = true;
-			QTimer::singleShot(DELAY_TIME_LONG, Qt::PreciseTimer, this, [this, &cm]()
-			{
+			QTimer::singleShot(DELAY_TIME_LONG, Qt::PreciseTimer, this, [this, &cm]() {
 				bool isCheckDone = false;
 				if (_isEvent)
 				{
 					QList<float> pPoint;
 					pPoint = _mapExClickList[0].checkList;
-					if (cm.checkColors(pPoint[0], pPoint[1], pPoint[2], pPoint[3], pPoint[4]
-						, pPoint[5], pPoint[6], pPoint[7], pPoint[8], pPoint[9]))
+					if (cm.checkColors(pPoint[0], pPoint[1], pPoint[2], pPoint[3], pPoint[4], pPoint[5], pPoint[6], pPoint[7], pPoint[8], pPoint[9]))
 					{
 						isCheckDone = true;
 					}
@@ -2525,8 +2417,7 @@ bool SortieAction::action()
 		if (!_waiting)
 		{
 			_waiting = true;
-			QTimer::singleShot(DELAY_TIME_CLICK, Qt::PreciseTimer, this, [this, &cm]()
-			{
+			QTimer::singleShot(DELAY_TIME_CLICK, Qt::PreciseTimer, this, [this, &cm]() {
 				QList<float> pPoint;
 				if (_isEvent)
 				{
@@ -2536,9 +2427,9 @@ bool SortieAction::action()
 				else
 				{
 					QMap<int, QList<float>> mapPoints;
-					mapPoints[5] = { 682, 280, 126, 41 };
-					mapPoints[6] = { 682, 420, 121, 51 };
-					mapPoints[7] = { 682, 560, 121, 51 };
+					mapPoints[5] = {682, 280, 126, 41};
+					mapPoints[6] = {682, 420, 121, 51};
+					mapPoints[7] = {682, 560, 121, 51};
 					pPoint = mapPoints[_map];
 					float scale = 1.0f;
 					cm.moveMouseToAndClick(pPoint[0] * scale, pPoint[1] * scale, pPoint[2] * scale, pPoint[3] * scale); // map 1
@@ -2546,7 +2437,7 @@ bool SortieAction::action()
 
 				if (_isEvent)
 				{
-					if (_map > 20)	// ex2
+					if (_map > 20) // ex2
 					{
 						setState(State::SelectEx2MapChecking, "Sortie:SelectEx2MapChecking");
 					}
@@ -2568,13 +2459,11 @@ bool SortieAction::action()
 		if (!_waiting)
 		{
 			_waiting = true;
-			QTimer::singleShot(DELAY_TIME_LONG, Qt::PreciseTimer, this, [this, &cm]()
-			{
+			QTimer::singleShot(DELAY_TIME_LONG, Qt::PreciseTimer, this, [this, &cm]() {
 				QList<float> pPoint;
 				pPoint = _mapExClickList[1].checkList;
 
-				if (cm.checkColors(pPoint[0], pPoint[1], pPoint[2], pPoint[3], pPoint[4]
-					, pPoint[5], pPoint[6], pPoint[7], pPoint[8], pPoint[9]))
+				if (cm.checkColors(pPoint[0], pPoint[1], pPoint[2], pPoint[3], pPoint[4], pPoint[5], pPoint[6], pPoint[7], pPoint[8], pPoint[9]))
 				{
 					_waiting = false;
 					setState(State::SelectEx2MapDone, "Sortie:SelectEx2MapDone");
@@ -2591,8 +2480,7 @@ bool SortieAction::action()
 		if (!_waiting)
 		{
 			_waiting = true;
-			QTimer::singleShot(DELAY_TIME_CLICK, Qt::PreciseTimer, this, [this, &cm]()
-			{
+			QTimer::singleShot(DELAY_TIME_CLICK, Qt::PreciseTimer, this, [this, &cm]() {
 				QList<float> pPoint;
 				pPoint = _mapExClickList[1].clickPoint;
 				cm.moveMouseToAndClick(pPoint[0], pPoint[1], pPoint[2], pPoint[3]); // map 1
@@ -2622,13 +2510,11 @@ bool SortieAction::action()
 		if (!_waiting)
 		{
 			_waiting = true;
-			QTimer::singleShot(DELAY_TIME_LONG, Qt::PreciseTimer, this, [this, &cm]()
-			{
+			QTimer::singleShot(DELAY_TIME_LONG, Qt::PreciseTimer, this, [this, &cm]() {
 				QList<float> pPoint;
 				pPoint = _mapExClickList[2].checkList;
 
-				if (cm.checkColors(pPoint[0], pPoint[1], pPoint[2], pPoint[3], pPoint[4]
-					, pPoint[5], pPoint[6], pPoint[7], pPoint[8], pPoint[9]))
+				if (cm.checkColors(pPoint[0], pPoint[1], pPoint[2], pPoint[3], pPoint[4], pPoint[5], pPoint[6], pPoint[7], pPoint[8], pPoint[9]))
 				{
 					_waiting = false;
 					setState(State::SelectEx3MapDone, "Sortie:SelectEx3MapDone");
@@ -2645,8 +2531,7 @@ bool SortieAction::action()
 		if (!_waiting)
 		{
 			_waiting = true;
-			QTimer::singleShot(DELAY_TIME_CLICK, Qt::PreciseTimer, this, [this, &cm]()
-			{
+			QTimer::singleShot(DELAY_TIME_CLICK, Qt::PreciseTimer, this, [this, &cm]() {
 				QList<float> pPoint;
 				pPoint = _mapExClickList[2].clickPoint;
 				cm.moveMouseToAndClick(pPoint[0], pPoint[1], pPoint[2], pPoint[3]); // map 1
@@ -2676,13 +2561,11 @@ bool SortieAction::action()
 		if (!_waiting)
 		{
 			_waiting = true;
-			QTimer::singleShot(DELAY_TIME_LONG, Qt::PreciseTimer, this, [this, &cm]()
-			{
+			QTimer::singleShot(DELAY_TIME_LONG, Qt::PreciseTimer, this, [this, &cm]() {
 				QList<float> pPoint;
 				pPoint = _mapExClickList[3].checkList;
 
-				if (cm.checkColors(pPoint[0], pPoint[1], pPoint[2], pPoint[3], pPoint[4]
-					, pPoint[5], pPoint[6], pPoint[7], pPoint[8], pPoint[9]))
+				if (cm.checkColors(pPoint[0], pPoint[1], pPoint[2], pPoint[3], pPoint[4], pPoint[5], pPoint[6], pPoint[7], pPoint[8], pPoint[9]))
 				{
 					_waiting = false;
 					setState(State::SelectEx4MapDone, "Sortie:SelectEx4MapDone");
@@ -2699,8 +2582,7 @@ bool SortieAction::action()
 		if (!_waiting)
 		{
 			_waiting = true;
-			QTimer::singleShot(DELAY_TIME_CLICK, Qt::PreciseTimer, this, [this, &cm]()
-			{
+			QTimer::singleShot(DELAY_TIME_CLICK, Qt::PreciseTimer, this, [this, &cm]() {
 				QList<float> pPoint;
 				pPoint = _mapExClickList[3].clickPoint;
 				cm.moveMouseToAndClick(pPoint[0], pPoint[1], pPoint[2], pPoint[3]); // map 1
@@ -2724,27 +2606,25 @@ bool SortieAction::action()
 		if (!_waiting)
 		{
 			_waiting = true;
-			QTimer::singleShot(DELAY_TIME, Qt::PreciseTimer, this, [this, &cm]()
-			{
+			QTimer::singleShot(DELAY_TIME, Qt::PreciseTimer, this, [this, &cm]() {
 				// blackboard
 
 				// init blackboard
 				if (ActionCheckAndClickDefine::CheckColor(ActionCheckAndClickDefine::CheckColorNameDefine::SortieBlackBoard)
 					/*cm.checkColors(
 					451, 83, 181, 154, 104
-					, 342, 380, 43, 68, 18)*/)
+					, 342, 380, 43, 68, 18)*/
+				)
 				{
 					_waiting = true;
-					QTimer::singleShot(DELAY_TIME_CLICK, Qt::PreciseTimer, this, [this, &cm]()
-					{
+					QTimer::singleShot(DELAY_TIME_CLICK, Qt::PreciseTimer, this, [this, &cm]() {
 						cm.moveMouseToAndClick(365, 253, 136, 88); // blackboard
 						setState(State::SkipBoardChecking, "Sortie:SkipBoardChecking");
 						resetRetryAndWainting();
 					});
 				}
 				else if (
-					ActionCheckAndClickDefine::CheckColor(ActionCheckAndClickDefine::CheckColorNameDefine::SortieBlackBoardDone1)
-					|| ActionCheckAndClickDefine::CheckColor(ActionCheckAndClickDefine::CheckColorNameDefine::SortieBlackBoardDone2)
+					ActionCheckAndClickDefine::CheckColor(ActionCheckAndClickDefine::CheckColorNameDefine::SortieBlackBoardDone1) || ActionCheckAndClickDefine::CheckColor(ActionCheckAndClickDefine::CheckColorNameDefine::SortieBlackBoardDone2)
 					/*
 					cm.checkColors(
 					582, 58, 34, 162, 158
@@ -2752,7 +2632,8 @@ bool SortieAction::action()
 					|| cm.checkColors(
 					352, 84, 173, 147, 119
 					, 356, 383, 46, 59, 68)
-					*/)
+					*/
+				)
 				{
 					_waiting = false;
 					setState(State::SkipBoardDone, "Sortie:SkipBoardDone");
@@ -2768,11 +2649,8 @@ bool SortieAction::action()
 		if (!_waiting)
 		{
 			_waiting = true;
-			QTimer::singleShot(DELAY_TIME, Qt::PreciseTimer, this, [this, &cm]()
-			{
-
-				if (ActionCheckAndClickDefine::CheckColor(ActionCheckAndClickDefine::CheckColorNameDefine::LDCharge)
-					|| ActionCheckAndClickDefine::CheckColor(ActionCheckAndClickDefine::CheckColorNameDefine::LDChargeNormal))
+			QTimer::singleShot(DELAY_TIME, Qt::PreciseTimer, this, [this, &cm]() {
+				if (ActionCheckAndClickDefine::CheckColor(ActionCheckAndClickDefine::CheckColorNameDefine::LDCharge) || ActionCheckAndClickDefine::CheckColor(ActionCheckAndClickDefine::CheckColorNameDefine::LDChargeNormal))
 				{
 					_waiting = false;
 
@@ -2789,7 +2667,6 @@ bool SortieAction::action()
 				{
 					tryRetry();
 				}
-
 			});
 		}
 		break;
@@ -2798,8 +2675,7 @@ bool SortieAction::action()
 		if (!_waiting)
 		{
 			_waiting = true;
-			QTimer::singleShot(DELAY_TIME_CLICK, Qt::PreciseTimer, this, [this, &cm]()
-			{
+			QTimer::singleShot(DELAY_TIME_CLICK, Qt::PreciseTimer, this, [this, &cm]() {
 				if (_isEvent)
 				{
 					ActionCheckAndClickDefine::MoveAndClick(ActionCheckAndClickDefine::MoveMouseNameDefine::LDCharge);
@@ -2818,12 +2694,8 @@ bool SortieAction::action()
 		if (!_waiting)
 		{
 			_waiting = true;
-			QTimer::singleShot(DELAY_TIME_SUPERLONG, Qt::PreciseTimer, this, [this, &cm]()
-			{
-				if (ActionCheckAndClickDefine::CheckColor(ActionCheckAndClickDefine::CheckColorNameDefine::LDChargeTeam1)
-					|| ActionCheckAndClickDefine::CheckColor(ActionCheckAndClickDefine::CheckColorNameDefine::LDChargeTeam2)
-					|| ActionCheckAndClickDefine::CheckColor(ActionCheckAndClickDefine::CheckColorNameDefine::LDChargeTeam3)
-					|| ActionCheckAndClickDefine::CheckColor(ActionCheckAndClickDefine::CheckColorNameDefine::LDChargeTeamOnly1))
+			QTimer::singleShot(DELAY_TIME_SUPERLONG, Qt::PreciseTimer, this, [this, &cm]() {
+				if (ActionCheckAndClickDefine::CheckColor(ActionCheckAndClickDefine::CheckColorNameDefine::LDChargeTeam1) || ActionCheckAndClickDefine::CheckColor(ActionCheckAndClickDefine::CheckColorNameDefine::LDChargeTeam2) || ActionCheckAndClickDefine::CheckColor(ActionCheckAndClickDefine::CheckColorNameDefine::LDChargeTeam3) || ActionCheckAndClickDefine::CheckColor(ActionCheckAndClickDefine::CheckColorNameDefine::LDChargeTeamOnly1))
 				{
 					_waiting = false;
 					int team = cm.getNeedSupplyLDTeam();
@@ -2844,7 +2716,6 @@ bool SortieAction::action()
 				{
 					tryRetry();
 				}
-
 			});
 		}
 		break;
@@ -2853,11 +2724,9 @@ bool SortieAction::action()
 		if (!_waiting)
 		{
 			_waiting = true;
-			QTimer::singleShot(DELAY_TIME_CLICK, Qt::PreciseTimer, this, [this, &cm]()
-			{
+			QTimer::singleShot(DELAY_TIME_CLICK, Qt::PreciseTimer, this, [this, &cm]() {
 				int team = cm.getNeedSupplyLDTeam();
-				ActionCheckAndClickDefine::MoveAndClick((ActionCheckAndClickDefine::MoveMouseNameDefine)
-					((int)ActionCheckAndClickDefine::MoveMouseNameDefine::LDChargeTeam1 + team));
+				ActionCheckAndClickDefine::MoveAndClick((ActionCheckAndClickDefine::MoveMouseNameDefine)((int)ActionCheckAndClickDefine::MoveMouseNameDefine::LDChargeTeam1 + team));
 				setState(State::LDDoChargeChecking, "Sortie:LDDoChargeChecking");
 				cm.moveMouseTo(0, 0);
 				resetRetryAndWainting();
@@ -2869,8 +2738,7 @@ bool SortieAction::action()
 		if (!_waiting)
 		{
 			_waiting = true;
-			QTimer::singleShot(DELAY_TIME, Qt::PreciseTimer, this, [this, &cm]()
-			{
+			QTimer::singleShot(DELAY_TIME, Qt::PreciseTimer, this, [this, &cm]() {
 				if (ActionCheckAndClickDefine::CheckColor(ActionCheckAndClickDefine::CheckColorNameDefine::LDDoCharge))
 				{
 					_waiting = false;
@@ -2880,7 +2748,6 @@ bool SortieAction::action()
 				{
 					tryRetry();
 				}
-
 			});
 		}
 		break;
@@ -2889,8 +2756,7 @@ bool SortieAction::action()
 		if (!_waiting)
 		{
 			_waiting = true;
-			QTimer::singleShot(DELAY_TIME_CLICK, Qt::PreciseTimer, this, [this, &cm]()
-			{
+			QTimer::singleShot(DELAY_TIME_CLICK, Qt::PreciseTimer, this, [this, &cm]() {
 				ActionCheckAndClickDefine::MoveAndClick(ActionCheckAndClickDefine::MoveMouseNameDefine::LDDoCharge);
 				setState(State::LDSelectTeamChecking, "Sortie:LDSelectTeamChecking");
 				cm.moveMouseTo(0, 0);
@@ -2903,8 +2769,7 @@ bool SortieAction::action()
 		if (!_waiting)
 		{
 			_waiting = true;
-			QTimer::singleShot(DELAY_TIME_CLICK, Qt::PreciseTimer, this, [this, &cm]()
-			{
+			QTimer::singleShot(DELAY_TIME_CLICK, Qt::PreciseTimer, this, [this, &cm]() {
 				ActionCheckAndClickDefine::MoveAndClick(ActionCheckAndClickDefine::MoveMouseNameDefine::LDAllChargeDone);
 				setState(State::LDChargeChecking, "Sortie:LDChargeChecking");
 				cm.moveMouseTo(0, 0);
@@ -2917,8 +2782,7 @@ bool SortieAction::action()
 		if (!_waiting)
 		{
 			_waiting = true;
-			QTimer::singleShot(DELAY_TIME_CLICK, Qt::PreciseTimer, this, [this, &cm]()
-			{
+			QTimer::singleShot(DELAY_TIME_CLICK, Qt::PreciseTimer, this, [this, &cm]() {
 				ActionCheckAndClickDefine::MoveAndClick(ActionCheckAndClickDefine::MoveMouseNameDefine::SortieBlackBoardButton); // blackboard
 				setState(State::SortieCheckChecking, "Sortie:SortieCheckChecking");
 				resetRetryAndWainting();
@@ -2930,8 +2794,7 @@ bool SortieAction::action()
 		if (!_waiting)
 		{
 			_waiting = true;
-			QTimer::singleShot(DELAY_TIME, Qt::PreciseTimer, this, [this, &cm]()
-			{
+			QTimer::singleShot(DELAY_TIME, Qt::PreciseTimer, this, [this, &cm]() {
 				// sortie ok button
 				if (ActionCheckAndClickDefine::CheckColor(ActionCheckAndClickDefine::CheckColorNameDefine::SortieOKButton))
 				{
@@ -2950,8 +2813,7 @@ bool SortieAction::action()
 		if (!_waiting)
 		{
 			_waiting = true;
-			QTimer::singleShot(DELAY_TIME_CLICK, Qt::PreciseTimer, this, [this, &cm]()
-			{
+			QTimer::singleShot(DELAY_TIME_CLICK, Qt::PreciseTimer, this, [this, &cm]() {
 				ActionCheckAndClickDefine::MoveAndClick(ActionCheckAndClickDefine::MoveMouseNameDefine::SortieOKButton); // ok kettei
 				setState(State::TeamSelectChecking, "Sortie:TeamSelectChecking");
 				resetRetryAndWainting();
@@ -2962,13 +2824,10 @@ bool SortieAction::action()
 		if (!_waiting)
 		{
 			_waiting = true;
-			QTimer::singleShot(DELAY_TIME, Qt::PreciseTimer, this, [this, &cm]()
-			{
+			QTimer::singleShot(DELAY_TIME, Qt::PreciseTimer, this, [this, &cm]() {
 				// sortie go button
 				if (
-					ActionCheckAndClickDefine::CheckColor(ActionCheckAndClickDefine::CheckColorNameDefine::SortieGOButton)
-					|| ActionCheckAndClickDefine::CheckColor(ActionCheckAndClickDefine::CheckColorNameDefine::SortieGOActiveButton)
-					|| ActionCheckAndClickDefine::CheckColor(ActionCheckAndClickDefine::CheckColorNameDefine::SortieGOWithAirebaseButton)
+					ActionCheckAndClickDefine::CheckColor(ActionCheckAndClickDefine::CheckColorNameDefine::SortieGOButton) || ActionCheckAndClickDefine::CheckColor(ActionCheckAndClickDefine::CheckColorNameDefine::SortieGOActiveButton) || ActionCheckAndClickDefine::CheckColor(ActionCheckAndClickDefine::CheckColorNameDefine::SortieGOWithAirebaseButton)
 					/*cm.checkColors(
 					633, 434, 229, 69, 66
 					, 551, 237, 255, 246, 242) ||
@@ -2984,7 +2843,8 @@ bool SortieAction::action()
 					cm.checkColors(575, 456, 125, 143, 99
 					, 82, 230, 218, 196, 196,
 					680, 478, 93, 168, 168)
-					*/)
+					*/
+				)
 				{
 					_waiting = false;
 
@@ -3011,8 +2871,7 @@ bool SortieAction::action()
 		if (!_waiting)
 		{
 			_waiting = true;
-			QTimer::singleShot(DELAY_TIME_CLICK, Qt::PreciseTimer, this, [this, &cm]()
-			{
+			QTimer::singleShot(DELAY_TIME_CLICK, Qt::PreciseTimer, this, [this, &cm]() {
 				ActionCheckAndClickDefine::MoveAndClick(ActionCheckAndClickDefine::MoveMouseNameDefine::SortieTeamHorizontalButton, _team - 1); // team label
 				setState(State::TeamSelectChecking, "Sortie:TeamSelectChecking");
 				resetRetryAndWainting();
@@ -3025,8 +2884,7 @@ bool SortieAction::action()
 		if (!_waiting)
 		{
 			_waiting = true;
-			QTimer::singleShot(DELAY_TIME_CLICK, Qt::PreciseTimer, this, [this, &cm]()
-			{
+			QTimer::singleShot(DELAY_TIME_CLICK, Qt::PreciseTimer, this, [this, &cm]() {
 				ActionCheckAndClickDefine::MoveAndClick(ActionCheckAndClickDefine::MoveMouseNameDefine::SortieFinalButton); // ok to start
 				setState(State::ExpectingMapStart, "Sortie:ExpectingMapStart");
 				resetRetryAndWainting();
@@ -3053,16 +2911,17 @@ bool SortieAction::action()
 	return false;
 }
 
-void SortieAction::setState(State state, const char* str)
+void SortieAction::setState(State state, const char *str)
 {
 	_state = state;
 	ControlManager::getInstance().setStateStr(str);
 }
 
-void SortieAction::setAreaAndMap(int area, int map
-	, const QList<float>& areaCheckList/* = QList<float>()*/
-	, const QList<float>& mapClickPoint/* = QList<float>()*/
-	, const QMap<int, MapExClick>& mapExClickList/* = QList<float>()*/)
+void SortieAction::setAreaAndMap(int area, int map, const QList<float> &areaCheckList /* = QList<float>()*/
+								 ,
+								 const QList<float> &mapClickPoint /* = QList<float>()*/
+								 ,
+								 const QMap<int, MapExClick> &mapExClickList /* = QList<float>()*/)
 {
 	_area = area;
 	_map = map;
@@ -3083,7 +2942,7 @@ void SortieAction::setShouldPauseNext(bool bPause)
 
 bool SortieAdvanceAction::action()
 {
-	auto& cm = ControlManager::getInstance();
+	auto &cm = ControlManager::getInstance();
 	switch (_state)
 	{
 	case SortieAdvanceAction::State::None:
@@ -3094,8 +2953,7 @@ bool SortieAdvanceAction::action()
 		if (!_waiting)
 		{
 			_waiting = true;
-			QTimer::singleShot(DELAY_TIME_LONG, Qt::PreciseTimer, this, [this, &cm]()
-			{
+			QTimer::singleShot(DELAY_TIME_LONG, Qt::PreciseTimer, this, [this, &cm]() {
 				if (_expectingRequest == "")
 				{
 					setState(State::Done, "Advance:Done");
@@ -3134,7 +2992,7 @@ bool SortieAdvanceAction::action()
 	return false;
 }
 
-void SortieAdvanceAction::setState(State state, const char* str)
+void SortieAdvanceAction::setState(State state, const char *str)
 {
 	_state = state;
 	ControlManager::getInstance().setStateStr(str);
@@ -3142,7 +3000,7 @@ void SortieAdvanceAction::setState(State state, const char* str)
 
 bool SortieCommonAdvanceAction::action()
 {
-	auto& cm = ControlManager::getInstance();
+	auto &cm = ControlManager::getInstance();
 	switch (_state)
 	{
 	case SortieCommonAdvanceAction::State::None:
@@ -3174,8 +3032,7 @@ bool SortieCommonAdvanceAction::action()
 				_expectingRequest = "/kcsapi/api_port/port";
 				break;
 			}
-			QTimer::singleShot(DELAY_TIME_LONG, Qt::PreciseTimer, this, [this, &cm]()
-			{
+			QTimer::singleShot(DELAY_TIME_LONG, Qt::PreciseTimer, this, [this, &cm]() {
 				_waiting = false;
 				// airbase
 				if (ActionCheckAndClickDefine::CheckColor(ActionCheckAndClickDefine::CheckColorNameDefine::SortieCommonAirBaseSelectDone))
@@ -3187,22 +3044,17 @@ bool SortieCommonAdvanceAction::action()
 				{
 					setState(State::ClickAirBaseROK, "SortieAdv:ClickAirBaseROK");
 				}
-				else if (ActionCheckAndClickDefine::CheckColor(ActionCheckAndClickDefine::CheckColorNameDefine::LDAssign1)
-					|| ActionCheckAndClickDefine::CheckColor(ActionCheckAndClickDefine::CheckColorNameDefine::LDAssign1R)
-					|| ActionCheckAndClickDefine::CheckColor(ActionCheckAndClickDefine::CheckColorNameDefine::LDAssignOnly1)
-					|| ActionCheckAndClickDefine::CheckColor(ActionCheckAndClickDefine::CheckColorNameDefine::LDAssignOnly1R))
+				else if (ActionCheckAndClickDefine::CheckColor(ActionCheckAndClickDefine::CheckColorNameDefine::LDAssign1) || ActionCheckAndClickDefine::CheckColor(ActionCheckAndClickDefine::CheckColorNameDefine::LDAssign1R) || ActionCheckAndClickDefine::CheckColor(ActionCheckAndClickDefine::CheckColorNameDefine::LDAssignOnly1) || ActionCheckAndClickDefine::CheckColor(ActionCheckAndClickDefine::CheckColorNameDefine::LDAssignOnly1R))
 				{
 					_ldCheckingIndex = 0;
 					setState(State::LDDone, "SortieAdv:LDDone");
 				}
-				else if (ActionCheckAndClickDefine::CheckColor(ActionCheckAndClickDefine::CheckColorNameDefine::LDAssign2)
-					|| ActionCheckAndClickDefine::CheckColor(ActionCheckAndClickDefine::CheckColorNameDefine::LDAssign2R))
+				else if (ActionCheckAndClickDefine::CheckColor(ActionCheckAndClickDefine::CheckColorNameDefine::LDAssign2) || ActionCheckAndClickDefine::CheckColor(ActionCheckAndClickDefine::CheckColorNameDefine::LDAssign2R))
 				{
 					_ldCheckingIndex = 1;
 					setState(State::LDDone, "SortieAdv:LDDone");
 				}
-				else if (ActionCheckAndClickDefine::CheckColor(ActionCheckAndClickDefine::CheckColorNameDefine::LDAssign3)
-					|| ActionCheckAndClickDefine::CheckColor(ActionCheckAndClickDefine::CheckColorNameDefine::LDAssign3R))
+				else if (ActionCheckAndClickDefine::CheckColor(ActionCheckAndClickDefine::CheckColorNameDefine::LDAssign3) || ActionCheckAndClickDefine::CheckColor(ActionCheckAndClickDefine::CheckColorNameDefine::LDAssign3R))
 				{
 					_ldCheckingIndex = 2;
 					setState(State::LDDone, "SortieAdv:LDDone");
@@ -3215,10 +3067,8 @@ bool SortieCommonAdvanceAction::action()
 		if (!_waiting)
 		{
 			_waiting = true;
-			QTimer::singleShot(DELAY_TIME_CLICK, Qt::PreciseTimer, this, [this, &cm]()
-			{
-
-				const auto& setting = cm.getAnySetting();
+			QTimer::singleShot(DELAY_TIME_CLICK, Qt::PreciseTimer, this, [this, &cm]() {
+				const auto &setting = cm.getAnySetting();
 				QList<float> ldXs;
 				QList<float> ldYs;
 				ldXs.append(setting.ld1ClickX);
@@ -3227,7 +3077,6 @@ bool SortieCommonAdvanceAction::action()
 				ldYs.append(setting.ld1ClickY);
 				ldYs.append(setting.ld2ClickY);
 				ldYs.append(setting.ld3ClickY);
-
 
 				if (_ldCheckingIndex >= 0 && !cm.isInBattle && ldXs[_ldCheckingIndex] > 0 && ldYs[_ldCheckingIndex] > 0)
 				{
@@ -3264,8 +3113,7 @@ bool SortieCommonAdvanceAction::action()
 				emit sigFatal();
 				return false;
 			}
-			QTimer::singleShot(_shouldRetrieve ? DELAY_TIME_SUPERLONG : DELAY_TIME_LONG, Qt::PreciseTimer, this, [this, &cm]()
-			{
+			QTimer::singleShot(_shouldRetrieve ? DELAY_TIME_SUPERLONG : DELAY_TIME_LONG, Qt::PreciseTimer, this, [this, &cm]() {
 				_totalFormationCount = 0;
 				if (/*
 					cm.checkColors(
@@ -3273,8 +3121,7 @@ bool SortieCommonAdvanceAction::action()
 					, 424, 298, 93, 255, 131
 					, 477, 177, 0, 120, 121
 					)*/
-					ActionCheckAndClickDefine::CheckColor(ActionCheckAndClickDefine::CheckColorNameDefine::SortieCommonFormationWithKeikai6A)
-					||
+					ActionCheckAndClickDefine::CheckColor(ActionCheckAndClickDefine::CheckColorNameDefine::SortieCommonFormationWithKeikai6A) ||
 					/*
 					cm.checkColors(
 					447, 81, 93, 255, 131
@@ -3282,8 +3129,7 @@ bool SortieCommonAdvanceAction::action()
 					, 477, 177, 0, 120, 121
 					)
 					*/
-					ActionCheckAndClickDefine::CheckColor(ActionCheckAndClickDefine::CheckColorNameDefine::SortieCommonFormationWithKeikai6B)
-					)
+					ActionCheckAndClickDefine::CheckColor(ActionCheckAndClickDefine::CheckColorNameDefine::SortieCommonFormationWithKeikai6B))
 				{
 					_withKeiKaiJin = true;
 					_totalFormationCount = 6;
@@ -3296,8 +3142,7 @@ bool SortieCommonAdvanceAction::action()
 					, 539, 177, 0, 120, 121
 					)*/
 
-					ActionCheckAndClickDefine::CheckColor(ActionCheckAndClickDefine::CheckColorNameDefine::SortieCommonFormationWithKeikai5)
-					)
+					ActionCheckAndClickDefine::CheckColor(ActionCheckAndClickDefine::CheckColorNameDefine::SortieCommonFormationWithKeikai5))
 				{
 					_withKeiKaiJin = true;
 					_totalFormationCount = 5;
@@ -3309,7 +3154,8 @@ bool SortieCommonAdvanceAction::action()
 					/*cm.checkColors(
 					416, 177, 0, 120, 121
 					, 450, 185, 233, 231, 227
-					, 398, 190, 214, 210, 111)*/)
+					, 398, 190, 214, 210, 111)*/
+				)
 				{
 					_withKeiKaiJin = false;
 					_totalFormationCount = 5;
@@ -3321,8 +3167,7 @@ bool SortieCommonAdvanceAction::action()
 					, 334, 230, 70, 155, 194
 					, 302, 237, 242, 254, 253)*/
 
-					ActionCheckAndClickDefine::CheckColor(ActionCheckAndClickDefine::CheckColorNameDefine::SortieCommonNightOrNot)
-					)
+						 ActionCheckAndClickDefine::CheckColor(ActionCheckAndClickDefine::CheckColorNameDefine::SortieCommonNightOrNot))
 				{
 					_waiting = false;
 					// click left or right
@@ -3341,8 +3186,7 @@ bool SortieCommonAdvanceAction::action()
 					, 579, 133, 38, 87, 115
 					, 511, 288, 238, 255, 255)*/
 
-					ActionCheckAndClickDefine::CheckColor(ActionCheckAndClickDefine::CheckColorNameDefine::SortieCommonLeaveOrNot)
-					)
+						 ActionCheckAndClickDefine::CheckColor(ActionCheckAndClickDefine::CheckColorNameDefine::SortieCommonLeaveOrNot))
 				{
 					if (cm.isPortDataDirty())
 					{
@@ -3370,7 +3214,6 @@ bool SortieCommonAdvanceAction::action()
 					{
 						setState(State::ClickLeft, "SortieAdv:Advance");
 					}
-
 				}
 				// combined formation
 				else if (ActionCheckAndClickDefine::CheckColor(ActionCheckAndClickDefine::CheckColorNameDefine::SortieCommonFormationCombined))
@@ -3417,9 +3260,8 @@ bool SortieCommonAdvanceAction::action()
 		{
 			cm.setPortDataDirty();
 			_waiting = true;
-			if (_shouldRetrieve
-				&& !cm.isLevelMode()	// level mode always set to retrieve
-				)
+			if (_shouldRetrieve && !cm.isLevelMode() // level mode always set to retrieve
+			)
 			{
 				cm.setToTerminate("Terminated:SortieShouldRetrieve", true);
 				emit sigFatal();
@@ -3427,8 +3269,7 @@ bool SortieCommonAdvanceAction::action()
 			}
 			else
 			{
-				QTimer::singleShot(DELAY_TIME_CLICK, Qt::PreciseTimer, this, [this, &cm]()
-				{
+				QTimer::singleShot(DELAY_TIME_CLICK, Qt::PreciseTimer, this, [this, &cm]() {
 					QMap<int, QList<float>> points;
 					switch (_totalFormationCount)
 					{
@@ -3437,36 +3278,35 @@ bool SortieCommonAdvanceAction::action()
 					case 5:
 						if (_withKeiKaiJin)
 						{
-							points[1] = { 513, 184 };
-							points[2] = { 646, 184 };
-							points[3] = { 445, 341 };
-							points[4] = { 577, 341 };
-							points[5] = { 706, 341 };
+							points[1] = {513, 184};
+							points[2] = {646, 184};
+							points[3] = {445, 341};
+							points[4] = {577, 341};
+							points[5] = {706, 341};
 						}
 						else
 						{
-							points[1] = { 445, 184 };
-							points[2] = { 577, 184 };
-							points[3] = { 706, 184 };
-							points[4] = { 513, 341 };
-							points[5] = { 646, 341 };
-
+							points[1] = {445, 184};
+							points[2] = {577, 184};
+							points[3] = {706, 184};
+							points[4] = {513, 341};
+							points[5] = {646, 341};
 						}
 						break;
 					case 6:
-						points[1] = { 445, 184 };
-						points[2] = { 577, 184 };
-						points[3] = { 706, 184 };
-						points[4] = { 445, 341 };
-						points[5] = { 577, 341 };
-						points[6] = { 706, 341 };
+						points[1] = {445, 184};
+						points[2] = {577, 184};
+						points[3] = {706, 184};
+						points[4] = {445, 341};
+						points[5] = {577, 341};
+						points[6] = {706, 341};
 						break;
 					}
 					int formation = 1;
 
 					if (cm.isAnyMode())
 					{
-						const auto& setting = cm.getAnySetting();
+						const auto &setting = cm.getAnySetting();
 						int cell = KanSaveData::getInstance().nextdata.api_no;
 						if (setting.cells.contains(cell))
 						{
@@ -3499,9 +3339,8 @@ bool SortieCommonAdvanceAction::action()
 		if (!_waiting)
 		{
 			_waiting = true;
-			if (_shouldRetrieve
-				&& !cm.isLevelMode()	// level mode always set to retrieve
-				)
+			if (_shouldRetrieve && !cm.isLevelMode() // level mode always set to retrieve
+			)
 			{
 				cm.setToTerminate("Terminated:SortieShouldRetrieve", true);
 				emit sigFatal();
@@ -3509,18 +3348,17 @@ bool SortieCommonAdvanceAction::action()
 			}
 			else
 			{
-				QTimer::singleShot(DELAY_TIME_CLICK, Qt::PreciseTimer, this, [this, &cm]()
-				{
+				QTimer::singleShot(DELAY_TIME_CLICK, Qt::PreciseTimer, this, [this, &cm]() {
 					QMap<int, QList<float>> points;
-					points[1] = { 497, 172 };
-					points[2] = { 662, 172 };
-					points[3] = { 497, 308 };
-					points[4] = { 662, 308 };
+					points[1] = {497, 172};
+					points[2] = {662, 172};
+					points[3] = {497, 308};
+					points[4] = {662, 308};
 					int formation = 4;
 
 					if (cm.isAnyMode())
 					{
-						const auto& setting = cm.getAnySetting();
+						const auto &setting = cm.getAnySetting();
 						int cell = KanSaveData::getInstance().nextdata.api_no;
 						if (setting.cells.contains(cell))
 						{
@@ -3544,9 +3382,8 @@ bool SortieCommonAdvanceAction::action()
 		if (!_waiting)
 		{
 			_waiting = true;
-			QTimer::singleShot(DELAY_TIME_CLICK, Qt::PreciseTimer, this, [this, &cm]()
-			{
-				const auto& setting = cm.getAnySetting();
+			QTimer::singleShot(DELAY_TIME_CLICK, Qt::PreciseTimer, this, [this, &cm]() {
+				const auto &setting = cm.getAnySetting();
 				int cell = KanSaveData::getInstance().nextdata.api_no;
 				if (!cm.isInBattle && setting.cells.contains(cell) && setting.cells[cell].clickX >= 0 && setting.cells[cell].clickY >= 0)
 				{
@@ -3567,8 +3404,7 @@ bool SortieCommonAdvanceAction::action()
 		if (!_waiting)
 		{
 			_waiting = true;
-			QTimer::singleShot(DELAY_TIME_CLICK, Qt::PreciseTimer, this, [this, &cm]()
-			{
+			QTimer::singleShot(DELAY_TIME_CLICK, Qt::PreciseTimer, this, [this, &cm]() {
 				ActionCheckAndClickDefine::MoveAndClick(ActionCheckAndClickDefine::MoveMouseNameDefine::SortieCommonLeftButton); // left button
 				setStateToChecking();
 				resetRetryAndWainting();
@@ -3580,8 +3416,7 @@ bool SortieCommonAdvanceAction::action()
 		if (!_waiting)
 		{
 			_waiting = true;
-			QTimer::singleShot(DELAY_TIME_CLICK, Qt::PreciseTimer, this, [this, &cm]()
-			{
+			QTimer::singleShot(DELAY_TIME_CLICK, Qt::PreciseTimer, this, [this, &cm]() {
 				ActionCheckAndClickDefine::MoveAndClick(ActionCheckAndClickDefine::MoveMouseNameDefine::SortieCommonRightButton); // right button
 				setStateToChecking();
 				resetRetryAndWainting();
@@ -3593,8 +3428,7 @@ bool SortieCommonAdvanceAction::action()
 		if (!_waiting)
 		{
 			_waiting = true;
-			QTimer::singleShot(DELAY_TIME_CLICK, Qt::PreciseTimer, this, [this, &cm]()
-			{
+			QTimer::singleShot(DELAY_TIME_CLICK, Qt::PreciseTimer, this, [this, &cm]() {
 				ActionCheckAndClickDefine::MoveAndClick(ActionCheckAndClickDefine::MoveMouseNameDefine::SortieCommonAirBaseOKButton); // right button
 				if (_ldCheckingIndex >= 0)
 				{
@@ -3613,8 +3447,7 @@ bool SortieCommonAdvanceAction::action()
 		if (!_waiting)
 		{
 			_waiting = true;
-			QTimer::singleShot(DELAY_TIME_CLICK, Qt::PreciseTimer, this, [this, &cm]()
-			{
+			QTimer::singleShot(DELAY_TIME_CLICK, Qt::PreciseTimer, this, [this, &cm]() {
 				ActionCheckAndClickDefine::MoveAndClick(ActionCheckAndClickDefine::MoveMouseNameDefine::SortieCommonAirBaseROKButton); // right button
 				if (_ldCheckingIndex >= 0)
 				{
@@ -3642,7 +3475,7 @@ void SortieCommonAdvanceAction::setStateToChecking()
 	setState(State::Checking, _shouldRetrieve ? "SortieAdv:CheckingToRetrieve" : "SortieAdv:Checking");
 }
 
-void SortieCommonAdvanceAction::setState(State state, const char* str)
+void SortieCommonAdvanceAction::setState(State state, const char *str)
 {
 	_state = state;
 	ControlManager::getInstance().setStateStr(str);
@@ -3650,8 +3483,8 @@ void SortieCommonAdvanceAction::setState(State state, const char* str)
 
 bool RepeatAction::action()
 {
-	auto& cm = ControlManager::getInstance();
-	MainWindow* mainWindow = MainWindow::mainWindow();
+	auto &cm = ControlManager::getInstance();
+	MainWindow *mainWindow = MainWindow::mainWindow();
 
 	bool newJobFromSwitch = false;
 	switch (_state)
@@ -3798,7 +3631,7 @@ bool RepeatAction::action()
 	return false;
 }
 
-void RepeatAction::setState(State state, const char* str)
+void RepeatAction::setState(State state, const char *str)
 {
 	_state = state;
 	ControlManager::getInstance().setStateStr(str);
@@ -3822,7 +3655,7 @@ void ExpeditionAction::setTeamAndTarget(int team, int area, int item)
 
 bool ExpeditionAction::action()
 {
-	auto& cm = ControlManager::getInstance();
+	auto &cm = ControlManager::getInstance();
 	switch (_state)
 	{
 	case ExpeditionAction::State::None:
@@ -3843,8 +3676,7 @@ bool ExpeditionAction::action()
 		if (!_waiting)
 		{
 			_waiting = true;
-			QTimer::singleShot(DELAY_TIME, Qt::PreciseTimer, this, [this, &cm]()
-			{
+			QTimer::singleShot(DELAY_TIME, Qt::PreciseTimer, this, [this, &cm]() {
 				// home port
 				if (ActionCheckAndClickDefine::CheckColor(ActionCheckAndClickDefine::CheckColorNameDefine::HomePort))
 				{
@@ -3863,8 +3695,7 @@ bool ExpeditionAction::action()
 		if (!_waiting)
 		{
 			_waiting = true;
-			QTimer::singleShot(DELAY_TIME_CLICK, Qt::PreciseTimer, this, [this, &cm]()
-			{
+			QTimer::singleShot(DELAY_TIME_CLICK, Qt::PreciseTimer, this, [this, &cm]() {
 				ActionCheckAndClickDefine::MoveAndClick(ActionCheckAndClickDefine::MoveMouseNameDefine::SortieButton); // sortie button
 				setState(State::SortieSelectChecking, "Expedition:SortieSelectChecking");
 				resetRetryAndWainting();
@@ -3875,8 +3706,7 @@ bool ExpeditionAction::action()
 		if (!_waiting)
 		{
 			_waiting = true;
-			QTimer::singleShot(DELAY_TIME, Qt::PreciseTimer, this, [this, &cm]()
-			{
+			QTimer::singleShot(DELAY_TIME, Qt::PreciseTimer, this, [this, &cm]() {
 				// sortie select
 				if (ActionCheckAndClickDefine::CheckColor(ActionCheckAndClickDefine::CheckColorNameDefine::SortiePanel))
 				{
@@ -3895,8 +3725,7 @@ bool ExpeditionAction::action()
 		if (!_waiting)
 		{
 			_waiting = true;
-			QTimer::singleShot(DELAY_TIME_CLICK, Qt::PreciseTimer, this, [this, &cm]()
-			{
+			QTimer::singleShot(DELAY_TIME_CLICK, Qt::PreciseTimer, this, [this, &cm]() {
 				ActionCheckAndClickDefine::MoveAndClick(ActionCheckAndClickDefine::MoveMouseNameDefine::ExpeditionButton); // expedition button
 				setState(State::SelectAreaChecking, "Expedition:SelectAreaChecking");
 				resetRetryAndWainting();
@@ -3907,8 +3736,7 @@ bool ExpeditionAction::action()
 		if (!_waiting)
 		{
 			_waiting = true;
-			QTimer::singleShot(DELAY_TIME, Qt::PreciseTimer, this, [this, &cm]()
-			{
+			QTimer::singleShot(DELAY_TIME, Qt::PreciseTimer, this, [this, &cm]() {
 				if (ActionCheckAndClickDefine::CheckColor(ActionCheckAndClickDefine::CheckColorNameDefine::ExpeditionPanel))
 				{
 					_waiting = false;
@@ -3927,8 +3755,7 @@ bool ExpeditionAction::action()
 			if (!_waiting)
 			{
 				_waiting = true;
-				QTimer::singleShot(DELAY_TIME_CLICK, Qt::PreciseTimer, this, [this, &cm]()
-				{
+				QTimer::singleShot(DELAY_TIME_CLICK, Qt::PreciseTimer, this, [this, &cm]() {
 					ActionCheckAndClickDefine::MoveAndClick(ActionCheckAndClickDefine::MoveMouseNameDefine::ExpeditionAreaHorizontal, cm.areaIndexMap[_area]);
 					setState(State::SelectItemChecking, "Expedition:SelectItemChecking");
 					resetRetryAndWainting();
@@ -3945,8 +3772,7 @@ bool ExpeditionAction::action()
 		if (!_waiting)
 		{
 			_waiting = true;
-			QTimer::singleShot(DELAY_TIME, Qt::PreciseTimer, this, [this, &cm]()
-			{
+			QTimer::singleShot(DELAY_TIME, Qt::PreciseTimer, this, [this, &cm]() {
 				// TODO ???
 				if (ActionCheckAndClickDefine::CheckColor(ActionCheckAndClickDefine::CheckColorNameDefine::ExpeditionPanel))
 				{
@@ -3964,8 +3790,7 @@ bool ExpeditionAction::action()
 		if (!_waiting)
 		{
 			_waiting = true;
-			QTimer::singleShot(DELAY_TIME_CLICK, Qt::PreciseTimer, this, [this, &cm]()
-			{
+			QTimer::singleShot(DELAY_TIME_CLICK, Qt::PreciseTimer, this, [this, &cm]() {
 				ActionCheckAndClickDefine::MoveAndClick(ActionCheckAndClickDefine::MoveMouseNameDefine::ExpeditionVertical, 0, _item); // item
 				setState(State::SortieCheckChecking, "Expedition:SortieCheckChecking");
 				resetRetryAndWainting();
@@ -3976,8 +3801,7 @@ bool ExpeditionAction::action()
 		if (!_waiting)
 		{
 			_waiting = true;
-			QTimer::singleShot(DELAY_TIME, Qt::PreciseTimer, this, [this, &cm]()
-			{
+			QTimer::singleShot(DELAY_TIME, Qt::PreciseTimer, this, [this, &cm]() {
 				// expedition ok button
 				if (ActionCheckAndClickDefine::CheckColor(ActionCheckAndClickDefine::CheckColorNameDefine::ExpeditionSelectItemDone))
 				{
@@ -3996,8 +3820,7 @@ bool ExpeditionAction::action()
 		if (!_waiting)
 		{
 			_waiting = true;
-			QTimer::singleShot(DELAY_TIME_CLICK, Qt::PreciseTimer, this, [this, &cm]()
-			{
+			QTimer::singleShot(DELAY_TIME_CLICK, Qt::PreciseTimer, this, [this, &cm]() {
 				ActionCheckAndClickDefine::MoveAndClick(ActionCheckAndClickDefine::MoveMouseNameDefine::ExpeditionOKButton); // ok kettei
 				setState(State::TeamSelectChecking, "Expedition:TeamSelectChecking");
 				resetRetryAndWainting();
@@ -4008,17 +3831,14 @@ bool ExpeditionAction::action()
 		if (!_waiting)
 		{
 			_waiting = true;
-			QTimer::singleShot(DELAY_TIME, Qt::PreciseTimer, this, [this, &cm]()
-			{
-				if (ActionCheckAndClickDefine::CheckColor(ActionCheckAndClickDefine::CheckColorNameDefine::ExpeditionTeamSelect)
-					|| ActionCheckAndClickDefine::CheckColor(ActionCheckAndClickDefine::CheckColorNameDefine::ExpeditionTeamSelectActive)
-					|| ActionCheckAndClickDefine::CheckColor(ActionCheckAndClickDefine::CheckColorNameDefine::ExpeditionTeamSelectInactive)
+			QTimer::singleShot(DELAY_TIME, Qt::PreciseTimer, this, [this, &cm]() {
+				if (ActionCheckAndClickDefine::CheckColor(ActionCheckAndClickDefine::CheckColorNameDefine::ExpeditionTeamSelect) || ActionCheckAndClickDefine::CheckColor(ActionCheckAndClickDefine::CheckColorNameDefine::ExpeditionTeamSelectActive) || ActionCheckAndClickDefine::CheckColor(ActionCheckAndClickDefine::CheckColorNameDefine::ExpeditionTeamSelectInactive)
 					/*
 					cm.checkColors(
 					571, 129, 35, 35, 35
 					, 637, 170, 255, 246, 242)
 					*/
-					)
+				)
 				{
 					_waiting = false;
 					// TODO ???
@@ -4042,23 +3862,21 @@ bool ExpeditionAction::action()
 		if (!_waiting)
 		{
 			_waiting = true;
-			QTimer::singleShot(DELAY_TIME_LONG, Qt::PreciseTimer, this, [this, &cm]()	// use longer
-			{
-				ActionCheckAndClickDefine::MoveAndClick(ActionCheckAndClickDefine::MoveMouseNameDefine::ExpeditionTeamHorizontal, _team); // team
-				setState(State::TeamSelectedChecking, "Expedition:TeamSelectedChecking");
-				resetRetryAndWainting();
-			});
+			QTimer::singleShot(DELAY_TIME_LONG, Qt::PreciseTimer, this, [this, &cm]() // use longer
+							   {
+								   ActionCheckAndClickDefine::MoveAndClick(ActionCheckAndClickDefine::MoveMouseNameDefine::ExpeditionTeamHorizontal, _team); // team
+								   setState(State::TeamSelectedChecking, "Expedition:TeamSelectedChecking");
+								   resetRetryAndWainting();
+							   });
 		}
 		break;
 	case ExpeditionAction::State::TeamSelectedChecking:
 		if (!_waiting)
 		{
 			_waiting = true;
-			QTimer::singleShot(DELAY_TIME, Qt::PreciseTimer, this, [this, &cm]()
-			{
+			QTimer::singleShot(DELAY_TIME, Qt::PreciseTimer, this, [this, &cm]() {
 				// go button
-				if (ActionCheckAndClickDefine::CheckColor(ActionCheckAndClickDefine::CheckColorNameDefine::ExpeditionTeamSelect)
-					|| ActionCheckAndClickDefine::CheckColor(ActionCheckAndClickDefine::CheckColorNameDefine::ExpeditionTeamSelectActive))
+				if (ActionCheckAndClickDefine::CheckColor(ActionCheckAndClickDefine::CheckColorNameDefine::ExpeditionTeamSelect) || ActionCheckAndClickDefine::CheckColor(ActionCheckAndClickDefine::CheckColorNameDefine::ExpeditionTeamSelectActive))
 				{
 					_waiting = false;
 					setState(State::TeamSelectedDone, "Expedition:TeamSelectedDone");
@@ -4074,8 +3892,7 @@ bool ExpeditionAction::action()
 		if (!_waiting)
 		{
 			_waiting = true;
-			QTimer::singleShot(DELAY_TIME_CLICK, Qt::PreciseTimer, this, [this, &cm]()
-			{
+			QTimer::singleShot(DELAY_TIME_CLICK, Qt::PreciseTimer, this, [this, &cm]() {
 				ActionCheckAndClickDefine::MoveAndClick(ActionCheckAndClickDefine::MoveMouseNameDefine::ExpeditionFinalOKButton); // ok to start
 				setState(State::Skipping, "Expedition:Skipping");
 				resetRetryAndWainting();
@@ -4087,8 +3904,7 @@ bool ExpeditionAction::action()
 		if (!_waiting)
 		{
 			_waiting = true;
-			QTimer::singleShot(DELAY_TIME_SKIP, Qt::PreciseTimer, this, [this, &cm]()
-			{
+			QTimer::singleShot(DELAY_TIME_SKIP, Qt::PreciseTimer, this, [this, &cm]() {
 				_expectingRequest = "/kcsapi/api_port/port";
 				ActionCheckAndClickDefine::MoveAndClick(ActionCheckAndClickDefine::MoveMouseNameDefine::PortButtonInPanel); // home button
 				setState(State::ExpectingPort, "Charge:ExpectingPort");
@@ -4113,7 +3929,7 @@ bool ExpeditionAction::action()
 	return false;
 }
 
-void ExpeditionAction::setState(State state, const char* str)
+void ExpeditionAction::setState(State state, const char *str)
 {
 	_state = state;
 	ControlManager::getInstance().setStateStr(str);
@@ -4121,7 +3937,7 @@ void ExpeditionAction::setState(State state, const char* str)
 
 bool MissionAction::action()
 {
-	auto& cm = ControlManager::getInstance();
+	auto &cm = ControlManager::getInstance();
 	switch (_state)
 	{
 	case MissionAction::State::None:
@@ -4135,8 +3951,7 @@ bool MissionAction::action()
 		if (!_waiting)
 		{
 			_waiting = true;
-			QTimer::singleShot(DELAY_TIME, Qt::PreciseTimer, this, [this, &cm]()
-			{
+			QTimer::singleShot(DELAY_TIME, Qt::PreciseTimer, this, [this, &cm]() {
 				// home port
 				if (ActionCheckAndClickDefine::CheckColor(ActionCheckAndClickDefine::CheckColorNameDefine::HomePort))
 				{
@@ -4155,9 +3970,8 @@ bool MissionAction::action()
 		if (!_waiting)
 		{
 			_waiting = true;
-			QTimer::singleShot(DELAY_TIME_CLICK, Qt::PreciseTimer, this, [this, &cm]()
-			{
-				KanSaveData::getInstance().requireRecordQuestList();
+			QTimer::singleShot(DELAY_TIME_CLICK, Qt::PreciseTimer, this, [this, &cm]() {
+                KanSaveData::getInstance().requireRecordQuestList();
 				ActionCheckAndClickDefine::MoveAndClick(ActionCheckAndClickDefine::MoveMouseNameDefine::MissionButton); // mission button
 				setState(State::CheckingMissionState, "Mission:CheckingMissionState");
 				resetRetryAndWainting();
@@ -4168,11 +3982,10 @@ bool MissionAction::action()
 		if (!_waiting)
 		{
 			_waiting = true;
-			QTimer::singleShot(DELAY_TIME_LONG, Qt::PreciseTimer, this, [this, &cm]()
-			{
+			QTimer::singleShot(DELAY_TIME_LONG, Qt::PreciseTimer, this, [this, &cm]() {
 				do
 				{
-					auto& pksd = KanSaveData::getInstance();
+					auto &pksd = KanSaveData::getInstance();
 					if (pksd.isRecordingLastQuestList)
 					{
 						if (!_isSkippingMissionComplete)
@@ -4186,6 +3999,7 @@ bool MissionAction::action()
 							{
 								_waiting = false;
 								setState(State::CompleteSkip, "Mission::CompleteSkip");
+                                cm.GenerateMissionTodo();
 								break;
 							}
 						}
@@ -4197,7 +4011,8 @@ bool MissionAction::action()
 						if (ActionCheckAndClickDefine::CheckColor(ActionCheckAndClickDefine::CheckColorNameDefine::MissionSkipCompleteDone))
 						{
 							_waiting = false;
-							setState(State::CompleteSkip, "Mission::CompleteSkip");
+                            setState(State::CompleteSkip, "Mission::CompleteSkip");
+                            cm.GenerateMissionTodo();
 							break;
 						}
 						else if (!ActionCheckAndClickDefine::CheckColor(ActionCheckAndClickDefine::CheckColorNameDefine::MissionNonConnecting))
@@ -4208,15 +4023,53 @@ bool MissionAction::action()
 							break;
 						}
 						else if (ActionCheckAndClickDefine::CheckColor(ActionCheckAndClickDefine::CheckColorNameDefine::MissionPanel))
-						{
-							const auto& questList = pksd.lastQuestList;
+                        {
+                            cm.GenerateMissionTodo();
+                            auto &missionSetting = cm.getMissionSetting();
+                            QList<kcsapi_quest> questList;
+                            QList<kcsapi_quest> unsortedList;
+                            for (int i = _curPage * 5; i < (_curPage + 1) * 5; i++)
+							{
+                                if (pksd.fullQuestData.count() > i)
+                                {
+                                    questList.append(pksd.fullQuestData[i]);
+                                    unsortedList.append(pksd.fullQuestData[i]);
+                                }
+                            }
+                            std::sort(questList.begin(), questList.end(),
+                                  [&missionSetting](const kcsapi_quest& a, const kcsapi_quest& b) -> bool {
+                                int scoreA = 0;
+                                int scoreB = 0;
+                                for (int i=0; i<missionSetting.dropMissionList.count(); i++)
+                                {
+                                    if (missionSetting.dropMissionList[i] == a.api_no)
+                                    {
+                                        scoreA += i;
+                                    }
+                                    if (missionSetting.dropMissionList[i] == b.api_no)
+                                    {
+                                        scoreB += i;
+                                    }
+                                }
+                                for (int i=0; i<missionSetting.todoMissionList.count(); i++)
+                                {
+                                    if (missionSetting.todoMissionList[i] == a.api_no)
+                                    {
+                                        scoreA += i*1000;
+                                    }
+                                    if (missionSetting.todoMissionList[i] == b.api_no)
+                                    {
+                                        scoreB += i*1000;
+                                    }
+                                }
+                                return scoreA < scoreB;
+                            });
 							if (_isCompleting)
 							{
-								bool toComplete = questList.api_completed_kind != 0;
+                                bool toComplete = pksd.lastQuestList.api_completed_kind != 0;
 								if (!toComplete)
-								{
-									auto& missionSetting = cm.getMissionSetting();
-									foreach(const int toDrop, missionSetting.dropMissionList)
+                                {
+									foreach (const int toDrop, missionSetting.dropMissionList)
 									{
 										if (missionSetting.acceptedMissionList.contains(toDrop))
 										{
@@ -4224,13 +4077,12 @@ bool MissionAction::action()
 											break;
 										}
 									}
-
 								}
 
 								if (!toComplete)
 								{
 									_isCompleting = false;
-									if (questList.api_disp_page != 1)
+                                    if (_curPage != 0)
 									{
 										_waiting = false;
 										setState(State::SelectFirstPage, "Mission::SelectFirstPage");
@@ -4241,15 +4093,22 @@ bool MissionAction::action()
 
 							if (_isCompleting)
 							{
-								auto& missionSetting = cm.getMissionSetting();
+								auto &missionSetting = cm.getMissionSetting();
 								bool toComplete = false;
-								for (int i = 0; i < questList.api_list.count(); i++)
+                                for (int i = 0; i < questList.count(); i++)
 								{
 									// complete or drop mission
-									if (questList.api_list[i].api_state == 3 ||
-										(questList.api_list[i].api_state == 2 && missionSetting.dropMissionList.contains(questList.api_list[i].api_no)))
+                                    if (questList[i].api_state == 3 ||
+                                        (questList[i].api_state == 2 && missionSetting.dropMissionList.contains(questList[i].api_no)))
 									{
-										_targetIndex = i;
+                                        for (int j=0; j<unsortedList.count(); j++)
+                                        {
+                                            if (unsortedList[j].api_no == questList[i].api_no)
+                                            {
+                                                _targetIndex = j;
+                                                break;
+                                            }
+                                        }
 										_waiting = false;
 										setState(State::CompleteMission, "Mission:CompleteMission");
 										toComplete = true;
@@ -4270,18 +4129,26 @@ bool MissionAction::action()
 							// to accept new
 							else
 							{
-								auto& missionSetting = cm.getMissionSetting();
+								auto &missionSetting = cm.getMissionSetting();
 
 								bool toAccept = false;
-								for (int i = 0; i < questList.api_list.count(); i++)
+
+                                for (int i = 0; i < questList.count(); i++)
 								{
-									const auto& quest = questList.api_list[i];
+                                    const auto &quest = questList[i];
 									if (missionSetting.todoMissionList.contains(quest.api_no) && !missionSetting.dropMissionList.contains(quest.api_no))
 									{
 										if (quest.api_state == 1)
-										{
-											_targetIndex = i;
-											if (questList.api_exec_count < maxMissionAcceptCount)
+                                        {
+                                            for (int j=0; j<unsortedList.count(); j++)
+                                            {
+                                                if (unsortedList[j].api_no == questList[i].api_no)
+                                                {
+                                                    _targetIndex = j;
+                                                    break;
+                                                }
+                                            }
+                                            if (pksd.lastQuestList.api_exec_count < maxMissionAcceptCount)
 											{
 												_waiting = false;
 												setState(State::AcceptMission, "Mission::AcceptMission");
@@ -4303,14 +4170,32 @@ bool MissionAction::action()
 									break;
 								}
 								else
-								{
-									if (questList.api_disp_page < questList.api_page_count)
+                                {
+                                    bool toContinue = false;
+                                    if (_curPage < pksd.fullQuestData.count()/5)
 									{
-										_waiting = false;
-										setState(State::SelectNextPage, "Mission::SelectNextPage");
-										break;
+                                        for (int i = (_curPage+1)*5; i < pksd.fullQuestData.count(); i++)
+                                        {
+                                            const auto &quest = pksd.fullQuestData[i];
+                                            if (missionSetting.todoMissionList.contains(quest.api_no) && quest.api_state == 0)
+                                            {
+                                                toContinue = true;
+                                                break;
+                                            }
+                                            if (missionSetting.dropMissionList.contains(quest.api_no) && quest.api_state > 0)
+                                            {
+                                                toContinue = true;
+                                                break;
+                                            }
+                                        }
 									}
-									else
+                                    if (toContinue)
+                                    {
+                                        _waiting = false;
+                                        setState(State::SelectNextPage, "Mission::SelectNextPage");
+                                        break;
+                                    }
+                                    else
 									{
 										_waiting = false;
 										setState(State::ReturnToPortChecking, "Mission::ReturnToPortChecking");
@@ -4329,8 +4214,7 @@ bool MissionAction::action()
 		if (!_waiting)
 		{
 			_waiting = true;
-			QTimer::singleShot(DELAY_TIME_CLICK, Qt::PreciseTimer, this, [this, &cm]()
-			{
+			QTimer::singleShot(DELAY_TIME_CLICK, Qt::PreciseTimer, this, [this, &cm]() {
 				ActionCheckAndClickDefine::MoveAndClick(ActionCheckAndClickDefine::MoveMouseNameDefine::MissionSkipOoyodoButton); // ooyodo
 				setState(State::CheckingMissionState, "Mission:CheckingMissionState");
 				resetRetryAndWainting();
@@ -4341,10 +4225,9 @@ bool MissionAction::action()
 		if (!_waiting)
 		{
 			_waiting = true;
-			QTimer::singleShot(DELAY_TIME_CLICK, Qt::PreciseTimer, this, [this, &cm]()
-			{
-				KanSaveData::getInstance().requireRecordQuestList();
+            QTimer::singleShot(DELAY_TIME_CLICK, Qt::PreciseTimer, this, [this, &cm]() {
 				ActionCheckAndClickDefine::MoveAndClick(ActionCheckAndClickDefine::MoveMouseNameDefine::MissionNextPage); // next page
+				_curPage++;
 				setState(State::CheckingMissionState, "Mission:CheckingMissionState");
 				resetRetryAndWainting();
 			});
@@ -4354,12 +4237,11 @@ bool MissionAction::action()
 		if (!_waiting)
 		{
 			_waiting = true;
-			QTimer::singleShot(DELAY_TIME_CLICK, Qt::PreciseTimer, this, [this, &cm]()
-			{
-				KanSaveData::getInstance().requireRecordQuestList();
+            QTimer::singleShot(DELAY_TIME_CLICK, Qt::PreciseTimer, this, [this, &cm]() {
 				ActionCheckAndClickDefine::MoveAndClick(ActionCheckAndClickDefine::MoveMouseNameDefine::MissionFirstPage); // first page
 				setState(State::CheckingMissionState, "Mission:CheckingMissionState");
-				resetRetryAndWainting();
+                _curPage = 0;
+                resetRetryAndWainting();
 			});
 		}
 		break;
@@ -4367,8 +4249,7 @@ bool MissionAction::action()
 		if (!_waiting)
 		{
 			_waiting = true;
-			QTimer::singleShot(DELAY_TIME_CLICK, Qt::PreciseTimer, this, [this, &cm]()
-			{
+			QTimer::singleShot(DELAY_TIME_CLICK, Qt::PreciseTimer, this, [this, &cm]() {
 				KanSaveData::getInstance().requireRecordQuestList();
 				ActionCheckAndClickDefine::MoveAndClick(ActionCheckAndClickDefine::MoveMouseNameDefine::MissionVertical, 0, _targetIndex); // cell
 				setState(State::CheckingMissionState, "Mission:CheckingMissionState");
@@ -4380,8 +4261,7 @@ bool MissionAction::action()
 		if (!_waiting)
 		{
 			_waiting = true;
-			QTimer::singleShot(DELAY_TIME_CLICK, Qt::PreciseTimer, this, [this, &cm]()
-			{
+			QTimer::singleShot(DELAY_TIME_CLICK, Qt::PreciseTimer, this, [this, &cm]() {
 				KanSaveData::getInstance().requireRecordQuestList();
 				_isSkippingMissionComplete = true;
 				ActionCheckAndClickDefine::MoveAndClick(ActionCheckAndClickDefine::MoveMouseNameDefine::MissionVertical, 0, _targetIndex); // cell
@@ -4395,8 +4275,7 @@ bool MissionAction::action()
 		if (!_waiting)
 		{
 			_waiting = true;
-			QTimer::singleShot(DELAY_TIME_CLICK, Qt::PreciseTimer, this, [this, &cm]()
-			{
+			QTimer::singleShot(DELAY_TIME_CLICK, Qt::PreciseTimer, this, [this, &cm]() {
 				ActionCheckAndClickDefine::MoveAndClick(ActionCheckAndClickDefine::MoveMouseNameDefine::MissionCloseButton); // close
 				setState(State::CheckingMissionState, "Mission:CheckingMissionState");
 				resetRetryAndWainting();
@@ -4407,8 +4286,7 @@ bool MissionAction::action()
 		if (!_waiting)
 		{
 			_waiting = true;
-			QTimer::singleShot(DELAY_TIME, Qt::PreciseTimer, this, [this, &cm]()
-			{
+			QTimer::singleShot(DELAY_TIME, Qt::PreciseTimer, this, [this, &cm]() {
 				if (ActionCheckAndClickDefine::CheckColor(ActionCheckAndClickDefine::CheckColorNameDefine::MissionPanel))
 				{
 					_waiting = false;
@@ -4421,13 +4299,12 @@ bool MissionAction::action()
 			});
 		}
 		break;
-	case  MissionAction::State::ReturnToPortDone:
+	case MissionAction::State::ReturnToPortDone:
 		if (!_waiting)
 		{
 			_waiting = true;
 			_expectingRequest = "/kcsapi/api_port/port";
-			QTimer::singleShot(DELAY_TIME_CLICK, Qt::PreciseTimer, this, [this, &cm]()
-			{
+			QTimer::singleShot(DELAY_TIME_CLICK, Qt::PreciseTimer, this, [this, &cm]() {
 				ActionCheckAndClickDefine::MoveAndClick(ActionCheckAndClickDefine::MoveMouseNameDefine::MissionReturnButton); // return button
 				setState(State::ExpectingPort, "Mission:ExpectingPort");
 				resetRetryAndWainting();
@@ -4447,12 +4324,11 @@ bool MissionAction::action()
 		break;
 	default:
 		break;
-
 	}
 	return false;
 }
 
-void MissionAction::setState(State state, const char* str)
+void MissionAction::setState(State state, const char *str)
 {
 	_state = state;
 	ControlManager::getInstance().setStateStr(str);

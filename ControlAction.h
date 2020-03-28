@@ -10,14 +10,12 @@ class ControlAction : public QObject
 {
 	Q_OBJECT
 public:
-	ControlAction(QObject* parent = NULL);
-	virtual ~ControlAction()
-	{
-	};
+	ControlAction(QObject *parent = NULL);
+	virtual ~ControlAction(){};
 
 	virtual bool action() { return true; }
 
-	void setDoneRequest(const QString& api);
+	void setDoneRequest(const QString &api);
 
 signals:
 	void sigCheckFail();
@@ -54,8 +52,8 @@ public:
 		ExpectingPort,
 		Done,
 	};
-	WaitCondAction(QObject* parent = NULL)
-		:ControlAction(parent)
+	WaitCondAction(QObject *parent = NULL)
+		: ControlAction(parent)
 	{
 	}
 
@@ -63,7 +61,7 @@ public:
 
 public:
 	void setWaitMS(qint64 waitms, bool isExpedition);
-	void setWaitName(const QString& name);
+	void setWaitName(const QString &name);
 
 private:
 	qint64 _waitMSTo = 0;
@@ -71,8 +69,7 @@ private:
 	QString _waitName = "Wait:Waiting";
 
 	State _state = State::None;
-	void setState(State state, const char* str);
-
+	void setState(State state, const char *str);
 };
 
 class WaitNextPortAction : public ControlAction
@@ -85,8 +82,8 @@ public:
 		ExpectingPort,
 		Done,
 	};
-	WaitNextPortAction(QObject* parent = NULL)
-		:ControlAction(parent)
+	WaitNextPortAction(QObject *parent = NULL)
+		: ControlAction(parent)
 	{
 	}
 
@@ -98,8 +95,7 @@ public:
 
 private:
 	State _state = State::None;
-	void setState(State state, const char* str);
-
+	void setState(State state, const char *str);
 };
 
 class ChangeHenseiAction : public ControlAction
@@ -120,10 +116,10 @@ public:
 		RemoveAllOtherChecking,
 		RemoveAllOtherDone,
 
-		FindShipChecking,	// cur page
-		FindShipChangeSort,	// sort change
-		FindShipChangeFilter,	// filter change
-		FindShipDone,		// click leftmost
+		FindShipChecking,	  // cur page
+		FindShipChangeSort,	  // sort change
+		FindShipChangeFilter, // filter change
+		FindShipDone,		  // click leftmost
 		FindShipFirstPageChecking,
 		FindShipFirstPageDone,
 		FindShipNextPageChecking,
@@ -136,21 +132,20 @@ public:
 		ExpectingPort,
 		Done,
 	};
-	ChangeHenseiAction(QObject* parent = NULL)
-		:ControlAction(parent)
+	ChangeHenseiAction(QObject *parent = NULL)
+		: ControlAction(parent)
 	{
 	}
 
 	virtual bool action() override;
 
 	void setShips(int ship0, int ship1);
-	void setShips(const QList<int>& ships);
+	void setShips(const QList<int> &ships);
 	void setTeam(int team);
 	void resetCurPage()
 	{
 		_curPage = 0;
 	}
-
 
 public:
 	QList<int> _ships;
@@ -165,7 +160,7 @@ public:
 
 private:
 	State _state = State::None;
-	void setState(State state, const char* str);
+	void setState(State state, const char *str);
 };
 
 class ChargeAction : public ControlAction
@@ -187,8 +182,8 @@ public:
 		Done,
 	};
 
-	ChargeAction(QObject* parent = NULL)
-		:ControlAction(parent) {}	// only charge flagship of team1
+	ChargeAction(QObject *parent = NULL)
+		: ControlAction(parent) {} // only charge flagship of team1
 
 	virtual bool action() override;
 
@@ -205,14 +200,14 @@ private:
 
 private:
 	State _state = State::None;
-	void setState(State state, const char* str);
+	void setState(State state, const char *str);
 };
 
 class ExpeditionAction : public ControlAction
 {
 public:
-	ExpeditionAction(QObject* parent = NULL)
-		:ControlAction(parent) {}
+	ExpeditionAction(QObject *parent = NULL)
+		: ControlAction(parent) {}
 
 	enum class State
 	{
@@ -230,9 +225,9 @@ public:
 		TeamSelectChecking,
 		TeamSelectDone, // click team
 		TeamSelectedChecking,
-		TeamSelectedDone, // click go
+		TeamSelectedDone,	 // click go
 		ExpectingExpedition, // wait for http	click port
-		Skipping,	// click to skip expedition
+		Skipping,			 // click to skip expedition
 		ExpectingPort,
 		Done,
 	};
@@ -247,14 +242,14 @@ public:
 
 private:
 	State _state = State::None;
-	void setState(State state, const char* str);
+	void setState(State state, const char *str);
 };
 
 class DestroyShipAction : public ControlAction
 {
 public:
-	DestroyShipAction(QObject* parent = NULL)
-		:ControlAction(parent) {}
+	DestroyShipAction(QObject *parent = NULL)
+		: ControlAction(parent) {}
 
 	enum class State
 	{
@@ -266,7 +261,7 @@ public:
 		SelectDestroyChecking,
 		SelectDestoryDone,
 		FindShipChecking,	// cur page
-		FindShipChangeSort,	// sort change
+		FindShipChangeSort, // sort change
 		FindShipDone,		// click ship
 		FindShipFirstPageChecking,
 		FindShipFirstPageDone,
@@ -274,20 +269,19 @@ public:
 		FindShipNextPageDone, // skip to
 		FindShipOKChecking,
 		FindShipOKDone, //destroy
-		Skipping,	// click to skip
+		Skipping,		// click to skip
 		ReturnToPortChecking,
 		ReturnToPortDone,
 		ExpectingPort,
 		Done,
 	};
-	void setShips(const QList<int>& ships);
+	void setShips(const QList<int> &ships);
 	void resetCurPage()
 	{
 		_curPage = 0;
 	}
 
 	virtual bool action() override;
-
 
 public:
 	QList<int> _ships;
@@ -303,14 +297,14 @@ public:
 
 private:
 	State _state = State::None;
-	void setState(State state, const char* str);
+	void setState(State state, const char *str);
 };
 
 class RepairShipAction : public ControlAction
 {
 public:
-	RepairShipAction(QObject* parent = NULL)
-		:ControlAction(parent) {}
+	RepairShipAction(QObject *parent = NULL)
+		: ControlAction(parent) {}
 
 	enum class State
 	{
@@ -322,7 +316,7 @@ public:
 		SelectSlotChecking,
 		SelectSlotDone,
 		FindShipChecking,	// cur page
-		FindShipChangeSort,	// sort change
+		FindShipChangeSort, // sort change
 		FindShipDone,		// click ship
 		FindShipFirstPageChecking,
 		FindShipFirstPageDone,
@@ -334,20 +328,19 @@ public:
 		NyuKyoFastTogglDone,
 		NyuKyoOKChecking,
 		NyuKyoOKDone,
-		Skipping,	// click to skip
+		Skipping, // click to skip
 		ReturnToPortChecking,
 		ReturnToPortDone,
 		ExpectingPort,
 		Done,
 	};
-	void setShips(const QList<int>& ships, const QList<int>& normalSlots, bool useFastRepair);
+	void setShips(const QList<int> &ships, const QList<int> &normalSlots, bool useFastRepair);
 	void resetCurPage()
 	{
 		_curPage = 0;
 	}
 
 	virtual bool action() override;
-
 
 public:
 	QList<int> _ships;
@@ -367,15 +360,14 @@ public:
 
 private:
 	State _state = State::None;
-	void setState(State state, const char* str);
+	void setState(State state, const char *str);
 };
 
 class DevelopAction : public ControlAction
 {
 public:
-
-	DevelopAction(QObject* parent = NULL)
-		:ControlAction(parent) {}
+	DevelopAction(QObject *parent = NULL)
+		: ControlAction(parent) {}
 
 	enum class State
 	{
@@ -394,13 +386,12 @@ public:
 
 	virtual bool action() override;
 
-
 public:
 	QMap<int, int> _toBuildSlotItems;
 
 private:
 	State _state = State::None;
-	void setState(State state, const char* str);
+	void setState(State state, const char *str);
 };
 
 class SortieAction : public ControlAction
@@ -434,16 +425,15 @@ public:
 		SelectEx4MapDone, // click ex map
 
 		LDChargeChecking,
-		LDChargeDone,   // click charge button
+		LDChargeDone, // click charge button
 		LDSelectTeamChecking,
-		LDSelectTeamDone,   // click team
+		LDSelectTeamDone, // click team
 		LDDoChargeChecking,
 		LDDoChargeDone,
-		LDAllChargeDone,    // click somewhere
+		LDAllChargeDone, // click somewhere
 
 		SkipBoardChecking,
-		SkipBoardDone,	// skip mission (ev only)
-
+		SkipBoardDone, // skip mission (ev only)
 
 		SortieCheckChecking,
 		SortieCheckDone, // click ok
@@ -453,19 +443,16 @@ public:
 
 		TeamSelectDone, // click go
 
-		ExpectingMapStart, // wait for http	
+		ExpectingMapStart, // wait for http
 		Done,
 	};
-	SortieAction(QObject* parent = NULL)
-		:ControlAction(parent)
+	SortieAction(QObject *parent = NULL)
+		: ControlAction(parent)
 	{
 	}
 
 public:
-	void setAreaAndMap(int area, int map
-		, const QList<float>& areaCheckList = QList<float>()
-		, const QList<float>& mapClickPoint = QList<float>()
-		, const QMap<int, MapExClick>& mapExClickList = QMap<int, MapExClick>());
+	void setAreaAndMap(int area, int map, const QList<float> &areaCheckList = QList<float>(), const QList<float> &mapClickPoint = QList<float>(), const QMap<int, MapExClick> &mapExClickList = QMap<int, MapExClick>());
 
 	void setTeam(int team) { _team = team; }
 
@@ -481,14 +468,14 @@ public:
 	bool _autoPauseNext = false;
 
 	QList<float> _areaCheckList;
-	QList<float> _mapClickPoint;	// click E1~E3 or Ex button
+	QList<float> _mapClickPoint; // click E1~E3 or Ex button
 	QMap<int, MapExClick> _mapExClickList;
 
 	virtual bool action() override;
 
 private:
 	State _state = State::None;
-	void setState(State state, const char* str);
+	void setState(State state, const char *str);
 };
 
 class SortieAdvanceAction : public ControlAction
@@ -497,11 +484,11 @@ public:
 	enum class State
 	{
 		None,
-		ExpectingPort, // wait for http	
+		ExpectingPort, // wait for http
 		Done,
 	};
-	SortieAdvanceAction(QObject* parent = NULL)
-		:ControlAction(parent)
+	SortieAdvanceAction(QObject *parent = NULL)
+		: ControlAction(parent)
 	{
 	}
 
@@ -510,7 +497,7 @@ public:
 private:
 	State _state = State::None;
 	int _clickCount = 0;
-	void setState(State state, const char* str);
+	void setState(State state, const char *str);
 };
 
 class SortieCommonAdvanceAction : public ControlAction
@@ -534,8 +521,8 @@ public:
 
 		Done,
 	};
-	SortieCommonAdvanceAction(QObject* parent = NULL)
-		:ControlAction(parent)
+	SortieCommonAdvanceAction(QObject *parent = NULL)
+		: ControlAction(parent)
 	{
 	}
 
@@ -543,7 +530,7 @@ public:
 
 private:
 	State _state = State::None;
-	void setState(State state, const char* str);
+	void setState(State state, const char *str);
 
 	void setStateToChecking();
 	bool _shouldRetrieve = false;
@@ -584,8 +571,8 @@ public:
 
 	};
 
-	MissionAction(QObject* parent = NULL)
-		:ControlAction(parent)
+	MissionAction(QObject *parent = NULL)
+		: ControlAction(parent)
 	{
 	}
 
@@ -593,11 +580,12 @@ public:
 
 private:
 	State _state = State::None;
-	void setState(State state, const char* str);
+	void setState(State state, const char *str);
 
 	bool _isCompleting = true;
 	int _targetIndex = -1;
-	bool _isSkippingMissionComplete = false;
+	int _curPage = 0;
+    bool _isSkippingMissionComplete = false;
 
 public:
 	static const int maxMissionAcceptCount = 7;
@@ -611,8 +599,8 @@ public:
 		None,
 		Done,
 	};
-	RepeatAction(QObject* parent = NULL)
-		:ControlAction(parent)
+	RepeatAction(QObject *parent = NULL)
+		: ControlAction(parent)
 	{
 	}
 
@@ -620,5 +608,5 @@ public:
 
 private:
 	State _state = State::None;
-	void setState(State state, const char* str);
+	void setState(State state, const char *str);
 };

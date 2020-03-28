@@ -482,9 +482,9 @@ QMap < ActionCheckAndClickDefine::CheckColorNameDefine, QList<int>> ActionCheckA
 	{
 		CheckColorNameDefine::SortieCommonLeaveOrNot,
 		QList<int>{
-			710, 419, 180, 198, 205,
-				706, 416, 41, 94, 110,
-				484, 408, 127, 251, 250
+            710, 419, 184, 203, 205,
+                706, 416, 39, 93, 113,
+                484, 408, 107, 251, 248
 		}
 	},
 	{

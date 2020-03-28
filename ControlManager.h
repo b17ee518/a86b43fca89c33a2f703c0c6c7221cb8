@@ -73,7 +73,7 @@ public:
 		Second1_1 = 216,
 		YuSou3 = 218,
 		SouthEast5 = 226,
-		//SenSui = 230,
+        SenSui = 230,
 
 		KuBou3 = 211,
 		YuSou5 = 212,
@@ -87,7 +87,7 @@ public:
 		WeeklyRo = 221,
 		WeeklyI = 220,
 		WeeklyYuSou = 213,
-		//WeeklySenSui = 228,
+        WeeklySenSui = 228,
 		WeeklyExpedition = 404,
 
 		Practice3 = 303,
@@ -251,6 +251,7 @@ public:
 
 	bool BuildNext_Mission();
 	bool switchToGreedyMission();
+    void GenerateMissionTodo();
 
 	void LoadAnyTemplateSettings();
 	bool BuildNext_Any(bool onlyAdvance, bool stopAfterCharge);

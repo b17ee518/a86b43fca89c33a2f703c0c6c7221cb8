@@ -192,7 +192,8 @@ public:
 	QList<kcsapi_slotitem> slotitemdata;
 
 	QList<kcsapi_kdock> kdockdata;
-	QList<kcsapi_quest> questdata;
+    QList<kcsapi_quest> fullQuestData;
+    QList<kcsapi_quest> activeQuestData;
 	kcsapi_next nextdata;
 	kcsapi_battle battledata;
 	kcsapi_battleresult battleresultdata;

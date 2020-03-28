@@ -1209,7 +1209,7 @@ void KanDataConnector::onGetPracticeListData(const kcsapi_practicelist& api_prac
 	bool hasPractice5 = false;
 	if (emptycount > 0)
 	{
-		for (const auto& quest : pksd->questdata)
+        for (const auto& quest : pksd->activeQuestData)
 		{
 			if (quest.api_no == (int)ControlManager::MissionDefines::Practice3)
 			{

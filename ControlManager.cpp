@@ -859,11 +859,13 @@ void ControlManager::GenerateMissionTodo()
             yuSouMode = true;
             toDropMissionList.append((int)MissionDefines::WeeklyI);
 
-            todoMissionList.append((int)MissionDefines::YuSou3);
+            todoMissionList.append((int)MissionDefines::YuSou3);            
 
             todoMissionList.append((int)MissionDefines::WeeklyRo);
 
             todoMissionList.append((int)MissionDefines::YuSou5);
+
+            todoMissionList.append((int)MissionDefines::WeeklyYuSou);
             break;
         }
         else if (quest.api_no == (int) MissionDefines::SouthEast5)
@@ -875,6 +877,8 @@ void ControlManager::GenerateMissionTodo()
             todoMissionList.append((int)MissionDefines::SouthEast5);
 
             todoMissionList.append((int)MissionDefines::WeeklyI);
+
+            todoMissionList.append((int)MissionDefines::KuBou3);
             break;
         }
     }

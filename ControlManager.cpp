@@ -819,91 +819,93 @@ bool ControlManager::BuildNext_Rank()
 
 void ControlManager::GenerateMissionTodo()
 {
-    const auto& pksd = KanSaveData::getInstance();
-    _missionSetting.todoMissionList.clear();
-    _missionSetting.acceptedMissionList.clear();
-    _missionSetting.dropMissionList.clear();
-    _missionSetting.todoGreedyMissionList.clear();
+	const auto& pksd = KanSaveData::getInstance();
+	_missionSetting.todoMissionList.clear();
+	_missionSetting.acceptedMissionList.clear();
+	_missionSetting.dropMissionList.clear();
+	_missionSetting.todoGreedyMissionList.clear();
 
-    for (const auto& quest : pksd.activeQuestData)
-    {
-        if (!_missionSetting.acceptedMissionList.contains(quest.api_no))
-        {
-            _missionSetting.acceptedMissionList.append(quest.api_no);
-        }
-    }
+	for (const auto& quest : pksd.activeQuestData)
+	{
+		if (!_missionSetting.acceptedMissionList.contains(quest.api_no))
+		{
+			_missionSetting.acceptedMissionList.append(quest.api_no);
+		}
+	}
 
-    bool yuSouMode = false;
-    bool southEastMode = false;
+	bool yuSouMode = false;
+	bool southEastMode = false;
 
-    QList<int> todoMissionList;
-    todoMissionList.append((int)MissionDefines::Expedition3);
-    todoMissionList.append((int)MissionDefines::Expedition10);
+	QList<int> todoMissionList;
+	todoMissionList.append((int)MissionDefines::Expedition3);
+	todoMissionList.append((int)MissionDefines::Expedition10);
 
-    todoMissionList.append((int)MissionDefines::WeeklyExpedition);
+	todoMissionList.append((int)MissionDefines::WeeklyExpedition);
 
-    todoMissionList.append((int)MissionDefines::NyuKyo5);
-    todoMissionList.append((int)MissionDefines::Charge12);
+	todoMissionList.append((int)MissionDefines::NyuKyo5);
+	todoMissionList.append((int)MissionDefines::Charge12);
 
-    todoMissionList.append((int)MissionDefines::First1_1);
-    todoMissionList.append((int)MissionDefines::Second1_1);
+	todoMissionList.append((int)MissionDefines::First1_1);
+	todoMissionList.append((int)MissionDefines::Second1_1);
 
-    todoMissionList.append((int)MissionDefines::WeeklyA);
+	todoMissionList.append((int)MissionDefines::WeeklyA);
 
-    QList<int> toDropMissionList;
+	QList<int> toDropMissionList;
 
-    foreach (const auto& quest, pksd.fullQuestData)
-    {
-        if (quest.api_no == (int)MissionDefines::YuSou3)
-        {
-            yuSouMode = true;
-            toDropMissionList.append((int)MissionDefines::WeeklyI);
+	foreach(const auto& quest, pksd.fullQuestData)
+	{
+		if (quest.api_no == (int)MissionDefines::YuSou3)
+		{
+			yuSouMode = true;
+			toDropMissionList.append((int)MissionDefines::WeeklyI);
+			toDropMissionList.append((int)MissionDefines::KuBou3);
 
-            todoMissionList.append((int)MissionDefines::YuSou3);            
+			todoMissionList.append((int)MissionDefines::YuSou3);
 
-            todoMissionList.append((int)MissionDefines::WeeklyRo);
+			todoMissionList.append((int)MissionDefines::WeeklyRo);
 
-            todoMissionList.append((int)MissionDefines::YuSou5);
+			todoMissionList.append((int)MissionDefines::YuSou5);
 
-            todoMissionList.append((int)MissionDefines::WeeklyYuSou);
-            break;
-        }
-        else if (quest.api_no == (int) MissionDefines::SouthEast5)
-        {
-            southEastMode = true;
-            toDropMissionList.append((int)MissionDefines::YuSou5);
-            toDropMissionList.append((int)MissionDefines::WeeklyRo);
+			todoMissionList.append((int)MissionDefines::WeeklyYuSou);
+			break;
+		}
+		else if (quest.api_no == (int)MissionDefines::SouthEast5)
+		{
+			southEastMode = true;
+			toDropMissionList.append((int)MissionDefines::YuSou5);
+			toDropMissionList.append((int)MissionDefines::WeeklyRo);
+			toDropMissionList.append((int)MissionDefines::WeeklyYuSou);
 
-            todoMissionList.append((int)MissionDefines::SouthEast5);
+			todoMissionList.append((int)MissionDefines::SouthEast5);
 
-            todoMissionList.append((int)MissionDefines::WeeklyI);
+			todoMissionList.append((int)MissionDefines::WeeklyI);
 
-            todoMissionList.append((int)MissionDefines::KuBou3);
-            break;
-        }
-    }
-    todoMissionList.append((int)MissionDefines::Defeat10);
+			todoMissionList.append((int)MissionDefines::KuBou3);
+			break;
+		}
+	}
+	todoMissionList.append((int)MissionDefines::Defeat10);
 
-    foreach (const int id, todoMissionList)
-    {
-        foreach (const auto& quest, pksd.fullQuestData)
-        {
-            if (quest.api_no == id)
-            {
-                _missionSetting.todoMissionList.append(quest.api_no);
-            }
-        }
-    }
-    foreach (const int id, toDropMissionList)
-    {
-        foreach (const auto& quest, pksd.fullQuestData)
-        {
-            if (quest.api_no == id)
-            {
-                _missionSetting.dropMissionList.append(quest.api_no);
-            }
-        }
-    }
+	foreach(const int id, todoMissionList)
+	{
+		foreach(const auto& quest, pksd.fullQuestData)
+		{
+			if (quest.api_no == id)
+			{
+				_missionSetting.todoMissionList.append(quest.api_no);
+			}
+		}
+	}
+	foreach(const int id, toDropMissionList)
+	{
+		foreach(const auto& quest, pksd.fullQuestData)
+		{
+			if (quest.api_no == id)
+			{
+				_missionSetting.dropMissionList.append(quest.api_no);
+			}
+		}
+	}
 
 }
 
@@ -923,12 +925,12 @@ bool ControlManager::BuildNext_Morning(bool isFromRepeating)
 	if (!isFromRepeating)
 	{
 		LoadToDoShipList_Kira();
-        _morningSetting.morningStage = MorningStage::None;
+		_morningSetting.morningStage = MorningStage::None;
 	}
 
 	// if quest list hit override step
 	bool hasWeeklyA = false;
-    for (const auto& quest : pksd->activeQuestData)
+	for (const auto& quest : pksd->activeQuestData)
 	{
 		bool isCompleted = quest.api_state == 3 || _morningSetting.lastBuiltState == MorningStage::AssumeJobDone;
 		switch ((MissionDefines)quest.api_no)
@@ -1001,7 +1003,7 @@ bool ControlManager::BuildNext_Morning(bool isFromRepeating)
 
 	_morningSetting.lastBuiltState = _morningSetting.morningStage;
 
-    _missionSetting.todoMissionList.clear();
+	_missionSetting.todoMissionList.clear();
 	_missionSetting.todoGreedyMissionList.clear();
 	_missionSetting.dropMissionList.clear();
 
@@ -1078,7 +1080,7 @@ bool ControlManager::BuildNext_Morning(bool isFromRepeating)
 		break;
 	case MorningStage::YuSou3_Mission:
 
-        _target = ActionTarget::Mission;
+		_target = ActionTarget::Mission;
 
 		_actionList.append(new MissionAction());
 		_actionList.append(new RepeatAction());
@@ -1087,7 +1089,7 @@ bool ControlManager::BuildNext_Morning(bool isFromRepeating)
 	case MorningStage::YuSou3:
 
 		if (_missionSetting.acceptedMissionList.contains((int)MissionDefines::YuSou3))
-        {
+		{
 			_target = ActionTarget::Any;
 
 			LoadAnyTemplateSettings();
@@ -1121,7 +1123,7 @@ bool ControlManager::BuildNext_Morning(bool isFromRepeating)
 		break;
 	case MorningStage::SouthEast5_Mission:
 
-        _target = ActionTarget::Mission;
+		_target = ActionTarget::Mission;
 
 		_actionList.append(new MissionAction());
 		_actionList.append(new RepeatAction());
@@ -1130,7 +1132,7 @@ bool ControlManager::BuildNext_Morning(bool isFromRepeating)
 	case MorningStage::SouthEast5:
 
 		if (_missionSetting.acceptedMissionList.contains((int)MissionDefines::SouthEast5))
-        {
+		{
 			LoadAnyTemplateSettings();
 			AnySetting setting = getAnyTemplateSetting(2, 1);
 			setting.count = 5;
@@ -1191,7 +1193,7 @@ bool ControlManager::BuildNext_Mission()
 
 bool ControlManager::switchToGreedyMission()
 {
-    if (_missionSetting.todoGreedyMissionList.isEmpty() || KanSaveData::getInstance().activeQuestData.count() >= MissionAction::maxMissionAcceptCount)
+	if (_missionSetting.todoGreedyMissionList.isEmpty() || KanSaveData::getInstance().activeQuestData.count() >= MissionAction::maxMissionAcceptCount)
 	{
 		_missionSetting.todoGreedyMissionList.clear();
 		return false;

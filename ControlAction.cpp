@@ -37,8 +37,8 @@ void ControlAction::tryRetry()
 		_retryTime++;
 		_waiting = false;
 		QString str = QString::fromLocal8Bit("Retrying %1:%2")
-						  .arg(_retryTime)
-						  .arg(ControlManager::getInstance().getStateStr());
+			.arg(_retryTime)
+			.arg(ControlManager::getInstance().getStateStr());
 		ControlManager::getInstance().setStateStr(str);
 	}
 	else
@@ -2342,15 +2342,15 @@ bool SortieAction::action()
 					else
 					{
 						QMap<int, QList<float>> mapPoints;
-						mapPoints[1] = {281, 207, 100, 41};
-						mapPoints[2] = {600, 199, 60, 36};
-						mapPoints[3] = {288.5f, 350, 102.5f, 36};
-						mapPoints[4] = {600, 350, 60, 36};
+						mapPoints[1] = { 281, 207, 100, 41 };
+						mapPoints[2] = { 600, 199, 60, 36 };
+						mapPoints[3] = { 288.5f, 350, 102.5f, 36 };
+						mapPoints[4] = { 600, 350, 60, 36 };
 						if (_area >= 6)
 						{
-							mapPoints[4] = {694, 378, 50, 20};
+							mapPoints[4] = { 694, 378, 50, 20 };
 						}
-						mapPoints[5] = mapPoints[6] = {720, 275, 30, 50};
+						mapPoints[5] = mapPoints[6] = { 720, 275, 30, 50 };
 						pPoint = mapPoints[_map];
 
 						float scale = 1.5f;
@@ -2427,9 +2427,9 @@ bool SortieAction::action()
 				else
 				{
 					QMap<int, QList<float>> mapPoints;
-					mapPoints[5] = {682, 280, 126, 41};
-					mapPoints[6] = {682, 420, 121, 51};
-					mapPoints[7] = {682, 560, 121, 51};
+					mapPoints[5] = { 682, 280, 126, 41 };
+					mapPoints[6] = { 682, 420, 121, 51 };
+					mapPoints[7] = { 682, 560, 121, 51 };
 					pPoint = mapPoints[_map];
 					float scale = 1.0f;
 					cm.moveMouseToAndClick(pPoint[0] * scale, pPoint[1] * scale, pPoint[2] * scale, pPoint[3] * scale); // map 1
@@ -2614,7 +2614,7 @@ bool SortieAction::action()
 					/*cm.checkColors(
 					451, 83, 181, 154, 104
 					, 342, 380, 43, 68, 18)*/
-				)
+					)
 				{
 					_waiting = true;
 					QTimer::singleShot(DELAY_TIME_CLICK, Qt::PreciseTimer, this, [this, &cm]() {
@@ -2633,7 +2633,7 @@ bool SortieAction::action()
 					352, 84, 173, 147, 119
 					, 356, 383, 46, 59, 68)
 					*/
-				)
+					)
 				{
 					_waiting = false;
 					setState(State::SkipBoardDone, "Sortie:SkipBoardDone");
@@ -2844,7 +2844,7 @@ bool SortieAction::action()
 					, 82, 230, 218, 196, 196,
 					680, 478, 93, 168, 168)
 					*/
-				)
+					)
 				{
 					_waiting = false;
 
@@ -2918,10 +2918,10 @@ void SortieAction::setState(State state, const char *str)
 }
 
 void SortieAction::setAreaAndMap(int area, int map, const QList<float> &areaCheckList /* = QList<float>()*/
-								 ,
-								 const QList<float> &mapClickPoint /* = QList<float>()*/
-								 ,
-								 const QMap<int, MapExClick> &mapExClickList /* = QList<float>()*/)
+	,
+	const QList<float> &mapClickPoint /* = QList<float>()*/
+	,
+	const QMap<int, MapExClick> &mapExClickList /* = QList<float>()*/)
 {
 	_area = area;
 	_map = map;
@@ -3155,7 +3155,7 @@ bool SortieCommonAdvanceAction::action()
 					416, 177, 0, 120, 121
 					, 450, 185, 233, 231, 227
 					, 398, 190, 214, 210, 111)*/
-				)
+					)
 				{
 					_withKeiKaiJin = false;
 					_totalFormationCount = 5;
@@ -3167,7 +3167,7 @@ bool SortieCommonAdvanceAction::action()
 					, 334, 230, 70, 155, 194
 					, 302, 237, 242, 254, 253)*/
 
-						 ActionCheckAndClickDefine::CheckColor(ActionCheckAndClickDefine::CheckColorNameDefine::SortieCommonNightOrNot))
+					ActionCheckAndClickDefine::CheckColor(ActionCheckAndClickDefine::CheckColorNameDefine::SortieCommonNightOrNot))
 				{
 					_waiting = false;
 					// click left or right
@@ -3186,7 +3186,7 @@ bool SortieCommonAdvanceAction::action()
 					, 579, 133, 38, 87, 115
 					, 511, 288, 238, 255, 255)*/
 
-						 ActionCheckAndClickDefine::CheckColor(ActionCheckAndClickDefine::CheckColorNameDefine::SortieCommonLeaveOrNot))
+					ActionCheckAndClickDefine::CheckColor(ActionCheckAndClickDefine::CheckColorNameDefine::SortieCommonLeaveOrNot))
 				{
 					if (cm.isPortDataDirty())
 					{
@@ -3261,7 +3261,7 @@ bool SortieCommonAdvanceAction::action()
 			cm.setPortDataDirty();
 			_waiting = true;
 			if (_shouldRetrieve && !cm.isLevelMode() // level mode always set to retrieve
-			)
+				)
 			{
 				cm.setToTerminate("Terminated:SortieShouldRetrieve", true);
 				emit sigFatal();
@@ -3278,28 +3278,28 @@ bool SortieCommonAdvanceAction::action()
 					case 5:
 						if (_withKeiKaiJin)
 						{
-							points[1] = {513, 184};
-							points[2] = {646, 184};
-							points[3] = {445, 341};
-							points[4] = {577, 341};
-							points[5] = {706, 341};
+							points[1] = { 513, 184 };
+							points[2] = { 646, 184 };
+							points[3] = { 445, 341 };
+							points[4] = { 577, 341 };
+							points[5] = { 706, 341 };
 						}
 						else
 						{
-							points[1] = {445, 184};
-							points[2] = {577, 184};
-							points[3] = {706, 184};
-							points[4] = {513, 341};
-							points[5] = {646, 341};
+							points[1] = { 445, 184 };
+							points[2] = { 577, 184 };
+							points[3] = { 706, 184 };
+							points[4] = { 513, 341 };
+							points[5] = { 646, 341 };
 						}
 						break;
 					case 6:
-						points[1] = {445, 184};
-						points[2] = {577, 184};
-						points[3] = {706, 184};
-						points[4] = {445, 341};
-						points[5] = {577, 341};
-						points[6] = {706, 341};
+						points[1] = { 445, 184 };
+						points[2] = { 577, 184 };
+						points[3] = { 706, 184 };
+						points[4] = { 445, 341 };
+						points[5] = { 577, 341 };
+						points[6] = { 706, 341 };
 						break;
 					}
 					int formation = 1;
@@ -3340,7 +3340,7 @@ bool SortieCommonAdvanceAction::action()
 		{
 			_waiting = true;
 			if (_shouldRetrieve && !cm.isLevelMode() // level mode always set to retrieve
-			)
+				)
 			{
 				cm.setToTerminate("Terminated:SortieShouldRetrieve", true);
 				emit sigFatal();
@@ -3350,10 +3350,10 @@ bool SortieCommonAdvanceAction::action()
 			{
 				QTimer::singleShot(DELAY_TIME_CLICK, Qt::PreciseTimer, this, [this, &cm]() {
 					QMap<int, QList<float>> points;
-					points[1] = {497, 172};
-					points[2] = {662, 172};
-					points[3] = {497, 308};
-					points[4] = {662, 308};
+					points[1] = { 497, 172 };
+					points[2] = { 662, 172 };
+					points[3] = { 497, 308 };
+					points[4] = { 662, 308 };
 					int formation = 4;
 
 					if (cm.isAnyMode())
@@ -3838,7 +3838,7 @@ bool ExpeditionAction::action()
 					571, 129, 35, 35, 35
 					, 637, 170, 255, 246, 242)
 					*/
-				)
+					)
 				{
 					_waiting = false;
 					// TODO ???
@@ -3863,11 +3863,11 @@ bool ExpeditionAction::action()
 		{
 			_waiting = true;
 			QTimer::singleShot(DELAY_TIME_LONG, Qt::PreciseTimer, this, [this, &cm]() // use longer
-							   {
-								   ActionCheckAndClickDefine::MoveAndClick(ActionCheckAndClickDefine::MoveMouseNameDefine::ExpeditionTeamHorizontal, _team); // team
-								   setState(State::TeamSelectedChecking, "Expedition:TeamSelectedChecking");
-								   resetRetryAndWainting();
-							   });
+			{
+				ActionCheckAndClickDefine::MoveAndClick(ActionCheckAndClickDefine::MoveMouseNameDefine::ExpeditionTeamHorizontal, _team); // team
+				setState(State::TeamSelectedChecking, "Expedition:TeamSelectedChecking");
+				resetRetryAndWainting();
+			});
 		}
 		break;
 	case ExpeditionAction::State::TeamSelectedChecking:
@@ -3971,7 +3971,7 @@ bool MissionAction::action()
 		{
 			_waiting = true;
 			QTimer::singleShot(DELAY_TIME_CLICK, Qt::PreciseTimer, this, [this, &cm]() {
-                KanSaveData::getInstance().requireRecordQuestList();
+				KanSaveData::getInstance().requireRecordQuestList();
 				ActionCheckAndClickDefine::MoveAndClick(ActionCheckAndClickDefine::MoveMouseNameDefine::MissionButton); // mission button
 				setState(State::CheckingMissionState, "Mission:CheckingMissionState");
 				resetRetryAndWainting();
@@ -3999,7 +3999,7 @@ bool MissionAction::action()
 							{
 								_waiting = false;
 								setState(State::CompleteSkip, "Mission::CompleteSkip");
-                                cm.GenerateMissionTodo();
+								cm.GenerateMissionTodo();
 								break;
 							}
 						}
@@ -4011,8 +4011,8 @@ bool MissionAction::action()
 						if (ActionCheckAndClickDefine::CheckColor(ActionCheckAndClickDefine::CheckColorNameDefine::MissionSkipCompleteDone))
 						{
 							_waiting = false;
-                            setState(State::CompleteSkip, "Mission::CompleteSkip");
-                            cm.GenerateMissionTodo();
+							setState(State::CompleteSkip, "Mission::CompleteSkip");
+							cm.GenerateMissionTodo();
 							break;
 						}
 						else if (!ActionCheckAndClickDefine::CheckColor(ActionCheckAndClickDefine::CheckColorNameDefine::MissionNonConnecting))
@@ -4023,53 +4023,53 @@ bool MissionAction::action()
 							break;
 						}
 						else if (ActionCheckAndClickDefine::CheckColor(ActionCheckAndClickDefine::CheckColorNameDefine::MissionPanel))
-                        {
-                            cm.GenerateMissionTodo();
-                            auto &missionSetting = cm.getMissionSetting();
-                            QList<kcsapi_quest> questList;
-                            QList<kcsapi_quest> unsortedList;
-                            for (int i = _curPage * 5; i < (_curPage + 1) * 5; i++)
+						{
+							cm.GenerateMissionTodo();
+							auto &missionSetting = cm.getMissionSetting();
+							QList<kcsapi_quest> questList;
+							QList<kcsapi_quest> unsortedList;
+							for (int i = _curPage * 5; i < (_curPage + 1) * 5; i++)
 							{
-                                if (pksd.fullQuestData.count() > i)
-                                {
-                                    questList.append(pksd.fullQuestData[i]);
-                                    unsortedList.append(pksd.fullQuestData[i]);
-                                }
-                            }
-                            std::sort(questList.begin(), questList.end(),
-                                  [&missionSetting](const kcsapi_quest& a, const kcsapi_quest& b) -> bool {
-                                int scoreA = 0;
-                                int scoreB = 0;
-                                for (int i=0; i<missionSetting.dropMissionList.count(); i++)
-                                {
-                                    if (missionSetting.dropMissionList[i] == a.api_no)
-                                    {
-                                        scoreA += i;
-                                    }
-                                    if (missionSetting.dropMissionList[i] == b.api_no)
-                                    {
-                                        scoreB += i;
-                                    }
-                                }
-                                for (int i=0; i<missionSetting.todoMissionList.count(); i++)
-                                {
-                                    if (missionSetting.todoMissionList[i] == a.api_no)
-                                    {
-                                        scoreA += i*1000;
-                                    }
-                                    if (missionSetting.todoMissionList[i] == b.api_no)
-                                    {
-                                        scoreB += i*1000;
-                                    }
-                                }
-                                return scoreA < scoreB;
-                            });
+								if (pksd.fullQuestData.count() > i)
+								{
+									questList.append(pksd.fullQuestData[i]);
+									unsortedList.append(pksd.fullQuestData[i]);
+								}
+							}
+							std::sort(questList.begin(), questList.end(),
+								[&missionSetting](const kcsapi_quest& a, const kcsapi_quest& b) -> bool {
+								int scoreA = 0;
+								int scoreB = 0;
+								for (int i = 0; i < missionSetting.dropMissionList.count(); i++)
+								{
+									if (missionSetting.dropMissionList[i] == a.api_no)
+									{
+										scoreA += i;
+									}
+									if (missionSetting.dropMissionList[i] == b.api_no)
+									{
+										scoreB += i;
+									}
+								}
+								for (int i = 0; i < missionSetting.todoMissionList.count(); i++)
+								{
+									if (missionSetting.todoMissionList[i] == a.api_no)
+									{
+										scoreA += i * 1000;
+									}
+									if (missionSetting.todoMissionList[i] == b.api_no)
+									{
+										scoreB += i * 1000;
+									}
+								}
+								return scoreA < scoreB;
+							});
 							if (_isCompleting)
 							{
-                                bool toComplete = pksd.lastQuestList.api_completed_kind != 0;
+								bool toComplete = pksd.lastQuestList.api_completed_kind != 0;
 								if (!toComplete)
-                                {
-									foreach (const int toDrop, missionSetting.dropMissionList)
+								{
+									foreach(const int toDrop, missionSetting.dropMissionList)
 									{
 										if (missionSetting.acceptedMissionList.contains(toDrop))
 										{
@@ -4082,7 +4082,7 @@ bool MissionAction::action()
 								if (!toComplete)
 								{
 									_isCompleting = false;
-                                    if (_curPage != 0)
+									if (_curPage != 0)
 									{
 										_waiting = false;
 										setState(State::SelectFirstPage, "Mission::SelectFirstPage");
@@ -4095,20 +4095,20 @@ bool MissionAction::action()
 							{
 								auto &missionSetting = cm.getMissionSetting();
 								bool toComplete = false;
-                                for (int i = 0; i < questList.count(); i++)
+								for (int i = 0; i < questList.count(); i++)
 								{
 									// complete or drop mission
-                                    if (questList[i].api_state == 3 ||
-                                        (questList[i].api_state == 2 && missionSetting.dropMissionList.contains(questList[i].api_no)))
+									if (questList[i].api_state == 3 ||
+										(questList[i].api_state == 2 && missionSetting.dropMissionList.contains(questList[i].api_no)))
 									{
-                                        for (int j=0; j<unsortedList.count(); j++)
-                                        {
-                                            if (unsortedList[j].api_no == questList[i].api_no)
-                                            {
-                                                _targetIndex = j;
-                                                break;
-                                            }
-                                        }
+										for (int j = 0; j < unsortedList.count(); j++)
+										{
+											if (unsortedList[j].api_no == questList[i].api_no)
+											{
+												_targetIndex = j;
+												break;
+											}
+										}
 										_waiting = false;
 										setState(State::CompleteMission, "Mission:CompleteMission");
 										toComplete = true;
@@ -4133,22 +4133,22 @@ bool MissionAction::action()
 
 								bool toAccept = false;
 
-                                for (int i = 0; i < questList.count(); i++)
+								for (int i = 0; i < questList.count(); i++)
 								{
-                                    const auto &quest = questList[i];
+									const auto &quest = questList[i];
 									if (missionSetting.todoMissionList.contains(quest.api_no) && !missionSetting.dropMissionList.contains(quest.api_no))
 									{
 										if (quest.api_state == 1)
-                                        {
-                                            for (int j=0; j<unsortedList.count(); j++)
-                                            {
-                                                if (unsortedList[j].api_no == questList[i].api_no)
-                                                {
-                                                    _targetIndex = j;
-                                                    break;
-                                                }
-                                            }
-                                            if (pksd.lastQuestList.api_exec_count < maxMissionAcceptCount)
+										{
+											for (int j = 0; j < unsortedList.count(); j++)
+											{
+												if (unsortedList[j].api_no == questList[i].api_no)
+												{
+													_targetIndex = j;
+													break;
+												}
+											}
+											if (pksd.lastQuestList.api_exec_count < maxMissionAcceptCount)
 											{
 												_waiting = false;
 												setState(State::AcceptMission, "Mission::AcceptMission");
@@ -4170,32 +4170,32 @@ bool MissionAction::action()
 									break;
 								}
 								else
-                                {
-                                    bool toContinue = false;
-                                    if (_curPage < pksd.fullQuestData.count()/5)
+								{
+									bool toContinue = false;
+									if (_curPage < pksd.fullQuestData.count() / 5)
 									{
-                                        for (int i = (_curPage+1)*5; i < pksd.fullQuestData.count(); i++)
-                                        {
-                                            const auto &quest = pksd.fullQuestData[i];
-                                            if (missionSetting.todoMissionList.contains(quest.api_no) && quest.api_state == 0)
-                                            {
-                                                toContinue = true;
-                                                break;
-                                            }
-                                            if (missionSetting.dropMissionList.contains(quest.api_no) && quest.api_state > 0)
-                                            {
-                                                toContinue = true;
-                                                break;
-                                            }
-                                        }
+										for (int i = 0; i < pksd.fullQuestData.count(); i++)
+										{
+											const auto &quest = pksd.fullQuestData[i];
+											if (missionSetting.todoMissionList.contains(quest.api_no) && quest.api_state == 1)
+											{
+												toContinue = true;
+												break;
+											}
+											if (missionSetting.dropMissionList.contains(quest.api_no) && quest.api_state > 1)
+											{
+												toContinue = true;
+												break;
+											}
+										}
 									}
-                                    if (toContinue)
-                                    {
-                                        _waiting = false;
-                                        setState(State::SelectNextPage, "Mission::SelectNextPage");
-                                        break;
-                                    }
-                                    else
+									if (toContinue)
+									{
+										_waiting = false;
+										setState(State::SelectNextPage, "Mission::SelectNextPage");
+										break;
+									}
+									else
 									{
 										_waiting = false;
 										setState(State::ReturnToPortChecking, "Mission::ReturnToPortChecking");
@@ -4225,7 +4225,7 @@ bool MissionAction::action()
 		if (!_waiting)
 		{
 			_waiting = true;
-            QTimer::singleShot(DELAY_TIME_CLICK, Qt::PreciseTimer, this, [this, &cm]() {
+			QTimer::singleShot(DELAY_TIME_CLICK, Qt::PreciseTimer, this, [this, &cm]() {
 				ActionCheckAndClickDefine::MoveAndClick(ActionCheckAndClickDefine::MoveMouseNameDefine::MissionNextPage); // next page
 				_curPage++;
 				setState(State::CheckingMissionState, "Mission:CheckingMissionState");
@@ -4237,11 +4237,11 @@ bool MissionAction::action()
 		if (!_waiting)
 		{
 			_waiting = true;
-            QTimer::singleShot(DELAY_TIME_CLICK, Qt::PreciseTimer, this, [this, &cm]() {
+			QTimer::singleShot(DELAY_TIME_CLICK, Qt::PreciseTimer, this, [this, &cm]() {
 				ActionCheckAndClickDefine::MoveAndClick(ActionCheckAndClickDefine::MoveMouseNameDefine::MissionFirstPage); // first page
 				setState(State::CheckingMissionState, "Mission:CheckingMissionState");
-                _curPage = 0;
-                resetRetryAndWainting();
+				_curPage = 0;
+				resetRetryAndWainting();
 			});
 		}
 		break;

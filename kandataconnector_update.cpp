@@ -253,8 +253,8 @@ void KanDataConnector::updateFleetTable()
 		//		int sakuteki_teisatsu = 0;
 		//		int sakuteki_dentan = 0;
 
-        int totalKaryoku = 0;
-        int totalTaisen = 0;
+		int totalKaryoku = 0;
+		int totalTaisen = 0;
 
 		int keijuncount = 0;
 		int kuchikucount = 0;
@@ -353,8 +353,8 @@ void KanDataConnector::updateFleetTable()
 						const kcsapi_mst_slotitem* pmstslotitem = findMstSlotItemFromSlotitemid(v.api_slotitem_id);
 						if (pmstslotitem)
 						{
-                            //totalKaryoku += pmstslotitem->api_houg;
-                            //totalTaisen += pmstslotitem->api_tais;
+							//totalKaryoku += pmstslotitem->api_houg;
+							//totalTaisen += pmstslotitem->api_tais;
 							if (pmstslotitem->api_type.count() > 2)
 							{
 								// ok to cast even if not exist
@@ -395,8 +395,8 @@ void KanDataConnector::updateFleetTable()
 				}
 			}
 			alllv += pship->api_lv;
-            totalKaryoku += pship->api_karyoku[0];
-            totalTaisen += pship->api_taisen[0];
+			totalKaryoku += pship->api_karyoku[0];
+			totalTaisen += pship->api_taisen[0];
 			if (flagshipLv <= 0)
 			{
 				flagshipLv = pship->api_lv;
@@ -453,7 +453,8 @@ void KanDataConnector::updateFleetTable()
 			if (setting.map == 5)
 			{
 				areasp33mul = 1;
-				mapSakuBorder = 33;
+				mapSakuBorder = 49;
+				mapMinSakuBorder = 34;
 			}
 		}
 		else if (setting.area == 3)
@@ -461,7 +462,37 @@ void KanDataConnector::updateFleetTable()
 			if (setting.map == 5)
 			{
 				areasp33mul = 4;
-				mapSakuBorder = 28;
+				mapSakuBorder = 40;
+				mapMinSakuBorder = 28;
+			}
+		}
+		else if (setting.area == 4)
+		{
+			if (setting.map == 5)
+			{
+				areasp33mul = 2;
+				mapSakuBorder = 70;
+				mapMinSakuBorder = 59;
+			}
+		}
+		else if (setting.area == 5)
+		{
+			if (setting.map == 2)
+			{
+				areasp33mul = 2;
+				mapSakuBorder = 70;
+			}
+			else if (setting.map == 4)
+			{
+				areasp33mul = 2;
+				mapSakuBorder = 60;
+				mapMinSakuBorder = 45;
+			}
+			else if (setting.map == 5)
+			{
+				areasp33mul = 2;
+				mapSakuBorder = 80;
+				mapMinSakuBorder = 66;
 			}
 		}
 		else if (setting.area == 6)
@@ -469,14 +500,14 @@ void KanDataConnector::updateFleetTable()
 			if (setting.map == 1)
 			{
 				areasp33mul = 4;
-				mapSakuBorder = 25;
-				mapMinSakuBorder = 16;
+				mapSakuBorder = 36;
+				mapMinSakuBorder = 25;
 			}
 			else if (setting.map == 2)
 			{
 				areasp33mul = 3;
 				mapSakuBorder = 50;
-				mapMinSakuBorder = 40;
+				mapMinSakuBorder = 38;
 			}
 			else if (setting.map == 3)
 			{
@@ -487,6 +518,15 @@ void KanDataConnector::updateFleetTable()
 			{
 				areasp33mul = 3;
 				mapSakuBorder = 50;
+			}
+		}
+		else if (setting.area == 7)
+		{
+			if (setting.map == 2)
+			{
+				areasp33mul = 4;
+				mapSakuBorder = 69;
+				mapMinSakuBorder = 46;
 			}
 		}
 
@@ -560,9 +600,9 @@ void KanDataConnector::updateFleetTable()
 			.arg(minTyku)
 			.arg(totalSaku, 0, 'f', 2);
 
-        QString tip = QString::fromLocal8Bit("火力:%1 対潜%2")
-                .arg(totalKaryoku)
-                .arg(totalTaisen);
+		QString tip = QString::fromLocal8Bit("火力:%1 対潜%2")
+			.arg(totalKaryoku)
+			.arg(totalTaisen);
 
 		if (mapSakuBorder > 0)
 		{
@@ -600,7 +640,7 @@ void KanDataConnector::updateFleetTable()
 			}
 		}
 
-        MainWindow::infoWindow()->updateFleetTable(v.api_id - 1, strtitle, colindex, bRed, rows, tip);
+		MainWindow::infoWindow()->updateFleetTable(v.api_id - 1, strtitle, colindex, bRed, rows, tip);
 	}
 
 	MainWindow::shipWindow()->buildTable();
@@ -739,7 +779,7 @@ void KanDataConnector::updateInfoTitleBattle(bool bBattle, bool bSelfDamaged)
 		}
 	}
 
-    ControlManager::getInstance().isInBattle = bBattle;
+	ControlManager::getInstance().isInBattle = bBattle;
 
 	if (bBattle)
 	{
@@ -965,14 +1005,14 @@ void KanDataConnector::updateInfoTitleBattle(bool bBattle, bool bSelfDamaged)
 
 		pksd->wasLastBossCell = (pksd->nextdata.api_no == pksd->nextdata.api_bosscell_no || pksd->nextdata.api_color_no == 5);
 
-        // special for calc 2-1
-        if (pksd->nextdata.api_maparea_id == 2 && pksd->nextdata.api_mapinfo_no == 1)
+		// special for calc 2-1
+		if (pksd->nextdata.api_maparea_id == 2 && pksd->nextdata.api_mapinfo_no == 1)
 		{
-            if (pksd->nextdata.api_no == 8 || pksd->nextdata.api_no == 10 || pksd->nextdata.api_no == 11)
-            {
-                pksd->wasLastBossCell = true;
-            }
-        }
+			if (pksd->nextdata.api_no == 8 || pksd->nextdata.api_no == 10 || pksd->nextdata.api_no == 11)
+			{
+				pksd->wasLastBossCell = true;
+			}
+		}
 
 		pksd->lastKilledYusou = transtotal - transremain;
 		pksd->lastKilledKubou = actotal - acremain;
@@ -995,7 +1035,7 @@ void KanDataConnector::updateInfoTitleCond()
 		return;
 	}
 
-    ControlManager::getInstance().isInBattle = false;
+	ControlManager::getInstance().isInBattle = false;
 
 	int suibocount = 0;
 	int suibokiras = 0;
@@ -1009,7 +1049,7 @@ void KanDataConnector::updateInfoTitleCond()
 	int lvmin = 20;
 
 	bool hasKiraFile = false;
-    if (QFile::exists(MainWindow::getAbsoluteResourcePath() + "/action/" + "import_kira.table"))
+	if (QFile::exists(MainWindow::getAbsoluteResourcePath() + "/action/" + "import_kira.table"))
 	{
 		hasKiraFile = true;
 	}
@@ -1142,10 +1182,10 @@ void KanDataConnector::updateBattle(const kcsapi_battle &api_battle, KanBattleTy
 	{
 		dockid = api_battle.api_dock_id - 1;
 		// midnight
-        if (type == KanBattleType::Night
-                || type == KanBattleType::DayToNight
-                || type == KanBattleType::LDShooting
-                || dockid < 0)
+		if (type == KanBattleType::Night
+			|| type == KanBattleType::DayToNight
+			|| type == KanBattleType::LDShooting
+			|| dockid < 0)
 		{
 			dockid = api_battle.api_deck_id - 1;
 		}
@@ -1157,15 +1197,15 @@ void KanDataConnector::updateBattle(const kcsapi_battle &api_battle, KanBattleTy
 		{
 			dockid = api_battle.api_deck_id - 1;
 		}
-        if (type == KanBattleType::Combined_Each
-                || type == KanBattleType::Combined_EachWater)
+		if (type == KanBattleType::Combined_Each
+			|| type == KanBattleType::Combined_EachWater)
 		{
 			bCombinedEnemy = true;
 			bCombinedSelf = true;
 		}
-        else if (type == KanBattleType::Combined_EC
-                 || type == KanBattleType::Combined_ECNight
-                 || type == KanBattleType::Combined_ECNightToDay)
+		else if (type == KanBattleType::Combined_EC
+			|| type == KanBattleType::Combined_ECNight
+			|| type == KanBattleType::Combined_ECNightToDay)
 		{
 			// enemy combined
 			bCombinedEnemy = true;
@@ -1371,9 +1411,9 @@ void KanDataConnector::updateBattle(const kcsapi_battle &api_battle, KanBattleTy
 
 		// hourai
 		int houraiflagcount = api_battle.api_hourai_flag.count();
-        if (houraiflagcount > 0
-                || type == KanBattleType::LDShooting
-                || type == KanBattleType::Combined_LDShooting)
+		if (houraiflagcount > 0
+			|| type == KanBattleType::LDShooting
+			|| type == KanBattleType::Combined_LDShooting)
 		{
 			int hougeki1flag = 0;
 			int hougeki2flag = 0;
@@ -1387,7 +1427,7 @@ void KanDataConnector::updateBattle(const kcsapi_battle &api_battle, KanBattleTy
 			if (houraiflagcount > 2)
 			{
 				hougeki3flag = api_battle.api_hourai_flag[2];
-			}            
+			}
 
 			if (bCombinedSelf &&
 				(type == KanBattleType::Combined_KouKu || type == KanBattleType::Combined_Day))
@@ -1397,13 +1437,13 @@ void KanDataConnector::updateBattle(const kcsapi_battle &api_battle, KanBattleTy
 				hougeki3flag = api_battle.api_hourai_flag[3];
 			}
 
-            if (type == KanBattleType::LDShooting
-                    || type == KanBattleType::Combined_LDShooting)
-            {
-                // untested
-                hougeki1flag = 1;
-                hougeki2flag = 1;
-            }
+			if (type == KanBattleType::LDShooting
+				|| type == KanBattleType::Combined_LDShooting)
+			{
+				// untested
+				hougeki1flag = 1;
+				hougeki2flag = 1;
+			}
 
 			if (hougeki1flag)
 			{
@@ -1459,7 +1499,7 @@ void KanDataConnector::updateBattle(const kcsapi_battle &api_battle, KanBattleTy
 				}
 			}
 
-            TRYLOG(processHougekiDamages(api_battle.api_friendly_battle.api_hougeki, false, bEnemyDamageCombined, true), "FriendlyHougeki");
+			TRYLOG(processHougekiDamages(api_battle.api_friendly_battle.api_hougeki, false, bEnemyDamageCombined, true), "FriendlyHougeki");
 
 			TRYLOG(processHougekiDamages(api_battle.api_hougeki
 				, bCombinedSelf		/* always second team*/
@@ -1544,8 +1584,8 @@ void KanDataConnector::updateBattle(const kcsapi_battle &api_battle, KanBattleTy
 
 void KanDataConnector::processHougekiDamages(const kcsapi_battle_hougeki& api_hougeki
 	, bool bOnlyCombinedSelf
-    , bool bOnlyCombinedEnemy
-    , bool bIsFriendly/*=false*/)
+	, bool bOnlyCombinedEnemy
+	, bool bIsFriendly/*=false*/)
 {
 	// must skip 0!!!
 	QList<float>* fdamage = &totalFDamage;
@@ -1613,7 +1653,7 @@ void KanDataConnector::processHougekiDamages(const kcsapi_battle_hougeki& api_ho
 
 				if (defendpos >= 0)
 				{
-                    if (api_hougeki.api_at_eflag[j] > 0 && !bIsFriendly)
+					if (api_hougeki.api_at_eflag[j] > 0 && !bIsFriendly)
 					{
 						// from enemy
 						// TODO MaxTeamMemberCount

@@ -125,7 +125,7 @@ void RemoteNotifyHandler::RunKillMITMNetStat()
 		{
 			return;
 		}
-		process->write((QString("netstat -vanp tcp | grep ") + QString::number(MainWindow::mainWindow()->getUsePort()) + " | grep tcp46 | awk '{print \"kill -9\", $9}' | sh\n").toLocal8Bit());
+        process->write((QString("netstat -vanp tcp | grep ") + QString::number(MainWindow::mainWindow()->getUsePort()) + " | grep tcp46 | awk '{print \"kill -9 \", $9}' | zsh\n").toLocal8Bit());
 		process->closeWriteChannel();
 
 		QEventLoop loop;

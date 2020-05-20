@@ -254,7 +254,9 @@ void KanDataConnector::updateFleetTable()
 		//		int sakuteki_dentan = 0;
 
 		int totalKaryoku = 0;
+        int totalTaiku = 0;
 		int totalTaisen = 0;
+        int totalSaku = 0;
 
 		int keijuncount = 0;
 		int kuchikucount = 0;
@@ -396,7 +398,9 @@ void KanDataConnector::updateFleetTable()
 			}
 			alllv += pship->api_lv;
 			totalKaryoku += pship->api_karyoku[0];
+            totalTaiku += pship->api_taiku[0];
 			totalTaisen += pship->api_taisen[0];
+            totalSaku += pship->api_sakuteki[0];
 			if (flagshipLv <= 0)
 			{
 				flagshipLv = pship->api_lv;
@@ -586,7 +590,7 @@ void KanDataConnector::updateFleetTable()
 		int minTyku = 0;
 		int maxTyku = 0;
 		KanDataCalc::CalcTeamTyku(teamFullData, minTyku, maxTyku, KanDataCalc::LandBaseState::None);
-		double totalSaku = KanDataCalc::CalcTeamSakuTeki(teamFullData, pksd->portdata.api_basic.api_level, areasp33mul);
+        double totalSaku33 = KanDataCalc::CalcTeamSakuTeki(teamFullData, pksd->portdata.api_basic.api_level, areasp33mul);
 
 		KanSaveData::DeckSaveData* pdsd = &(pksd->deckSaveData[v.api_id - 1]);
 		pdsd->totalLevel = alllv;
@@ -598,11 +602,13 @@ void KanDataConnector::updateFleetTable()
 			.arg(v.api_name)
 			.arg(alllv)
 			.arg(minTyku)
-			.arg(totalSaku, 0, 'f', 2);
+            .arg(totalSaku33, 0, 'f', 2);
 
-		QString tip = QString::fromLocal8Bit("火力:%1 対潜%2")
-			.arg(totalKaryoku)
-			.arg(totalTaisen);
+        QString tip = QString::fromLocal8Bit("火力:%1 対空:%2 対潜:%3 索敵:%4")
+            .arg(totalKaryoku)
+            .arg(totalTaiku)
+            .arg(totalTaisen)
+            .arg(totalSaku);
 
 		if (mapSakuBorder > 0)
 		{

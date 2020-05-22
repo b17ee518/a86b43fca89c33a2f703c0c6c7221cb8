@@ -669,6 +669,22 @@ public:
 };
 
 /**
+ * @brief The kcsapi_createitem_unset_items class
+ */
+class kcsapi_createitem_unset_items : public KAPIBaseData
+{
+
+public:
+    kcsapi_createitem_unset_items() {}
+
+    virtual bool ReadFromJObj(const QJsonObject &jobj);
+
+    int api_type3;
+    QList<int> api_slot_list;
+};
+
+
+/**
  * @brief The kcsapi_createitem class
  */
 class kcsapi_createitem : public KAPIBaseData
@@ -679,14 +695,10 @@ public:
 
 	virtual bool ReadFromJObj(const QJsonObject &jobj);
 
-	int api_id;
-	int api_slotitem_id;
-	int api_create_flag;
-	int api_shizai_flag;
-	kcsapi_slotitem api_slot_item;
-	QList<int> api_material;
-	int api_type3;
-	QList<int> api_unsetslot;
+    int api_create_flag;
+    QList<int> api_material;
+    QList<kcsapi_slotitem> api_get_items;
+    QList<kcsapi_createitem_unset_items> api_unset_items;
 };
 
 

@@ -589,11 +589,18 @@ bool KanDataConnector::req_kousyou_createitem_parse()
 {
     kcsapi_createitem api_createitem;
     api_createitem.ReadFromJObj(_jobj);
+
     if (api_createitem.api_create_flag == 1)
     {
-        AddSlotItem(api_createitem.api_slot_item);
-        //pksd->slotitemcountoffset++;
+        foreach (const kcsapi_slotitem &v, api_createitem.api_get_items)
+        {
+            if (v.api_slotitem_id >= 0)
+            {
+                AddSlotItem(v);
+            }
+        }
     }
+
     for (int i = 0; i < api_createitem.api_material.count(); i++)
     {
         pksd->portdata.api_material[i].api_value = api_createitem.api_material[i];
@@ -606,8 +613,11 @@ bool KanDataConnector::req_kousyou_createitem_parse()
     int usebull = _req.GetItemAsString("api_item2").toInt();
     int usesteel = _req.GetItemAsString("api_item3").toInt();
     int usebauxite = _req.GetItemAsString("api_item4").toInt();
-    //TODO: adjust item?
-    logCreateItemResult(api_createitem.api_slot_item.api_slotitem_id, usefuel, usebull, usesteel, usebauxite);
+
+    foreach (const kcsapi_slotitem &v, api_createitem.api_get_items)
+    {
+        logCreateItemResult(v.api_slotitem_id, usefuel, usebull, usesteel, usebauxite);
+    }
 
     return true;
 }

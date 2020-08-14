@@ -5,7 +5,7 @@
 #-------------------------------------------------
 
 QT       += core gui multimedia network
-CONFIG += c++11
+CONFIG += c++11 sdk_no_version_check
 
 greaterThan(QT_MAJOR_VERSION, 4) {
     QT += widgets

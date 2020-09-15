@@ -2023,7 +2023,7 @@ bool DevelopAction::action()
 			_waiting = true;
 			QTimer::singleShot(DELAY_TIME, Qt::PreciseTimer, this, [this, &cm]() {
 				// ok to develop
-				if (ActionCheckAndClickDefine::CheckColor(ActionCheckAndClickDefine::CheckColorNameDefine::DevelopReadyPanel))
+                if (true)//ActionCheckAndClickDefine::CheckColor(ActionCheckAndClickDefine::CheckColorNameDefine::DevelopReadyPanel))
 				{
 					_waiting = false;
 					setState(State::SelectOKDone, "Develop:SelectOKDone");
@@ -3501,19 +3501,31 @@ bool RepeatAction::action()
 			{
 				newJobFromSwitch = mainWindow->switchToExpeditionWait();
 			}
-		}
-		else if (cm.isBulletMode())
-		{
-			if (cm.BuildNext_Bullet())
-			{
-				setState(State::Done, "Repeat:Done");
-				cm.StartJob();
-			}
-			else
-			{
-				newJobFromSwitch = mainWindow->switchToExpeditionWait();
-			}
-		}
+        }
+        else if (cm.isBulletMode())
+        {
+            if (cm.BuildNext_Bullet())
+            {
+                setState(State::Done, "Repeat:Done");
+                cm.StartJob();
+            }
+            else
+            {
+                newJobFromSwitch = mainWindow->switchToExpeditionWait();
+            }
+        }
+        else if (cm.isBauxiteMode())
+        {
+            if (cm.BuildNext_Bauxite())
+            {
+                setState(State::Done, "Repeat:Done");
+                cm.StartJob();
+            }
+            else
+            {
+                newJobFromSwitch = mainWindow->switchToExpeditionWait();
+            }
+        }
 		else if (cm.isKiraMode())
 		{
 			if (cm.BuildNext_Kira())

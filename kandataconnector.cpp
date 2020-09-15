@@ -454,7 +454,17 @@ void KanDataConnector::checkWoundQuit()
 				}
 			}
 		}
-	}
+    }
+
+    if (cm.isBauxiteMode())
+    {
+        auto& nextData = KanSaveData::getInstance().nextdata;
+        if (nextData.api_maparea_id == 2 && nextData.api_mapinfo_no == 2 && (nextData.api_next == 1 || nextData.api_next == 0))
+        {
+            // surpass
+            return;
+        }
+    }
 
 	foreach(const auto& deck, pksd->portdata.api_deck_port)
 	{

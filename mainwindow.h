@@ -178,8 +178,9 @@ private slots:
 
 	bool pingTest();
 
-	void onDoJobFuel();
-	void onDoJobBullet();
+    void onDoJobFuel();
+    void onDoJobBullet();
+    void onDoJobBauxite();
 	void onDoJobKira();
 	void onDoJobLevel();
 	void onDoJobRank();

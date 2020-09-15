@@ -100,6 +100,23 @@ void MainWindow::onDoJobBullet()
 	}
 }
 
+void MainWindow::onDoJobBauxite()
+{
+    auto& cm = ControlManager::getInstance();
+    cm.Terminate();
+    cm.clearLastTarget();
+
+    cm.clearSSShipList();
+    if (cm.BuildNext_Bauxite())
+    {
+        cm.StartJob();
+    }
+    else
+    {
+        switchToExpeditionWait();
+    }
+}
+
 void MainWindow::onDoJobKira()
 {
 	auto& cm = ControlManager::getInstance();

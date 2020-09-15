@@ -28,6 +28,7 @@ public:
 		Kira,
 		Fuel,
 		Bullet,
+        Bauxite,
 		SouthEast,
 		Expedition,
 		Level,
@@ -241,6 +242,8 @@ public:
 
 	bool BuildNext_Bullet();
 
+    bool BuildNext_Bauxite();
+
 	bool BuildNext_East();
 
 	bool BuildNext_Level();
@@ -383,6 +386,7 @@ public:
 	inline bool isKiraMode() { return _target == ActionTarget::Kira; }
 	inline bool isFuelMode() { return _target == ActionTarget::Fuel; }
 	inline bool isBulletMode() { return _target == ActionTarget::Bullet; }
+    inline bool isBauxiteMode() { return _target == ActionTarget::Bauxite; }
 	inline bool isSouthEastMode() { return _target == ActionTarget::SouthEast; }
 	inline bool isLevelMode() { return _target == ActionTarget::Level; }
 	inline bool isExpeditionMode() { return _target == ActionTarget::Expedition; }

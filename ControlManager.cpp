@@ -156,6 +156,34 @@ bool ControlManager::BuildNext_Kira()
 	return true;
 }
 
+
+bool ControlManager::BuildNext_Bauxite()
+{
+    _target = ActionTarget::Bauxite;
+
+    pushPreSupplyCheck();
+    QList<int> willBeInDockList;
+
+    int useUpToDockSize = 3;
+
+    pushPreRepairCheck(willBeInDockList, true, true, false, false, true, useUpToDockSize);
+
+    pushPreShipFullCheck();
+
+    SortieAction* sortieAction = new SortieAction();
+    sortieAction->setAreaAndMap(2, 2);
+    _actionList.append(sortieAction);
+    _actionList.append(new SortieCommonAdvanceAction());
+    _actionList.append(new ChargeAction());
+    _actionList.append(new RepeatAction());
+
+    _morningSetting.lastBuiltState = MorningStage::AssumeJobDone;
+    setState(State::Ready, "Ready");
+    return true;
+
+}
+
+
 bool ControlManager::BuildNext_Bullet()
 {
 	_target = ActionTarget::Bullet;
@@ -2198,7 +2226,7 @@ QList<int> ControlManager::pushPreRepairCheck(QList<int>& willBeInDockList,
 	bool onlySmallShip,
 	bool onlySevere,
 	int useUpToNDockSize/*=3*/,
-	bool fastRepaireSmallDamate/*=false*/,
+    bool fastRepairSmallDamage/*=false*/,
 	bool includeLowLevel/*=false*/)
 {
 	if (!_shouldAutoPushRepair)
@@ -2274,7 +2302,9 @@ QList<int> ControlManager::pushPreRepairCheck(QList<int>& willBeInDockList,
 				|| isShipType(ship.api_id, ShipType::KeiJun)
 				|| isShipType(ship.api_id, ShipType::SuiBou)
 				|| isShipType(ship.api_id, ShipType::KaiBou)
-				|| isShipType(ship.api_id, ShipType::YouRiKu);
+                || isShipType(ship.api_id, ShipType::YouRiKu);
+            bool isNormalKubo = isShipType(ship.api_id, ShipType::KuBou)
+                    || isShipType(ship.api_id, ShipType::KeiKuBou);
 
 			bool doNotOvernight = ship.api_ndock_time + ctUtc < blockShiftedRepairTime.toMSecsSinceEpoch();
 			bool canBeRepairedSoon = (ship.api_ndock_time < repairLessThanTime || isSenSui)
@@ -2304,7 +2334,7 @@ QList<int> ControlManager::pushPreRepairCheck(QList<int>& willBeInDockList,
 
 				if (shouldAdd && onlySevere)
 				{
-					if (ws <= WoundState::Middle && !isFlagShip)
+                    if (ws <= WoundState::Middle && !isFlagShip && !isNormalKubo)
 					{
 						shouldAdd = false;
 					}
@@ -2320,9 +2350,9 @@ QList<int> ControlManager::pushPreRepairCheck(QList<int>& willBeInDockList,
 			}
 			else if (bCanUseFastRepair)
 			{
-				if (ws >= WoundState::Middle || ws == WoundState::Small && fastRepaireSmallDamate)
+                if (ws >= WoundState::Middle || ws == WoundState::Small && fastRepairSmallDamage)
 				{
-					if (ws > WoundState::Middle || !onlySevere || isFlagShip || fastRepaireSmallDamate)
+                    if (ws > WoundState::Middle || !onlySevere || isFlagShip || fastRepairSmallDamage || isNormalKubo)
 					{
 						if (onlyInTeam && isInAnyTeam)
 						{
@@ -3478,6 +3508,15 @@ bool ControlManager::shouldRetrieve()
 	{
 		return true;
 	}
+    if (_target == ActionTarget::Bauxite)
+    {
+
+        KanSaveData* pksd = &KanSaveData::getInstance();
+        if ((pksd->nextdata.api_next == 1 || pksd->nextdata.api_next == 0) && pksd->nextdata.api_maparea_id == 2 && pksd->nextdata.api_mapinfo_no == 2)
+        {
+            return false;
+        }
+    }
 	return (hugestDamageInTeam(-1) >= WoundState::Big);
 }
 

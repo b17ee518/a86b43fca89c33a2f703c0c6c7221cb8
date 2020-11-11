@@ -731,6 +731,37 @@ void ExpeditionManager::BuildSingleBauxiteYusou(ExpeditionSchedule* pschedule, i
 	}
 }
 
+void ExpeditionManager::BuildSingleBrunei(ExpeditionSchedule* pschedule, int toHour, int toMin)
+{
+    SingleExpedition exp;
+
+    exp.addShip((int)ShipType::KuChiKu, true, 0, 88);
+    exp.addShip((int)ShipType::KuChiKu, true, 0, 0);
+    exp.addShip((int)ShipType::KuChiKu, true, 0, 0);
+    exp.addShip((int)ShipType::KuChiKu, true, 0, 0);
+    exp.addSpecialExcludes(SPSHIP_AMAGIRI);
+    exp.addSpecialExcludes(SPSHIP_SAGIRI);
+    exp.addSpecialExcludes(SPSHIP_HATAKAZE);
+    exp.addSpecialExcludes(SPSHIP_MATSUKAZE);
+    exp.addSpecialExcludes(SPSHIP_MOCHIDUKI);
+    exp.addSpecialExcludes(SPSHIP_NAGATSUKI);
+    exp.addSpecialExcludes(SPSHIP_KIKUZUKI);
+    exp.addSpecialExcludes(SPSHIP_MIKAZUKI);
+    exp.addSpecialExcludes(SPSHIP_CHITOSEKOU);
+    exp.addSpecialExcludes(SPSHIP_CHIYODAKOU);
+    exp.setInfo(QTime(0, 59), 6, 0);
+
+    if (toHour < 0)
+    {
+        pschedule->addExpedition(QTime(23, 59, 59, 900), exp);
+    }
+    else
+    {
+        pschedule->addExpedition(QTime(toHour, toMin), exp);
+    }
+}
+
+
 void ExpeditionManager::BuildSingleNone(ExpeditionSchedule* pschedule, int toHour, int toMin)
 {
 	SingleExpedition exp;
@@ -840,6 +871,10 @@ void ExpeditionManager::buildSingleByPresetLine(ExpeditionSchedule* pschedule, c
 	{
 		BuildSingleBauxiteYusou(pschedule, hour, minute);
 	}
+    else if (!presetName.compare("BR", Qt::CaseInsensitive))
+    {
+        BuildSingleBrunei(pschedule, hour, minute);
+    }
 	else if (!presetName.compare("NONE", Qt::CaseInsensitive))
 	{
 		BuildSingleNone(pschedule, hour, minute);

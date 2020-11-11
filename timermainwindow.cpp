@@ -585,7 +585,10 @@ void TimerMainWindow::playSound(SoundIndex i, bool bSilent/*=false*/)
 	_pPlayer->play();
 	//	qint64 dur = pPlayer->duration();
 	int dur = 3000;
-	QTimer::singleShot(dur, MainWindow::mainWindow(), SLOT(slotSoundEnded()));
+    QTimer::singleShot(dur, [this](){
+        _pPlayer->stop();
+        MainWindow::mainWindow()->slotSoundEnded();
+    });
 }
 
 qint64 TimerMainWindow::getMinExpeditionMS(int& team, QList<int>excludes/*=QList<int>()*/)

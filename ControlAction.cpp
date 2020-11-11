@@ -3768,7 +3768,7 @@ bool ExpeditionAction::action()
 			{
 				_waiting = true;
 				QTimer::singleShot(DELAY_TIME_CLICK, Qt::PreciseTimer, this, [this, &cm]() {
-					ActionCheckAndClickDefine::MoveAndClick(ActionCheckAndClickDefine::MoveMouseNameDefine::ExpeditionAreaHorizontal, cm.areaIndexMap[_area]);
+                    ActionCheckAndClickDefine::MoveAndClick(ActionCheckAndClickDefine::MoveMouseNameDefine::ExpeditionAreaHorizontal, cm.areaIndexMap[_area+1] - 1);
 					setState(State::SelectItemChecking, "Expedition:SelectItemChecking");
 					resetRetryAndWainting();
 				});

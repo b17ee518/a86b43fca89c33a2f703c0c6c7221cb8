@@ -588,7 +588,7 @@ private:
     bool _isSkippingMissionComplete = false;
 
 public:
-	static const int maxMissionAcceptCount = 7;
+    static const int maxMissionAcceptCount = 8;
 };
 
 class RepeatAction : public ControlAction

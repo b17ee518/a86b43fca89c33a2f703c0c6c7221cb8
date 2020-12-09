@@ -1610,7 +1610,7 @@ bool ControlManager::BuildNext_Any(bool advanceOnly, bool stopAfterCharge)
 			{
 				Q_FOREACH(const auto& deck, pksd->portdata.api_deck_port)
 				{
-					if (deck.api_id == _anySetting.team)
+                    if (deck.api_id == _anySetting.team || _anySetting.team == 1)
 					{
 						for (auto id : deck.api_ship)
 						{

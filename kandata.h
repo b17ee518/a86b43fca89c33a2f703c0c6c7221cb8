@@ -1811,6 +1811,7 @@ public:
 	QList<kcsapi_ndock> api_ndock;
 	QList<kcsapi_ship2> api_ship;
 	int api_combined_Flag;
+	int api_parallel_quest_count;
 	kcsapi_basic api_basic;
 	//public Api_Log[] api_log;
 };

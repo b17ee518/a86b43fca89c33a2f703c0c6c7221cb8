@@ -11,7 +11,7 @@ class ControlAction : public QObject
 	Q_OBJECT
 public:
 	ControlAction(QObject *parent = NULL);
-	virtual ~ControlAction(){};
+	virtual ~ControlAction() {};
 
 	virtual bool action() { return true; }
 
@@ -585,10 +585,7 @@ private:
 	bool _isCompleting = true;
 	int _targetIndex = -1;
 	int _curPage = 0;
-    bool _isSkippingMissionComplete = false;
-
-public:
-    static const int maxMissionAcceptCount = 8;
+	bool _isSkippingMissionComplete = false;
 };
 
 class RepeatAction : public ControlAction

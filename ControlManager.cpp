@@ -159,27 +159,27 @@ bool ControlManager::BuildNext_Kira()
 
 bool ControlManager::BuildNext_Bauxite()
 {
-    _target = ActionTarget::Bauxite;
+	_target = ActionTarget::Bauxite;
 
-    pushPreSupplyCheck();
-    QList<int> willBeInDockList;
+	pushPreSupplyCheck();
+	QList<int> willBeInDockList;
 
-    int useUpToDockSize = 3;
+	int useUpToDockSize = 3;
 
-    pushPreRepairCheck(willBeInDockList, true, true, false, false, true, useUpToDockSize);
+	pushPreRepairCheck(willBeInDockList, true, true, false, false, true, useUpToDockSize);
 
-    pushPreShipFullCheck();
+	pushPreShipFullCheck();
 
-    SortieAction* sortieAction = new SortieAction();
-    sortieAction->setAreaAndMap(2, 2);
-    _actionList.append(sortieAction);
-    _actionList.append(new SortieCommonAdvanceAction());
-    _actionList.append(new ChargeAction());
-    _actionList.append(new RepeatAction());
+	SortieAction* sortieAction = new SortieAction();
+	sortieAction->setAreaAndMap(2, 2);
+	_actionList.append(sortieAction);
+	_actionList.append(new SortieCommonAdvanceAction());
+	_actionList.append(new ChargeAction());
+	_actionList.append(new RepeatAction());
 
-    _morningSetting.lastBuiltState = MorningStage::AssumeJobDone;
-    setState(State::Ready, "Ready");
-    return true;
+	_morningSetting.lastBuiltState = MorningStage::AssumeJobDone;
+	setState(State::Ready, "Ready");
+	return true;
 
 }
 
@@ -1221,7 +1221,8 @@ bool ControlManager::BuildNext_Mission()
 
 bool ControlManager::switchToGreedyMission()
 {
-	if (_missionSetting.todoGreedyMissionList.isEmpty() || KanSaveData::getInstance().activeQuestData.count() >= MissionAction::maxMissionAcceptCount)
+	auto &pksd = KanSaveData::getInstance();
+	if (_missionSetting.todoGreedyMissionList.isEmpty() || pksd.activeQuestData.count() >= pksd.portdata.api_parallel_quest_count)
 	{
 		_missionSetting.todoGreedyMissionList.clear();
 		return false;
@@ -1574,6 +1575,7 @@ bool ControlManager::BuildNext_Any(bool advanceOnly, bool stopAfterCharge)
 		}
 
 		QList<int> ships;
+		QList<int> shipsAllTeam;
 		int minCond = std::numeric_limits<int>::max();
 		int minCondShipId = -1;
 		int shipCount = 0;
@@ -1610,7 +1612,7 @@ bool ControlManager::BuildNext_Any(bool advanceOnly, bool stopAfterCharge)
 			{
 				Q_FOREACH(const auto& deck, pksd->portdata.api_deck_port)
 				{
-                    if (deck.api_id == _anySetting.team || _anySetting.team == 1)
+					if (deck.api_id == _anySetting.team || pksd->portdata.api_combined_Flag > 0 && deck.api_id <= 2)
 					{
 						for (auto id : deck.api_ship)
 						{
@@ -2226,7 +2228,7 @@ QList<int> ControlManager::pushPreRepairCheck(QList<int>& willBeInDockList,
 	bool onlySmallShip,
 	bool onlySevere,
 	int useUpToNDockSize/*=3*/,
-    bool fastRepairSmallDamage/*=false*/,
+	bool fastRepairSmallDamage/*=false*/,
 	bool includeLowLevel/*=false*/)
 {
 	if (!_shouldAutoPushRepair)
@@ -2302,9 +2304,9 @@ QList<int> ControlManager::pushPreRepairCheck(QList<int>& willBeInDockList,
 				|| isShipType(ship.api_id, ShipType::KeiJun)
 				|| isShipType(ship.api_id, ShipType::SuiBou)
 				|| isShipType(ship.api_id, ShipType::KaiBou)
-                || isShipType(ship.api_id, ShipType::YouRiKu);
-            bool isNormalKubo = isShipType(ship.api_id, ShipType::KuBou)
-                    || isShipType(ship.api_id, ShipType::KeiKuBou);
+				|| isShipType(ship.api_id, ShipType::YouRiKu);
+			bool isNormalKubo = isShipType(ship.api_id, ShipType::KuBou)
+				|| isShipType(ship.api_id, ShipType::KeiKuBou);
 
 			bool doNotOvernight = ship.api_ndock_time + ctUtc < blockShiftedRepairTime.toMSecsSinceEpoch();
 			bool canBeRepairedSoon = (ship.api_ndock_time < repairLessThanTime || isSenSui)
@@ -2334,7 +2336,7 @@ QList<int> ControlManager::pushPreRepairCheck(QList<int>& willBeInDockList,
 
 				if (shouldAdd && onlySevere)
 				{
-                    if (ws <= WoundState::Middle && !isFlagShip && !isNormalKubo)
+					if (ws <= WoundState::Middle && !isFlagShip && !isNormalKubo)
 					{
 						shouldAdd = false;
 					}
@@ -2350,9 +2352,9 @@ QList<int> ControlManager::pushPreRepairCheck(QList<int>& willBeInDockList,
 			}
 			else if (bCanUseFastRepair)
 			{
-                if (ws >= WoundState::Middle || ws == WoundState::Small && fastRepairSmallDamage)
+				if (ws >= WoundState::Middle || ws == WoundState::Small && fastRepairSmallDamage)
 				{
-                    if (ws > WoundState::Middle || !onlySevere || isFlagShip || fastRepairSmallDamage || isNormalKubo)
+					if (ws > WoundState::Middle || !onlySevere || isFlagShip || fastRepairSmallDamage || isNormalKubo)
 					{
 						if (onlyInTeam && isInAnyTeam)
 						{
@@ -3508,15 +3510,15 @@ bool ControlManager::shouldRetrieve()
 	{
 		return true;
 	}
-    if (_target == ActionTarget::Bauxite)
-    {
+	if (_target == ActionTarget::Bauxite)
+	{
 
-        KanSaveData* pksd = &KanSaveData::getInstance();
-        if ((pksd->nextdata.api_next == 1 || pksd->nextdata.api_next == 0) && pksd->nextdata.api_maparea_id == 2 && pksd->nextdata.api_mapinfo_no == 2)
-        {
-            return false;
-        }
-    }
+		KanSaveData* pksd = &KanSaveData::getInstance();
+		if ((pksd->nextdata.api_next == 1 || pksd->nextdata.api_next == 0) && pksd->nextdata.api_maparea_id == 2 && pksd->nextdata.api_mapinfo_no == 2)
+		{
+			return false;
+		}
+	}
 	return (hugestDamageInTeam(-1) >= WoundState::Big);
 }
 
@@ -4079,7 +4081,7 @@ void ControlManager::moveMouseToAndClick(float x, float y, float offsetX /*= 5*/
 #endif
 
 
-		};
+			};
 
 		auto browserWidget = MainWindow::mainWindow()->getBrowserWidget();
 		if (MainWindow::mainWindow()->getWebWidgetType() == WebWidgetType::WebEngine)
@@ -4104,9 +4106,9 @@ void ControlManager::moveMouseToAndClick(float x, float y, float offsetX /*= 5*/
 		{
 			sendMouseEvents(browserWidget);
 		}
-	}
+		}
 
-}
+	}
 
 void ControlManager::moveMouseTo(float x, float y, float offsetX /*= 5*/, float offsetY /*= 3*/)
 {

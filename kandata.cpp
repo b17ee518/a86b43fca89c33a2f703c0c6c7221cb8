@@ -313,19 +313,19 @@ bool kcsapi_charge::ReadFromJObj(const QJsonObject &jobj)
 
 bool kcsapi_createitem_unset_items::ReadFromJObj(const QJsonObject &jobj)
 {
-    _IREAD(api_type3);
-    _AIREAD(api_slot_list);
+	_IREAD(api_type3);
+	_AIREAD(api_slot_list);
 
-    return _bParseRet;
+	return _bParseRet;
 
 }
 
 bool kcsapi_createitem::ReadFromJObj(const QJsonObject &jobj)
 {
-    _IREAD(api_create_flag);
-    _AIREAD(api_material);
-    _ACREAD(api_get_items, kcsapi_slotitem);
-    _ACREAD(api_unset_items, kcsapi_createitem_unset_items);
+	_IREAD(api_create_flag);
+	_AIREAD(api_material);
+	_ACREAD(api_get_items, kcsapi_slotitem);
+	_ACREAD(api_unset_items, kcsapi_createitem_unset_items);
 
 	return _bParseRet;
 
@@ -729,6 +729,7 @@ bool kcsapi_port::ReadFromJObj(const QJsonObject &jobj)
 	_ACREAD(api_ship, kcsapi_ship2);
 	_CREAD(api_basic, kcsapi_basic);
 	_IREAD(api_combined_Flag);
+	_IREAD(api_parallel_quest_count);
 
 	return _bParseRet;
 
